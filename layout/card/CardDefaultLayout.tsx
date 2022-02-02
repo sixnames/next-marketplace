@@ -12,11 +12,11 @@ import {
   FILTER_BRAND_COLLECTION_KEY,
   FILTER_BRAND_KEY,
   FILTER_SEPARATOR,
-  ROUTE_CATALOGUE,
 } from '../../config/common';
 import { useConfigContext } from '../../context/configContext';
 import { CardLayoutInterface } from '../../db/uiInterfaces';
 import useCardData from '../../hooks/useCardData';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 import { noNaN } from '../../lib/numbers';
 import ProductAddToCartButton from '../snippet/ProductAddToCartButton';
 import CardControls from './CardControls';
@@ -102,6 +102,9 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     product;
 
   const videos = (product.videos || []).filter((video) => video);
+  const links = getProjectLinks({
+    rubricSlug: product.rubricSlug,
+  });
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -319,7 +322,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                             onClick={() => {
                               router
                                 .push(
-                                  `${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}`,
+                                  `${links.catalogue.rubricSlug.url}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}`,
                                 )
                                 .catch(console.log);
                             }}
@@ -357,7 +360,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                             onClick={() => {
                               router
                                 .push(
-                                  `${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}/${FILTER_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.itemId}`,
+                                  `${links.catalogue.rubricSlug.url}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}/${FILTER_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.itemId}`,
                                 )
                                 .catch(console.log);
                             }}

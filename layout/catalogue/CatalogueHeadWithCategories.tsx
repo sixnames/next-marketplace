@@ -5,11 +5,13 @@ import Inner from '../../components/Inner';
 import WpLink from '../../components/Link/WpLink';
 import WpBreadcrumbs from '../../components/WpBreadcrumbs';
 import WpTitle from '../../components/WpTitle';
-import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from '../../config/common';
 import { alwaysArray, alwaysString } from '../../lib/arrayUtils';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 import { sortStringArray } from '../../lib/stringUtils';
 
 const minCategoriesCount = 1;
+const links = getProjectLinks();
 
 const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   catalogueCounterString,
@@ -51,7 +53,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
               const newPathArray = sortStringArray([...otherCategoryFiltersArray, categoryFilter]);
               const newPathString = newPathArray.join('/');
 
-              const href = `${ROUTE_CATALOGUE}/${rubricSlug}/${newPathString}`;
+              const href = `${links.catalogue.url}/${rubricSlug}/${newPathString}`;
 
               return (
                 <WpLink

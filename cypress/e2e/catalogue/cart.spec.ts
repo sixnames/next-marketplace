@@ -1,9 +1,15 @@
-import { ROUTE_CATALOGUE } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Cart', () => {
+  const wineLinks = getProjectLinks({
+    rubricSlug: fixtureIds.rubricWineSlug,
+  });
+  const watterLinks = getProjectLinks({
+    rubricSlug: fixtureIds.rubricWaterSlug,
+  });
   beforeEach(() => {
-    cy.visit(`${ROUTE_CATALOGUE}/${fixtureIds.rubricWineSlug}`);
+    cy.visit(wineLinks.catalogue.rubricSlug.url);
   });
 
   it('Should CRUD cart items', () => {
@@ -21,7 +27,7 @@ describe('Cart', () => {
 
     // Add second product
     cy.getByCy(`cart-modal-close`).click();
-    cy.visit(`${ROUTE_CATALOGUE}/${fixtureIds.rubricWineSlug}`);
+    cy.visit(wineLinks.catalogue.rubricSlug.url);
     cy.getByCy('catalogue').should('exist');
     cy.visitLinkHref('catalogue-item-1-name-grid');
     cy.getByCy(`card`).should('exist');
@@ -31,7 +37,7 @@ describe('Cart', () => {
     // Add shopless product from catalogue
     cy.getByCy(`cart-modal-close`).click();
     cy.getByCy(`cart-counter`).should('contain', '2');
-    cy.visit(`${ROUTE_CATALOGUE}/${fixtureIds.rubricWineSlug}`);
+    cy.visit(wineLinks.catalogue.rubricSlug.url);
     cy.getByCy(`catalogue-item-3-add-to-cart-grid`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '3');
 
@@ -65,7 +71,7 @@ describe('Cart', () => {
     cy.getByCy(`cart-product-00-amount`).should('have.value', '2');
 
     // Should have cart dropdown
-    cy.visit(`${ROUTE_CATALOGUE}/${fixtureIds.rubricWineSlug}`);
+    cy.visit(wineLinks.catalogue.rubricSlug.url);
     cy.getByCy('catalogue').should('exist');
     cy.getByCy(`header-cart-dropdown-trigger`).click();
     cy.getByCy(`cart-dropdown`).should('exist');
@@ -83,13 +89,13 @@ describe('Cart', () => {
     cy.getByCy(`cart-counter`).should('contain', '2');
 
     // should add delivery products to the cart
-    cy.visit(`${ROUTE_CATALOGUE}/${fixtureIds.rubricWaterSlug}`);
+    cy.visit(watterLinks.catalogue.rubricSlug.url);
     cy.getByCy('catalogue').should('exist');
     cy.visitLinkHref('catalogue-item-0-name-grid');
     cy.getByCy(`card-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '3');
 
-    cy.visit(`${ROUTE_CATALOGUE}/${fixtureIds.rubricWaterSlug}`);
+    cy.visit(watterLinks.catalogue.rubricSlug.url);
     cy.visitLinkHref('catalogue-item-1-name-grid');
     cy.getByCy(`card-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '4');

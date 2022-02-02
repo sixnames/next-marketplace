@@ -10,7 +10,6 @@ import {
   DEFAULT_LOCALE,
   FILTER_CATEGORY_KEY,
   FILTER_SEPARATOR,
-  ROUTE_CATALOGUE,
 } from '../config/common';
 import { COL_COMPANIES, COL_CONFIGS, COL_RUBRICS, COL_SEO_CONTENTS } from '../db/collectionNames';
 import { CompanyModel, ConfigModel, RubricModel, SeoContentModel } from '../db/dbModels';
@@ -22,6 +21,7 @@ import {
   getConfigListValue,
   getConfigNumberValue,
 } from '../lib/configsUtils';
+import { getProjectLinks } from '../lib/getProjectLinks';
 
 const SitemapXml: React.FC = () => {
   return <div />;
@@ -31,6 +31,8 @@ interface CreateSitemapInterface {
   host: string;
   slugs: string[];
 }
+
+const links = getProjectLinks();
 
 const createSitemap = ({
   host,
@@ -117,7 +119,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const rubrics = await rubricsCollection.find({}).toArray();
   for await (const rubric of rubrics) {
     const rubricSlug = rubric.slug;
-    const basePath = `${ROUTE_CATALOGUE}/${rubricSlug}`;
+    const basePath = `${links.catalogue.url}/${rubricSlug}`;
     const catalogueData = await getCatalogueData({
       asPath: basePath,
       locale,

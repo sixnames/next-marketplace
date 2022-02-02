@@ -399,9 +399,6 @@ export const PAGE_EDITOR_DEFAULT_VALUE: Value = {
   rows: [],
 };
 
-// Routes
-export const ROUTE_CATALOGUE = `/catalogue`;
-
 export const NAV_GROUP_CONSOLE = 'console';
 export const NAV_GROUP_CMS = 'cms';
 export const CMS_ORDERS_NAV_ITEM_SLUG = `${NAV_GROUP_CMS}-orders`;

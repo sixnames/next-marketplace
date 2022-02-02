@@ -1,9 +1,7 @@
 import 'cypress-file-upload';
 import 'cypress-localstorage-commands';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
-
-// noinspection ES6PreferShortImport
-import { ROUTE_CATALOGUE } from '../../config/common';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 
 // ***********************************************
 // This example commands.js shows you how to
@@ -139,7 +137,10 @@ Cypress.Commands.add('signOut', (redirect = '/') => {
 });
 
 Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOrderInterface) => {
-  const catalogueRoute = `${ROUTE_CATALOGUE}/${fixtureIds.rubricWineSlug}`;
+  const links = getProjectLinks({
+    rubricSlug: fixtureIds.rubricWineSlug,
+  });
+  const catalogueRoute = links.catalogue.rubricSlug.url;
   cy.visit(catalogueRoute);
 
   // add product #1

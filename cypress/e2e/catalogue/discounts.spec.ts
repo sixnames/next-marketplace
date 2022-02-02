@@ -1,13 +1,15 @@
-import { ROUTE_CATALOGUE } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Order discounts', () => {
-  const links = getProjectLinks({
+  const wineLinks = getProjectLinks({
+    rubricSlug: fixtureIds.rubricWineSlug,
+  });
+  const whiskeyLinks = getProjectLinks({
     rubricSlug: fixtureIds.rubricWineSlug,
   });
   beforeEach(() => {
-    cy.testAuth(links.catalogue.rubricSlug.url);
+    cy.testAuth(wineLinks.catalogue.rubricSlug.url);
   });
 
   it('Should make an order with gift certificates', () => {
@@ -51,7 +53,7 @@ describe('Order discounts', () => {
   });
 
   it('Should make an order with promo code', () => {
-    cy.visit(`${ROUTE_CATALOGUE}/${fixtureIds.rubricWhiskeySlug}`);
+    cy.visit(whiskeyLinks.catalogue.rubricSlug.url);
 
     // add promo product to the cart
     cy.getByCy(`catalogue-item-0-add-to-cart-grid`).click();
@@ -75,7 +77,7 @@ describe('Order discounts', () => {
     cy.getByCy(`thank-you`).should('exist');
 
     // check cms order
-    cy.visit(links.cms.orders.url);
+    cy.visit(wineLinks.cms.orders.url);
     cy.getByCy('order-1000000-link').click();
     cy.getByCy(`order-promo-list`).should('exist');
     cy.getByCy(`order-discounted-price`).should('exist');

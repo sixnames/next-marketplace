@@ -1,19 +1,13 @@
-import { getTextContents, Value } from '@react-page/editor';
 import { sortBy } from 'lodash';
 import { ObjectId } from 'mongodb';
-import fetch from 'node-fetch';
-import qs from 'qs';
-import { reactPageCellPlugins } from '../components/PageEditor';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
-  DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   FILTER_CATEGORY_KEY,
   FILTER_SEPARATOR,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
-  REQUEST_METHOD_POST,
   SORT_DESC,
 } from '../config/common';
 import { getPriceAttribute } from '../config/constantAttributes';
@@ -24,8 +18,6 @@ import {
   COL_CATEGORIES,
   COL_CITIES,
   COL_COMPANIES,
-  COL_CONFIGS,
-  COL_LANGUAGES,
   COL_OPTIONS,
   COL_RUBRICS,
   COL_SEO_CONTENTS,
@@ -38,9 +30,7 @@ import {
   CategoryModel,
   CityModel,
   CompanyModel,
-  ConfigModel,
   DescriptionPositionType,
-  LanguageModel,
   ObjectIdModel,
   RubricModel,
   SeoContentModel,
@@ -53,7 +43,6 @@ import {
   SeoContentInterface,
 } from '../db/uiInterfaces';
 import { castUrlFilters } from './castUrlFilters';
-import { castConfigs, getConfigStringValue } from './configsUtils';
 import { getProjectLinks } from './getProjectLinks';
 import { getFieldStringLocale } from './i18n';
 import { sortStringArray } from './stringUtils';
@@ -77,155 +66,6 @@ export function castSeoContent(
     metaDescription: getFieldStringLocale(seoContent.metaDescriptionI18n, currentLocale),
     metaTitle: getFieldStringLocale(seoContent.metaTitleI18n, currentLocale),
   };
-}
-
-interface CheckSeoContentUniquenessInterface {
-  text?: string | null;
-  oldText?: string | null;
-  companySlug: string;
-  seoContentId: ObjectIdModel;
-}
-
-export async function checkSeoContentUniqueness({
-  text,
-  oldText,
-  companySlug,
-  seoContentId,
-}: CheckSeoContentUniquenessInterface) {
-  try {
-    const { db } = await getDatabase();
-
-    // get uniqueness api key and url
-    const configSlug = 'textUniquenessApiKey';
-    const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-    const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-    const initialConfigs = await configsCollection
-      .find({
-        slug: configSlug,
-        companySlug,
-      })
-      .toArray();
-    const configs = castConfigs({
-      configs: initialConfigs,
-      citySlug: DEFAULT_CITY,
-      locale: DEFAULT_LOCALE,
-    });
-    const uniqueTextApiKey = getConfigStringValue({
-      configs,
-      slug: configSlug,
-    });
-    const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
-
-    // get domain
-    let domain = process.env.DEFAULT_DOMAIN;
-    if (companySlug !== DEFAULT_COMPANY_SLUG) {
-      const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-      const company = await companiesCollection.findOne({
-        slug: companySlug,
-      });
-      domain = company?.domain || process.env.DEFAULT_DOMAIN;
-    }
-
-    const languages = await languagesCollection.find({}).toArray();
-    const locales = languages.map(({ slug }) => slug);
-
-    if (uniqueTextApiUrl && uniqueTextApiKey && text) {
-      for await (const locale of locales) {
-        const isDefaultLocale = locale === DEFAULT_LOCALE;
-        const rawText = JSON.parse(text);
-        const textContents = getTextContents(rawText as Value, {
-          lang: locale,
-          cellPlugins: reactPageCellPlugins(),
-        }).join(' ');
-
-        if (!isDefaultLocale) {
-          const defaultLocaleTextContents = getTextContents(rawText as Value, {
-            lang: DEFAULT_LOCALE,
-            cellPlugins: reactPageCellPlugins(),
-          }).join(' ');
-          if (defaultLocaleTextContents === textContents) {
-            continue;
-          }
-        }
-
-        const rawOldText = oldText ? JSON.parse(oldText) : null;
-        const oldTextContents = rawOldText
-          ? getTextContents(rawOldText as Value, {
-              lang: locale,
-              cellPlugins: reactPageCellPlugins(),
-            }).join(' ')
-          : null;
-
-        if (textContents !== oldTextContents) {
-          const body = {
-            userkey: uniqueTextApiKey,
-            exceptdomain: domain,
-            callback: `https://${domain}/api/seo-content/uniqueness/${seoContentId}/${locale}`,
-            text: textContents,
-          };
-
-          await fetch(uniqueTextApiUrl, {
-            method: REQUEST_METHOD_POST,
-            body: qs.stringify(body),
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-          });
-        }
-      }
-    }
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-interface UpdateCitiesSeoContentInterface {
-  seoContentsList: SeoContentCitiesInterface;
-  companySlug: string;
-}
-
-export async function updateCitiesSeoContent({
-  seoContentsList,
-  companySlug,
-}: UpdateCitiesSeoContentInterface) {
-  const { db } = await getDatabase();
-  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
-
-  const cities = await getCitiesList();
-  for await (const city of cities) {
-    const seoContent = seoContentsList[city.slug];
-
-    if (seoContent) {
-      const oldSeoContent = await seoContentsCollection.findOne({
-        _id: new ObjectId(seoContent._id),
-      });
-
-      // check uniqueness
-      await checkSeoContentUniqueness({
-        companySlug,
-        seoContentId: new ObjectId(seoContent._id),
-        text: seoContent.content,
-        oldText: oldSeoContent?.content,
-      });
-
-      // create if not exist
-      if (!oldSeoContent) {
-        await seoContentsCollection.insertOne(seoContent);
-        continue;
-      }
-
-      // update existing
-      const { _id, ...values } = seoContent;
-      await seoContentsCollection.findOneAndUpdate(
-        {
-          _id: new ObjectId(_id),
-        },
-        {
-          $set: values,
-        },
-      );
-    }
-  }
 }
 
 interface GetCatalogueSeoContentSlugInterface {

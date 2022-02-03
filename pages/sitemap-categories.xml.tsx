@@ -163,16 +163,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         )
         .toArray();
 
-      // remove broken seo contents
-      for await (const { url, _id } of seoContents) {
-        if (
-          url.includes(`/${DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}`) &&
-          companySlug !== DEFAULT_COMPANY_SLUG
-        ) {
-          await seoContentsCollection.findOneAndDelete({ _id });
-        }
-      }
-
       seoContents.forEach(({ url }) => {
         const newUrl = url
           .replace(`/${companySlug}/${DEFAULT_CITY}`, '')

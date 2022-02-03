@@ -1,8 +1,8 @@
 import { Db } from 'mongodb';
-import { ID_COUNTER_STEP, PAGE_EDITOR_DEFAULT_VALUE_STRING } from '../../config/common';
+import { ID_COUNTER_STEP } from '../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_ID_COUNTERS, COL_SEO_CONTENTS } from '../../db/collectionNames';
-import { IdCounterModel, SeoContentModel } from '../../db/dbModels';
+import { COL_ID_COUNTERS } from '../../db/collectionNames';
+import { IdCounterModel } from '../../db/dbModels';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -28,34 +28,13 @@ export async function getFastNextNumberItemId(collectionName: string, db: Db): P
   return `${updatedCounter.value.counter}`;
 }
 
-async function updateProds() {
+async function processProds() {
   for await (const dbConfig of dbsConfig) {
     console.log(' ');
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
-    console.log(`Updating ${dbConfig.dbName} db`);
-    const { db, client } = await getProdDb(dbConfig);
-    const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
-
-    const countBefore = await seoContentsCollection.countDocuments({});
-
-    await seoContentsCollection.deleteMany({
-      content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
-      $or: [
-        {
-          showForIndex: false,
-        },
-        {
-          showForIndex: {
-            $exists: false,
-          },
-        },
-      ],
-    });
-
-    const countAfter = await seoContentsCollection.countDocuments({});
-
-    console.log({ countBefore, countAfter, diff: countBefore - countAfter });
+    console.log(`Processing ${dbConfig.dbName} db`);
+    const { client } = await getProdDb(dbConfig);
 
     // disconnect form db
     await client.close();
@@ -65,7 +44,7 @@ async function updateProds() {
 }
 
 (() => {
-  updateProds()
+  processProds()
     .then(() => {
       console.log('Success!');
       process.exit();

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useRouter } from 'next/router';
 import Inner from '../../components/Inner';
 import WpLink from '../../components/Link/WpLink';
-import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from '../../config/common';
 import {
   NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY,
   NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
@@ -13,6 +13,7 @@ import { useConfigContext } from '../../context/configContext';
 import { useSiteContext } from '../../context/siteContext';
 import { useThemeContext } from '../../context/themeContext';
 import { AttributeInterface, CategoryInterface, RubricInterface } from '../../db/uiInterfaces';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 
 interface AttributeStylesInterface {
   attributeLinkStyle: React.CSSProperties;
@@ -91,6 +92,8 @@ interface StickyNavItemInterface extends StylesInterface {
   currentRubricSlug?: string;
 }
 
+const links = getProjectLinks();
+
 const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   rubric,
   attributeStyle,
@@ -110,7 +113,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   }, []);
 
   // Get rubric slug from product card path
-  const path = `${ROUTE_CATALOGUE}/${slug}`;
+  const path = `${links.catalogue.url}/${slug}`;
   const reg = RegExp(`${path}`);
   const isCurrent = reg.test(asPath) || slug === currentRubricSlug;
   const renderCategoriesAsNavItem =

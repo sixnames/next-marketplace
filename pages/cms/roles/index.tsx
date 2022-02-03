@@ -10,7 +10,7 @@ import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
 import { CreateRoleModalInterface } from '../../../components/Modal/CreateRoleModal';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
-import { ROUTE_CMS, SORT_DESC } from '../../../config/common';
+import { SORT_DESC } from '../../../config/common';
 import { CONFIRM_MODAL, CREATE_ROLE_MODAL } from '../../../config/modalVariants';
 import { COL_ROLES } from '../../../db/collectionNames';
 import { getDatabase } from '../../../db/mongodb';
@@ -19,6 +19,7 @@ import { useCreateRoleMutation, useDeleteRoleMutation } from '../../../generated
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import {
   castDbData,
@@ -73,7 +74,10 @@ const RolesConsumer: React.FC<RolesConsumerInterface> = ({ roles }) => {
               testId={`${dataItem.name}`}
               updateTitle={'Редактировать роль'}
               updateHandler={() => {
-                router.push(`${ROUTE_CMS}/roles/${dataItem._id}`).catch((e) => console.log(e));
+                const links = getProjectLinks({
+                  roleId: dataItem._id,
+                });
+                router.push(links.cms.roles.roleId.url).catch(console.log);
               }}
               deleteTitle={'Удалить роль'}
               deleteHandler={() => {
@@ -112,7 +116,10 @@ const RolesConsumer: React.FC<RolesConsumerInterface> = ({ roles }) => {
               data={roles}
               testIdKey={'name'}
               onRowDoubleClick={(dataItem) => {
-                router.push(`${ROUTE_CMS}/roles/${dataItem._id}`).catch((e) => console.log(e));
+                const links = getProjectLinks({
+                  roleId: dataItem._id,
+                });
+                router.push(links.cms.roles.roleId.url).catch(console.log);
               }}
             />
           </div>

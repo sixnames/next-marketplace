@@ -8,7 +8,6 @@ import FormikTranslationsInput from '../../../../components/FormElements/Input/F
 import FormikSelect from '../../../../components/FormElements/Select/FormikSelect';
 import Inner from '../../../../components/Inner';
 import WpTitle from '../../../../components/WpTitle';
-import { ROUTE_CMS } from '../../../../config/common';
 import { getConstantTranslation } from '../../../../config/constantTranslations';
 import { COL_OPTIONS_GROUPS } from '../../../../db/collectionNames';
 import { getDatabase } from '../../../../db/mongodb';
@@ -23,6 +22,7 @@ import useValidationSchema from '../../../../hooks/useValidationSchema';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import AppSubNav from '../../../../layout/AppSubNav';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../lib/i18n';
 import {
   castDbData,
@@ -49,29 +49,30 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
     onError: onErrorCallback,
   });
 
-  const navConfig = React.useMemo(() => {
-    return [
-      {
-        name: 'Опции',
-        testId: 'options',
-        path: `${ROUTE_CMS}/options/${optionsGroup._id}/options`,
-        exact: true,
-      },
-      {
-        name: 'Детали',
-        testId: 'details',
-        path: `${ROUTE_CMS}/options/${optionsGroup._id}`,
-        exact: true,
-      },
-    ];
-  }, [optionsGroup._id]);
+  const links = getProjectLinks({
+    optionsGroupId: optionsGroup._id,
+  });
+  const navConfig = [
+    {
+      name: 'Опции',
+      testId: 'options',
+      path: links.cms.options.optionsGroupId.options.url,
+      exact: true,
+    },
+    {
+      name: 'Детали',
+      testId: 'details',
+      path: links.cms.options.optionsGroupId.url,
+      exact: true,
+    },
+  ];
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${optionsGroup.name}`,
     config: [
       {
         name: 'Группы опций',
-        href: `${ROUTE_CMS}/options`,
+        href: links.cms.options.url,
       },
     ],
   };

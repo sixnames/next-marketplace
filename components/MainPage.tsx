@@ -1,10 +1,11 @@
 import * as React from 'react';
 import ImageGallery, { ReactImageGalleryItem } from 'react-image-gallery';
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_DOCS, ROUTE_PROMO } from '../config/common';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from '../config/common';
 import { useConfigContext } from '../context/configContext';
 import { useSiteContext } from '../context/siteContext';
 import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
 import ProductSnippetGridBigImage from '../layout/snippet/ProductSnippetGridBigImage';
+import { getProjectLinks } from '../lib/getProjectLinks';
 import { MainPageInterface } from '../lib/mainPageUtils';
 import HorizontalScroll from './HorizontalScroll';
 import Inner from './Inner';
@@ -13,6 +14,8 @@ import WpLink from './Link/WpLink';
 import PageEditor from './PageEditor';
 import ShopsMap from './ShopsMap';
 import WpTitle from './WpTitle';
+
+const links = getProjectLinks();
 
 const MainPageConsumer: React.FC<MainPageInterface> = ({
   topProducts,
@@ -63,7 +66,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
               <div key={mainBanner} className='overflow-hidden rounded-xl'>
                 <WpLink
                   target={'_blank'}
-                  href={`${asPage ? ROUTE_DOCS : ROUTE_PROMO}/${slug}`}
+                  href={`${asPage ? links.docs.url : links.promo.url}/${slug}`}
                   className={`relative block ${mainBannerMobile ? '' : 'h-[400px] md:h-auto'}`}
                 >
                   {/*image*/}
@@ -220,7 +223,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                       <WpLink
                         className='relative block'
                         target={'_blank'}
-                        href={`${asPage ? ROUTE_DOCS : ROUTE_PROMO}/${slug}`}
+                        href={`${asPage ? links.docs.url : links.promo.url}/${slug}`}
                       >
                         <img
                           className='relative z-10 block'

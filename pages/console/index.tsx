@@ -3,7 +3,7 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
-import { ROUTE_SIGN_IN } from '../../config/common';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 import { getConsoleCompanyLinks } from '../../lib/linkUtils';
 import { noNaN } from '../../lib/numbers';
 import { getConsoleMainPageData, GetConsoleMainPageDataPropsInterface } from '../../lib/ssrUtils';
@@ -52,11 +52,12 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<GetConsoleMainPageDataPropsInterface>> => {
   const { props } = await getConsoleMainPageData({ context });
+  const links = getProjectLinks();
   if (!props?.layoutProps.sessionUser) {
     return {
       redirect: {
         permanent: false,
-        destination: ROUTE_SIGN_IN,
+        destination: links.signIn.url,
       },
     };
   }

@@ -14,7 +14,6 @@ import {
   FILTER_SEPARATOR,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   REQUEST_METHOD_POST,
-  ROUTE_CATALOGUE,
   SORT_DESC,
 } from '../config/common';
 import { getPriceAttribute } from '../config/constantAttributes';
@@ -55,9 +54,12 @@ import {
 } from '../db/uiInterfaces';
 import { castUrlFilters } from './castUrlFilters';
 import { castConfigs, getConfigStringValue } from './configsUtils';
+import { getProjectLinks } from './getProjectLinks';
 import { getFieldStringLocale } from './i18n';
 import { sortStringArray } from './stringUtils';
 import { getTreeFromList, getTreeLeaves } from './treeUtils';
+
+const links = getProjectLinks();
 
 export function castSeoContent(
   seoContent?: SeoContentInterface | null,
@@ -621,7 +623,7 @@ export async function getProductSeoContentSlug({
 
     return {
       seoContentSlug: `${companyId}${cityId}${productId.toHexString()}`,
-      url: `/${companySlug}/${citySlug}/${productSlug}`,
+      url: `/${productSlug}`,
     };
   } catch (e) {
     console.log(e);
@@ -672,7 +674,7 @@ export async function getRubricSeoContentSlug({
 
     return {
       seoContentSlug: `${companyId}${cityId}${rubricId.toHexString()}${position}`,
-      url: `/${companySlug}/${citySlug}${ROUTE_CATALOGUE}/${rubricSlug}`,
+      url: `${links.catalogue.url}/${rubricSlug}`,
     };
   } catch (e) {
     console.log(e);
@@ -756,9 +758,7 @@ export async function getCategorySeoContentSlug({
 
     return {
       seoContentSlug: `${companyId}${cityId}${category.rubricId.toHexString()}${categoryIds}${position}`,
-      url: `/${companySlug}/${citySlug}${ROUTE_CATALOGUE}/${
-        category.rubricSlug
-      }/${sortedFilters.join('/')}`,
+      url: `${links.catalogue.url}/${category.rubricSlug}/${sortedFilters.join('/')}`,
     };
   } catch (e) {
     console.log(e);

@@ -4,15 +4,15 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import ConsoleOrderDetails, {
   CmsOrderDetailsBaseInterface,
 } from '../../../../../../../components/order/ConsoleOrderDetails';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../../../../../config/common';
 import { COL_ROLES, COL_USERS } from '../../../../../../../db/collectionNames';
 import { getConsoleOrder } from '../../../../../../../db/dao/orders/getConsoleOrder';
 import { getDatabase } from '../../../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, UserInterface } from '../../../../../../../db/uiInterfaces';
 import CmsUserLayout from '../../../../../../../layout/cms/CmsUserLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../../../../lib/i18n';
-import { getConsoleUserLinks } from '../../../../../../../lib/linkUtils';
 import { getFullName } from '../../../../../../../lib/nameUtils';
 import {
   castDbData,
@@ -30,25 +30,24 @@ const UserOrdersConsumer: React.FC<UserOrderConsumerInterface> = ({
   orderStatuses,
 }) => {
   const title = `Заказ №${order.itemId}`;
-  const links = getConsoleUserLinks({
+  const links = getProjectLinks({
     userId: user._id,
     orderId: order._id,
-    basePath: ROUTE_CMS,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: title,
     config: [
       {
         name: 'Пользователи',
-        href: links.parentLink,
+        href: links.cms.users.url,
       },
       {
         name: `${user.fullName}`,
-        href: links.root,
+        href: links.cms.users.user.userId.url,
       },
       {
         name: `Заказы`,
-        href: links.order.parentLink,
+        href: links.cms.users.user.userId.orders.url,
       },
     ],
   };

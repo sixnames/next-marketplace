@@ -7,7 +7,6 @@ import Inner from '../../../../../components/Inner';
 import {
   DEFAULT_COMPANY_SLUG,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
-  ROUTE_CMS,
 } from '../../../../../config/common';
 import { COL_SEO_CONTENTS } from '../../../../../db/collectionNames';
 import { getConsoleRubricDetails } from '../../../../../db/dao/rubrics/getConsoleRubricDetails';
@@ -16,6 +15,7 @@ import { getDatabase } from '../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from '../../../../../db/uiInterfaces';
 import CmsRubricLayout from '../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../../lib/getProjectLinks';
 import { getConsoleRubricLinks } from '../../../../../lib/linkUtils';
 import {
   castDbData,
@@ -111,12 +111,13 @@ export const getServerSideProps = async (
     })
     .toArray();
 
+  const links = getProjectLinks();
   return {
     props: {
       ...props,
       rubric: castDbData(payload.rubric),
       seoContents: castDbData(seoContents),
-      routeBasePath: ROUTE_CMS,
+      routeBasePath: links.cms.url,
       rubricSlug: payload.rubric.slug,
       companySlug,
     },

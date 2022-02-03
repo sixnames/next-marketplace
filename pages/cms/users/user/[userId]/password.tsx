@@ -5,7 +5,6 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import WpButton from '../../../../../components/button/WpButton';
 import FormikInput from '../../../../../components/FormElements/Input/FormikInput';
 import Inner from '../../../../../components/Inner';
-import { ROUTE_CMS } from '../../../../../config/common';
 import { COL_ROLES, COL_USERS } from '../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, UserInterface } from '../../../../../db/uiInterfaces';
@@ -13,6 +12,7 @@ import { useUpdateUserPasswordMutation } from '../../../../../hooks/mutations/us
 import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
 import CmsUserLayout from '../../../../../layout/cms/CmsUserLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../../lib/i18n';
 import { getFullName } from '../../../../../lib/nameUtils';
 import {
@@ -31,16 +31,19 @@ const UserPasswordConsumer: React.FC<UserPasswordInterface> = ({ user }) => {
   });
   const [updateUserPasswordMutation] = useUpdateUserPasswordMutation();
 
+  const links = getProjectLinks({
+    userId: user._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Пароль`,
     config: [
       {
         name: 'Пользователи',
-        href: `${ROUTE_CMS}/users`,
+        href: links.cms.users.url,
       },
       {
         name: `${user.fullName}`,
-        href: `${ROUTE_CMS}/users/user/${user._id}`,
+        href: links.cms.users.user.userId.url,
       },
     ],
   };

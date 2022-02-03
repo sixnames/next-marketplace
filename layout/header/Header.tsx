@@ -12,19 +12,7 @@ import WpLink from '../../components/Link/WpLink';
 import { MapModalInterface } from '../../components/Modal/MapModal';
 import ThemeTrigger from '../../components/ThemeTrigger';
 import WpIcon from '../../components/WpIcon';
-import {
-  FILTER_CATEGORY_KEY,
-  FILTER_SEPARATOR,
-  IMAGE_FALLBACK,
-  ROUTE_BLOG,
-  ROUTE_CATALOGUE,
-  ROUTE_CMS,
-  ROUTE_CONSOLE,
-  ROUTE_CONTACTS,
-  ROUTE_DOCS,
-  ROUTE_PROFILE,
-  ROUTE_SIGN_IN,
-} from '../../config/common';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, IMAGE_FALLBACK } from '../../config/common';
 import { getConstantTranslation } from '../../config/constantTranslations';
 import { MAP_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
@@ -36,12 +24,15 @@ import { useThemeContext } from '../../context/themeContext';
 import { PagesGroupInterface } from '../../db/uiInterfaces';
 import { useShopMarker } from '../../hooks/useShopMarker';
 import useSignOut from '../../hooks/useSignOut';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 import { noNaN } from '../../lib/numbers';
 import { phoneToRaw, phoneToReadable } from '../../lib/phoneUtils';
 import LayoutCard from '../LayoutCard';
 import CartDropdown from './CartDropdown';
 import HeaderSearch from './HeaderSearch';
 import StickyNav, { StickNavInterface } from './StickyNav';
+
+const links = getProjectLinks();
 
 const middleLinkClassName =
   'flex items-center justify-center min-h-[3rem] text-secondary-text cursor-pointer hover:text-theme transition-colors duration-200';
@@ -81,7 +72,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       <WpLink
                         testId={`${testId}-user-dropdown-profile-link`}
                         className='flex min-h-[3rem] cursor-pointer items-center py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text no-underline hover:text-theme hover:no-underline'
-                        href={`${ROUTE_PROFILE}`}
+                        href={links.profile.url}
                       >
                         <span>Личный кабинет</span>
                       </WpLink>
@@ -93,7 +84,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                         <WpLink
                           testId={`${testId}-user-dropdown-cms-link`}
                           className='flex min-h-[3rem] cursor-pointer items-center py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text no-underline hover:text-theme hover:no-underline'
-                          href={ROUTE_CMS}
+                          href={links.cms.url}
                         >
                           <span>CMS</span>
                         </WpLink>
@@ -106,7 +97,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                         <WpLink
                           testId={`${testId}-user-dropdown-app-link`}
                           className='flex min-h-[3rem] cursor-pointer items-center py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text no-underline hover:text-theme hover:no-underline'
-                          href={ROUTE_CONSOLE}
+                          href={links.console.url}
                         >
                           <span>Панель управления</span>
                         </WpLink>
@@ -135,7 +126,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
     <WpLink
       ariaLabel={'Войти'}
       testId={`${testId}-sign-in-link`}
-      href={`${ROUTE_SIGN_IN}`}
+      href={links.signIn.url}
       className={`${middleLinkClassName} pr-2 pl-2`}
     >
       <span className={`relative`}>
@@ -237,7 +228,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
               <li className='relative' key={rubric.slug}>
                 <WpLink
                   prefetch={false}
-                  href={`${ROUTE_CATALOGUE}/${rubric.slug}`}
+                  href={`${links.catalogue.url}/${rubric.slug}`}
                   onClick={hideBurgerDropdown}
                   testId={`main-rubric-${rubric.name}`}
                   className={`flex min-h-[var(--minLinkHeight)] flex-grow items-center justify-between text-xl font-medium ${
@@ -260,7 +251,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                               return (
                                 <li key={`${category._id}`}>
                                   <WpLink
-                                    href={`${ROUTE_CATALOGUE}/${rubric.slug}/${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`}
+                                    href={`${links.catalogue.url}/${rubric.slug}/${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`}
                                     onClick={hideBurgerDropdown}
                                     className={`flex h-10 items-center ${
                                       isCurrent ? 'text-theme' : 'text-primary-text'
@@ -289,7 +280,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                                 return (
                                   <li key={`${option._id}`}>
                                     <WpLink
-                                      href={`${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+                                      href={`${links.catalogue.url}/${rubric.slug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                                       onClick={hideBurgerDropdown}
                                       className={`flex h-10 items-center ${
                                         isCurrent ? 'text-theme' : 'text-primary-text'
@@ -307,7 +298,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                                     className='flex h-10 cursor-pointer items-center font-medium text-theme'
                                     onClick={() => {
                                       router
-                                        .push(`${ROUTE_CATALOGUE}/${rubricSlug}`)
+                                        .push(`${links.catalogue.url}/${rubricSlug}`)
                                         .then(hideBurgerDropdown)
                                         .catch(console.log);
                                     }}
@@ -348,7 +339,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                     return (
                       <li className='' key={`${page._id}`}>
                         <WpLink
-                          href={`${ROUTE_DOCS}/${page.slug}`}
+                          href={`${links.docs.url}/${page.slug}`}
                           onClick={hideBurgerDropdown}
                           className={`flex h-10 items-center text-secondary-text`}
                         >
@@ -362,7 +353,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                     <li className=''>
                       <div className=''>
                         <WpLink
-                          href={`${ROUTE_CONTACTS}`}
+                          href={links.contacts.url}
                           onClick={hideBurgerDropdown}
                           className={`flex h-10 items-center text-secondary-text`}
                         >
@@ -382,7 +373,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                 className={`mb-3 flex flex-grow items-center justify-between text-lg font-medium text-primary-text`}
                 onClick={() => {
                   hideBurgerDropdown();
-                  window.open(`${ROUTE_BLOG}`, '_blank');
+                  window.open(links.blog.url, '_blank');
                 }}
               >
                 {blogLinkName}
@@ -544,7 +535,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                             <div
                               className='block py-1.5 px-3 text-primary-text hover:text-theme hover:no-underline'
                               onClick={() => {
-                                window.open(`${ROUTE_DOCS}/${slug}`, '_blank');
+                                window.open(`${links.docs.url}/${slug}`, '_blank');
                               }}
                             >
                               {name}
@@ -558,7 +549,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                           <div
                             className='block py-1.5 px-3 text-primary-text hover:text-theme hover:no-underline'
                             onClick={() => {
-                              window.open(`${ROUTE_CONTACTS}`, '_blank');
+                              window.open(links.contacts.url, '_blank');
                             }}
                           >
                             {contactsLinkName}
@@ -574,7 +565,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                   className='flex h-[30px] cursor-pointer items-center text-secondary-text hover:text-theme hover:no-underline'
                   style={topTextColorStyle}
                   onClick={() => {
-                    window.open(`${ROUTE_BLOG}`, '_blank');
+                    window.open(links.blog.url, '_blank');
                   }}
                 >
                   {blogLinkName}

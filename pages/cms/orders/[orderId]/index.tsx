@@ -3,11 +3,12 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import ConsoleOrderDetails, {
   CmsOrderDetailsBaseInterface,
 } from '../../../../components/order/ConsoleOrderDetails';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../../config/common';
 import { getConsoleOrder } from '../../../../db/dao/orders/getConsoleOrder';
 import { AppContentWrapperBreadCrumbs } from '../../../../db/uiInterfaces';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../lib/getProjectLinks';
 import {
   castDbData,
   getAppInitialData,
@@ -20,12 +21,13 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order, orderS
   const { itemId } = order;
   const title = `Заказ №${itemId}`;
 
+  const links = getProjectLinks();
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: title,
     config: [
       {
         name: 'Список заказов',
-        href: `${ROUTE_CMS}/orders`,
+        href: links.cms.orders.url,
       },
     ],
   };

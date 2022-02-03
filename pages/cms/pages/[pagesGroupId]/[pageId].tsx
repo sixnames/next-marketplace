@@ -3,10 +3,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import Inner from '../../../../components/Inner';
 import PageDetails, { PageDetailsInterface } from '../../../../components/Pages/PageDetails';
 import WpTitle from '../../../../components/WpTitle';
-import { ROUTE_CMS } from '../../../../config/common';
 import { AppContentWrapperBreadCrumbs } from '../../../../db/uiInterfaces';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../lib/getProjectLinks';
 import { getPageSsr } from '../../../../lib/pageUtils';
 import {
   castDbData,
@@ -19,16 +19,19 @@ export interface PageDetailsPageInterface
     PageDetailsInterface {}
 
 const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({ layoutProps, page, cities }) => {
+  const links = getProjectLinks({
+    pagesGroupId: page.pagesGroup?._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${page.name}`,
     config: [
       {
         name: 'Группы страниц',
-        href: `${ROUTE_CMS}/pages`,
+        href: links.cms.pages.url,
       },
       {
         name: `${page.pagesGroup?.name}`,
-        href: `${ROUTE_CMS}/pages/${page.pagesGroup?._id}`,
+        href: links.cms.pages.pagesGroupId.url,
       },
     ],
   };

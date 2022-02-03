@@ -11,7 +11,6 @@ import {
   FILTER_CATEGORY_KEY,
   FILTER_SEPARATOR,
   GENDER_PLURAL,
-  ROUTE_CATALOGUE,
   SORT_DESC,
 } from '../config/common';
 import { DEFAULT_LAYOUT } from '../config/constantSelects';
@@ -58,6 +57,7 @@ import {
   OptionInterface,
 } from '../db/uiInterfaces';
 import { sortObjectsByField } from './arrayUtils';
+import { getProjectLinks } from './getProjectLinks';
 import { getFieldStringLocale } from './i18n';
 import { noNaN } from './numbers';
 import { phoneToRaw, phoneToReadable } from './phoneUtils';
@@ -425,6 +425,9 @@ export async function getCardData({
       shops,
       ...restProduct
     } = product;
+    const links = getProjectLinks({
+      rubricSlug: rubric.slug,
+    });
 
     // card connections
     const excludedAttributesIds: ObjectIdModel[] = [];
@@ -556,7 +559,7 @@ export async function getCardData({
         const categoryList = castCategoriesForBreadcrumbs({
           category,
           acc: [],
-          hrefAcc: `${ROUTE_CATALOGUE}/${rubric.slug}`,
+          hrefAcc: links.catalogue.rubricSlug.url,
         });
         return [...acc, ...categoryList];
       },
@@ -571,7 +574,7 @@ export async function getCardData({
       attributesBreadcrumbs.push({
         _id: brand._id,
         name: getFieldStringLocale(brand.nameI18n, locale),
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}`,
+        href: `${links.catalogue.rubricSlug.url}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}`,
       });
     }
 
@@ -580,7 +583,7 @@ export async function getCardData({
       attributesBreadcrumbs.push({
         _id: brandCollection._id,
         name: getFieldStringLocale(brandCollection.nameI18n, locale),
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${FILTER_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.itemId}`,
+        href: `${links.catalogue.rubricSlug.url}/${FILTER_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.itemId}`,
       });
     }
 
@@ -623,7 +626,7 @@ export async function getCardData({
       attributesBreadcrumbs.push({
         _id: productAttribute.attributeId,
         name: `${optionValue}${metricValue}`,
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${FILTER_SEPARATOR}${firstSelectedOption.slug}`,
+        href: `${links.catalogue.rubricSlug.url}/${attribute.slug}${FILTER_SEPARATOR}${firstSelectedOption.slug}`,
       });
     }
 
@@ -632,7 +635,7 @@ export async function getCardData({
       {
         _id: rubric._id,
         name: getFieldStringLocale(rubric.nameI18n, locale),
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}`,
+        href: links.catalogue.rubricSlug.url,
       },
       ...attributesBreadcrumbs,
     ];

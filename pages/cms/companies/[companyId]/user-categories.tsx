@@ -10,7 +10,6 @@ import { ConfirmModalInterface } from '../../../../components/Modal/ConfirmModal
 import { UserCategoryModalInterface } from '../../../../components/Modal/UserCategoryModal';
 import Percent from '../../../../components/Percent';
 import WpTable, { WpTableColumn } from '../../../../components/WpTable';
-import { ROUTE_CMS } from '../../../../config/common';
 import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from '../../../../config/modalVariants';
 import { useAppContext } from '../../../../context/appContext';
 import { COL_COMPANIES, COL_USER_CATEGORIES } from '../../../../db/collectionNames';
@@ -23,6 +22,7 @@ import {
 import { useDeleteUserCategory } from '../../../../hooks/mutations/useUserCategoryMutations';
 import CmsCompanyLayout from '../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../lib/i18n';
 import {
   castDbData,
@@ -103,16 +103,19 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ pag
     },
   ];
 
+  const links = getProjectLinks({
+    companyId: pageCompany?._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Категории',
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };

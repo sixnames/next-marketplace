@@ -2,10 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import {
   CATALOGUE_PRODUCTS_LIMIT,
   CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
-  ROUTE_CATALOGUE,
 } from '../../../config/common';
 import { alwaysArray } from '../../../lib/arrayUtils';
 import { getCatalogueData } from '../../../lib/catalogueUtils';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 import { noNaN } from '../../../lib/numbers';
 import { getRequestParams } from '../../../lib/sessionHelpers';
 
@@ -34,6 +34,9 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
     const filtersArray = alwaysArray(query.filters).slice(1);
     const [rubricSlug, ...filters] = filtersArray;
 
+    const links = getProjectLinks({
+      rubricSlug,
+    });
     const rawCatalogueData = await getCatalogueData({
       asPath,
       locale,
@@ -41,7 +44,7 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
       companyId,
       currency,
       citySlug,
-      basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
+      basePath: links.catalogue.rubricSlug.url,
       snippetVisibleAttributesCount:
         noNaN(snippetVisibleAttributesCount) || noNaN(CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES),
       visibleCategoriesInNavDropdown,

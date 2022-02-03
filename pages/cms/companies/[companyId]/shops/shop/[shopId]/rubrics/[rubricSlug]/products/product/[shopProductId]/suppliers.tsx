@@ -6,7 +6,7 @@ import CompanyProductSuppliers, {
 } from '../../../../../../../../../../../../components/company/CompanyProductSuppliers';
 import { SelectOptionInterface } from '../../../../../../../../../../../../components/FormElements/Select/Select';
 import RequestError from '../../../../../../../../../../../../components/RequestError';
-import { ROUTE_CMS, SORT_ASC } from '../../../../../../../../../../../../config/common';
+import { SORT_ASC } from '../../../../../../../../../../../../config/common';
 import {
   COL_COMPANIES,
   COL_SUPPLIERS,
@@ -19,6 +19,7 @@ import {
 } from '../../../../../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../../../../../layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from '../../../../../../../../../../../../layout/console/ConsoleShopProductLayout';
+import { getProjectLinks } from '../../../../../../../../../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../../../../../../../../../lib/i18n';
 import { getCmsCompanyLinks } from '../../../../../../../../../../../../lib/linkUtils';
 import { getConsoleShopProduct } from '../../../../../../../../../../../../lib/productUtils';
@@ -174,6 +175,9 @@ export const getServerSideProps = async (
 
   const disabledSuppliers = suppliers.filter(({ disabled }) => disabled);
 
+  const links = getProjectLinks({
+    companyId: shopProduct.companyId,
+  });
   return {
     props: {
       ...props,
@@ -181,7 +185,7 @@ export const getServerSideProps = async (
       suppliers: castDbData(suppliers),
       pageCompany: castDbData(companyResult),
       disableAddSupplier: disabledSuppliers.length === suppliers.length,
-      routeBasePath: `${ROUTE_CMS}/companies/${shopProduct.companyId}`,
+      routeBasePath: links.cms.companies.companyId.url,
     },
   };
 };

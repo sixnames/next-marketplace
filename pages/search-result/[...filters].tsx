@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Catalogue, { CatalogueInterface } from '../../components/Catalogue';
-import { ROUTE_SEARCH_RESULT } from '../../config/common';
 import { alwaysArray } from '../../lib/arrayUtils';
 import { getCatalogueData } from '../../lib/catalogueUtils';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 import { castDbData, getSiteInitialData } from '../../lib/ssrUtils';
 
 const SearchResultPage: NextPage<CatalogueInterface> = ({ ...props }) => {
@@ -34,6 +34,7 @@ export async function getServerSideProps(
   }
 
   // catalogue
+  const links = getProjectLinks();
   const rawCatalogueData = await getCatalogueData({
     asPath: '',
     locale: props.sessionLocale,
@@ -41,7 +42,7 @@ export async function getServerSideProps(
     companySlug: props.domainCompany?.slug,
     companyId: props.domainCompany?._id,
     currency: props.initialData.currency,
-    basePath: `${ROUTE_SEARCH_RESULT}/${search}`,
+    basePath: `${links.searchResult.url}/${search}`,
     snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
     visibleCategoriesInNavDropdown: props.initialData.configs.visibleCategoriesInNavDropdown,
     limit: props.initialData.configs.catalogueProductsCount,

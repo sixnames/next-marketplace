@@ -7,9 +7,10 @@ import WpInput from '../../components/FormElements/Input/WpInput';
 import Inner from '../../components/Inner';
 import WpLink from '../../components/Link/WpLink';
 import Spinner from '../../components/Spinner';
-import { REQUEST_METHOD_POST, ROUTE_SEARCH_RESULT } from '../../config/common';
+import { REQUEST_METHOD_POST } from '../../config/common';
 import { useSiteContext } from '../../context/siteContext';
 import { ShopProductInterface } from '../../db/uiInterfaces';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 import {
   HeaderSearchInputInterface,
   HeaderSearchPayloadInterface,
@@ -23,6 +24,7 @@ interface HeaderSearchResultInterface {
   string: string;
 }
 
+const links = getProjectLinks();
 const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
   setIsSearchOpen,
   shopProducts,
@@ -51,7 +53,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
       {isProductsFound ? (
         <WpLink
           className='flex min-h-[var(--minLinkHeightSmall)] items-center text-theme'
-          href={`${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`}
+          href={`${links.searchResult.url}/${encodeURIComponent(string)}`}
           onClick={() => {
             setIsSearchOpen(false);
           }}
@@ -139,7 +141,7 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ setIsSearchOpen }) => {
                 e.preventDefault();
                 if (string && string.length > minSearchLength) {
                   router
-                    .push(`${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`)
+                    .push(`${links.searchResult.url}/${encodeURIComponent(string)}`)
                     .catch(console.log);
                 }
               }}

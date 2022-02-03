@@ -9,7 +9,7 @@ import Inner from '../../../components/Inner';
 import { OptionsGroupModalInterface } from '../../../components/Modal/OptionsGroupModal';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from '../../../config/common';
+import { DEFAULT_LOCALE, SORT_ASC } from '../../../config/common';
 import { getConstantTranslation } from '../../../config/constantTranslations';
 import { CONFIRM_MODAL, OPTIONS_GROUP_MODAL } from '../../../config/modalVariants';
 import { COL_OPTIONS, COL_OPTIONS_GROUPS } from '../../../db/collectionNames';
@@ -22,6 +22,7 @@ import {
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import { noNaN } from '../../../lib/numbers';
 import {
@@ -95,7 +96,10 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
                 });
               }}
               updateHandler={() => {
-                router.push(`${ROUTE_CMS}/options/${dataItem._id}/options`).catch(console.log);
+                const links = getProjectLinks({
+                  optionsGroupId: dataItem._id,
+                });
+                router.push(links.cms.options.optionsGroupId.options.url).catch(console.log);
               }}
             />
           </div>
@@ -119,7 +123,10 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
               columns={columns}
               data={optionsGroups}
               onRowDoubleClick={(dataItem) => {
-                router.push(`${ROUTE_CMS}/options/${dataItem._id}/options`).catch(console.log);
+                const links = getProjectLinks({
+                  optionsGroupId: dataItem._id,
+                });
+                router.push(links.cms.options.optionsGroupId.options.url).catch(console.log);
               }}
             />
           </div>

@@ -35,6 +35,7 @@ describe('Brands', () => {
     cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).clear().type(updatedBrandName);
     cy.getByCy(`url-0`).clear().type(updatedBrandUrl);
     cy.getByCy('submit-brand').click();
+    cy.wait(1500);
 
     // should create brand collection
     cy.getByCy('brand-collections').click();
@@ -48,7 +49,7 @@ describe('Brands', () => {
     cy.wait(1500);
     cy.getByCy(`${newBrandCollectionName}-row`).should('exist');
 
-    // should updated brand collection
+    // should update brand collection
     cy.getByCy(`${newBrandCollectionName}-update`).click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(updatedBrandCollectionName);
     cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).clear().type(updatedBrandCollectionName);

@@ -1,7 +1,8 @@
 import * as React from 'react';
 import TagLink from '../../components/Link/TagLink';
-import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
+import { FILTER_SEPARATOR } from '../../config/common';
 import { ProductAttributeInterface } from '../../db/uiInterfaces';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 
 interface CardIconFeaturesInterface {
   iconFeatures: ProductAttributeInterface[];
@@ -17,6 +18,9 @@ const CardIconFeatures: React.FC<CardIconFeaturesInterface> = ({
   if (iconFeatures.length < 1) {
     return null;
   }
+  const links = getProjectLinks({
+    rubricSlug,
+  });
   return (
     <div className={className}>
       {iconFeatures.map((productAttribute) => {
@@ -37,7 +41,7 @@ const CardIconFeatures: React.FC<CardIconFeaturesInterface> = ({
                   <li key={`${option?.name}`}>
                     <TagLink
                       icon={option.icon?.icon}
-                      href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+                      href={`${links.catalogue.rubricSlug.url}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                       testId={`card-icon-option-${name}`}
                     >
                       {name}

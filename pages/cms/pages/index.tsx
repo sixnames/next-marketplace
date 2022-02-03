@@ -3,9 +3,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import Inner from '../../../components/Inner';
 import PageGroupsList, { PageGroupsListInterface } from '../../../components/Pages/PageGroupsList';
 import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../config/common';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 import { getPageGroupsSsr } from '../../../lib/pageUtils';
 import {
   castDbData,
@@ -20,6 +21,7 @@ interface PageGroupsPageInterface
     Omit<PageGroupsListInterface, 'basePath' | 'pageTitle'> {}
 
 const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesGroups }) => {
+  const links = getProjectLinks();
   return (
     <ConsoleLayout title={pageTitle} {...layoutProps}>
       <AppContentWrapper>
@@ -27,7 +29,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesG
           <WpTitle>{pageTitle}</WpTitle>
           <PageGroupsList
             companySlug={DEFAULT_COMPANY_SLUG}
-            basePath={`${ROUTE_CMS}/pages`}
+            basePath={links.cms.pages.url}
             pagesGroups={pagesGroups}
           />
         </Inner>

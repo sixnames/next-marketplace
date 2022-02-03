@@ -8,7 +8,6 @@ import WpButton from '../../../../../components/button/WpButton';
 import FormikCheckboxLine from '../../../../../components/FormElements/Checkbox/FormikCheckboxLine';
 import InputLine from '../../../../../components/FormElements/Input/InputLine';
 import Inner from '../../../../../components/Inner';
-import { ROUTE_CMS } from '../../../../../config/common';
 import { COL_ROLES, COL_USERS } from '../../../../../db/collectionNames';
 import { UpdateUserInputInterface } from '../../../../../db/dao/user/updateUser';
 import { NotificationConfigModel, UserNotificationsModel } from '../../../../../db/dbModels';
@@ -23,6 +22,7 @@ import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../../../../hooks/useValidationSchema';
 import CmsUserLayout from '../../../../../layout/cms/CmsUserLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../../lib/getProjectLinks';
 import { getUserNotifications } from '../../../../../lib/getUserNotificationsTemplate';
 import { getFieldStringLocale } from '../../../../../lib/i18n';
 import { getFullName } from '../../../../../lib/nameUtils';
@@ -72,16 +72,19 @@ const UserNotificationsConsumer: React.FC<UseNotificationsConsumerInterface> = (
     notifications: user.notifications,
   };
 
+  const links = getProjectLinks({
+    userId: user._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Оповещения`,
     config: [
       {
         name: 'Пользователи',
-        href: `${ROUTE_CMS}/users`,
+        href: links.cms.users.url,
       },
       {
         name: `${user.fullName}`,
-        href: `${ROUTE_CMS}/users/user/${user._id}`,
+        href: links.cms.users.user.userId.url,
       },
     ],
   };

@@ -5,7 +5,6 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import WpButton from '../../../../components/button/WpButton';
 import CompanyMainFields from '../../../../components/FormTemplates/CompanyMainFields';
 import Inner from '../../../../components/Inner';
-import { ROUTE_CMS } from '../../../../config/common';
 import { COL_COMPANIES, COL_ROLES, COL_USERS } from '../../../../db/collectionNames';
 import { getDatabase } from '../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../db/uiInterfaces';
@@ -16,6 +15,7 @@ import {
 import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../../../hooks/useValidationSchema';
 import CmsCompanyLayout from '../../../../layout/cms/CmsCompanyLayout';
+import { getProjectLinks } from '../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../lib/i18n';
 import { getFullName, getShortName } from '../../../../lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from '../../../../lib/phoneUtils';
@@ -43,12 +43,13 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ pag
     schema: updateCompanyClientSchema,
   });
 
+  const links = getProjectLinks();
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${pageCompany?.name}`,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: links.cms.companies.url,
       },
     ],
   };

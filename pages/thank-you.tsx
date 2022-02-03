@@ -4,9 +4,11 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import WpButton from '../components/button/WpButton';
 import Inner from '../components/Inner';
 import WpTitle from '../components/WpTitle';
-import { ROUTE_PROFILE } from '../config/common';
 import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import { getProjectLinks } from '../lib/getProjectLinks';
 import { getSiteInitialData } from '../lib/ssrUtils';
+
+const links = getProjectLinks();
 
 const ThankYouRoute: React.FC = () => {
   const router = useRouter();
@@ -36,7 +38,7 @@ const ThankYouRoute: React.FC = () => {
           <WpButton
             frameClassName={'w-auto'}
             onClick={() => {
-              router.push(`${ROUTE_PROFILE}`).catch(console.log);
+              router.push(links.profile.url).catch(console.log);
             }}
             theme={'secondary'}
           >

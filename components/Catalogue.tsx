@@ -10,7 +10,6 @@ import {
   FILTER_SEPARATOR,
   FILTER_SORT_KEYS,
   REQUEST_METHOD_POST,
-  ROUTE_CATALOGUE,
   SORT_ASC_STR,
   SORT_BY_KEY,
   SORT_DESC_STR,
@@ -30,6 +29,7 @@ import ProductSnippetGrid from '../layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from '../layout/snippet/ProductSnippetRow';
 import { alwaysArray } from '../lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from '../lib/catalogueHelpers';
+import { getProjectLinks } from '../lib/getProjectLinks';
 import { getNumWord } from '../lib/i18n';
 import { CatalogueApiInputInterface } from '../pages/api/catalogue/[...filters]';
 import WpButton from './button/WpButton';
@@ -61,6 +61,8 @@ const CatalogueHeadWithCategories = dynamic(
   () => import('../layout/catalogue/CatalogueHeadWithCategories'),
 );
 
+const links = getProjectLinks();
+
 interface CatalogueHeadInterface extends CatalogueHeadDefaultInterface {
   catalogueHeadLayout: string;
   textTop?: SeoContentModel | null;
@@ -78,7 +80,7 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
   const router = useRouter();
   const sessionUser = useSiteUserContext();
   const { asPath } = router;
-  const basePath = `${ROUTE_CATALOGUE}/${rubricSlug}`;
+  const basePath = `${links.catalogue.url}/${rubricSlug}`;
   const showIndexCheckBox = asPath !== basePath;
 
   let catalogueHead;
@@ -306,7 +308,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${ROUTE_CATALOGUE}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}${FILTER_SEPARATOR}priority`;
+              const nextPath = `${links.catalogue.url}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}${FILTER_SEPARATOR}priority`;
               router.push(nextPath).catch(console.log);
             },
           },
@@ -330,7 +332,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${ROUTE_CATALOGUE}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}${FILTER_SEPARATOR}${SORT_ASC_STR}`;
+              const nextPath = `${links.catalogue.url}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}${FILTER_SEPARATOR}${SORT_ASC_STR}`;
               router.push(nextPath).catch(console.log);
             },
           },
@@ -354,7 +356,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${ROUTE_CATALOGUE}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}${FILTER_SEPARATOR}${SORT_DESC_STR}`;
+              const nextPath = `${links.catalogue.url}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}${FILTER_SEPARATOR}${SORT_DESC_STR}`;
               router.push(nextPath).catch(console.log);
             },
           },

@@ -1,7 +1,6 @@
-import { ObjectId } from 'mongodb';
+import { NextPage } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ContentItemControls from '../../../../../../components/button/ContentItemControls';
 import FixedButtons from '../../../../../../components/button/FixedButtons';
 import WpButton from '../../../../../../components/button/WpButton';
@@ -12,18 +11,8 @@ import { ConfirmModalInterface } from '../../../../../../components/Modal/Confir
 import Pager from '../../../../../../components/Pager';
 import WpTable, { WpTableColumn } from '../../../../../../components/WpTable';
 import WpTitle from '../../../../../../components/WpTitle';
-import {
-  CMS_BRANDS_LIMIT,
-  DEFAULT_LOCALE,
-  DEFAULT_PAGE,
-  ROUTE_CMS,
-  SORT_ASC,
-  SORT_DESC,
-} from '../../../../../../config/common';
-import { ISO_LANGUAGES } from '../../../../../../config/constantSelects';
 import { BRAND_COLLECTION_MODAL, CONFIRM_MODAL } from '../../../../../../config/modalVariants';
-import { COL_BRAND_COLLECTIONS, COL_BRANDS } from '../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../db/mongodb';
+import { getCmsBrandCollectionsPageSsr } from '../../../../../../db/dao/ssr/getCmsBrandCollectionsPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   AppPaginationInterface,
@@ -36,27 +25,21 @@ import useValidationSchema from '../../../../../../hooks/useValidationSchema';
 import AppContentWrapper from '../../../../../../layout/AppContentWrapper';
 import AppSubNav from '../../../../../../layout/AppSubNav';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
-import { alwaysArray } from '../../../../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../../../../lib/castUrlFilters';
-import { getFieldStringLocale } from '../../../../../../lib/i18n';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../lib/ssrUtils';
+import { getProjectLinks } from '../../../../../../lib/getProjectLinks';
+import { GetAppInitialDataPropsInterface } from '../../../../../../lib/ssrUtils';
 import {
   addCollectionToBrandSchema,
   updateCollectionInBrandSchema,
 } from '../../../../../../validation/brandSchema';
 
-type BrandCollectionsAggregationInterface = AppPaginationInterface<BrandCollectionInterface>;
+export type BrandCollectionsAggregationInterface = AppPaginationInterface<BrandCollectionInterface>;
 
-interface BrandCollectionsConsumerInterface {
+interface CmsBrandCollectionsConsumerInterface {
   brand: BrandInterface;
   collections: BrandCollectionsAggregationInterface;
 }
 
-const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
+const CmsBrandCollectionsConsumer: React.FC<CmsBrandCollectionsConsumerInterface> = ({
   brand,
   collections,
 }) => {
@@ -88,35 +71,37 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
     [brand._id, showModal, updateValidationSchema],
   );
 
+  const links = getProjectLinks({
+    brandId: brand._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Коллекции',
     config: [
       {
         name: 'Бренды',
-        href: `${ROUTE_CMS}/brands`,
+        href: links.cms.brands.url,
       },
       {
         name: `${brand.name}`,
-        href: `${ROUTE_CMS}/brands/${brand._id}`,
+        href: links.cms.brands.brand.brandId.url,
       },
     ],
   };
 
-  const navConfig = React.useMemo(() => {
-    return [
-      {
-        name: 'Детали',
-        testId: 'brand-details',
-        path: `${ROUTE_CMS}/brands/brand/${brand._id}`,
-        exact: true,
-      },
-      {
-        name: 'Коллекции',
-        testId: 'brand-collections',
-        path: `${ROUTE_CMS}/brands/brand/${brand._id}/collection`,
-      },
-    ];
-  }, [brand._id]);
+  const navConfig = [
+    {
+      name: 'Детали',
+      testId: 'brand-details',
+      path: links.cms.brands.brand.brandId.url,
+      exact: true,
+    },
+    {
+      name: 'Коллекции',
+      testId: 'brand-collections',
+      path: links.cms.brands.brand.brandId.collections.url,
+    },
+  ];
 
   const columns: WpTableColumn<BrandCollectionInterface>[] = [
     {
@@ -231,198 +216,20 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
   );
 };
 
-interface BrandCollectionsPageInterface
+export interface CmsBrandCollectionsPageInterface
   extends GetAppInitialDataPropsInterface,
-    BrandCollectionsConsumerInterface {}
+    CmsBrandCollectionsConsumerInterface {}
 
-const BrandCollectionsPage: NextPage<BrandCollectionsPageInterface> = ({
+const CmsBrandCollectionsPage: NextPage<CmsBrandCollectionsPageInterface> = ({
   layoutProps,
   ...props
 }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <BrandCollectionsConsumer {...props} />
+      <CmsBrandCollectionsConsumer {...props} />
     </ConsoleLayout>
   );
 };
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<BrandCollectionsPageInterface>> => {
-  const { query } = context;
-  const { search } = query;
-  const [brandId, ...filters] = alwaysArray(query.filters);
-  const { db } = await getDatabase();
-  const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
-  const brandCollectionsCollection = db.collection<BrandCollectionInterface>(COL_BRAND_COLLECTIONS);
-
-  const { props } = await getAppInitialData({ context });
-  if (!props || !brandId) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const locale = props.sessionLocale;
-
-  const initialBrand = await brandsCollection.findOne({
-    _id: new ObjectId(`${brandId}`),
-  });
-  if (!initialBrand) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const brand: BrandInterface = {
-    ...initialBrand,
-    name: getFieldStringLocale(initialBrand.nameI18n, props.sessionLocale),
-  };
-
-  // Cast filters
-  const { page, skip, limit, clearSlug } = await castUrlFilters({
-    filters: alwaysArray(filters),
-    initialLimit: CMS_BRANDS_LIMIT,
-    searchFieldName: '_id',
-  });
-  const itemPath = ``;
-
-  const regexSearch = {
-    $regex: search,
-    $options: 'i',
-  };
-
-  // TODO algolia
-  const nameSearch = search
-    ? ISO_LANGUAGES.map(({ slug }) => {
-        return {
-          [slug]: search,
-        };
-      })
-    : [];
-
-  const searchStage = search
-    ? [
-        {
-          $match: {
-            $or: [
-              ...nameSearch,
-              {
-                slug: regexSearch,
-              },
-              {
-                itemId: regexSearch,
-              },
-            ],
-          },
-        },
-      ]
-    : [];
-
-  const brandsAggregationResult = await brandCollectionsCollection
-    .aggregate<BrandCollectionsAggregationInterface>(
-      [
-        {
-          $match: {
-            brandId: brand._id,
-          },
-        },
-        ...searchStage,
-        {
-          $facet: {
-            docs: [
-              {
-                $sort: {
-                  [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,
-                  _id: SORT_DESC,
-                },
-              },
-              {
-                $skip: skip,
-              },
-              {
-                $limit: limit,
-              },
-            ],
-            countAllDocs: [
-              {
-                $count: 'totalDocs',
-              },
-            ],
-          },
-        },
-        {
-          $addFields: {
-            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-          },
-        },
-        {
-          $addFields: {
-            totalDocs: '$totalDocsObject.totalDocs',
-          },
-        },
-        {
-          $addFields: {
-            totalPagesFloat: {
-              $divide: ['$totalDocs', limit],
-            },
-          },
-        },
-        {
-          $addFields: {
-            totalPages: {
-              $ceil: '$totalPagesFloat',
-            },
-          },
-        },
-        {
-          $project: {
-            docs: 1,
-            totalDocs: 1,
-            totalPages: 1,
-            hasPrevPage: {
-              $gt: [page, DEFAULT_PAGE],
-            },
-            hasNextPage: {
-              $lt: [page, '$totalPages'],
-            },
-          },
-        },
-      ],
-      { allowDiskUse: true },
-    )
-    .toArray();
-  const brandsResult = brandsAggregationResult[0];
-  if (!brandsResult) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const docs: BrandCollectionInterface[] = [];
-  for await (const brand of brandsResult.docs) {
-    docs.push({
-      ...brand,
-      name: getFieldStringLocale(brand.nameI18n, locale),
-    });
-  }
-
-  const payload: BrandCollectionsAggregationInterface = {
-    clearSlug,
-    totalDocs: brandsResult.totalDocs || 0,
-    totalPages: brandsResult.totalPages || 0,
-    itemPath,
-    page,
-    docs,
-  };
-
-  return {
-    props: {
-      ...props,
-      brand: castDbData(brand),
-      collections: castDbData(payload),
-    },
-  };
-};
-
-export default BrandCollectionsPage;
+export const getServerSideProps = getCmsBrandCollectionsPageSsr;
+export default CmsBrandCollectionsPage;

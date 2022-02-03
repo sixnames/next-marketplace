@@ -6,13 +6,13 @@ import LanguageTrigger from '../../components/LanguageTrigger';
 import WpModal from '../../components/Modal/WpModal';
 import Spinner from '../../components/Spinner';
 import ThemeTrigger from '../../components/ThemeTrigger';
-import { ROUTE_CONSOLE } from '../../config/common';
 import { useAppContext } from '../../context/appContext';
 import { useConfigContext } from '../../context/configContext';
 import { UserContextProvider, useUserContext } from '../../context/userContext';
 import { SessionUserPayloadInterface } from '../../db/dao/user/getPageSessionUser';
 import { CompanyInterface } from '../../db/uiInterfaces';
 import useCompact from '../../hooks/useCompact';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 import Meta from '../Meta';
 import CmsNav from './CmsNav';
 
@@ -36,13 +36,16 @@ const ConsoleLayoutConsumer: React.FC<ConsoleLayoutConsumerInterface> = ({
   const { sessionUser } = useUserContext();
   const { isCompact, toggleCompactHandler } = compact;
   const { configs } = useConfigContext();
+  const links = getProjectLinks({
+    companyId: pageCompany?._id,
+  });
 
   if (!sessionUser) {
     return <Spinner />;
   }
 
   const navItems = pageCompany ? sessionUser.role?.appNavigation : sessionUser.role?.cmsNavigation;
-  const basePath = pageCompany ? `${ROUTE_CONSOLE}/${pageCompany._id}` : '';
+  const basePath = pageCompany ? links.console.companyId.url : '';
 
   // Metrics
   const yaMetrica = configs.yaMetrica;

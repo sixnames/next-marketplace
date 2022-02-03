@@ -9,7 +9,7 @@ import Inner from '../../../components/Inner';
 import { RubricVariantModalInterface } from '../../../components/Modal/RubricVariantModal';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS, SORT_DESC } from '../../../config/common';
+import { DEFAULT_COMPANY_SLUG, SORT_DESC } from '../../../config/common';
 import { CONFIRM_MODAL, RUBRIC_VARIANT_MODAL } from '../../../config/modalVariants';
 import { COL_RUBRIC_VARIANTS } from '../../../db/collectionNames';
 import { getDatabase } from '../../../db/mongodb';
@@ -21,6 +21,7 @@ import {
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import {
   castDbData,
@@ -65,7 +66,10 @@ const RubricVariantsConsumer: React.FC<RubricVariantsConsumerInterface> = ({ rub
             justifyContent={'flex-end'}
             updateTitle={'Редактировать тип рубрики'}
             updateHandler={() => {
-              router.push(`${ROUTE_CMS}/rubric-variants/${dataItem._id}`).catch(console.log);
+              const links = getProjectLinks({
+                rubricVariantId: dataItem._id,
+              });
+              router.push(links.cms.rubricVariants.rubricVariantId.url).catch(console.log);
             }}
             deleteTitle={'Удалить тип рубрики'}
             isDeleteDisabled={dataItem.slug === DEFAULT_COMPANY_SLUG}
@@ -105,7 +109,10 @@ const RubricVariantsConsumer: React.FC<RubricVariantsConsumerInterface> = ({ rub
           emptyMessage={'Список пуст'}
           testIdKey={'name'}
           onRowDoubleClick={(dataItem) => {
-            router.push(`${ROUTE_CMS}/rubric-variants/${dataItem._id}`).catch(console.log);
+            const links = getProjectLinks({
+              rubricVariantId: dataItem._id,
+            });
+            router.push(links.cms.rubricVariants.rubricVariantId.url).catch(console.log);
           }}
         />
         <FixedButtons>

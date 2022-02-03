@@ -7,7 +7,6 @@ import FormikIndividualSearch from '../../../../components/FormElements/Search/F
 import Inner from '../../../../components/Inner';
 import WpTable, { WpTableColumn } from '../../../../components/WpTable';
 import WpTitle from '../../../../components/WpTitle';
-import { ROUTE_CMS } from '../../../../config/common';
 import { COL_ROLES } from '../../../../db/collectionNames';
 import { getDatabase } from '../../../../db/mongodb';
 import {
@@ -20,6 +19,7 @@ import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import AppSubNav from '../../../../layout/AppSubNav';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../lib/i18n';
 import { getRoleRulesAst } from '../../../../lib/roleUtils';
 import {
@@ -47,29 +47,6 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updateRoleRule),
   });
-
-  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
-    return [
-      {
-        name: 'Детали',
-        testId: 'role-details',
-        path: `${ROUTE_CMS}/roles/${role._id}`,
-        exact: true,
-      },
-      {
-        name: 'Правила',
-        testId: 'role-rules',
-        path: `${ROUTE_CMS}/roles/${role._id}/rules`,
-        exact: true,
-      },
-      {
-        name: 'Навигация',
-        testId: 'role-nav',
-        path: `${ROUTE_CMS}/roles/${role._id}/nav`,
-        exact: true,
-      },
-    ];
-  }, [role._id]);
 
   const columns: WpTableColumn<RoleRuleInterface>[] = [
     {
@@ -107,16 +84,41 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
     },
   ];
 
+  const links = getProjectLinks({
+    roleId: role._id,
+  });
+
+  const navConfig: ClientNavItemInterface[] = [
+    {
+      name: 'Детали',
+      testId: 'role-details',
+      path: links.cms.roles.roleId.url,
+      exact: true,
+    },
+    {
+      name: 'Правила',
+      testId: 'role-rules',
+      path: links.cms.roles.roleId.rules.url,
+      exact: true,
+    },
+    {
+      name: 'Навигация',
+      testId: 'role-nav',
+      path: links.cms.roles.roleId.nav.url,
+      exact: true,
+    },
+  ];
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Правила`,
     config: [
       {
         name: 'Список ролей',
-        href: `${ROUTE_CMS}/roles`,
+        href: links.cms.roles.url,
       },
       {
         name: `${role.name}`,
-        href: `${ROUTE_CMS}/roles/${role._id}`,
+        href: links.cms.roles.roleId.url,
       },
     ],
   };

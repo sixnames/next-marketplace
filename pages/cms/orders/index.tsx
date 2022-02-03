@@ -13,7 +13,6 @@ import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
 import Pager from '../../../components/Pager';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
-import { ROUTE_CMS } from '../../../config/common';
 import { CONFIRM_MODAL } from '../../../config/modalVariants';
 import { useAppContext } from '../../../context/appContext';
 import {
@@ -24,7 +23,7 @@ import { OrderCustomerInterface, OrderInterface } from '../../../db/uiInterfaces
 import { useDeleteOrder } from '../../../hooks/mutations/useOrderMutations';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
-import { getConsoleUserLinks } from '../../../lib/linkUtils';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 import {
   castDbData,
   getAppInitialData,
@@ -45,14 +44,16 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
     {
       accessor: 'itemId',
       headTitle: 'ID',
-      render: ({ cellData, dataItem }) => (
-        <WpLink
-          testId={`order-${dataItem.itemId}-link`}
-          href={`${ROUTE_CMS}/orders/${dataItem._id}`}
-        >
-          {cellData}
-        </WpLink>
-      ),
+      render: ({ cellData, dataItem }) => {
+        const links = getProjectLinks({
+          orderId: dataItem._id,
+        });
+        return (
+          <WpLink testId={`order-${dataItem.itemId}-link`} href={links.cms.orders.orderId.url}>
+            {cellData}
+          </WpLink>
+        );
+      },
     },
     {
       accessor: 'status',
@@ -85,12 +86,11 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
       headTitle: 'Заказчик',
       render: ({ cellData }) => {
         const customer = cellData as OrderCustomerInterface;
-        const userLinks = getConsoleUserLinks({
-          basePath: ROUTE_CMS,
-          userId: customer?.userId,
+        const links = getProjectLinks({
+          userId: customer.userId,
         });
         return (
-          <WpLink href={userLinks.root} className='text-primary-text'>
+          <WpLink href={links.cms.users.user.userId.url} className='text-primary-text'>
             {customer?.shortName}
           </WpLink>
         );
@@ -132,7 +132,10 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
               testId={dataItem.itemId}
               updateTitle={'Детали заказа'}
               updateHandler={() => {
-                router.push(`${ROUTE_CMS}/orders/${dataItem._id}`).catch(console.log);
+                const links = getProjectLinks({
+                  orderId: dataItem._id,
+                });
+                router.push(links.cms.orders.orderId.url).catch(console.log);
               }}
               deleteTitle={'Удалить заказ'}
               deleteHandler={() => {
@@ -169,9 +172,10 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
             data={data.docs}
             testIdKey={'itemId'}
             onRowDoubleClick={(dataItem) => {
-              router.push(`${ROUTE_CMS}/orders/${dataItem._id}`).catch((e) => {
-                console.log(e);
+              const links = getProjectLinks({
+                orderId: dataItem._id,
               });
+              router.push(links.cms.orders.orderId.url).catch(console.log);
             }}
           />
         </div>

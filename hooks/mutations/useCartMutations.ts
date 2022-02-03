@@ -3,7 +3,6 @@ import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-  ROUTE_THANK_YOU,
 } from '../../config/common';
 import { useNotificationsContext } from '../../context/notificationsContext';
 import { AddCartProductInputInterface } from '../../db/dao/cart/addCartProduct';
@@ -15,6 +14,7 @@ import {
   MakeAnOrderPayloadModel,
 } from '../../db/dao/orders/makeAnOrder';
 import { CartPayloadModel } from '../../db/dbModels';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 import { useMutationHandler } from './useFetch';
 
 export const cartApiRouteBasePath = '/api/cart';
@@ -70,7 +70,8 @@ export const useMakeAnOrder = (onSuccess: () => void) => {
     onSuccess: (payload) => {
       if (payload.success) {
         onSuccess();
-        router.push(ROUTE_THANK_YOU).catch(console.log);
+        const links = getProjectLinks();
+        router.push(links.thankYou.url).catch(console.log);
         return;
       }
       showErrorNotification({ title: payload.message });

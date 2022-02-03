@@ -1,12 +1,11 @@
 import { getSession } from 'next-auth/react';
 import {
   ROLE_SLUG_ADMIN,
-  ROUTE_CMS,
-  ROUTE_CMS_NAV_GROUP,
-  ROUTE_CONSOLE,
-  ROUTE_CONSOLE_NAV_GROUP,
+  NAV_GROUP_CMS,
+  NAV_GROUP_CONSOLE,
   SORT_ASC,
 } from '../../../config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 import { getFullName, getShortName } from '../../../lib/nameUtils';
 import { NexusContext } from '../../../types/apiContextTypes';
 import { COL_COMPANIES, COL_NAV_ITEMS, COL_ROLES, COL_USERS } from '../../collectionNames';
@@ -28,6 +27,8 @@ export async function getPageSessionUser({
   context,
   locale,
 }: GetPageSessionUserInterface): Promise<SessionUserPayloadInterface | null | undefined> {
+  const links = getProjectLinks();
+
   // get session user
   const session = await getSession(context);
   if (!session?.user?.email) {
@@ -98,7 +99,7 @@ export async function getPageSessionUser({
                       },
                       // exclude base paths
                       path: {
-                        $nin: [ROUTE_CMS, ROUTE_CONSOLE],
+                        $nin: [links.cms.url, links.console.url],
                       },
                     },
                   },
@@ -125,7 +126,7 @@ export async function getPageSessionUser({
                     cond: {
                       $and: [
                         {
-                          $eq: ['$$navItem.navGroup', ROUTE_CONSOLE_NAV_GROUP],
+                          $eq: ['$$navItem.navGroup', NAV_GROUP_CONSOLE],
                         },
                         {
                           $ne: ['$$navItem.path', ''],
@@ -141,10 +142,10 @@ export async function getPageSessionUser({
                     cond: {
                       $and: [
                         {
-                          $eq: ['$$navItem.navGroup', ROUTE_CMS_NAV_GROUP],
+                          $eq: ['$$navItem.navGroup', NAV_GROUP_CMS],
                         },
                         {
-                          $ne: ['$$navItem.path', ROUTE_CMS],
+                          $ne: ['$$navItem.path', links.cms.url],
                         },
                       ],
                     },
@@ -196,9 +197,12 @@ export async function getPageSessionUser({
 
   const company = (companies || [])[0];
   const isCompanyStaff = Boolean(role?.isCompanyStaff);
-  let editLinkBasePath = company ? `${ROUTE_CMS}/companies/${company?._id}` : ROUTE_CMS;
+  const editLinks = getProjectLinks({
+    companyId: company?._id,
+  });
+  let editLinkBasePath = company ? editLinks.cms.companies.companyId.url : editLinks.cms.url;
   if (isCompanyStaff) {
-    editLinkBasePath = `${ROUTE_CONSOLE}/${company?._id}`;
+    editLinkBasePath = editLinks.console.companyId.url;
   }
 
   return {

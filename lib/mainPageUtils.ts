@@ -4,7 +4,6 @@ import {
   CATALOGUE_TOP_PRODUCTS_LIMIT,
   DEFAULT_COMPANY_SLUG,
   FILTER_SEPARATOR,
-  ROUTE_CATALOGUE,
   SORT_DESC,
 } from '../config/common';
 import { COL_PROMO, COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
@@ -25,6 +24,7 @@ import {
   ShopProductInterface,
   TopFilterInterface,
 } from '../db/uiInterfaces';
+import { getProjectLinks } from './getProjectLinks';
 import { getFieldStringLocale } from './i18n';
 import { noNaN } from './numbers';
 import { phoneToRaw, phoneToReadable } from './phoneUtils';
@@ -169,6 +169,7 @@ export async function getMainPageData({
   });
   // console.log(JSON.stringify(props.navRubrics, null, 2));
 
+  const links = getProjectLinks();
   const topFilters: TopFilterInterface[] = [];
   navRubrics.forEach(({ gender, defaultTitleI18n, keywordI18n, prefixI18n, slug, attributes }) => {
     (attributes || []).forEach((attribute) => {
@@ -200,7 +201,7 @@ export async function getMainPageData({
         if (!exist) {
           topFilters.push({
             name,
-            href: `${ROUTE_CATALOGUE}/${slug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`,
+            href: `${links.catalogue.url}/${slug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`,
           });
         }
       });

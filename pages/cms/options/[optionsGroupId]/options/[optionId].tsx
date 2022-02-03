@@ -10,7 +10,7 @@ import WpImageUpload from '../../../../../components/FormElements/Upload/WpImage
 import OptionMainFields from '../../../../../components/FormTemplates/OptionMainFields';
 import Inner from '../../../../../components/Inner';
 import WpTitle from '../../../../../components/WpTitle';
-import { GENDER_ENUMS, ROUTE_CMS } from '../../../../../config/common';
+import { GENDER_ENUMS } from '../../../../../config/common';
 import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from '../../../../../db/collectionNames';
 import { OptionVariantsModel } from '../../../../../db/dbModels';
 import { getDatabase } from '../../../../../db/mongodb';
@@ -24,6 +24,7 @@ import {
 import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../../lib/i18n';
 import {
   castDbData,
@@ -53,20 +54,23 @@ const OptionPageConsumer: React.FC<OptionPageConsumerInterface> = ({ option }) =
     onError: onErrorCallback,
   });
 
+  const links = getProjectLinks({
+    optionsGroupId: option.optionsGroup?._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${option.name}`,
     config: [
       {
         name: 'Группы опций',
-        href: `${ROUTE_CMS}/options`,
+        href: links.cms.options.url,
       },
       {
         name: `${option.optionsGroup?.name}`,
-        href: `${ROUTE_CMS}/options/${option.optionsGroup?._id}`,
+        href: links.cms.options.optionsGroupId.url,
       },
       {
         name: `Опции`,
-        href: `${ROUTE_CMS}/options/${option.optionsGroup?._id}/options`,
+        href: links.cms.options.optionsGroupId.options.url,
       },
     ],
   };

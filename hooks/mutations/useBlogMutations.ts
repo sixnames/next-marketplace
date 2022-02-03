@@ -3,7 +3,6 @@ import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-  ROUTE_BLOG,
 } from '../../config/common';
 import { AddBlogPostLikeInputInterface } from '../../db/dao/blog/addPostLike';
 import { CreateBlogAttributeInputInterface } from '../../db/dao/blog/createBlogAttribute';
@@ -15,6 +14,7 @@ import { UpdateBlogAttributeInputInterface } from '../../db/dao/blog/updateBlogA
 import { UpdateBlogPostInputInterface } from '../../db/dao/blog/updateBlogPost';
 import { UpdateBlogPostAttributeInterface } from '../../db/dao/blog/updateBlogPostAttribute';
 import { BlogAttributePayloadModel, BlogPostPayloadModel } from '../../db/dbModels';
+import { getConsoleBlogLinks } from '../../lib/linkUtils';
 import { UseMutationConsumerPayload, useMutationHandler } from './useFetch';
 
 const basePath = '/api/blog';
@@ -36,7 +36,11 @@ export const useCreateBlogPost = (redirectPath: string) => {
     reload: false,
     onSuccess: (payload) => {
       if (payload.payload) {
-        router.push(`${redirectPath}${ROUTE_BLOG}/post/${payload.payload._id}`).catch(console.log);
+        const links = getConsoleBlogLinks({
+          basePath: redirectPath,
+          blogPostId: payload.payload._id,
+        });
+        router.push(links.root).catch(console.log);
       }
     },
   });

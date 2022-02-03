@@ -8,7 +8,6 @@ import WpButton from '../../../../components/button/WpButton';
 import RoleMainFields from '../../../../components/FormTemplates/RoleMainFields';
 import Inner from '../../../../components/Inner';
 import WpTitle from '../../../../components/WpTitle';
-import { ROUTE_CMS } from '../../../../config/common';
 import { COL_ROLES } from '../../../../db/collectionNames';
 import { getDatabase } from '../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, RoleInterface } from '../../../../db/uiInterfaces';
@@ -18,6 +17,7 @@ import useValidationSchema from '../../../../hooks/useValidationSchema';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import AppSubNav from '../../../../layout/AppSubNav';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../lib/i18n';
 import {
   castDbData,
@@ -43,35 +43,37 @@ const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) =
     onError: onErrorCallback,
   });
 
-  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
-    return [
-      {
-        name: 'Детали',
-        testId: 'role-details',
-        path: `${ROUTE_CMS}/roles/${role._id}`,
-        exact: true,
-      },
-      {
-        name: 'Правила',
-        testId: 'role-rules',
-        path: `${ROUTE_CMS}/roles/${role._id}/rules`,
-        exact: true,
-      },
-      {
-        name: 'Навигация',
-        testId: 'role-nav',
-        path: `${ROUTE_CMS}/roles/${role._id}/nav`,
-        exact: true,
-      },
-    ];
-  }, [role._id]);
+  const links = getProjectLinks({
+    roleId: role._id,
+  });
+
+  const navConfig: ClientNavItemInterface[] = [
+    {
+      name: 'Детали',
+      testId: 'role-details',
+      path: links.cms.roles.roleId.url,
+      exact: true,
+    },
+    {
+      name: 'Правила',
+      testId: 'role-rules',
+      path: links.cms.roles.roleId.rules.url,
+      exact: true,
+    },
+    {
+      name: 'Навигация',
+      testId: 'role-nav',
+      path: links.cms.roles.roleId.nav.url,
+      exact: true,
+    },
+  ];
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${role.name}`,
     config: [
       {
         name: 'Список ролей',
-        href: `${ROUTE_CMS}/roles`,
+        href: links.cms.roles.url,
       },
     ],
   };

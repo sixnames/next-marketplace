@@ -10,7 +10,7 @@ import { ConfirmModalInterface } from '../../../../../components/Modal/ConfirmMo
 import { SetUserCategoryModalInterface } from '../../../../../components/Modal/SetUserCategoryModal';
 import Percent from '../../../../../components/Percent';
 import WpTable, { WpTableColumn } from '../../../../../components/WpTable';
-import { ROUTE_CMS, SORT_ASC } from '../../../../../config/common';
+import { SORT_ASC } from '../../../../../config/common';
 import { CONFIRM_MODAL, SET_USER_CATEGORY_MODAL } from '../../../../../config/modalVariants';
 import { useAppContext } from '../../../../../context/appContext';
 import {
@@ -29,6 +29,7 @@ import {
 import { useSetUserCategoryMutation } from '../../../../../hooks/mutations/useUserMutations';
 import CmsUserLayout from '../../../../../layout/cms/CmsUserLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../../lib/i18n';
 import { getFullName } from '../../../../../lib/nameUtils';
 import {
@@ -46,16 +47,19 @@ const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ use
   const { showModal } = useAppContext();
   const [setUserCategoryMutation] = useSetUserCategoryMutation();
 
+  const links = getProjectLinks({
+    userId: user._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Категории`,
     config: [
       {
         name: 'Пользователи',
-        href: `${ROUTE_CMS}/users`,
+        href: links.cms.users.url,
       },
       {
         name: `${user.fullName}`,
-        href: `${ROUTE_CMS}/users/user/${user._id}`,
+        href: links.cms.users.user.userId.url,
       },
     ],
   };

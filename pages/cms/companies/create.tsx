@@ -10,12 +10,12 @@ import CompanyMainFields, {
 } from '../../../components/FormTemplates/CompanyMainFields';
 import Inner from '../../../components/Inner';
 import WpTitle from '../../../components/WpTitle';
-import { ROUTE_CMS } from '../../../config/common';
 import { AppContentWrapperBreadCrumbs } from '../../../db/uiInterfaces';
 import { useCreateCompanyMutation } from '../../../generated/apolloComponents';
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 import { phoneToRaw } from '../../../lib/phoneUtils';
 import { getAppInitialData, GetAppInitialDataPropsInterface } from '../../../lib/ssrUtils';
 import { createCompanyClientSchema } from '../../../validation/companySchema';
@@ -29,12 +29,13 @@ const CreateCompanyContent: React.FC = () => {
   const router = useRouter();
   const { showLoading, onCompleteCallback, onErrorCallback, showErrorNotification, hideLoading } =
     useMutationCallbacks();
+  const links = getProjectLinks();
   const [createCompanyMutation] = useCreateCompanyMutation({
     onError: onErrorCallback,
     onCompleted: (data) => {
       if (data?.createCompany?.success) {
         onCompleteCallback(data.createCompany);
-        router.replace(`${ROUTE_CMS}/companies`).catch((e) => console.log(e));
+        router.replace(links.cms.companies.url).catch((e) => console.log(e));
       } else {
         hideLoading();
         showErrorNotification({ title: data?.createCompany?.message });
@@ -50,7 +51,7 @@ const CreateCompanyContent: React.FC = () => {
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: links.cms.companies.url,
       },
     ],
   };

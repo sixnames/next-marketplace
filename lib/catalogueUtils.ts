@@ -14,7 +14,6 @@ import {
   FILTER_PRICE_KEY,
   FILTER_SEPARATOR,
   GENDER_HE,
-  ROUTE_CATALOGUE,
   SORT_BY_KEY,
   SORT_DIR_KEY,
   ZERO_PAGE_FILTER,
@@ -60,8 +59,9 @@ import {
   SeoSchemaBreadcrumbItemInterface,
   SeoSchemaCatalogueInterface,
 } from '../types/seoSchemaTypes';
-import { alwaysArray, sortObjectsByField } from './arrayUtils';
+import { alwaysArray, alwaysString, sortObjectsByField } from './arrayUtils';
 import { castUrlFilters } from './castUrlFilters';
+import { getProjectLinks } from './getProjectLinks';
 import { getFieldStringLocale } from './i18n';
 import { noNaN } from './numbers';
 import { getProductCurrentViewCastedAttributes } from './productAttributesUtils';
@@ -1005,6 +1005,9 @@ export const getCatalogueData = async ({
       },
     ];
 
+    const links = getProjectLinks({
+      rubricSlug,
+    });
     selectedAttributes.forEach((selectedAttribute) => {
       const { options, showAsCatalogueBreadcrumb, slug } = selectedAttribute;
       const isPrice = slug === FILTER_PRICE_KEY;
@@ -1017,7 +1020,7 @@ export const getCatalogueData = async ({
             isBrand,
             brands,
             attribute: selectedAttribute,
-            hrefAcc: `${ROUTE_CATALOGUE}/${rubricSlug}`,
+            hrefAcc: links.catalogue.rubricSlug.url,
             acc: [],
           });
           return [...acc, ...tree];
@@ -1299,11 +1302,14 @@ export async function getCatalogueProps(
   }
 
   // redirect to the sorted url path
+  const links = getProjectLinks({
+    rubricSlug: alwaysString(rubricSlug),
+  });
   const filters = alwaysArray(context.query?.filters);
   const sortedFilters = sortStringArray(filters);
   const filtersPath = filters.join('/');
   const sortedFiltersPath = sortedFilters.join('/');
-  const basePath = `${ROUTE_CATALOGUE}/${rubricSlug}`;
+  const basePath = links.catalogue.rubricSlug.url;
   if (filtersPath !== sortedFiltersPath) {
     return {
       redirect: {

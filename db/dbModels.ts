@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
-import { GEO_POINT_TYPE } from '../config/common';
-import { IpInfoInterface } from '../types/clientTypes';
-import { IconType } from '../types/iconTypes';
+import { GEO_POINT_TYPE } from 'config/common';
+import { IpInfoInterface } from 'types/clientTypes';
+import { IconType } from 'types/iconTypes';
 import {
   BarcodeDoublesInterface,
   RubricInterface,
@@ -196,6 +196,7 @@ export interface CountersModel {
   views: CountersItemModel;
   priorities?: CountersItemModel;
 }
+
 export interface AttributeCountersItemModel {
   [key: string]: any;
 }
@@ -1156,6 +1157,7 @@ export interface TaskModel extends TimestampModel {
 export interface ConstructorAssetPayloadModel extends PayloadType<string> {
   payload: string;
 }
+
 export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;
 export type AttributePayloadModel = PayloadType<AttributeModel>;
 export type BlogAttributePayloadModel = PayloadType<BlogAttributeModel>;

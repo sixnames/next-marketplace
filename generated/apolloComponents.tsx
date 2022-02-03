@@ -4,7 +4,7 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions =  {}
+const defaultOptions = {};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -130,7 +130,7 @@ export enum AttributePositionInTitle {
   End = 'end',
   BeforeKeyword = 'beforeKeyword',
   AfterKeyword = 'afterKeyword',
-  ReplaceKeyword = 'replaceKeyword'
+  ReplaceKeyword = 'replaceKeyword',
 }
 
 /** Attribute variant enum. */
@@ -138,7 +138,7 @@ export enum AttributeVariant {
   Select = 'select',
   MultipleSelect = 'multipleSelect',
   String = 'string',
-  Number = 'number'
+  Number = 'number',
 }
 
 /** Attribute view in product card variant enum. */
@@ -147,7 +147,7 @@ export enum AttributeViewVariant {
   Text = 'text',
   Tag = 'tag',
   Icon = 'icon',
-  OuterRating = 'outerRating'
+  OuterRating = 'outerRating',
 }
 
 export type AttributesGroup = {
@@ -169,32 +169,34 @@ export type Base = {
   itemId: Scalars['String'];
 };
 
-export type Brand = Base & Timestamp & {
-  __typename?: 'Brand';
-  _id: Scalars['ObjectId'];
-  itemId: Scalars['String'];
-  createdAt: Scalars['Date'];
-  updatedAt: Scalars['Date'];
-  url?: Maybe<Array<Scalars['URL']>>;
-  nameI18n: Scalars['String'];
-  descriptionI18n?: Maybe<Scalars['JSONObject']>;
-  name: Scalars['String'];
-};
+export type Brand = Base &
+  Timestamp & {
+    __typename?: 'Brand';
+    _id: Scalars['ObjectId'];
+    itemId: Scalars['String'];
+    createdAt: Scalars['Date'];
+    updatedAt: Scalars['Date'];
+    url?: Maybe<Array<Scalars['URL']>>;
+    nameI18n: Scalars['String'];
+    descriptionI18n?: Maybe<Scalars['JSONObject']>;
+    name: Scalars['String'];
+  };
 
 export type BrandAlphabetInput = {
   slugs?: Maybe<Array<Scalars['String']>>;
 };
 
-export type BrandCollection = Base & Timestamp & {
-  __typename?: 'BrandCollection';
-  _id: Scalars['ObjectId'];
-  itemId: Scalars['String'];
-  createdAt: Scalars['Date'];
-  updatedAt: Scalars['Date'];
-  nameI18n: Scalars['JSONObject'];
-  descriptionI18n?: Maybe<Scalars['JSONObject']>;
-  name: Scalars['String'];
-};
+export type BrandCollection = Base &
+  Timestamp & {
+    __typename?: 'BrandCollection';
+    _id: Scalars['ObjectId'];
+    itemId: Scalars['String'];
+    createdAt: Scalars['Date'];
+    updatedAt: Scalars['Date'];
+    nameI18n: Scalars['JSONObject'];
+    descriptionI18n?: Maybe<Scalars['JSONObject']>;
+    name: Scalars['String'];
+  };
 
 export type BrandCollectionAlphabetInput = {
   brandId?: Maybe<Scalars['ObjectId']>;
@@ -331,25 +333,25 @@ export type CompaniesPaginationPayload = PaginationPayload & {
   docs: Array<Company>;
 };
 
-export type Company = Base & Timestamp & {
-  __typename?: 'Company';
-  _id: Scalars['ObjectId'];
-  itemId: Scalars['String'];
-  createdAt: Scalars['Date'];
-  updatedAt: Scalars['Date'];
-  name: Scalars['String'];
-  slug: Scalars['String'];
-  ownerId: Scalars['ObjectId'];
-  domain?: Maybe<Scalars['String']>;
-  staffIds: Array<Scalars['ObjectId']>;
-  shopsIds: Array<Scalars['ObjectId']>;
-  logo: Scalars['String'];
-  contacts: Contacts;
-  owner: User;
-  staff: Array<User>;
-  shops: ShopsPaginationPayload;
-};
-
+export type Company = Base &
+  Timestamp & {
+    __typename?: 'Company';
+    _id: Scalars['ObjectId'];
+    itemId: Scalars['String'];
+    createdAt: Scalars['Date'];
+    updatedAt: Scalars['Date'];
+    name: Scalars['String'];
+    slug: Scalars['String'];
+    ownerId: Scalars['ObjectId'];
+    domain?: Maybe<Scalars['String']>;
+    staffIds: Array<Scalars['ObjectId']>;
+    shopsIds: Array<Scalars['ObjectId']>;
+    logo: Scalars['String'];
+    contacts: Contacts;
+    owner: User;
+    staff: Array<User>;
+    shops: ShopsPaginationPayload;
+  };
 
 export type CompanyShopsArgs = {
   input?: Maybe<PaginationInput>;
@@ -406,7 +408,7 @@ export enum ConfigVariant {
   Address = 'address',
   Password = 'password',
   CategoriesTree = 'categoriesTree',
-  Rubrics = 'rubrics'
+  Rubrics = 'rubrics',
 }
 
 export type Contacts = {
@@ -582,7 +584,6 @@ export type CurrencyPayload = Payload & {
   payload?: Maybe<Currency>;
 };
 
-
 export type DeleteAttributesGroupFromRubricInput = {
   rubricId: Scalars['ObjectId'];
   attributesGroupId: Scalars['ObjectId'];
@@ -623,7 +624,6 @@ export type DeleteShopFromCompanyInput = {
   shopId: Scalars['ObjectId'];
 };
 
-
 export type FormattedPhone = {
   __typename?: 'FormattedPhone';
   raw: Scalars['String'];
@@ -636,9 +636,8 @@ export enum Gender {
   She = 'she',
   It = 'it',
   Plural = 'plural',
-  Singular = 'singular'
+  Singular = 'singular',
 }
-
 
 export type Language = {
   __typename?: 'Language';
@@ -655,18 +654,19 @@ export type LanguagePayload = Payload & {
   payload?: Maybe<Language>;
 };
 
-export type Manufacturer = Base & Timestamp & {
-  __typename?: 'Manufacturer';
-  _id: Scalars['ObjectId'];
-  itemId: Scalars['String'];
-  createdAt: Scalars['Date'];
-  updatedAt: Scalars['Date'];
-  url?: Maybe<Array<Scalars['URL']>>;
-  nameI18n: Scalars['JSONObject'];
-  descriptionI18n?: Maybe<Scalars['JSONObject']>;
-  name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-};
+export type Manufacturer = Base &
+  Timestamp & {
+    __typename?: 'Manufacturer';
+    _id: Scalars['ObjectId'];
+    itemId: Scalars['String'];
+    createdAt: Scalars['Date'];
+    updatedAt: Scalars['Date'];
+    url?: Maybe<Array<Scalars['URL']>>;
+    nameI18n: Scalars['JSONObject'];
+    descriptionI18n?: Maybe<Scalars['JSONObject']>;
+    name: Scalars['String'];
+    description?: Maybe<Scalars['String']>;
+  };
 
 export type ManufacturerAlphabetInput = {
   slugs?: Maybe<Array<Scalars['String']>>;
@@ -905,401 +905,321 @@ export type Mutation = {
   deleteSupplier: SupplierPayload;
 };
 
-
 export type MutationCreateAttributesGroupArgs = {
   input: CreateAttributesGroupInput;
 };
-
 
 export type MutationUpdateAttributesGroupArgs = {
   input: UpdateAttributesGroupInput;
 };
 
-
 export type MutationDeleteAttributesGroupArgs = {
   _id: Scalars['ObjectId'];
 };
-
 
 export type MutationCreateBrandArgs = {
   input: CreateBrandInput;
 };
 
-
 export type MutationUpdateBrandArgs = {
   input: UpdateBrandInput;
 };
-
 
 export type MutationDeleteBrandArgs = {
   _id: Scalars['ObjectId'];
 };
 
-
 export type MutationAddCollectionToBrandArgs = {
   input: AddCollectionToBrandInput;
 };
-
 
 export type MutationUpdateCollectionInBrandArgs = {
   input: UpdateCollectionInBrandInput;
 };
 
-
 export type MutationDeleteCollectionFromBrandArgs = {
   input: DeleteCollectionFromBrandInput;
 };
-
 
 export type MutationUpdateCatalogueCountersArgs = {
   input: CatalogueDataInput;
 };
 
-
 export type MutationCreateCategoryArgs = {
   input: CreateCategoryInput;
 };
-
 
 export type MutationUpdateCategoryArgs = {
   input: UpdateCategoryInput;
 };
 
-
 export type MutationDeleteCategoryArgs = {
   _id: Scalars['ObjectId'];
 };
-
 
 export type MutationToggleCmsCardAttributeInCategoryArgs = {
   input: UpdateAttributeInCategoryInput;
 };
 
-
 export type MutationCreateCompanyArgs = {
   input: CreateCompanyInput;
 };
-
 
 export type MutationUpdateCompanyArgs = {
   input: UpdateCompanyInput;
 };
 
-
 export type MutationDeleteCompanyArgs = {
   _id: Scalars['ObjectId'];
 };
-
 
 export type MutationAddShopToCompanyArgs = {
   input: AddShopToCompanyInput;
 };
 
-
 export type MutationDeleteShopFromCompanyArgs = {
   input: DeleteShopFromCompanyInput;
 };
-
 
 export type MutationUpdateConfigArgs = {
   input: UpdateConfigInput;
 };
 
-
 export type MutationUpdateVisibleCategoriesInNavDropdownArgs = {
   input: UpdateVisibleCategoriesInNavDropdownInput;
 };
-
 
 export type MutationUpdateRubricNavItemConfigArgs = {
   input: UpdateRubricNavItemConfigInput;
 };
 
-
 export type MutationCreateCountryArgs = {
   input: CreateCountryInput;
 };
-
 
 export type MutationUpdateCountryArgs = {
   input: UpdateCountryInput;
 };
 
-
 export type MutationDeleteCountryArgs = {
   _id: Scalars['ObjectId'];
 };
-
 
 export type MutationAddCityToCountryArgs = {
   input: AddCityToCountryInput;
 };
 
-
 export type MutationUpdateCityInCountryArgs = {
   input: UpdateCityInCountryInput;
 };
-
 
 export type MutationDeleteCityFromCountryArgs = {
   input: DeleteCityFromCountryInput;
 };
 
-
 export type MutationCreateCurrencyArgs = {
   input: CreateCurrencyInput;
 };
-
 
 export type MutationUpdateCurrencyArgs = {
   input: UpdateCurrencyInput;
 };
 
-
 export type MutationDeleteCurrencyArgs = {
   _id: Scalars['ObjectId'];
 };
-
 
 export type MutationCreateLanguageArgs = {
   input: CreateLanguageInput;
 };
 
-
 export type MutationUpdateLanguageArgs = {
   input: UpdateLanguageInput;
 };
-
 
 export type MutationDeleteLanguageArgs = {
   _id: Scalars['ObjectId'];
 };
 
-
 export type MutationCreateManufacturerArgs = {
   input: CreateManufacturerInput;
 };
-
 
 export type MutationUpdateManufacturerArgs = {
   input: UpdateManufacturerInput;
 };
 
-
 export type MutationDeleteManufacturerArgs = {
   _id: Scalars['ObjectId'];
 };
-
 
 export type MutationCreateMetricArgs = {
   input: CreateMetricInput;
 };
 
-
 export type MutationUpdateMetricArgs = {
   input: UpdateMetricInput;
 };
-
 
 export type MutationDeleteMetricArgs = {
   _id: Scalars['ObjectId'];
 };
 
-
 export type MutationCreateNavItemArgs = {
   input: CreateNavItemInput;
 };
-
 
 export type MutationUpdateNavItemArgs = {
   input: UpdateNavItemInput;
 };
 
-
 export type MutationDeleteNavItemArgs = {
   _id: Scalars['ObjectId'];
 };
-
 
 export type MutationCreateOptionsGroupArgs = {
   input: CreateOptionsGroupInput;
 };
 
-
 export type MutationUpdateOptionsGroupArgs = {
   input: UpdateOptionsGroupInput;
 };
-
 
 export type MutationDeleteOptionsGroupArgs = {
   _id: Scalars['ObjectId'];
 };
 
-
 export type MutationAddOptionToGroupArgs = {
   input: AddOptionToGroupInput;
 };
-
 
 export type MutationUpdateOptionInGroupArgs = {
   input: UpdateOptionInGroupInput;
 };
 
-
 export type MutationMoveOptionArgs = {
   input: MoveOptionInput;
 };
-
 
 export type MutationDeleteOptionFromGroupArgs = {
   input: DeleteOptionFromGroupInput;
 };
 
-
 export type MutationCreateOrderStatusArgs = {
   input: CreateOrderStatusInput;
 };
-
 
 export type MutationUpdateOrderStatusArgs = {
   input: UpdateOrderStatusInput;
 };
 
-
 export type MutationDeleteOrderStatusArgs = {
   _id: Scalars['ObjectId'];
 };
-
 
 export type MutationCreateRoleArgs = {
   input: CreateRoleInput;
 };
 
-
 export type MutationUpdateRoleArgs = {
   input: UpdateRoleInput;
 };
-
 
 export type MutationDeleteRoleArgs = {
   _id: Scalars['ObjectId'];
 };
 
-
 export type MutationUpdateRoleNavArgs = {
   input: UpdateRoleNavInput;
 };
-
 
 export type MutationUpdateRoleRuleArgs = {
   input: UpdateRoleRuleInput;
 };
 
-
 export type MutationCreateRubricArgs = {
   input: CreateRubricInput;
 };
-
 
 export type MutationUpdateRubricArgs = {
   input: UpdateRubricInput;
 };
 
-
 export type MutationDeleteRubricArgs = {
   _id: Scalars['ObjectId'];
 };
-
 
 export type MutationAddAttributesGroupToRubricArgs = {
   input: AddAttributesGroupToRubricInput;
 };
 
-
 export type MutationDeleteAttributesGroupFromRubricArgs = {
   input: DeleteAttributesGroupFromRubricInput;
 };
-
 
 export type MutationUpdateAttributeInRubricArgs = {
   input: UpdateAttributeInRubricInput;
 };
 
-
 export type MutationToggleCmsCardAttributeInRubricArgs = {
   input: UpdateAttributeInRubricInput;
 };
-
 
 export type MutationCreateRubricVariantArgs = {
   input: CreateRubricVariantInput;
 };
 
-
 export type MutationUpdateRubricVariantArgs = {
   input: UpdateRubricVariantInput;
 };
-
 
 export type MutationDeleteRubricVariantArgs = {
   _id: Scalars['ObjectId'];
 };
 
-
 export type MutationUpdateShopArgs = {
   input: UpdateShopInput;
 };
-
 
 export type MutationDeleteShopAssetArgs = {
   input: DeleteShopAssetInput;
 };
 
-
 export type MutationUpdateShopAssetIndexArgs = {
   input: UpdateShopAssetIndexInput;
 };
-
 
 export type MutationAddManyProductsToShopArgs = {
   input: Array<AddProductToShopInput>;
 };
 
-
 export type MutationDeleteProductFromShopArgs = {
   input: DeleteProductFromShopInput;
 };
-
 
 export type MutationGenerateShopTokenArgs = {
   _id: Scalars['ObjectId'];
 };
 
-
 export type MutationAddShopProductSupplierArgs = {
   input: AddShopProductSupplierInput;
 };
-
 
 export type MutationUpdateShopProductSupplierArgs = {
   input: UpdateShopProductSupplierInput;
 };
 
-
 export type MutationDeleteShopProductSupplierArgs = {
   _id: Scalars['ObjectId'];
 };
-
 
 export type MutationCreateSupplierArgs = {
   input: CreateSupplierInput;
 };
 
-
 export type MutationUpdateSupplierArgs = {
   input: UpdateSupplierInput;
 };
-
 
 export type MutationDeleteSupplierArgs = {
   _id: Scalars['ObjectId'];
@@ -1325,7 +1245,6 @@ export type NavItemPayload = Payload & {
   message: Scalars['String'];
   payload?: Maybe<NavItem>;
 };
-
 
 export type Option = {
   __typename?: 'Option';
@@ -1372,18 +1291,19 @@ export type OptionsGroupPayload = Payload & {
 export enum OptionsGroupVariant {
   Text = 'text',
   Icon = 'icon',
-  Color = 'color'
+  Color = 'color',
 }
 
-export type Order = Base & Timestamp & {
-  __typename?: 'Order';
-  _id: Scalars['ObjectId'];
-  itemId: Scalars['String'];
-  createdAt: Scalars['Date'];
-  updatedAt: Scalars['Date'];
-  comment?: Maybe<Scalars['String']>;
-  statusId: Scalars['ObjectId'];
-};
+export type Order = Base &
+  Timestamp & {
+    __typename?: 'Order';
+    _id: Scalars['ObjectId'];
+    itemId: Scalars['String'];
+    createdAt: Scalars['Date'];
+    updatedAt: Scalars['Date'];
+    comment?: Maybe<Scalars['String']>;
+    statusId: Scalars['ObjectId'];
+  };
 
 export type OrderCustomer = {
   __typename?: 'OrderCustomer';
@@ -1465,7 +1385,6 @@ export type Payload = {
   message: Scalars['String'];
 };
 
-
 export type PointGeoJson = {
   __typename?: 'PointGeoJSON';
   /** Field that specifies the GeoJSON object type. */
@@ -1532,96 +1451,77 @@ export type Query = {
   getSupplierAlphabetLists: Array<SuppliersAlphabetList>;
 };
 
-
 export type QueryGetBrandAlphabetListsArgs = {
   input?: Maybe<BrandAlphabetInput>;
 };
-
 
 export type QueryGetBrandCollectionAlphabetListsArgs = {
   input?: Maybe<BrandCollectionAlphabetInput>;
 };
 
-
 export type QueryGetCategoriesAlphabetListsArgs = {
   input?: Maybe<CategoryAlphabetInput>;
 };
-
 
 export type QueryGetCityArgs = {
   _id: Scalars['ObjectId'];
 };
 
-
 export type QueryGetCityBySlugArgs = {
   slug: Scalars['String'];
 };
-
 
 export type QueryGetAllCitiesArgs = {
   input?: Maybe<PaginationInput>;
 };
 
-
 export type QueryGetManufacturerArgs = {
   _id: Scalars['ObjectId'];
 };
-
 
 export type QueryGetManufacturerBySlugArgs = {
   slug: Scalars['String'];
 };
 
-
 export type QueryGetAllManufacturersArgs = {
   input?: Maybe<PaginationInput>;
 };
-
 
 export type QueryGetManufacturerAlphabetListsArgs = {
   input?: Maybe<ManufacturerAlphabetInput>;
 };
 
-
 export type QueryGetOptionAlphabetListsArgs = {
   input: OptionAlphabetInput;
 };
-
 
 export type QueryGetOptionsGroupArgs = {
   _id: Scalars['ObjectId'];
 };
 
-
 export type QueryGetAllOptionsGroupsArgs = {
   excludedIds?: Maybe<Array<Scalars['ObjectId']>>;
 };
-
 
 export type QueryGetRoleArgs = {
   _id: Scalars['ObjectId'];
 };
 
-
 export type QueryGetRubricVariantArgs = {
   _id: Scalars['ObjectId'];
 };
-
 
 export type QueryGetSupplierArgs = {
   _id: Scalars['ObjectId'];
 };
 
-
 export type QueryGetSupplierBySlugArgs = {
   slug: Scalars['String'];
 };
 
-
 export type QueryGetAllSuppliersArgs = {
   input?: Maybe<PaginationInput>;
 };
-
 
 export type QueryGetSupplierAlphabetListsArgs = {
   input?: Maybe<SupplierAlphabetInput>;
@@ -1788,22 +1688,23 @@ export type SelectOption = {
   icon?: Maybe<Scalars['String']>;
 };
 
-export type Shop = Base & Timestamp & {
-  __typename?: 'Shop';
-  _id: Scalars['ObjectId'];
-  itemId: Scalars['String'];
-  createdAt: Scalars['Date'];
-  updatedAt: Scalars['Date'];
-  name: Scalars['String'];
-  slug: Scalars['String'];
-  citySlug: Scalars['String'];
-  companyId: Scalars['ObjectId'];
-  mapMarker?: Maybe<MapMarker>;
-  logo: Scalars['String'];
-  assets: Array<Scalars['String']>;
-  contacts: Contacts;
-  address: Address;
-};
+export type Shop = Base &
+  Timestamp & {
+    __typename?: 'Shop';
+    _id: Scalars['ObjectId'];
+    itemId: Scalars['String'];
+    createdAt: Scalars['Date'];
+    updatedAt: Scalars['Date'];
+    name: Scalars['String'];
+    slug: Scalars['String'];
+    citySlug: Scalars['String'];
+    companyId: Scalars['ObjectId'];
+    mapMarker?: Maybe<MapMarker>;
+    logo: Scalars['String'];
+    assets: Array<Scalars['String']>;
+    contacts: Contacts;
+    address: Address;
+  };
 
 export type ShopPayload = Payload & {
   __typename?: 'ShopPayload';
@@ -1874,21 +1775,22 @@ export type ShopsPaginationPayload = PaginationPayload & {
 /** Sort direction enum. */
 export enum SortDirection {
   Asc = 'ASC',
-  Desc = 'DESC'
+  Desc = 'DESC',
 }
 
-export type Supplier = Base & Timestamp & {
-  __typename?: 'Supplier';
-  _id: Scalars['ObjectId'];
-  itemId: Scalars['String'];
-  createdAt: Scalars['Date'];
-  updatedAt: Scalars['Date'];
-  url?: Maybe<Array<Scalars['URL']>>;
-  nameI18n: Scalars['JSONObject'];
-  descriptionI18n?: Maybe<Scalars['JSONObject']>;
-  name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-};
+export type Supplier = Base &
+  Timestamp & {
+    __typename?: 'Supplier';
+    _id: Scalars['ObjectId'];
+    itemId: Scalars['String'];
+    createdAt: Scalars['Date'];
+    updatedAt: Scalars['Date'];
+    url?: Maybe<Array<Scalars['URL']>>;
+    nameI18n: Scalars['JSONObject'];
+    descriptionI18n?: Maybe<Scalars['JSONObject']>;
+    name: Scalars['String'];
+    description?: Maybe<Scalars['String']>;
+  };
 
 export type SupplierAlphabetInput = {
   slugs?: Maybe<Array<Scalars['String']>>;
@@ -1904,7 +1806,7 @@ export type SupplierPayload = Payload & {
 /** SupplierPriceVariant variant enum. */
 export enum SupplierPriceVariant {
   Discount = 'discount',
-  Charge = 'charge'
+  Charge = 'charge',
 }
 
 export type SuppliersAlphabetList = AlphabetList & {
@@ -1931,7 +1833,6 @@ export type Timestamp = {
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
 };
-
 
 export type UpdateAttributeInCategoryInput = {
   categoryId: Scalars['ObjectId'];
@@ -2221,1103 +2122,856 @@ export type UpdateVisibleCategoriesInNavDropdownInput = {
   citySlug: Scalars['String'];
 };
 
-export type User = Base & Timestamp & {
-  __typename?: 'User';
-  _id: Scalars['ObjectId'];
-  itemId: Scalars['String'];
-  createdAt: Scalars['Date'];
-  updatedAt: Scalars['Date'];
-  name: Scalars['String'];
-  lastName?: Maybe<Scalars['String']>;
-  secondName?: Maybe<Scalars['String']>;
-  email: Scalars['EmailAddress'];
-  phone: Scalars['String'];
-  roleId: Scalars['ObjectId'];
-  fullName: Scalars['String'];
-  shortName: Scalars['String'];
-  formattedPhone: FormattedPhone;
-  role: Role;
-};
+export type User = Base &
+  Timestamp & {
+    __typename?: 'User';
+    _id: Scalars['ObjectId'];
+    itemId: Scalars['String'];
+    createdAt: Scalars['Date'];
+    updatedAt: Scalars['Date'];
+    name: Scalars['String'];
+    lastName?: Maybe<Scalars['String']>;
+    secondName?: Maybe<Scalars['String']>;
+    email: Scalars['EmailAddress'];
+    phone: Scalars['String'];
+    roleId: Scalars['ObjectId'];
+    fullName: Scalars['String'];
+    shortName: Scalars['String'];
+    formattedPhone: FormattedPhone;
+    role: Role;
+  };
 
 export type CreateAttributesGroupMutationVariables = Exact<{
   input: CreateAttributesGroupInput;
 }>;
 
-
-export type CreateAttributesGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { createAttributesGroup: (
-    { __typename?: 'AttributesGroupPayload' }
-    & Pick<AttributesGroupPayload, 'success' | 'message'>
-  ) }
-);
+export type CreateAttributesGroupMutation = { __typename?: 'Mutation' } & {
+  createAttributesGroup: { __typename?: 'AttributesGroupPayload' } & Pick<
+    AttributesGroupPayload,
+    'success' | 'message'
+  >;
+};
 
 export type UpdateAttributesGroupMutationVariables = Exact<{
   input: UpdateAttributesGroupInput;
 }>;
 
-
-export type UpdateAttributesGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { updateAttributesGroup: (
-    { __typename?: 'AttributesGroupPayload' }
-    & Pick<AttributesGroupPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateAttributesGroupMutation = { __typename?: 'Mutation' } & {
+  updateAttributesGroup: { __typename?: 'AttributesGroupPayload' } & Pick<
+    AttributesGroupPayload,
+    'success' | 'message'
+  >;
+};
 
 export type DeleteAttributesGroupMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteAttributesGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteAttributesGroup: (
-    { __typename?: 'AttributesGroupPayload' }
-    & Pick<AttributesGroupPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteAttributesGroupMutation = { __typename?: 'Mutation' } & {
+  deleteAttributesGroup: { __typename?: 'AttributesGroupPayload' } & Pick<
+    AttributesGroupPayload,
+    'success' | 'message'
+  >;
+};
 
 export type AddAttributesGroupToRubricMutationVariables = Exact<{
   input: AddAttributesGroupToRubricInput;
 }>;
 
-
-export type AddAttributesGroupToRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { addAttributesGroupToRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
+export type AddAttributesGroupToRubricMutation = { __typename?: 'Mutation' } & {
+  addAttributesGroupToRubric: { __typename?: 'RubricPayload' } & Pick<
+    RubricPayload,
+    'success' | 'message'
+  >;
+};
 
 export type DeleteAttributesGroupFromRubricMutationVariables = Exact<{
   input: DeleteAttributesGroupFromRubricInput;
 }>;
 
-
-export type DeleteAttributesGroupFromRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteAttributesGroupFromRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteAttributesGroupFromRubricMutation = { __typename?: 'Mutation' } & {
+  deleteAttributesGroupFromRubric: { __typename?: 'RubricPayload' } & Pick<
+    RubricPayload,
+    'success' | 'message'
+  >;
+};
 
 export type ToggleCmsCardAttributeInCategoryMutationVariables = Exact<{
   input: UpdateAttributeInCategoryInput;
 }>;
 
-
-export type ToggleCmsCardAttributeInCategoryMutation = (
-  { __typename?: 'Mutation' }
-  & { toggleCmsCardAttributeInCategory: (
-    { __typename?: 'CategoryPayload' }
-    & Pick<CategoryPayload, 'success' | 'message'>
-  ) }
-);
+export type ToggleCmsCardAttributeInCategoryMutation = { __typename?: 'Mutation' } & {
+  toggleCmsCardAttributeInCategory: { __typename?: 'CategoryPayload' } & Pick<
+    CategoryPayload,
+    'success' | 'message'
+  >;
+};
 
 export type ToggleCmsCardAttributeInRubricMutationVariables = Exact<{
   input: UpdateAttributeInRubricInput;
 }>;
 
-
-export type ToggleCmsCardAttributeInRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { toggleCmsCardAttributeInRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
+export type ToggleCmsCardAttributeInRubricMutation = { __typename?: 'Mutation' } & {
+  toggleCmsCardAttributeInRubric: { __typename?: 'RubricPayload' } & Pick<
+    RubricPayload,
+    'success' | 'message'
+  >;
+};
 
 export type CreateBrandMutationVariables = Exact<{
   input: CreateBrandInput;
 }>;
 
-
-export type CreateBrandMutation = (
-  { __typename?: 'Mutation' }
-  & { createBrand: (
-    { __typename?: 'BrandPayload' }
-    & Pick<BrandPayload, 'success' | 'message'>
-  ) }
-);
+export type CreateBrandMutation = { __typename?: 'Mutation' } & {
+  createBrand: { __typename?: 'BrandPayload' } & Pick<BrandPayload, 'success' | 'message'>;
+};
 
 export type UpdateBrandMutationVariables = Exact<{
   input: UpdateBrandInput;
 }>;
 
-
-export type UpdateBrandMutation = (
-  { __typename?: 'Mutation' }
-  & { updateBrand: (
-    { __typename?: 'BrandPayload' }
-    & Pick<BrandPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateBrandMutation = { __typename?: 'Mutation' } & {
+  updateBrand: { __typename?: 'BrandPayload' } & Pick<BrandPayload, 'success' | 'message'>;
+};
 
 export type DeleteBrandMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteBrandMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteBrand: (
-    { __typename?: 'BrandPayload' }
-    & Pick<BrandPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteBrandMutation = { __typename?: 'Mutation' } & {
+  deleteBrand: { __typename?: 'BrandPayload' } & Pick<BrandPayload, 'success' | 'message'>;
+};
 
 export type AddCollectionToBrandMutationVariables = Exact<{
   input: AddCollectionToBrandInput;
 }>;
 
-
-export type AddCollectionToBrandMutation = (
-  { __typename?: 'Mutation' }
-  & { addCollectionToBrand: (
-    { __typename?: 'BrandPayload' }
-    & Pick<BrandPayload, 'success' | 'message'>
-  ) }
-);
+export type AddCollectionToBrandMutation = { __typename?: 'Mutation' } & {
+  addCollectionToBrand: { __typename?: 'BrandPayload' } & Pick<BrandPayload, 'success' | 'message'>;
+};
 
 export type UpdateCollectionInBrandMutationVariables = Exact<{
   input: UpdateCollectionInBrandInput;
 }>;
 
-
-export type UpdateCollectionInBrandMutation = (
-  { __typename?: 'Mutation' }
-  & { updateCollectionInBrand: (
-    { __typename?: 'BrandPayload' }
-    & Pick<BrandPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateCollectionInBrandMutation = { __typename?: 'Mutation' } & {
+  updateCollectionInBrand: { __typename?: 'BrandPayload' } & Pick<
+    BrandPayload,
+    'success' | 'message'
+  >;
+};
 
 export type DeleteCollectionFromBrandMutationVariables = Exact<{
   input: DeleteCollectionFromBrandInput;
 }>;
 
-
-export type DeleteCollectionFromBrandMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteCollectionFromBrand: (
-    { __typename?: 'BrandPayload' }
-    & Pick<BrandPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteCollectionFromBrandMutation = { __typename?: 'Mutation' } & {
+  deleteCollectionFromBrand: { __typename?: 'BrandPayload' } & Pick<
+    BrandPayload,
+    'success' | 'message'
+  >;
+};
 
 export type CreateCategoryMutationVariables = Exact<{
   input: CreateCategoryInput;
 }>;
 
-
-export type CreateCategoryMutation = (
-  { __typename?: 'Mutation' }
-  & { createCategory: (
-    { __typename?: 'CategoryPayload' }
-    & Pick<CategoryPayload, 'success' | 'message'>
-  ) }
-);
+export type CreateCategoryMutation = { __typename?: 'Mutation' } & {
+  createCategory: { __typename?: 'CategoryPayload' } & Pick<CategoryPayload, 'success' | 'message'>;
+};
 
 export type UpdateCategoryMutationVariables = Exact<{
   input: UpdateCategoryInput;
 }>;
 
-
-export type UpdateCategoryMutation = (
-  { __typename?: 'Mutation' }
-  & { updateCategory: (
-    { __typename?: 'CategoryPayload' }
-    & Pick<CategoryPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateCategoryMutation = { __typename?: 'Mutation' } & {
+  updateCategory: { __typename?: 'CategoryPayload' } & Pick<CategoryPayload, 'success' | 'message'>;
+};
 
 export type DeleteCategoryMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteCategoryMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteCategory: (
-    { __typename?: 'CategoryPayload' }
-    & Pick<CategoryPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteCategoryMutation = { __typename?: 'Mutation' } & {
+  deleteCategory: { __typename?: 'CategoryPayload' } & Pick<CategoryPayload, 'success' | 'message'>;
+};
 
 export type CreateCompanyMutationVariables = Exact<{
   input: CreateCompanyInput;
 }>;
 
-
-export type CreateCompanyMutation = (
-  { __typename?: 'Mutation' }
-  & { createCompany: (
-    { __typename?: 'CompanyPayload' }
-    & Pick<CompanyPayload, 'success' | 'message'>
-  ) }
-);
+export type CreateCompanyMutation = { __typename?: 'Mutation' } & {
+  createCompany: { __typename?: 'CompanyPayload' } & Pick<CompanyPayload, 'success' | 'message'>;
+};
 
 export type DeleteCompanyMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteCompanyMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteCompany: (
-    { __typename?: 'CompanyPayload' }
-    & Pick<CompanyPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteCompanyMutation = { __typename?: 'Mutation' } & {
+  deleteCompany: { __typename?: 'CompanyPayload' } & Pick<CompanyPayload, 'success' | 'message'>;
+};
 
 export type UpdateCompanyMutationVariables = Exact<{
   input: UpdateCompanyInput;
 }>;
 
-
-export type UpdateCompanyMutation = (
-  { __typename?: 'Mutation' }
-  & { updateCompany: (
-    { __typename?: 'CompanyPayload' }
-    & Pick<CompanyPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateCompanyMutation = { __typename?: 'Mutation' } & {
+  updateCompany: { __typename?: 'CompanyPayload' } & Pick<CompanyPayload, 'success' | 'message'>;
+};
 
 export type AddShopToCompanyMutationVariables = Exact<{
   input: AddShopToCompanyInput;
 }>;
 
-
-export type AddShopToCompanyMutation = (
-  { __typename?: 'Mutation' }
-  & { addShopToCompany: (
-    { __typename?: 'CompanyPayload' }
-    & Pick<CompanyPayload, 'success' | 'message'>
-  ) }
-);
+export type AddShopToCompanyMutation = { __typename?: 'Mutation' } & {
+  addShopToCompany: { __typename?: 'CompanyPayload' } & Pick<CompanyPayload, 'success' | 'message'>;
+};
 
 export type DeleteShopFromCompanyMutationVariables = Exact<{
   input: DeleteShopFromCompanyInput;
 }>;
 
-
-export type DeleteShopFromCompanyMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteShopFromCompany: (
-    { __typename?: 'CompanyPayload' }
-    & Pick<CompanyPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteShopFromCompanyMutation = { __typename?: 'Mutation' } & {
+  deleteShopFromCompany: { __typename?: 'CompanyPayload' } & Pick<
+    CompanyPayload,
+    'success' | 'message'
+  >;
+};
 
 export type UpdateConfigMutationVariables = Exact<{
   input: UpdateConfigInput;
 }>;
 
-
-export type UpdateConfigMutation = (
-  { __typename?: 'Mutation' }
-  & { updateConfig: (
-    { __typename?: 'ConfigPayload' }
-    & Pick<ConfigPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateConfigMutation = { __typename?: 'Mutation' } & {
+  updateConfig: { __typename?: 'ConfigPayload' } & Pick<ConfigPayload, 'success' | 'message'>;
+};
 
 export type UpdateVisibleCategoriesInNavDropdownMutationVariables = Exact<{
   input: UpdateVisibleCategoriesInNavDropdownInput;
 }>;
 
-
-export type UpdateVisibleCategoriesInNavDropdownMutation = (
-  { __typename?: 'Mutation' }
-  & { updateVisibleCategoriesInNavDropdown: (
-    { __typename?: 'ConfigPayload' }
-    & Pick<ConfigPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateVisibleCategoriesInNavDropdownMutation = { __typename?: 'Mutation' } & {
+  updateVisibleCategoriesInNavDropdown: { __typename?: 'ConfigPayload' } & Pick<
+    ConfigPayload,
+    'success' | 'message'
+  >;
+};
 
 export type UpdateRubricNavItemConfigMutationVariables = Exact<{
   input: UpdateRubricNavItemConfigInput;
 }>;
 
-
-export type UpdateRubricNavItemConfigMutation = (
-  { __typename?: 'Mutation' }
-  & { updateRubricNavItemConfig: (
-    { __typename?: 'ConfigPayload' }
-    & Pick<ConfigPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateRubricNavItemConfigMutation = { __typename?: 'Mutation' } & {
+  updateRubricNavItemConfig: { __typename?: 'ConfigPayload' } & Pick<
+    ConfigPayload,
+    'success' | 'message'
+  >;
+};
 
 export type UpdateCatalogueCountersMutationVariables = Exact<{
   input: CatalogueDataInput;
 }>;
 
-
-export type UpdateCatalogueCountersMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'updateCatalogueCounters'>
-);
+export type UpdateCatalogueCountersMutation = { __typename?: 'Mutation' } & Pick<
+  Mutation,
+  'updateCatalogueCounters'
+>;
 
 export type CreateLanguageMutationVariables = Exact<{
   input: CreateLanguageInput;
 }>;
 
-
-export type CreateLanguageMutation = (
-  { __typename?: 'Mutation' }
-  & { createLanguage: (
-    { __typename?: 'LanguagePayload' }
-    & Pick<LanguagePayload, 'success' | 'message'>
-  ) }
-);
+export type CreateLanguageMutation = { __typename?: 'Mutation' } & {
+  createLanguage: { __typename?: 'LanguagePayload' } & Pick<LanguagePayload, 'success' | 'message'>;
+};
 
 export type UpdateLanguageMutationVariables = Exact<{
   input: UpdateLanguageInput;
 }>;
 
-
-export type UpdateLanguageMutation = (
-  { __typename?: 'Mutation' }
-  & { updateLanguage: (
-    { __typename?: 'LanguagePayload' }
-    & Pick<LanguagePayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateLanguageMutation = { __typename?: 'Mutation' } & {
+  updateLanguage: { __typename?: 'LanguagePayload' } & Pick<LanguagePayload, 'success' | 'message'>;
+};
 
 export type DeleteLanguageMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteLanguageMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteLanguage: (
-    { __typename?: 'LanguagePayload' }
-    & Pick<LanguagePayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteLanguageMutation = { __typename?: 'Mutation' } & {
+  deleteLanguage: { __typename?: 'LanguagePayload' } & Pick<LanguagePayload, 'success' | 'message'>;
+};
 
 export type CreateManufacturerMutationVariables = Exact<{
   input: CreateManufacturerInput;
 }>;
 
-
-export type CreateManufacturerMutation = (
-  { __typename?: 'Mutation' }
-  & { createManufacturer: (
-    { __typename?: 'ManufacturerPayload' }
-    & Pick<ManufacturerPayload, 'success' | 'message'>
-  ) }
-);
+export type CreateManufacturerMutation = { __typename?: 'Mutation' } & {
+  createManufacturer: { __typename?: 'ManufacturerPayload' } & Pick<
+    ManufacturerPayload,
+    'success' | 'message'
+  >;
+};
 
 export type UpdateManufacturerMutationVariables = Exact<{
   input: UpdateManufacturerInput;
 }>;
 
-
-export type UpdateManufacturerMutation = (
-  { __typename?: 'Mutation' }
-  & { updateManufacturer: (
-    { __typename?: 'ManufacturerPayload' }
-    & Pick<ManufacturerPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateManufacturerMutation = { __typename?: 'Mutation' } & {
+  updateManufacturer: { __typename?: 'ManufacturerPayload' } & Pick<
+    ManufacturerPayload,
+    'success' | 'message'
+  >;
+};
 
 export type DeleteManufacturerMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteManufacturerMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteManufacturer: (
-    { __typename?: 'ManufacturerPayload' }
-    & Pick<ManufacturerPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteManufacturerMutation = { __typename?: 'Mutation' } & {
+  deleteManufacturer: { __typename?: 'ManufacturerPayload' } & Pick<
+    ManufacturerPayload,
+    'success' | 'message'
+  >;
+};
 
 export type CreateMetricMutationVariables = Exact<{
   input: CreateMetricInput;
 }>;
 
-
-export type CreateMetricMutation = (
-  { __typename?: 'Mutation' }
-  & { createMetric: (
-    { __typename?: 'MetricPayload' }
-    & Pick<MetricPayload, 'success' | 'message'>
-  ) }
-);
+export type CreateMetricMutation = { __typename?: 'Mutation' } & {
+  createMetric: { __typename?: 'MetricPayload' } & Pick<MetricPayload, 'success' | 'message'>;
+};
 
 export type UpdateMetricMutationVariables = Exact<{
   input: UpdateMetricInput;
 }>;
 
-
-export type UpdateMetricMutation = (
-  { __typename?: 'Mutation' }
-  & { updateMetric: (
-    { __typename?: 'MetricPayload' }
-    & Pick<MetricPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateMetricMutation = { __typename?: 'Mutation' } & {
+  updateMetric: { __typename?: 'MetricPayload' } & Pick<MetricPayload, 'success' | 'message'>;
+};
 
 export type DeleteMetricMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteMetricMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteMetric: (
-    { __typename?: 'MetricPayload' }
-    & Pick<MetricPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteMetricMutation = { __typename?: 'Mutation' } & {
+  deleteMetric: { __typename?: 'MetricPayload' } & Pick<MetricPayload, 'success' | 'message'>;
+};
 
 export type CreateNavItemMutationVariables = Exact<{
   input: CreateNavItemInput;
 }>;
 
-
-export type CreateNavItemMutation = (
-  { __typename?: 'Mutation' }
-  & { createNavItem: (
-    { __typename?: 'NavItemPayload' }
-    & Pick<NavItemPayload, 'success' | 'message'>
-  ) }
-);
+export type CreateNavItemMutation = { __typename?: 'Mutation' } & {
+  createNavItem: { __typename?: 'NavItemPayload' } & Pick<NavItemPayload, 'success' | 'message'>;
+};
 
 export type UpdateNavItemMutationVariables = Exact<{
   input: UpdateNavItemInput;
 }>;
 
-
-export type UpdateNavItemMutation = (
-  { __typename?: 'Mutation' }
-  & { updateNavItem: (
-    { __typename?: 'NavItemPayload' }
-    & Pick<NavItemPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateNavItemMutation = { __typename?: 'Mutation' } & {
+  updateNavItem: { __typename?: 'NavItemPayload' } & Pick<NavItemPayload, 'success' | 'message'>;
+};
 
 export type DeleteNavItemMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteNavItemMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteNavItem: (
-    { __typename?: 'NavItemPayload' }
-    & Pick<NavItemPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteNavItemMutation = { __typename?: 'Mutation' } & {
+  deleteNavItem: { __typename?: 'NavItemPayload' } & Pick<NavItemPayload, 'success' | 'message'>;
+};
 
 export type CreateOptionsGroupMutationVariables = Exact<{
   input: CreateOptionsGroupInput;
 }>;
 
-
-export type CreateOptionsGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { createOptionsGroup: (
-    { __typename?: 'OptionsGroupPayload' }
-    & Pick<OptionsGroupPayload, 'success' | 'message'>
-  ) }
-);
+export type CreateOptionsGroupMutation = { __typename?: 'Mutation' } & {
+  createOptionsGroup: { __typename?: 'OptionsGroupPayload' } & Pick<
+    OptionsGroupPayload,
+    'success' | 'message'
+  >;
+};
 
 export type UpdateOptionsGroupMutationVariables = Exact<{
   input: UpdateOptionsGroupInput;
 }>;
 
-
-export type UpdateOptionsGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { updateOptionsGroup: (
-    { __typename?: 'OptionsGroupPayload' }
-    & Pick<OptionsGroupPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateOptionsGroupMutation = { __typename?: 'Mutation' } & {
+  updateOptionsGroup: { __typename?: 'OptionsGroupPayload' } & Pick<
+    OptionsGroupPayload,
+    'success' | 'message'
+  >;
+};
 
 export type DeleteOptionsGroupMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteOptionsGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteOptionsGroup: (
-    { __typename?: 'OptionsGroupPayload' }
-    & Pick<OptionsGroupPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteOptionsGroupMutation = { __typename?: 'Mutation' } & {
+  deleteOptionsGroup: { __typename?: 'OptionsGroupPayload' } & Pick<
+    OptionsGroupPayload,
+    'success' | 'message'
+  >;
+};
 
 export type AddOptionToGroupMutationVariables = Exact<{
   input: AddOptionToGroupInput;
 }>;
 
-
-export type AddOptionToGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { addOptionToGroup: (
-    { __typename?: 'OptionsGroupPayload' }
-    & Pick<OptionsGroupPayload, 'success' | 'message'>
-  ) }
-);
+export type AddOptionToGroupMutation = { __typename?: 'Mutation' } & {
+  addOptionToGroup: { __typename?: 'OptionsGroupPayload' } & Pick<
+    OptionsGroupPayload,
+    'success' | 'message'
+  >;
+};
 
 export type UpdateOptionInGroupMutationVariables = Exact<{
   input: UpdateOptionInGroupInput;
 }>;
 
-
-export type UpdateOptionInGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { updateOptionInGroup: (
-    { __typename?: 'OptionsGroupPayload' }
-    & Pick<OptionsGroupPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateOptionInGroupMutation = { __typename?: 'Mutation' } & {
+  updateOptionInGroup: { __typename?: 'OptionsGroupPayload' } & Pick<
+    OptionsGroupPayload,
+    'success' | 'message'
+  >;
+};
 
 export type DeleteOptionFromGroupMutationVariables = Exact<{
   input: DeleteOptionFromGroupInput;
 }>;
 
-
-export type DeleteOptionFromGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteOptionFromGroup: (
-    { __typename?: 'OptionsGroupPayload' }
-    & Pick<OptionsGroupPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteOptionFromGroupMutation = { __typename?: 'Mutation' } & {
+  deleteOptionFromGroup: { __typename?: 'OptionsGroupPayload' } & Pick<
+    OptionsGroupPayload,
+    'success' | 'message'
+  >;
+};
 
 export type MoveOptionMutationVariables = Exact<{
   input: MoveOptionInput;
 }>;
 
-
-export type MoveOptionMutation = (
-  { __typename?: 'Mutation' }
-  & { moveOption: (
-    { __typename?: 'OptionsGroupPayload' }
-    & Pick<OptionsGroupPayload, 'success' | 'message'>
-  ) }
-);
+export type MoveOptionMutation = { __typename?: 'Mutation' } & {
+  moveOption: { __typename?: 'OptionsGroupPayload' } & Pick<
+    OptionsGroupPayload,
+    'success' | 'message'
+  >;
+};
 
 export type CreateOrderStatusMutationVariables = Exact<{
   input: CreateOrderStatusInput;
 }>;
 
-
-export type CreateOrderStatusMutation = (
-  { __typename?: 'Mutation' }
-  & { createOrderStatus: (
-    { __typename?: 'OrderStatusPayload' }
-    & Pick<OrderStatusPayload, 'success' | 'message'>
-  ) }
-);
+export type CreateOrderStatusMutation = { __typename?: 'Mutation' } & {
+  createOrderStatus: { __typename?: 'OrderStatusPayload' } & Pick<
+    OrderStatusPayload,
+    'success' | 'message'
+  >;
+};
 
 export type UpdateOrderStatusMutationVariables = Exact<{
   input: UpdateOrderStatusInput;
 }>;
 
-
-export type UpdateOrderStatusMutation = (
-  { __typename?: 'Mutation' }
-  & { updateOrderStatus: (
-    { __typename?: 'OrderStatusPayload' }
-    & Pick<OrderStatusPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateOrderStatusMutation = { __typename?: 'Mutation' } & {
+  updateOrderStatus: { __typename?: 'OrderStatusPayload' } & Pick<
+    OrderStatusPayload,
+    'success' | 'message'
+  >;
+};
 
 export type DeleteOrderStatusMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteOrderStatusMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteOrderStatus: (
-    { __typename?: 'OrderStatusPayload' }
-    & Pick<OrderStatusPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteOrderStatusMutation = { __typename?: 'Mutation' } & {
+  deleteOrderStatus: { __typename?: 'OrderStatusPayload' } & Pick<
+    OrderStatusPayload,
+    'success' | 'message'
+  >;
+};
 
 export type CreateRoleMutationVariables = Exact<{
   input: CreateRoleInput;
 }>;
 
-
-export type CreateRoleMutation = (
-  { __typename?: 'Mutation' }
-  & { createRole: (
-    { __typename?: 'RolePayload' }
-    & Pick<RolePayload, 'success' | 'message'>
-  ) }
-);
+export type CreateRoleMutation = { __typename?: 'Mutation' } & {
+  createRole: { __typename?: 'RolePayload' } & Pick<RolePayload, 'success' | 'message'>;
+};
 
 export type UpdateRoleMutationVariables = Exact<{
   input: UpdateRoleInput;
 }>;
 
-
-export type UpdateRoleMutation = (
-  { __typename?: 'Mutation' }
-  & { updateRole: (
-    { __typename?: 'RolePayload' }
-    & Pick<RolePayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateRoleMutation = { __typename?: 'Mutation' } & {
+  updateRole: { __typename?: 'RolePayload' } & Pick<RolePayload, 'success' | 'message'>;
+};
 
 export type DeleteRoleMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteRoleMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteRole: (
-    { __typename?: 'RolePayload' }
-    & Pick<RolePayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteRoleMutation = { __typename?: 'Mutation' } & {
+  deleteRole: { __typename?: 'RolePayload' } & Pick<RolePayload, 'success' | 'message'>;
+};
 
 export type UpdateRoleRuleMutationVariables = Exact<{
   input: UpdateRoleRuleInput;
 }>;
 
-
-export type UpdateRoleRuleMutation = (
-  { __typename?: 'Mutation' }
-  & { updateRoleRule: (
-    { __typename?: 'RoleRulePayload' }
-    & Pick<RoleRulePayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateRoleRuleMutation = { __typename?: 'Mutation' } & {
+  updateRoleRule: { __typename?: 'RoleRulePayload' } & Pick<RoleRulePayload, 'success' | 'message'>;
+};
 
 export type UpdateRoleNavMutationVariables = Exact<{
   input: UpdateRoleNavInput;
 }>;
 
-
-export type UpdateRoleNavMutation = (
-  { __typename?: 'Mutation' }
-  & { updateRoleNav: (
-    { __typename?: 'RolePayload' }
-    & Pick<RolePayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateRoleNavMutation = { __typename?: 'Mutation' } & {
+  updateRoleNav: { __typename?: 'RolePayload' } & Pick<RolePayload, 'success' | 'message'>;
+};
 
 export type CreateRubricVariantMutationVariables = Exact<{
   input: CreateRubricVariantInput;
 }>;
 
-
-export type CreateRubricVariantMutation = (
-  { __typename?: 'Mutation' }
-  & { createRubricVariant: (
-    { __typename?: 'RubricVariantPayload' }
-    & Pick<RubricVariantPayload, 'success' | 'message'>
-  ) }
-);
+export type CreateRubricVariantMutation = { __typename?: 'Mutation' } & {
+  createRubricVariant: { __typename?: 'RubricVariantPayload' } & Pick<
+    RubricVariantPayload,
+    'success' | 'message'
+  >;
+};
 
 export type UpdateRubricVariantMutationVariables = Exact<{
   input: UpdateRubricVariantInput;
 }>;
 
-
-export type UpdateRubricVariantMutation = (
-  { __typename?: 'Mutation' }
-  & { updateRubricVariant: (
-    { __typename?: 'RubricVariantPayload' }
-    & Pick<RubricVariantPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateRubricVariantMutation = { __typename?: 'Mutation' } & {
+  updateRubricVariant: { __typename?: 'RubricVariantPayload' } & Pick<
+    RubricVariantPayload,
+    'success' | 'message'
+  >;
+};
 
 export type DeleteRubricVariantMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteRubricVariantMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteRubricVariant: (
-    { __typename?: 'RubricVariantPayload' }
-    & Pick<RubricVariantPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteRubricVariantMutation = { __typename?: 'Mutation' } & {
+  deleteRubricVariant: { __typename?: 'RubricVariantPayload' } & Pick<
+    RubricVariantPayload,
+    'success' | 'message'
+  >;
+};
 
 export type CreateRubricMutationVariables = Exact<{
   input: CreateRubricInput;
 }>;
 
-
-export type CreateRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { createRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
+export type CreateRubricMutation = { __typename?: 'Mutation' } & {
+  createRubric: { __typename?: 'RubricPayload' } & Pick<RubricPayload, 'success' | 'message'>;
+};
 
 export type UpdateRubricMutationVariables = Exact<{
   input: UpdateRubricInput;
 }>;
 
-
-export type UpdateRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { updateRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateRubricMutation = { __typename?: 'Mutation' } & {
+  updateRubric: { __typename?: 'RubricPayload' } & Pick<RubricPayload, 'success' | 'message'>;
+};
 
 export type DeleteRubricMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteRubricMutation = { __typename?: 'Mutation' } & {
+  deleteRubric: { __typename?: 'RubricPayload' } & Pick<RubricPayload, 'success' | 'message'>;
+};
 
 export type UpdateAttributeInRubricMutationVariables = Exact<{
   input: UpdateAttributeInRubricInput;
 }>;
 
-
-export type UpdateAttributeInRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { updateAttributeInRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateAttributeInRubricMutation = { __typename?: 'Mutation' } & {
+  updateAttributeInRubric: { __typename?: 'RubricPayload' } & Pick<
+    RubricPayload,
+    'success' | 'message'
+  >;
+};
 
 export type UpdateShopMutationVariables = Exact<{
   input: UpdateShopInput;
 }>;
 
-
-export type UpdateShopMutation = (
-  { __typename?: 'Mutation' }
-  & { updateShop: (
-    { __typename?: 'ShopPayload' }
-    & Pick<ShopPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateShopMutation = { __typename?: 'Mutation' } & {
+  updateShop: { __typename?: 'ShopPayload' } & Pick<ShopPayload, 'success' | 'message'>;
+};
 
 export type GenerateShopTokenMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type GenerateShopTokenMutation = (
-  { __typename?: 'Mutation' }
-  & { generateShopToken: (
-    { __typename?: 'ShopPayload' }
-    & Pick<ShopPayload, 'success' | 'message'>
-  ) }
-);
+export type GenerateShopTokenMutation = { __typename?: 'Mutation' } & {
+  generateShopToken: { __typename?: 'ShopPayload' } & Pick<ShopPayload, 'success' | 'message'>;
+};
 
 export type DeleteShopAssetMutationVariables = Exact<{
   input: DeleteShopAssetInput;
 }>;
 
-
-export type DeleteShopAssetMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteShopAsset: (
-    { __typename?: 'ShopPayload' }
-    & Pick<ShopPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteShopAssetMutation = { __typename?: 'Mutation' } & {
+  deleteShopAsset: { __typename?: 'ShopPayload' } & Pick<ShopPayload, 'success' | 'message'>;
+};
 
 export type UpdateShopAssetIndexMutationVariables = Exact<{
   input: UpdateShopAssetIndexInput;
 }>;
 
-
-export type UpdateShopAssetIndexMutation = (
-  { __typename?: 'Mutation' }
-  & { updateShopAssetIndex: (
-    { __typename?: 'ShopPayload' }
-    & Pick<ShopPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateShopAssetIndexMutation = { __typename?: 'Mutation' } & {
+  updateShopAssetIndex: { __typename?: 'ShopPayload' } & Pick<ShopPayload, 'success' | 'message'>;
+};
 
 export type AddManyProductsToShopMutationVariables = Exact<{
   input: Array<AddProductToShopInput> | AddProductToShopInput;
 }>;
 
-
-export type AddManyProductsToShopMutation = (
-  { __typename?: 'Mutation' }
-  & { addManyProductsToShop: (
-    { __typename?: 'ShopPayload' }
-    & Pick<ShopPayload, 'success' | 'message'>
-  ) }
-);
+export type AddManyProductsToShopMutation = { __typename?: 'Mutation' } & {
+  addManyProductsToShop: { __typename?: 'ShopPayload' } & Pick<ShopPayload, 'success' | 'message'>;
+};
 
 export type DeleteProductFromShopMutationVariables = Exact<{
   input: DeleteProductFromShopInput;
 }>;
 
-
-export type DeleteProductFromShopMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteProductFromShop: (
-    { __typename?: 'ShopPayload' }
-    & Pick<ShopPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteProductFromShopMutation = { __typename?: 'Mutation' } & {
+  deleteProductFromShop: { __typename?: 'ShopPayload' } & Pick<ShopPayload, 'success' | 'message'>;
+};
 
 export type AddShopProductSupplierMutationVariables = Exact<{
   input: AddShopProductSupplierInput;
 }>;
 
-
-export type AddShopProductSupplierMutation = (
-  { __typename?: 'Mutation' }
-  & { addShopProductSupplier: (
-    { __typename?: 'ShopProductPayload' }
-    & Pick<ShopProductPayload, 'success' | 'message'>
-  ) }
-);
+export type AddShopProductSupplierMutation = { __typename?: 'Mutation' } & {
+  addShopProductSupplier: { __typename?: 'ShopProductPayload' } & Pick<
+    ShopProductPayload,
+    'success' | 'message'
+  >;
+};
 
 export type UpdateShopProductSupplierMutationVariables = Exact<{
   input: UpdateShopProductSupplierInput;
 }>;
 
-
-export type UpdateShopProductSupplierMutation = (
-  { __typename?: 'Mutation' }
-  & { updateShopProductSupplier: (
-    { __typename?: 'ShopProductPayload' }
-    & Pick<ShopProductPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateShopProductSupplierMutation = { __typename?: 'Mutation' } & {
+  updateShopProductSupplier: { __typename?: 'ShopProductPayload' } & Pick<
+    ShopProductPayload,
+    'success' | 'message'
+  >;
+};
 
 export type DeleteShopProductSupplierMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
-
-export type DeleteShopProductSupplierMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteShopProductSupplier: (
-    { __typename?: 'ShopProductPayload' }
-    & Pick<ShopProductPayload, 'success' | 'message'>
-  ) }
-);
+export type DeleteShopProductSupplierMutation = { __typename?: 'Mutation' } & {
+  deleteShopProductSupplier: { __typename?: 'ShopProductPayload' } & Pick<
+    ShopProductPayload,
+    'success' | 'message'
+  >;
+};
 
 export type CreateSupplierMutationVariables = Exact<{
   input: CreateSupplierInput;
 }>;
 
-
-export type CreateSupplierMutation = (
-  { __typename?: 'Mutation' }
-  & { createSupplier: (
-    { __typename?: 'SupplierPayload' }
-    & Pick<SupplierPayload, 'success' | 'message'>
-  ) }
-);
+export type CreateSupplierMutation = { __typename?: 'Mutation' } & {
+  createSupplier: { __typename?: 'SupplierPayload' } & Pick<SupplierPayload, 'success' | 'message'>;
+};
 
 export type UpdateSupplierMutationVariables = Exact<{
   input: UpdateSupplierInput;
 }>;
 
-
-export type UpdateSupplierMutation = (
-  { __typename?: 'Mutation' }
-  & { updateSupplier: (
-    { __typename?: 'SupplierPayload' }
-    & Pick<SupplierPayload, 'success' | 'message'>
-  ) }
-);
+export type UpdateSupplierMutation = { __typename?: 'Mutation' } & {
+  updateSupplier: { __typename?: 'SupplierPayload' } & Pick<SupplierPayload, 'success' | 'message'>;
+};
 
 export type DeleteSupplierMutationVariables = Exact<{
   _id: Scalars['ObjectId'];
 }>;
 
+export type DeleteSupplierMutation = { __typename?: 'Mutation' } & {
+  deleteSupplier: { __typename?: 'SupplierPayload' } & Pick<SupplierPayload, 'success' | 'message'>;
+};
 
-export type DeleteSupplierMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteSupplier: (
-    { __typename?: 'SupplierPayload' }
-    & Pick<SupplierPayload, 'success' | 'message'>
-  ) }
-);
-
-export type SelectOptionFragment = (
-  { __typename?: 'SelectOption' }
-  & Pick<SelectOption, '_id' | 'name' | 'icon'>
-);
+export type SelectOptionFragment = { __typename?: 'SelectOption' } & Pick<
+  SelectOption,
+  '_id' | 'name' | 'icon'
+>;
 
 export type GetBrandAlphabetListsQueryVariables = Exact<{
   input?: Maybe<BrandAlphabetInput>;
 }>;
 
-
-export type GetBrandAlphabetListsQuery = (
-  { __typename?: 'Query' }
-  & { getBrandAlphabetLists: Array<(
-    { __typename?: 'BrandsAlphabetList' }
-    & Pick<BrandsAlphabetList, 'letter'>
-    & { docs: Array<(
-      { __typename?: 'Brand' }
-      & Pick<Brand, '_id' | 'itemId' | 'name'>
-    )> }
-  )> }
-);
+export type GetBrandAlphabetListsQuery = { __typename?: 'Query' } & {
+  getBrandAlphabetLists: Array<
+    { __typename?: 'BrandsAlphabetList' } & Pick<BrandsAlphabetList, 'letter'> & {
+        docs: Array<{ __typename?: 'Brand' } & Pick<Brand, '_id' | 'itemId' | 'name'>>;
+      }
+  >;
+};
 
 export type GetBrandCollectionAlphabetListsQueryVariables = Exact<{
   input?: Maybe<BrandCollectionAlphabetInput>;
 }>;
 
-
-export type GetBrandCollectionAlphabetListsQuery = (
-  { __typename?: 'Query' }
-  & { getBrandCollectionAlphabetLists: Array<(
-    { __typename?: 'BrandCollectionsAlphabetList' }
-    & Pick<BrandCollectionsAlphabetList, 'letter'>
-    & { docs: Array<(
-      { __typename?: 'BrandCollection' }
-      & Pick<BrandCollection, '_id' | 'itemId' | 'name'>
-    )> }
-  )> }
-);
+export type GetBrandCollectionAlphabetListsQuery = { __typename?: 'Query' } & {
+  getBrandCollectionAlphabetLists: Array<
+    { __typename?: 'BrandCollectionsAlphabetList' } & Pick<
+      BrandCollectionsAlphabetList,
+      'letter'
+    > & {
+        docs: Array<
+          { __typename?: 'BrandCollection' } & Pick<BrandCollection, '_id' | 'itemId' | 'name'>
+        >;
+      }
+  >;
+};
 
 export type GetCategoriesAlphabetListsQueryVariables = Exact<{
   input?: Maybe<CategoryAlphabetInput>;
 }>;
 
-
-export type GetCategoriesAlphabetListsQuery = (
-  { __typename?: 'Query' }
-  & { getCategoriesAlphabetLists: Array<(
-    { __typename?: 'CategoriesAlphabetList' }
-    & Pick<CategoriesAlphabetList, 'letter'>
-    & { docs: Array<(
-      { __typename?: 'Category' }
-      & Pick<Category, '_id' | 'slug' | 'name'>
-      & { categories: Array<(
-        { __typename?: 'Category' }
-        & Pick<Category, '_id' | 'slug' | 'name'>
-        & { categories: Array<(
-          { __typename?: 'Category' }
-          & Pick<Category, '_id' | 'slug' | 'name'>
-          & { categories: Array<(
-            { __typename?: 'Category' }
-            & Pick<Category, '_id' | 'slug' | 'name'>
-            & { categories: Array<(
-              { __typename?: 'Category' }
-              & Pick<Category, '_id' | 'slug' | 'name'>
-              & { categories: Array<(
-                { __typename?: 'Category' }
-                & Pick<Category, '_id' | 'slug' | 'name'>
-              )> }
-            )> }
-          )> }
-        )> }
-      )> }
-    )> }
-  )> }
-);
+export type GetCategoriesAlphabetListsQuery = { __typename?: 'Query' } & {
+  getCategoriesAlphabetLists: Array<
+    { __typename?: 'CategoriesAlphabetList' } & Pick<CategoriesAlphabetList, 'letter'> & {
+        docs: Array<
+          { __typename?: 'Category' } & Pick<Category, '_id' | 'slug' | 'name'> & {
+              categories: Array<
+                { __typename?: 'Category' } & Pick<Category, '_id' | 'slug' | 'name'> & {
+                    categories: Array<
+                      { __typename?: 'Category' } & Pick<Category, '_id' | 'slug' | 'name'> & {
+                          categories: Array<
+                            { __typename?: 'Category' } & Pick<
+                              Category,
+                              '_id' | 'slug' | 'name'
+                            > & {
+                                categories: Array<
+                                  { __typename?: 'Category' } & Pick<
+                                    Category,
+                                    '_id' | 'slug' | 'name'
+                                  > & {
+                                      categories: Array<
+                                        { __typename?: 'Category' } & Pick<
+                                          Category,
+                                          '_id' | 'slug' | 'name'
+                                        >
+                                      >;
+                                    }
+                                >;
+                              }
+                          >;
+                        }
+                    >;
+                  }
+              >;
+            }
+        >;
+      }
+  >;
+};
 
 export type GetManufacturerAlphabetListsQueryVariables = Exact<{
   input?: Maybe<ManufacturerAlphabetInput>;
 }>;
 
-
-export type GetManufacturerAlphabetListsQuery = (
-  { __typename?: 'Query' }
-  & { getManufacturerAlphabetLists: Array<(
-    { __typename?: 'ManufacturersAlphabetList' }
-    & Pick<ManufacturersAlphabetList, 'letter'>
-    & { docs: Array<(
-      { __typename?: 'Manufacturer' }
-      & Pick<Manufacturer, '_id' | 'itemId' | 'name'>
-    )> }
-  )> }
-);
+export type GetManufacturerAlphabetListsQuery = { __typename?: 'Query' } & {
+  getManufacturerAlphabetLists: Array<
+    { __typename?: 'ManufacturersAlphabetList' } & Pick<ManufacturersAlphabetList, 'letter'> & {
+        docs: Array<
+          { __typename?: 'Manufacturer' } & Pick<Manufacturer, '_id' | 'itemId' | 'name'>
+        >;
+      }
+  >;
+};
 
 export type GetSupplierAlphabetListsQueryVariables = Exact<{
   input?: Maybe<SupplierAlphabetInput>;
 }>;
 
-
-export type GetSupplierAlphabetListsQuery = (
-  { __typename?: 'Query' }
-  & { getSupplierAlphabetLists: Array<(
-    { __typename?: 'SuppliersAlphabetList' }
-    & Pick<SuppliersAlphabetList, 'letter'>
-    & { docs: Array<(
-      { __typename?: 'Supplier' }
-      & Pick<Supplier, '_id' | 'itemId' | 'name'>
-    )> }
-  )> }
-);
+export type GetSupplierAlphabetListsQuery = { __typename?: 'Query' } & {
+  getSupplierAlphabetLists: Array<
+    { __typename?: 'SuppliersAlphabetList' } & Pick<SuppliersAlphabetList, 'letter'> & {
+        docs: Array<{ __typename?: 'Supplier' } & Pick<Supplier, '_id' | 'itemId' | 'name'>>;
+      }
+  >;
+};
 
 export type GetOptionAlphabetListsQueryVariables = Exact<{
   input: OptionAlphabetInput;
 }>;
 
-
-export type GetOptionAlphabetListsQuery = (
-  { __typename?: 'Query' }
-  & { getOptionAlphabetLists: Array<(
-    { __typename?: 'OptionsAlphabetList' }
-    & Pick<OptionsAlphabetList, 'letter'>
-    & { docs: Array<(
-      { __typename?: 'Option' }
-      & Pick<Option, '_id' | 'name' | 'slug'>
-      & { options?: Maybe<Array<(
-        { __typename?: 'Option' }
-        & Pick<Option, '_id' | 'name' | 'slug'>
-        & { options?: Maybe<Array<(
-          { __typename?: 'Option' }
-          & Pick<Option, '_id' | 'name' | 'slug'>
-          & { options?: Maybe<Array<(
-            { __typename?: 'Option' }
-            & Pick<Option, '_id' | 'name' | 'slug'>
-            & { options?: Maybe<Array<(
-              { __typename?: 'Option' }
-              & Pick<Option, '_id' | 'name' | 'slug'>
-            )>> }
-          )>> }
-        )>> }
-      )>> }
-    )> }
-  )> }
-);
+export type GetOptionAlphabetListsQuery = { __typename?: 'Query' } & {
+  getOptionAlphabetLists: Array<
+    { __typename?: 'OptionsAlphabetList' } & Pick<OptionsAlphabetList, 'letter'> & {
+        docs: Array<
+          { __typename?: 'Option' } & Pick<Option, '_id' | 'name' | 'slug'> & {
+              options?: Maybe<
+                Array<
+                  { __typename?: 'Option' } & Pick<Option, '_id' | 'name' | 'slug'> & {
+                      options?: Maybe<
+                        Array<
+                          { __typename?: 'Option' } & Pick<Option, '_id' | 'name' | 'slug'> & {
+                              options?: Maybe<
+                                Array<
+                                  { __typename?: 'Option' } & Pick<
+                                    Option,
+                                    '_id' | 'name' | 'slug'
+                                  > & {
+                                      options?: Maybe<
+                                        Array<
+                                          { __typename?: 'Option' } & Pick<
+                                            Option,
+                                            '_id' | 'name' | 'slug'
+                                          >
+                                        >
+                                      >;
+                                    }
+                                >
+                              >;
+                            }
+                        >
+                      >;
+                    }
+                >
+              >;
+            }
+        >;
+      }
+  >;
+};
 
 export const SelectOptionFragmentDoc = gql`
-    fragment SelectOption on SelectOption {
-  _id
-  name
-  icon
-}
-    `;
-export const CreateAttributesGroupDocument = gql`
-    mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
-  createAttributesGroup(input: $input) {
-    success
-    message
+  fragment SelectOption on SelectOption {
+    _id
+    name
+    icon
   }
-}
-    `;
-export type CreateAttributesGroupMutationFn = Apollo.MutationFunction<CreateAttributesGroupMutation, CreateAttributesGroupMutationVariables>;
+`;
+export const CreateAttributesGroupDocument = gql`
+  mutation CreateAttributesGroup($input: CreateAttributesGroupInput!) {
+    createAttributesGroup(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type CreateAttributesGroupMutationFn = Apollo.MutationFunction<
+  CreateAttributesGroupMutation,
+  CreateAttributesGroupMutationVariables
+>;
 
 /**
  * __useCreateAttributesGroupMutation__
@@ -3336,22 +2990,39 @@ export type CreateAttributesGroupMutationFn = Apollo.MutationFunction<CreateAttr
  *   },
  * });
  */
-export function useCreateAttributesGroupMutation(baseOptions?: Apollo.MutationHookOptions<CreateAttributesGroupMutation, CreateAttributesGroupMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateAttributesGroupMutation, CreateAttributesGroupMutationVariables>(CreateAttributesGroupDocument, options);
-      }
-export type CreateAttributesGroupMutationHookResult = ReturnType<typeof useCreateAttributesGroupMutation>;
-export type CreateAttributesGroupMutationResult = Apollo.MutationResult<CreateAttributesGroupMutation>;
-export type CreateAttributesGroupMutationOptions = Apollo.BaseMutationOptions<CreateAttributesGroupMutation, CreateAttributesGroupMutationVariables>;
-export const UpdateAttributesGroupDocument = gql`
-    mutation UpdateAttributesGroup($input: UpdateAttributesGroupInput!) {
-  updateAttributesGroup(input: $input) {
-    success
-    message
-  }
+export function useCreateAttributesGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateAttributesGroupMutation,
+    CreateAttributesGroupMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateAttributesGroupMutation, CreateAttributesGroupMutationVariables>(
+    CreateAttributesGroupDocument,
+    options,
+  );
 }
-    `;
-export type UpdateAttributesGroupMutationFn = Apollo.MutationFunction<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>;
+export type CreateAttributesGroupMutationHookResult = ReturnType<
+  typeof useCreateAttributesGroupMutation
+>;
+export type CreateAttributesGroupMutationResult =
+  Apollo.MutationResult<CreateAttributesGroupMutation>;
+export type CreateAttributesGroupMutationOptions = Apollo.BaseMutationOptions<
+  CreateAttributesGroupMutation,
+  CreateAttributesGroupMutationVariables
+>;
+export const UpdateAttributesGroupDocument = gql`
+  mutation UpdateAttributesGroup($input: UpdateAttributesGroupInput!) {
+    updateAttributesGroup(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type UpdateAttributesGroupMutationFn = Apollo.MutationFunction<
+  UpdateAttributesGroupMutation,
+  UpdateAttributesGroupMutationVariables
+>;
 
 /**
  * __useUpdateAttributesGroupMutation__
@@ -3370,22 +3041,39 @@ export type UpdateAttributesGroupMutationFn = Apollo.MutationFunction<UpdateAttr
  *   },
  * });
  */
-export function useUpdateAttributesGroupMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>(UpdateAttributesGroupDocument, options);
-      }
-export type UpdateAttributesGroupMutationHookResult = ReturnType<typeof useUpdateAttributesGroupMutation>;
-export type UpdateAttributesGroupMutationResult = Apollo.MutationResult<UpdateAttributesGroupMutation>;
-export type UpdateAttributesGroupMutationOptions = Apollo.BaseMutationOptions<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>;
-export const DeleteAttributesGroupDocument = gql`
-    mutation DeleteAttributesGroup($_id: ObjectId!) {
-  deleteAttributesGroup(_id: $_id) {
-    success
-    message
-  }
+export function useUpdateAttributesGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateAttributesGroupMutation,
+    UpdateAttributesGroupMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateAttributesGroupMutation, UpdateAttributesGroupMutationVariables>(
+    UpdateAttributesGroupDocument,
+    options,
+  );
 }
-    `;
-export type DeleteAttributesGroupMutationFn = Apollo.MutationFunction<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>;
+export type UpdateAttributesGroupMutationHookResult = ReturnType<
+  typeof useUpdateAttributesGroupMutation
+>;
+export type UpdateAttributesGroupMutationResult =
+  Apollo.MutationResult<UpdateAttributesGroupMutation>;
+export type UpdateAttributesGroupMutationOptions = Apollo.BaseMutationOptions<
+  UpdateAttributesGroupMutation,
+  UpdateAttributesGroupMutationVariables
+>;
+export const DeleteAttributesGroupDocument = gql`
+  mutation DeleteAttributesGroup($_id: ObjectId!) {
+    deleteAttributesGroup(_id: $_id) {
+      success
+      message
+    }
+  }
+`;
+export type DeleteAttributesGroupMutationFn = Apollo.MutationFunction<
+  DeleteAttributesGroupMutation,
+  DeleteAttributesGroupMutationVariables
+>;
 
 /**
  * __useDeleteAttributesGroupMutation__
@@ -3404,22 +3092,39 @@ export type DeleteAttributesGroupMutationFn = Apollo.MutationFunction<DeleteAttr
  *   },
  * });
  */
-export function useDeleteAttributesGroupMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>(DeleteAttributesGroupDocument, options);
-      }
-export type DeleteAttributesGroupMutationHookResult = ReturnType<typeof useDeleteAttributesGroupMutation>;
-export type DeleteAttributesGroupMutationResult = Apollo.MutationResult<DeleteAttributesGroupMutation>;
-export type DeleteAttributesGroupMutationOptions = Apollo.BaseMutationOptions<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>;
-export const AddAttributesGroupToRubricDocument = gql`
-    mutation AddAttributesGroupToRubric($input: AddAttributesGroupToRubricInput!) {
-  addAttributesGroupToRubric(input: $input) {
-    success
-    message
-  }
+export function useDeleteAttributesGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteAttributesGroupMutation,
+    DeleteAttributesGroupMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>(
+    DeleteAttributesGroupDocument,
+    options,
+  );
 }
-    `;
-export type AddAttributesGroupToRubricMutationFn = Apollo.MutationFunction<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>;
+export type DeleteAttributesGroupMutationHookResult = ReturnType<
+  typeof useDeleteAttributesGroupMutation
+>;
+export type DeleteAttributesGroupMutationResult =
+  Apollo.MutationResult<DeleteAttributesGroupMutation>;
+export type DeleteAttributesGroupMutationOptions = Apollo.BaseMutationOptions<
+  DeleteAttributesGroupMutation,
+  DeleteAttributesGroupMutationVariables
+>;
+export const AddAttributesGroupToRubricDocument = gql`
+  mutation AddAttributesGroupToRubric($input: AddAttributesGroupToRubricInput!) {
+    addAttributesGroupToRubric(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type AddAttributesGroupToRubricMutationFn = Apollo.MutationFunction<
+  AddAttributesGroupToRubricMutation,
+  AddAttributesGroupToRubricMutationVariables
+>;
 
 /**
  * __useAddAttributesGroupToRubricMutation__
@@ -3438,22 +3143,39 @@ export type AddAttributesGroupToRubricMutationFn = Apollo.MutationFunction<AddAt
  *   },
  * });
  */
-export function useAddAttributesGroupToRubricMutation(baseOptions?: Apollo.MutationHookOptions<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>(AddAttributesGroupToRubricDocument, options);
-      }
-export type AddAttributesGroupToRubricMutationHookResult = ReturnType<typeof useAddAttributesGroupToRubricMutation>;
-export type AddAttributesGroupToRubricMutationResult = Apollo.MutationResult<AddAttributesGroupToRubricMutation>;
-export type AddAttributesGroupToRubricMutationOptions = Apollo.BaseMutationOptions<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>;
-export const DeleteAttributesGroupFromRubricDocument = gql`
-    mutation DeleteAttributesGroupFromRubric($input: DeleteAttributesGroupFromRubricInput!) {
-  deleteAttributesGroupFromRubric(input: $input) {
-    success
-    message
-  }
+export function useAddAttributesGroupToRubricMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    AddAttributesGroupToRubricMutation,
+    AddAttributesGroupToRubricMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    AddAttributesGroupToRubricMutation,
+    AddAttributesGroupToRubricMutationVariables
+  >(AddAttributesGroupToRubricDocument, options);
 }
-    `;
-export type DeleteAttributesGroupFromRubricMutationFn = Apollo.MutationFunction<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
+export type AddAttributesGroupToRubricMutationHookResult = ReturnType<
+  typeof useAddAttributesGroupToRubricMutation
+>;
+export type AddAttributesGroupToRubricMutationResult =
+  Apollo.MutationResult<AddAttributesGroupToRubricMutation>;
+export type AddAttributesGroupToRubricMutationOptions = Apollo.BaseMutationOptions<
+  AddAttributesGroupToRubricMutation,
+  AddAttributesGroupToRubricMutationVariables
+>;
+export const DeleteAttributesGroupFromRubricDocument = gql`
+  mutation DeleteAttributesGroupFromRubric($input: DeleteAttributesGroupFromRubricInput!) {
+    deleteAttributesGroupFromRubric(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type DeleteAttributesGroupFromRubricMutationFn = Apollo.MutationFunction<
+  DeleteAttributesGroupFromRubricMutation,
+  DeleteAttributesGroupFromRubricMutationVariables
+>;
 
 /**
  * __useDeleteAttributesGroupFromRubricMutation__
@@ -3472,22 +3194,39 @@ export type DeleteAttributesGroupFromRubricMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useDeleteAttributesGroupFromRubricMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>(DeleteAttributesGroupFromRubricDocument, options);
-      }
-export type DeleteAttributesGroupFromRubricMutationHookResult = ReturnType<typeof useDeleteAttributesGroupFromRubricMutation>;
-export type DeleteAttributesGroupFromRubricMutationResult = Apollo.MutationResult<DeleteAttributesGroupFromRubricMutation>;
-export type DeleteAttributesGroupFromRubricMutationOptions = Apollo.BaseMutationOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
-export const ToggleCmsCardAttributeInCategoryDocument = gql`
-    mutation ToggleCmsCardAttributeInCategory($input: UpdateAttributeInCategoryInput!) {
-  toggleCmsCardAttributeInCategory(input: $input) {
-    success
-    message
-  }
+export function useDeleteAttributesGroupFromRubricMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteAttributesGroupFromRubricMutation,
+    DeleteAttributesGroupFromRubricMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DeleteAttributesGroupFromRubricMutation,
+    DeleteAttributesGroupFromRubricMutationVariables
+  >(DeleteAttributesGroupFromRubricDocument, options);
 }
-    `;
-export type ToggleCmsCardAttributeInCategoryMutationFn = Apollo.MutationFunction<ToggleCmsCardAttributeInCategoryMutation, ToggleCmsCardAttributeInCategoryMutationVariables>;
+export type DeleteAttributesGroupFromRubricMutationHookResult = ReturnType<
+  typeof useDeleteAttributesGroupFromRubricMutation
+>;
+export type DeleteAttributesGroupFromRubricMutationResult =
+  Apollo.MutationResult<DeleteAttributesGroupFromRubricMutation>;
+export type DeleteAttributesGroupFromRubricMutationOptions = Apollo.BaseMutationOptions<
+  DeleteAttributesGroupFromRubricMutation,
+  DeleteAttributesGroupFromRubricMutationVariables
+>;
+export const ToggleCmsCardAttributeInCategoryDocument = gql`
+  mutation ToggleCmsCardAttributeInCategory($input: UpdateAttributeInCategoryInput!) {
+    toggleCmsCardAttributeInCategory(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type ToggleCmsCardAttributeInCategoryMutationFn = Apollo.MutationFunction<
+  ToggleCmsCardAttributeInCategoryMutation,
+  ToggleCmsCardAttributeInCategoryMutationVariables
+>;
 
 /**
  * __useToggleCmsCardAttributeInCategoryMutation__
@@ -3506,22 +3245,39 @@ export type ToggleCmsCardAttributeInCategoryMutationFn = Apollo.MutationFunction
  *   },
  * });
  */
-export function useToggleCmsCardAttributeInCategoryMutation(baseOptions?: Apollo.MutationHookOptions<ToggleCmsCardAttributeInCategoryMutation, ToggleCmsCardAttributeInCategoryMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ToggleCmsCardAttributeInCategoryMutation, ToggleCmsCardAttributeInCategoryMutationVariables>(ToggleCmsCardAttributeInCategoryDocument, options);
-      }
-export type ToggleCmsCardAttributeInCategoryMutationHookResult = ReturnType<typeof useToggleCmsCardAttributeInCategoryMutation>;
-export type ToggleCmsCardAttributeInCategoryMutationResult = Apollo.MutationResult<ToggleCmsCardAttributeInCategoryMutation>;
-export type ToggleCmsCardAttributeInCategoryMutationOptions = Apollo.BaseMutationOptions<ToggleCmsCardAttributeInCategoryMutation, ToggleCmsCardAttributeInCategoryMutationVariables>;
-export const ToggleCmsCardAttributeInRubricDocument = gql`
-    mutation ToggleCmsCardAttributeInRubric($input: UpdateAttributeInRubricInput!) {
-  toggleCmsCardAttributeInRubric(input: $input) {
-    success
-    message
-  }
+export function useToggleCmsCardAttributeInCategoryMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ToggleCmsCardAttributeInCategoryMutation,
+    ToggleCmsCardAttributeInCategoryMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    ToggleCmsCardAttributeInCategoryMutation,
+    ToggleCmsCardAttributeInCategoryMutationVariables
+  >(ToggleCmsCardAttributeInCategoryDocument, options);
 }
-    `;
-export type ToggleCmsCardAttributeInRubricMutationFn = Apollo.MutationFunction<ToggleCmsCardAttributeInRubricMutation, ToggleCmsCardAttributeInRubricMutationVariables>;
+export type ToggleCmsCardAttributeInCategoryMutationHookResult = ReturnType<
+  typeof useToggleCmsCardAttributeInCategoryMutation
+>;
+export type ToggleCmsCardAttributeInCategoryMutationResult =
+  Apollo.MutationResult<ToggleCmsCardAttributeInCategoryMutation>;
+export type ToggleCmsCardAttributeInCategoryMutationOptions = Apollo.BaseMutationOptions<
+  ToggleCmsCardAttributeInCategoryMutation,
+  ToggleCmsCardAttributeInCategoryMutationVariables
+>;
+export const ToggleCmsCardAttributeInRubricDocument = gql`
+  mutation ToggleCmsCardAttributeInRubric($input: UpdateAttributeInRubricInput!) {
+    toggleCmsCardAttributeInRubric(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type ToggleCmsCardAttributeInRubricMutationFn = Apollo.MutationFunction<
+  ToggleCmsCardAttributeInRubricMutation,
+  ToggleCmsCardAttributeInRubricMutationVariables
+>;
 
 /**
  * __useToggleCmsCardAttributeInRubricMutation__
@@ -3540,22 +3296,39 @@ export type ToggleCmsCardAttributeInRubricMutationFn = Apollo.MutationFunction<T
  *   },
  * });
  */
-export function useToggleCmsCardAttributeInRubricMutation(baseOptions?: Apollo.MutationHookOptions<ToggleCmsCardAttributeInRubricMutation, ToggleCmsCardAttributeInRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ToggleCmsCardAttributeInRubricMutation, ToggleCmsCardAttributeInRubricMutationVariables>(ToggleCmsCardAttributeInRubricDocument, options);
-      }
-export type ToggleCmsCardAttributeInRubricMutationHookResult = ReturnType<typeof useToggleCmsCardAttributeInRubricMutation>;
-export type ToggleCmsCardAttributeInRubricMutationResult = Apollo.MutationResult<ToggleCmsCardAttributeInRubricMutation>;
-export type ToggleCmsCardAttributeInRubricMutationOptions = Apollo.BaseMutationOptions<ToggleCmsCardAttributeInRubricMutation, ToggleCmsCardAttributeInRubricMutationVariables>;
-export const CreateBrandDocument = gql`
-    mutation CreateBrand($input: CreateBrandInput!) {
-  createBrand(input: $input) {
-    success
-    message
-  }
+export function useToggleCmsCardAttributeInRubricMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ToggleCmsCardAttributeInRubricMutation,
+    ToggleCmsCardAttributeInRubricMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    ToggleCmsCardAttributeInRubricMutation,
+    ToggleCmsCardAttributeInRubricMutationVariables
+  >(ToggleCmsCardAttributeInRubricDocument, options);
 }
-    `;
-export type CreateBrandMutationFn = Apollo.MutationFunction<CreateBrandMutation, CreateBrandMutationVariables>;
+export type ToggleCmsCardAttributeInRubricMutationHookResult = ReturnType<
+  typeof useToggleCmsCardAttributeInRubricMutation
+>;
+export type ToggleCmsCardAttributeInRubricMutationResult =
+  Apollo.MutationResult<ToggleCmsCardAttributeInRubricMutation>;
+export type ToggleCmsCardAttributeInRubricMutationOptions = Apollo.BaseMutationOptions<
+  ToggleCmsCardAttributeInRubricMutation,
+  ToggleCmsCardAttributeInRubricMutationVariables
+>;
+export const CreateBrandDocument = gql`
+  mutation CreateBrand($input: CreateBrandInput!) {
+    createBrand(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type CreateBrandMutationFn = Apollo.MutationFunction<
+  CreateBrandMutation,
+  CreateBrandMutationVariables
+>;
 
 /**
  * __useCreateBrandMutation__
@@ -3574,22 +3347,33 @@ export type CreateBrandMutationFn = Apollo.MutationFunction<CreateBrandMutation,
  *   },
  * });
  */
-export function useCreateBrandMutation(baseOptions?: Apollo.MutationHookOptions<CreateBrandMutation, CreateBrandMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateBrandMutation, CreateBrandMutationVariables>(CreateBrandDocument, options);
-      }
+export function useCreateBrandMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateBrandMutation, CreateBrandMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateBrandMutation, CreateBrandMutationVariables>(
+    CreateBrandDocument,
+    options,
+  );
+}
 export type CreateBrandMutationHookResult = ReturnType<typeof useCreateBrandMutation>;
 export type CreateBrandMutationResult = Apollo.MutationResult<CreateBrandMutation>;
-export type CreateBrandMutationOptions = Apollo.BaseMutationOptions<CreateBrandMutation, CreateBrandMutationVariables>;
+export type CreateBrandMutationOptions = Apollo.BaseMutationOptions<
+  CreateBrandMutation,
+  CreateBrandMutationVariables
+>;
 export const UpdateBrandDocument = gql`
-    mutation UpdateBrand($input: UpdateBrandInput!) {
-  updateBrand(input: $input) {
-    success
-    message
+  mutation UpdateBrand($input: UpdateBrandInput!) {
+    updateBrand(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateBrandMutationFn = Apollo.MutationFunction<UpdateBrandMutation, UpdateBrandMutationVariables>;
+`;
+export type UpdateBrandMutationFn = Apollo.MutationFunction<
+  UpdateBrandMutation,
+  UpdateBrandMutationVariables
+>;
 
 /**
  * __useUpdateBrandMutation__
@@ -3608,22 +3392,33 @@ export type UpdateBrandMutationFn = Apollo.MutationFunction<UpdateBrandMutation,
  *   },
  * });
  */
-export function useUpdateBrandMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBrandMutation, UpdateBrandMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateBrandMutation, UpdateBrandMutationVariables>(UpdateBrandDocument, options);
-      }
+export function useUpdateBrandMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateBrandMutation, UpdateBrandMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateBrandMutation, UpdateBrandMutationVariables>(
+    UpdateBrandDocument,
+    options,
+  );
+}
 export type UpdateBrandMutationHookResult = ReturnType<typeof useUpdateBrandMutation>;
 export type UpdateBrandMutationResult = Apollo.MutationResult<UpdateBrandMutation>;
-export type UpdateBrandMutationOptions = Apollo.BaseMutationOptions<UpdateBrandMutation, UpdateBrandMutationVariables>;
+export type UpdateBrandMutationOptions = Apollo.BaseMutationOptions<
+  UpdateBrandMutation,
+  UpdateBrandMutationVariables
+>;
 export const DeleteBrandDocument = gql`
-    mutation DeleteBrand($_id: ObjectId!) {
-  deleteBrand(_id: $_id) {
-    success
-    message
+  mutation DeleteBrand($_id: ObjectId!) {
+    deleteBrand(_id: $_id) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteBrandMutationFn = Apollo.MutationFunction<DeleteBrandMutation, DeleteBrandMutationVariables>;
+`;
+export type DeleteBrandMutationFn = Apollo.MutationFunction<
+  DeleteBrandMutation,
+  DeleteBrandMutationVariables
+>;
 
 /**
  * __useDeleteBrandMutation__
@@ -3642,22 +3437,33 @@ export type DeleteBrandMutationFn = Apollo.MutationFunction<DeleteBrandMutation,
  *   },
  * });
  */
-export function useDeleteBrandMutation(baseOptions?: Apollo.MutationHookOptions<DeleteBrandMutation, DeleteBrandMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteBrandMutation, DeleteBrandMutationVariables>(DeleteBrandDocument, options);
-      }
+export function useDeleteBrandMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteBrandMutation, DeleteBrandMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteBrandMutation, DeleteBrandMutationVariables>(
+    DeleteBrandDocument,
+    options,
+  );
+}
 export type DeleteBrandMutationHookResult = ReturnType<typeof useDeleteBrandMutation>;
 export type DeleteBrandMutationResult = Apollo.MutationResult<DeleteBrandMutation>;
-export type DeleteBrandMutationOptions = Apollo.BaseMutationOptions<DeleteBrandMutation, DeleteBrandMutationVariables>;
+export type DeleteBrandMutationOptions = Apollo.BaseMutationOptions<
+  DeleteBrandMutation,
+  DeleteBrandMutationVariables
+>;
 export const AddCollectionToBrandDocument = gql`
-    mutation AddCollectionToBrand($input: AddCollectionToBrandInput!) {
-  addCollectionToBrand(input: $input) {
-    success
-    message
+  mutation AddCollectionToBrand($input: AddCollectionToBrandInput!) {
+    addCollectionToBrand(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type AddCollectionToBrandMutationFn = Apollo.MutationFunction<AddCollectionToBrandMutation, AddCollectionToBrandMutationVariables>;
+`;
+export type AddCollectionToBrandMutationFn = Apollo.MutationFunction<
+  AddCollectionToBrandMutation,
+  AddCollectionToBrandMutationVariables
+>;
 
 /**
  * __useAddCollectionToBrandMutation__
@@ -3676,22 +3482,39 @@ export type AddCollectionToBrandMutationFn = Apollo.MutationFunction<AddCollecti
  *   },
  * });
  */
-export function useAddCollectionToBrandMutation(baseOptions?: Apollo.MutationHookOptions<AddCollectionToBrandMutation, AddCollectionToBrandMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddCollectionToBrandMutation, AddCollectionToBrandMutationVariables>(AddCollectionToBrandDocument, options);
-      }
-export type AddCollectionToBrandMutationHookResult = ReturnType<typeof useAddCollectionToBrandMutation>;
-export type AddCollectionToBrandMutationResult = Apollo.MutationResult<AddCollectionToBrandMutation>;
-export type AddCollectionToBrandMutationOptions = Apollo.BaseMutationOptions<AddCollectionToBrandMutation, AddCollectionToBrandMutationVariables>;
-export const UpdateCollectionInBrandDocument = gql`
-    mutation UpdateCollectionInBrand($input: UpdateCollectionInBrandInput!) {
-  updateCollectionInBrand(input: $input) {
-    success
-    message
-  }
+export function useAddCollectionToBrandMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    AddCollectionToBrandMutation,
+    AddCollectionToBrandMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<AddCollectionToBrandMutation, AddCollectionToBrandMutationVariables>(
+    AddCollectionToBrandDocument,
+    options,
+  );
 }
-    `;
-export type UpdateCollectionInBrandMutationFn = Apollo.MutationFunction<UpdateCollectionInBrandMutation, UpdateCollectionInBrandMutationVariables>;
+export type AddCollectionToBrandMutationHookResult = ReturnType<
+  typeof useAddCollectionToBrandMutation
+>;
+export type AddCollectionToBrandMutationResult =
+  Apollo.MutationResult<AddCollectionToBrandMutation>;
+export type AddCollectionToBrandMutationOptions = Apollo.BaseMutationOptions<
+  AddCollectionToBrandMutation,
+  AddCollectionToBrandMutationVariables
+>;
+export const UpdateCollectionInBrandDocument = gql`
+  mutation UpdateCollectionInBrand($input: UpdateCollectionInBrandInput!) {
+    updateCollectionInBrand(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type UpdateCollectionInBrandMutationFn = Apollo.MutationFunction<
+  UpdateCollectionInBrandMutation,
+  UpdateCollectionInBrandMutationVariables
+>;
 
 /**
  * __useUpdateCollectionInBrandMutation__
@@ -3710,22 +3533,39 @@ export type UpdateCollectionInBrandMutationFn = Apollo.MutationFunction<UpdateCo
  *   },
  * });
  */
-export function useUpdateCollectionInBrandMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCollectionInBrandMutation, UpdateCollectionInBrandMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateCollectionInBrandMutation, UpdateCollectionInBrandMutationVariables>(UpdateCollectionInBrandDocument, options);
-      }
-export type UpdateCollectionInBrandMutationHookResult = ReturnType<typeof useUpdateCollectionInBrandMutation>;
-export type UpdateCollectionInBrandMutationResult = Apollo.MutationResult<UpdateCollectionInBrandMutation>;
-export type UpdateCollectionInBrandMutationOptions = Apollo.BaseMutationOptions<UpdateCollectionInBrandMutation, UpdateCollectionInBrandMutationVariables>;
-export const DeleteCollectionFromBrandDocument = gql`
-    mutation DeleteCollectionFromBrand($input: DeleteCollectionFromBrandInput!) {
-  deleteCollectionFromBrand(input: $input) {
-    success
-    message
-  }
+export function useUpdateCollectionInBrandMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCollectionInBrandMutation,
+    UpdateCollectionInBrandMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateCollectionInBrandMutation,
+    UpdateCollectionInBrandMutationVariables
+  >(UpdateCollectionInBrandDocument, options);
 }
-    `;
-export type DeleteCollectionFromBrandMutationFn = Apollo.MutationFunction<DeleteCollectionFromBrandMutation, DeleteCollectionFromBrandMutationVariables>;
+export type UpdateCollectionInBrandMutationHookResult = ReturnType<
+  typeof useUpdateCollectionInBrandMutation
+>;
+export type UpdateCollectionInBrandMutationResult =
+  Apollo.MutationResult<UpdateCollectionInBrandMutation>;
+export type UpdateCollectionInBrandMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCollectionInBrandMutation,
+  UpdateCollectionInBrandMutationVariables
+>;
+export const DeleteCollectionFromBrandDocument = gql`
+  mutation DeleteCollectionFromBrand($input: DeleteCollectionFromBrandInput!) {
+    deleteCollectionFromBrand(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type DeleteCollectionFromBrandMutationFn = Apollo.MutationFunction<
+  DeleteCollectionFromBrandMutation,
+  DeleteCollectionFromBrandMutationVariables
+>;
 
 /**
  * __useDeleteCollectionFromBrandMutation__
@@ -3744,22 +3584,39 @@ export type DeleteCollectionFromBrandMutationFn = Apollo.MutationFunction<Delete
  *   },
  * });
  */
-export function useDeleteCollectionFromBrandMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCollectionFromBrandMutation, DeleteCollectionFromBrandMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteCollectionFromBrandMutation, DeleteCollectionFromBrandMutationVariables>(DeleteCollectionFromBrandDocument, options);
-      }
-export type DeleteCollectionFromBrandMutationHookResult = ReturnType<typeof useDeleteCollectionFromBrandMutation>;
-export type DeleteCollectionFromBrandMutationResult = Apollo.MutationResult<DeleteCollectionFromBrandMutation>;
-export type DeleteCollectionFromBrandMutationOptions = Apollo.BaseMutationOptions<DeleteCollectionFromBrandMutation, DeleteCollectionFromBrandMutationVariables>;
-export const CreateCategoryDocument = gql`
-    mutation CreateCategory($input: CreateCategoryInput!) {
-  createCategory(input: $input) {
-    success
-    message
-  }
+export function useDeleteCollectionFromBrandMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteCollectionFromBrandMutation,
+    DeleteCollectionFromBrandMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DeleteCollectionFromBrandMutation,
+    DeleteCollectionFromBrandMutationVariables
+  >(DeleteCollectionFromBrandDocument, options);
 }
-    `;
-export type CreateCategoryMutationFn = Apollo.MutationFunction<CreateCategoryMutation, CreateCategoryMutationVariables>;
+export type DeleteCollectionFromBrandMutationHookResult = ReturnType<
+  typeof useDeleteCollectionFromBrandMutation
+>;
+export type DeleteCollectionFromBrandMutationResult =
+  Apollo.MutationResult<DeleteCollectionFromBrandMutation>;
+export type DeleteCollectionFromBrandMutationOptions = Apollo.BaseMutationOptions<
+  DeleteCollectionFromBrandMutation,
+  DeleteCollectionFromBrandMutationVariables
+>;
+export const CreateCategoryDocument = gql`
+  mutation CreateCategory($input: CreateCategoryInput!) {
+    createCategory(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type CreateCategoryMutationFn = Apollo.MutationFunction<
+  CreateCategoryMutation,
+  CreateCategoryMutationVariables
+>;
 
 /**
  * __useCreateCategoryMutation__
@@ -3778,22 +3635,33 @@ export type CreateCategoryMutationFn = Apollo.MutationFunction<CreateCategoryMut
  *   },
  * });
  */
-export function useCreateCategoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateCategoryMutation, CreateCategoryMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateCategoryMutation, CreateCategoryMutationVariables>(CreateCategoryDocument, options);
-      }
+export function useCreateCategoryMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateCategoryMutation, CreateCategoryMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateCategoryMutation, CreateCategoryMutationVariables>(
+    CreateCategoryDocument,
+    options,
+  );
+}
 export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCategoryMutation>;
 export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
-export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
+export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<
+  CreateCategoryMutation,
+  CreateCategoryMutationVariables
+>;
 export const UpdateCategoryDocument = gql`
-    mutation UpdateCategory($input: UpdateCategoryInput!) {
-  updateCategory(input: $input) {
-    success
-    message
+  mutation UpdateCategory($input: UpdateCategoryInput!) {
+    updateCategory(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateCategoryMutationFn = Apollo.MutationFunction<UpdateCategoryMutation, UpdateCategoryMutationVariables>;
+`;
+export type UpdateCategoryMutationFn = Apollo.MutationFunction<
+  UpdateCategoryMutation,
+  UpdateCategoryMutationVariables
+>;
 
 /**
  * __useUpdateCategoryMutation__
@@ -3812,22 +3680,33 @@ export type UpdateCategoryMutationFn = Apollo.MutationFunction<UpdateCategoryMut
  *   },
  * });
  */
-export function useUpdateCategoryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCategoryMutation, UpdateCategoryMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateCategoryMutation, UpdateCategoryMutationVariables>(UpdateCategoryDocument, options);
-      }
+export function useUpdateCategoryMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateCategoryMutation, UpdateCategoryMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateCategoryMutation, UpdateCategoryMutationVariables>(
+    UpdateCategoryDocument,
+    options,
+  );
+}
 export type UpdateCategoryMutationHookResult = ReturnType<typeof useUpdateCategoryMutation>;
 export type UpdateCategoryMutationResult = Apollo.MutationResult<UpdateCategoryMutation>;
-export type UpdateCategoryMutationOptions = Apollo.BaseMutationOptions<UpdateCategoryMutation, UpdateCategoryMutationVariables>;
+export type UpdateCategoryMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCategoryMutation,
+  UpdateCategoryMutationVariables
+>;
 export const DeleteCategoryDocument = gql`
-    mutation DeleteCategory($_id: ObjectId!) {
-  deleteCategory(_id: $_id) {
-    success
-    message
+  mutation DeleteCategory($_id: ObjectId!) {
+    deleteCategory(_id: $_id) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteCategoryMutationFn = Apollo.MutationFunction<DeleteCategoryMutation, DeleteCategoryMutationVariables>;
+`;
+export type DeleteCategoryMutationFn = Apollo.MutationFunction<
+  DeleteCategoryMutation,
+  DeleteCategoryMutationVariables
+>;
 
 /**
  * __useDeleteCategoryMutation__
@@ -3846,22 +3725,33 @@ export type DeleteCategoryMutationFn = Apollo.MutationFunction<DeleteCategoryMut
  *   },
  * });
  */
-export function useDeleteCategoryMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCategoryMutation, DeleteCategoryMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteCategoryMutation, DeleteCategoryMutationVariables>(DeleteCategoryDocument, options);
-      }
+export function useDeleteCategoryMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteCategoryMutation, DeleteCategoryMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteCategoryMutation, DeleteCategoryMutationVariables>(
+    DeleteCategoryDocument,
+    options,
+  );
+}
 export type DeleteCategoryMutationHookResult = ReturnType<typeof useDeleteCategoryMutation>;
 export type DeleteCategoryMutationResult = Apollo.MutationResult<DeleteCategoryMutation>;
-export type DeleteCategoryMutationOptions = Apollo.BaseMutationOptions<DeleteCategoryMutation, DeleteCategoryMutationVariables>;
+export type DeleteCategoryMutationOptions = Apollo.BaseMutationOptions<
+  DeleteCategoryMutation,
+  DeleteCategoryMutationVariables
+>;
 export const CreateCompanyDocument = gql`
-    mutation CreateCompany($input: CreateCompanyInput!) {
-  createCompany(input: $input) {
-    success
-    message
+  mutation CreateCompany($input: CreateCompanyInput!) {
+    createCompany(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type CreateCompanyMutationFn = Apollo.MutationFunction<CreateCompanyMutation, CreateCompanyMutationVariables>;
+`;
+export type CreateCompanyMutationFn = Apollo.MutationFunction<
+  CreateCompanyMutation,
+  CreateCompanyMutationVariables
+>;
 
 /**
  * __useCreateCompanyMutation__
@@ -3880,22 +3770,33 @@ export type CreateCompanyMutationFn = Apollo.MutationFunction<CreateCompanyMutat
  *   },
  * });
  */
-export function useCreateCompanyMutation(baseOptions?: Apollo.MutationHookOptions<CreateCompanyMutation, CreateCompanyMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateCompanyMutation, CreateCompanyMutationVariables>(CreateCompanyDocument, options);
-      }
+export function useCreateCompanyMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateCompanyMutation, CreateCompanyMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateCompanyMutation, CreateCompanyMutationVariables>(
+    CreateCompanyDocument,
+    options,
+  );
+}
 export type CreateCompanyMutationHookResult = ReturnType<typeof useCreateCompanyMutation>;
 export type CreateCompanyMutationResult = Apollo.MutationResult<CreateCompanyMutation>;
-export type CreateCompanyMutationOptions = Apollo.BaseMutationOptions<CreateCompanyMutation, CreateCompanyMutationVariables>;
+export type CreateCompanyMutationOptions = Apollo.BaseMutationOptions<
+  CreateCompanyMutation,
+  CreateCompanyMutationVariables
+>;
 export const DeleteCompanyDocument = gql`
-    mutation DeleteCompany($_id: ObjectId!) {
-  deleteCompany(_id: $_id) {
-    success
-    message
+  mutation DeleteCompany($_id: ObjectId!) {
+    deleteCompany(_id: $_id) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteCompanyMutationFn = Apollo.MutationFunction<DeleteCompanyMutation, DeleteCompanyMutationVariables>;
+`;
+export type DeleteCompanyMutationFn = Apollo.MutationFunction<
+  DeleteCompanyMutation,
+  DeleteCompanyMutationVariables
+>;
 
 /**
  * __useDeleteCompanyMutation__
@@ -3914,22 +3815,33 @@ export type DeleteCompanyMutationFn = Apollo.MutationFunction<DeleteCompanyMutat
  *   },
  * });
  */
-export function useDeleteCompanyMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCompanyMutation, DeleteCompanyMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteCompanyMutation, DeleteCompanyMutationVariables>(DeleteCompanyDocument, options);
-      }
+export function useDeleteCompanyMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteCompanyMutation, DeleteCompanyMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteCompanyMutation, DeleteCompanyMutationVariables>(
+    DeleteCompanyDocument,
+    options,
+  );
+}
 export type DeleteCompanyMutationHookResult = ReturnType<typeof useDeleteCompanyMutation>;
 export type DeleteCompanyMutationResult = Apollo.MutationResult<DeleteCompanyMutation>;
-export type DeleteCompanyMutationOptions = Apollo.BaseMutationOptions<DeleteCompanyMutation, DeleteCompanyMutationVariables>;
+export type DeleteCompanyMutationOptions = Apollo.BaseMutationOptions<
+  DeleteCompanyMutation,
+  DeleteCompanyMutationVariables
+>;
 export const UpdateCompanyDocument = gql`
-    mutation UpdateCompany($input: UpdateCompanyInput!) {
-  updateCompany(input: $input) {
-    success
-    message
+  mutation UpdateCompany($input: UpdateCompanyInput!) {
+    updateCompany(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateCompanyMutationFn = Apollo.MutationFunction<UpdateCompanyMutation, UpdateCompanyMutationVariables>;
+`;
+export type UpdateCompanyMutationFn = Apollo.MutationFunction<
+  UpdateCompanyMutation,
+  UpdateCompanyMutationVariables
+>;
 
 /**
  * __useUpdateCompanyMutation__
@@ -3948,22 +3860,33 @@ export type UpdateCompanyMutationFn = Apollo.MutationFunction<UpdateCompanyMutat
  *   },
  * });
  */
-export function useUpdateCompanyMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCompanyMutation, UpdateCompanyMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateCompanyMutation, UpdateCompanyMutationVariables>(UpdateCompanyDocument, options);
-      }
+export function useUpdateCompanyMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateCompanyMutation, UpdateCompanyMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateCompanyMutation, UpdateCompanyMutationVariables>(
+    UpdateCompanyDocument,
+    options,
+  );
+}
 export type UpdateCompanyMutationHookResult = ReturnType<typeof useUpdateCompanyMutation>;
 export type UpdateCompanyMutationResult = Apollo.MutationResult<UpdateCompanyMutation>;
-export type UpdateCompanyMutationOptions = Apollo.BaseMutationOptions<UpdateCompanyMutation, UpdateCompanyMutationVariables>;
+export type UpdateCompanyMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCompanyMutation,
+  UpdateCompanyMutationVariables
+>;
 export const AddShopToCompanyDocument = gql`
-    mutation AddShopToCompany($input: AddShopToCompanyInput!) {
-  addShopToCompany(input: $input) {
-    success
-    message
+  mutation AddShopToCompany($input: AddShopToCompanyInput!) {
+    addShopToCompany(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type AddShopToCompanyMutationFn = Apollo.MutationFunction<AddShopToCompanyMutation, AddShopToCompanyMutationVariables>;
+`;
+export type AddShopToCompanyMutationFn = Apollo.MutationFunction<
+  AddShopToCompanyMutation,
+  AddShopToCompanyMutationVariables
+>;
 
 /**
  * __useAddShopToCompanyMutation__
@@ -3982,22 +3905,36 @@ export type AddShopToCompanyMutationFn = Apollo.MutationFunction<AddShopToCompan
  *   },
  * });
  */
-export function useAddShopToCompanyMutation(baseOptions?: Apollo.MutationHookOptions<AddShopToCompanyMutation, AddShopToCompanyMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddShopToCompanyMutation, AddShopToCompanyMutationVariables>(AddShopToCompanyDocument, options);
-      }
+export function useAddShopToCompanyMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    AddShopToCompanyMutation,
+    AddShopToCompanyMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<AddShopToCompanyMutation, AddShopToCompanyMutationVariables>(
+    AddShopToCompanyDocument,
+    options,
+  );
+}
 export type AddShopToCompanyMutationHookResult = ReturnType<typeof useAddShopToCompanyMutation>;
 export type AddShopToCompanyMutationResult = Apollo.MutationResult<AddShopToCompanyMutation>;
-export type AddShopToCompanyMutationOptions = Apollo.BaseMutationOptions<AddShopToCompanyMutation, AddShopToCompanyMutationVariables>;
+export type AddShopToCompanyMutationOptions = Apollo.BaseMutationOptions<
+  AddShopToCompanyMutation,
+  AddShopToCompanyMutationVariables
+>;
 export const DeleteShopFromCompanyDocument = gql`
-    mutation DeleteShopFromCompany($input: DeleteShopFromCompanyInput!) {
-  deleteShopFromCompany(input: $input) {
-    success
-    message
+  mutation DeleteShopFromCompany($input: DeleteShopFromCompanyInput!) {
+    deleteShopFromCompany(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteShopFromCompanyMutationFn = Apollo.MutationFunction<DeleteShopFromCompanyMutation, DeleteShopFromCompanyMutationVariables>;
+`;
+export type DeleteShopFromCompanyMutationFn = Apollo.MutationFunction<
+  DeleteShopFromCompanyMutation,
+  DeleteShopFromCompanyMutationVariables
+>;
 
 /**
  * __useDeleteShopFromCompanyMutation__
@@ -4016,22 +3953,39 @@ export type DeleteShopFromCompanyMutationFn = Apollo.MutationFunction<DeleteShop
  *   },
  * });
  */
-export function useDeleteShopFromCompanyMutation(baseOptions?: Apollo.MutationHookOptions<DeleteShopFromCompanyMutation, DeleteShopFromCompanyMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteShopFromCompanyMutation, DeleteShopFromCompanyMutationVariables>(DeleteShopFromCompanyDocument, options);
-      }
-export type DeleteShopFromCompanyMutationHookResult = ReturnType<typeof useDeleteShopFromCompanyMutation>;
-export type DeleteShopFromCompanyMutationResult = Apollo.MutationResult<DeleteShopFromCompanyMutation>;
-export type DeleteShopFromCompanyMutationOptions = Apollo.BaseMutationOptions<DeleteShopFromCompanyMutation, DeleteShopFromCompanyMutationVariables>;
-export const UpdateConfigDocument = gql`
-    mutation UpdateConfig($input: UpdateConfigInput!) {
-  updateConfig(input: $input) {
-    success
-    message
-  }
+export function useDeleteShopFromCompanyMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteShopFromCompanyMutation,
+    DeleteShopFromCompanyMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteShopFromCompanyMutation, DeleteShopFromCompanyMutationVariables>(
+    DeleteShopFromCompanyDocument,
+    options,
+  );
 }
-    `;
-export type UpdateConfigMutationFn = Apollo.MutationFunction<UpdateConfigMutation, UpdateConfigMutationVariables>;
+export type DeleteShopFromCompanyMutationHookResult = ReturnType<
+  typeof useDeleteShopFromCompanyMutation
+>;
+export type DeleteShopFromCompanyMutationResult =
+  Apollo.MutationResult<DeleteShopFromCompanyMutation>;
+export type DeleteShopFromCompanyMutationOptions = Apollo.BaseMutationOptions<
+  DeleteShopFromCompanyMutation,
+  DeleteShopFromCompanyMutationVariables
+>;
+export const UpdateConfigDocument = gql`
+  mutation UpdateConfig($input: UpdateConfigInput!) {
+    updateConfig(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type UpdateConfigMutationFn = Apollo.MutationFunction<
+  UpdateConfigMutation,
+  UpdateConfigMutationVariables
+>;
 
 /**
  * __useUpdateConfigMutation__
@@ -4050,22 +4004,35 @@ export type UpdateConfigMutationFn = Apollo.MutationFunction<UpdateConfigMutatio
  *   },
  * });
  */
-export function useUpdateConfigMutation(baseOptions?: Apollo.MutationHookOptions<UpdateConfigMutation, UpdateConfigMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateConfigMutation, UpdateConfigMutationVariables>(UpdateConfigDocument, options);
-      }
+export function useUpdateConfigMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateConfigMutation, UpdateConfigMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateConfigMutation, UpdateConfigMutationVariables>(
+    UpdateConfigDocument,
+    options,
+  );
+}
 export type UpdateConfigMutationHookResult = ReturnType<typeof useUpdateConfigMutation>;
 export type UpdateConfigMutationResult = Apollo.MutationResult<UpdateConfigMutation>;
-export type UpdateConfigMutationOptions = Apollo.BaseMutationOptions<UpdateConfigMutation, UpdateConfigMutationVariables>;
+export type UpdateConfigMutationOptions = Apollo.BaseMutationOptions<
+  UpdateConfigMutation,
+  UpdateConfigMutationVariables
+>;
 export const UpdateVisibleCategoriesInNavDropdownDocument = gql`
-    mutation UpdateVisibleCategoriesInNavDropdown($input: UpdateVisibleCategoriesInNavDropdownInput!) {
-  updateVisibleCategoriesInNavDropdown(input: $input) {
-    success
-    message
+  mutation UpdateVisibleCategoriesInNavDropdown(
+    $input: UpdateVisibleCategoriesInNavDropdownInput!
+  ) {
+    updateVisibleCategoriesInNavDropdown(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateVisibleCategoriesInNavDropdownMutationFn = Apollo.MutationFunction<UpdateVisibleCategoriesInNavDropdownMutation, UpdateVisibleCategoriesInNavDropdownMutationVariables>;
+`;
+export type UpdateVisibleCategoriesInNavDropdownMutationFn = Apollo.MutationFunction<
+  UpdateVisibleCategoriesInNavDropdownMutation,
+  UpdateVisibleCategoriesInNavDropdownMutationVariables
+>;
 
 /**
  * __useUpdateVisibleCategoriesInNavDropdownMutation__
@@ -4084,22 +4051,39 @@ export type UpdateVisibleCategoriesInNavDropdownMutationFn = Apollo.MutationFunc
  *   },
  * });
  */
-export function useUpdateVisibleCategoriesInNavDropdownMutation(baseOptions?: Apollo.MutationHookOptions<UpdateVisibleCategoriesInNavDropdownMutation, UpdateVisibleCategoriesInNavDropdownMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateVisibleCategoriesInNavDropdownMutation, UpdateVisibleCategoriesInNavDropdownMutationVariables>(UpdateVisibleCategoriesInNavDropdownDocument, options);
-      }
-export type UpdateVisibleCategoriesInNavDropdownMutationHookResult = ReturnType<typeof useUpdateVisibleCategoriesInNavDropdownMutation>;
-export type UpdateVisibleCategoriesInNavDropdownMutationResult = Apollo.MutationResult<UpdateVisibleCategoriesInNavDropdownMutation>;
-export type UpdateVisibleCategoriesInNavDropdownMutationOptions = Apollo.BaseMutationOptions<UpdateVisibleCategoriesInNavDropdownMutation, UpdateVisibleCategoriesInNavDropdownMutationVariables>;
-export const UpdateRubricNavItemConfigDocument = gql`
-    mutation UpdateRubricNavItemConfig($input: UpdateRubricNavItemConfigInput!) {
-  updateRubricNavItemConfig(input: $input) {
-    success
-    message
-  }
+export function useUpdateVisibleCategoriesInNavDropdownMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateVisibleCategoriesInNavDropdownMutation,
+    UpdateVisibleCategoriesInNavDropdownMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateVisibleCategoriesInNavDropdownMutation,
+    UpdateVisibleCategoriesInNavDropdownMutationVariables
+  >(UpdateVisibleCategoriesInNavDropdownDocument, options);
 }
-    `;
-export type UpdateRubricNavItemConfigMutationFn = Apollo.MutationFunction<UpdateRubricNavItemConfigMutation, UpdateRubricNavItemConfigMutationVariables>;
+export type UpdateVisibleCategoriesInNavDropdownMutationHookResult = ReturnType<
+  typeof useUpdateVisibleCategoriesInNavDropdownMutation
+>;
+export type UpdateVisibleCategoriesInNavDropdownMutationResult =
+  Apollo.MutationResult<UpdateVisibleCategoriesInNavDropdownMutation>;
+export type UpdateVisibleCategoriesInNavDropdownMutationOptions = Apollo.BaseMutationOptions<
+  UpdateVisibleCategoriesInNavDropdownMutation,
+  UpdateVisibleCategoriesInNavDropdownMutationVariables
+>;
+export const UpdateRubricNavItemConfigDocument = gql`
+  mutation UpdateRubricNavItemConfig($input: UpdateRubricNavItemConfigInput!) {
+    updateRubricNavItemConfig(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type UpdateRubricNavItemConfigMutationFn = Apollo.MutationFunction<
+  UpdateRubricNavItemConfigMutation,
+  UpdateRubricNavItemConfigMutationVariables
+>;
 
 /**
  * __useUpdateRubricNavItemConfigMutation__
@@ -4118,19 +4102,36 @@ export type UpdateRubricNavItemConfigMutationFn = Apollo.MutationFunction<Update
  *   },
  * });
  */
-export function useUpdateRubricNavItemConfigMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRubricNavItemConfigMutation, UpdateRubricNavItemConfigMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateRubricNavItemConfigMutation, UpdateRubricNavItemConfigMutationVariables>(UpdateRubricNavItemConfigDocument, options);
-      }
-export type UpdateRubricNavItemConfigMutationHookResult = ReturnType<typeof useUpdateRubricNavItemConfigMutation>;
-export type UpdateRubricNavItemConfigMutationResult = Apollo.MutationResult<UpdateRubricNavItemConfigMutation>;
-export type UpdateRubricNavItemConfigMutationOptions = Apollo.BaseMutationOptions<UpdateRubricNavItemConfigMutation, UpdateRubricNavItemConfigMutationVariables>;
-export const UpdateCatalogueCountersDocument = gql`
-    mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
-  updateCatalogueCounters(input: $input)
+export function useUpdateRubricNavItemConfigMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateRubricNavItemConfigMutation,
+    UpdateRubricNavItemConfigMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateRubricNavItemConfigMutation,
+    UpdateRubricNavItemConfigMutationVariables
+  >(UpdateRubricNavItemConfigDocument, options);
 }
-    `;
-export type UpdateCatalogueCountersMutationFn = Apollo.MutationFunction<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>;
+export type UpdateRubricNavItemConfigMutationHookResult = ReturnType<
+  typeof useUpdateRubricNavItemConfigMutation
+>;
+export type UpdateRubricNavItemConfigMutationResult =
+  Apollo.MutationResult<UpdateRubricNavItemConfigMutation>;
+export type UpdateRubricNavItemConfigMutationOptions = Apollo.BaseMutationOptions<
+  UpdateRubricNavItemConfigMutation,
+  UpdateRubricNavItemConfigMutationVariables
+>;
+export const UpdateCatalogueCountersDocument = gql`
+  mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
+    updateCatalogueCounters(input: $input)
+  }
+`;
+export type UpdateCatalogueCountersMutationFn = Apollo.MutationFunction<
+  UpdateCatalogueCountersMutation,
+  UpdateCatalogueCountersMutationVariables
+>;
 
 /**
  * __useUpdateCatalogueCountersMutation__
@@ -4149,22 +4150,39 @@ export type UpdateCatalogueCountersMutationFn = Apollo.MutationFunction<UpdateCa
  *   },
  * });
  */
-export function useUpdateCatalogueCountersMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>(UpdateCatalogueCountersDocument, options);
-      }
-export type UpdateCatalogueCountersMutationHookResult = ReturnType<typeof useUpdateCatalogueCountersMutation>;
-export type UpdateCatalogueCountersMutationResult = Apollo.MutationResult<UpdateCatalogueCountersMutation>;
-export type UpdateCatalogueCountersMutationOptions = Apollo.BaseMutationOptions<UpdateCatalogueCountersMutation, UpdateCatalogueCountersMutationVariables>;
-export const CreateLanguageDocument = gql`
-    mutation CreateLanguage($input: CreateLanguageInput!) {
-  createLanguage(input: $input) {
-    success
-    message
-  }
+export function useUpdateCatalogueCountersMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCatalogueCountersMutation,
+    UpdateCatalogueCountersMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateCatalogueCountersMutation,
+    UpdateCatalogueCountersMutationVariables
+  >(UpdateCatalogueCountersDocument, options);
 }
-    `;
-export type CreateLanguageMutationFn = Apollo.MutationFunction<CreateLanguageMutation, CreateLanguageMutationVariables>;
+export type UpdateCatalogueCountersMutationHookResult = ReturnType<
+  typeof useUpdateCatalogueCountersMutation
+>;
+export type UpdateCatalogueCountersMutationResult =
+  Apollo.MutationResult<UpdateCatalogueCountersMutation>;
+export type UpdateCatalogueCountersMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCatalogueCountersMutation,
+  UpdateCatalogueCountersMutationVariables
+>;
+export const CreateLanguageDocument = gql`
+  mutation CreateLanguage($input: CreateLanguageInput!) {
+    createLanguage(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type CreateLanguageMutationFn = Apollo.MutationFunction<
+  CreateLanguageMutation,
+  CreateLanguageMutationVariables
+>;
 
 /**
  * __useCreateLanguageMutation__
@@ -4183,22 +4201,33 @@ export type CreateLanguageMutationFn = Apollo.MutationFunction<CreateLanguageMut
  *   },
  * });
  */
-export function useCreateLanguageMutation(baseOptions?: Apollo.MutationHookOptions<CreateLanguageMutation, CreateLanguageMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateLanguageMutation, CreateLanguageMutationVariables>(CreateLanguageDocument, options);
-      }
+export function useCreateLanguageMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateLanguageMutation, CreateLanguageMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateLanguageMutation, CreateLanguageMutationVariables>(
+    CreateLanguageDocument,
+    options,
+  );
+}
 export type CreateLanguageMutationHookResult = ReturnType<typeof useCreateLanguageMutation>;
 export type CreateLanguageMutationResult = Apollo.MutationResult<CreateLanguageMutation>;
-export type CreateLanguageMutationOptions = Apollo.BaseMutationOptions<CreateLanguageMutation, CreateLanguageMutationVariables>;
+export type CreateLanguageMutationOptions = Apollo.BaseMutationOptions<
+  CreateLanguageMutation,
+  CreateLanguageMutationVariables
+>;
 export const UpdateLanguageDocument = gql`
-    mutation UpdateLanguage($input: UpdateLanguageInput!) {
-  updateLanguage(input: $input) {
-    success
-    message
+  mutation UpdateLanguage($input: UpdateLanguageInput!) {
+    updateLanguage(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateLanguageMutationFn = Apollo.MutationFunction<UpdateLanguageMutation, UpdateLanguageMutationVariables>;
+`;
+export type UpdateLanguageMutationFn = Apollo.MutationFunction<
+  UpdateLanguageMutation,
+  UpdateLanguageMutationVariables
+>;
 
 /**
  * __useUpdateLanguageMutation__
@@ -4217,22 +4246,33 @@ export type UpdateLanguageMutationFn = Apollo.MutationFunction<UpdateLanguageMut
  *   },
  * });
  */
-export function useUpdateLanguageMutation(baseOptions?: Apollo.MutationHookOptions<UpdateLanguageMutation, UpdateLanguageMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateLanguageMutation, UpdateLanguageMutationVariables>(UpdateLanguageDocument, options);
-      }
+export function useUpdateLanguageMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateLanguageMutation, UpdateLanguageMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateLanguageMutation, UpdateLanguageMutationVariables>(
+    UpdateLanguageDocument,
+    options,
+  );
+}
 export type UpdateLanguageMutationHookResult = ReturnType<typeof useUpdateLanguageMutation>;
 export type UpdateLanguageMutationResult = Apollo.MutationResult<UpdateLanguageMutation>;
-export type UpdateLanguageMutationOptions = Apollo.BaseMutationOptions<UpdateLanguageMutation, UpdateLanguageMutationVariables>;
+export type UpdateLanguageMutationOptions = Apollo.BaseMutationOptions<
+  UpdateLanguageMutation,
+  UpdateLanguageMutationVariables
+>;
 export const DeleteLanguageDocument = gql`
-    mutation DeleteLanguage($_id: ObjectId!) {
-  deleteLanguage(_id: $_id) {
-    success
-    message
+  mutation DeleteLanguage($_id: ObjectId!) {
+    deleteLanguage(_id: $_id) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteLanguageMutationFn = Apollo.MutationFunction<DeleteLanguageMutation, DeleteLanguageMutationVariables>;
+`;
+export type DeleteLanguageMutationFn = Apollo.MutationFunction<
+  DeleteLanguageMutation,
+  DeleteLanguageMutationVariables
+>;
 
 /**
  * __useDeleteLanguageMutation__
@@ -4251,22 +4291,33 @@ export type DeleteLanguageMutationFn = Apollo.MutationFunction<DeleteLanguageMut
  *   },
  * });
  */
-export function useDeleteLanguageMutation(baseOptions?: Apollo.MutationHookOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteLanguageMutation, DeleteLanguageMutationVariables>(DeleteLanguageDocument, options);
-      }
+export function useDeleteLanguageMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteLanguageMutation, DeleteLanguageMutationVariables>(
+    DeleteLanguageDocument,
+    options,
+  );
+}
 export type DeleteLanguageMutationHookResult = ReturnType<typeof useDeleteLanguageMutation>;
 export type DeleteLanguageMutationResult = Apollo.MutationResult<DeleteLanguageMutation>;
-export type DeleteLanguageMutationOptions = Apollo.BaseMutationOptions<DeleteLanguageMutation, DeleteLanguageMutationVariables>;
+export type DeleteLanguageMutationOptions = Apollo.BaseMutationOptions<
+  DeleteLanguageMutation,
+  DeleteLanguageMutationVariables
+>;
 export const CreateManufacturerDocument = gql`
-    mutation CreateManufacturer($input: CreateManufacturerInput!) {
-  createManufacturer(input: $input) {
-    success
-    message
+  mutation CreateManufacturer($input: CreateManufacturerInput!) {
+    createManufacturer(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type CreateManufacturerMutationFn = Apollo.MutationFunction<CreateManufacturerMutation, CreateManufacturerMutationVariables>;
+`;
+export type CreateManufacturerMutationFn = Apollo.MutationFunction<
+  CreateManufacturerMutation,
+  CreateManufacturerMutationVariables
+>;
 
 /**
  * __useCreateManufacturerMutation__
@@ -4285,22 +4336,36 @@ export type CreateManufacturerMutationFn = Apollo.MutationFunction<CreateManufac
  *   },
  * });
  */
-export function useCreateManufacturerMutation(baseOptions?: Apollo.MutationHookOptions<CreateManufacturerMutation, CreateManufacturerMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateManufacturerMutation, CreateManufacturerMutationVariables>(CreateManufacturerDocument, options);
-      }
+export function useCreateManufacturerMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateManufacturerMutation,
+    CreateManufacturerMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateManufacturerMutation, CreateManufacturerMutationVariables>(
+    CreateManufacturerDocument,
+    options,
+  );
+}
 export type CreateManufacturerMutationHookResult = ReturnType<typeof useCreateManufacturerMutation>;
 export type CreateManufacturerMutationResult = Apollo.MutationResult<CreateManufacturerMutation>;
-export type CreateManufacturerMutationOptions = Apollo.BaseMutationOptions<CreateManufacturerMutation, CreateManufacturerMutationVariables>;
+export type CreateManufacturerMutationOptions = Apollo.BaseMutationOptions<
+  CreateManufacturerMutation,
+  CreateManufacturerMutationVariables
+>;
 export const UpdateManufacturerDocument = gql`
-    mutation UpdateManufacturer($input: UpdateManufacturerInput!) {
-  updateManufacturer(input: $input) {
-    success
-    message
+  mutation UpdateManufacturer($input: UpdateManufacturerInput!) {
+    updateManufacturer(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateManufacturerMutationFn = Apollo.MutationFunction<UpdateManufacturerMutation, UpdateManufacturerMutationVariables>;
+`;
+export type UpdateManufacturerMutationFn = Apollo.MutationFunction<
+  UpdateManufacturerMutation,
+  UpdateManufacturerMutationVariables
+>;
 
 /**
  * __useUpdateManufacturerMutation__
@@ -4319,22 +4384,36 @@ export type UpdateManufacturerMutationFn = Apollo.MutationFunction<UpdateManufac
  *   },
  * });
  */
-export function useUpdateManufacturerMutation(baseOptions?: Apollo.MutationHookOptions<UpdateManufacturerMutation, UpdateManufacturerMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateManufacturerMutation, UpdateManufacturerMutationVariables>(UpdateManufacturerDocument, options);
-      }
+export function useUpdateManufacturerMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateManufacturerMutation,
+    UpdateManufacturerMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateManufacturerMutation, UpdateManufacturerMutationVariables>(
+    UpdateManufacturerDocument,
+    options,
+  );
+}
 export type UpdateManufacturerMutationHookResult = ReturnType<typeof useUpdateManufacturerMutation>;
 export type UpdateManufacturerMutationResult = Apollo.MutationResult<UpdateManufacturerMutation>;
-export type UpdateManufacturerMutationOptions = Apollo.BaseMutationOptions<UpdateManufacturerMutation, UpdateManufacturerMutationVariables>;
+export type UpdateManufacturerMutationOptions = Apollo.BaseMutationOptions<
+  UpdateManufacturerMutation,
+  UpdateManufacturerMutationVariables
+>;
 export const DeleteManufacturerDocument = gql`
-    mutation DeleteManufacturer($_id: ObjectId!) {
-  deleteManufacturer(_id: $_id) {
-    success
-    message
+  mutation DeleteManufacturer($_id: ObjectId!) {
+    deleteManufacturer(_id: $_id) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteManufacturerMutationFn = Apollo.MutationFunction<DeleteManufacturerMutation, DeleteManufacturerMutationVariables>;
+`;
+export type DeleteManufacturerMutationFn = Apollo.MutationFunction<
+  DeleteManufacturerMutation,
+  DeleteManufacturerMutationVariables
+>;
 
 /**
  * __useDeleteManufacturerMutation__
@@ -4353,22 +4432,36 @@ export type DeleteManufacturerMutationFn = Apollo.MutationFunction<DeleteManufac
  *   },
  * });
  */
-export function useDeleteManufacturerMutation(baseOptions?: Apollo.MutationHookOptions<DeleteManufacturerMutation, DeleteManufacturerMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteManufacturerMutation, DeleteManufacturerMutationVariables>(DeleteManufacturerDocument, options);
-      }
+export function useDeleteManufacturerMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteManufacturerMutation,
+    DeleteManufacturerMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteManufacturerMutation, DeleteManufacturerMutationVariables>(
+    DeleteManufacturerDocument,
+    options,
+  );
+}
 export type DeleteManufacturerMutationHookResult = ReturnType<typeof useDeleteManufacturerMutation>;
 export type DeleteManufacturerMutationResult = Apollo.MutationResult<DeleteManufacturerMutation>;
-export type DeleteManufacturerMutationOptions = Apollo.BaseMutationOptions<DeleteManufacturerMutation, DeleteManufacturerMutationVariables>;
+export type DeleteManufacturerMutationOptions = Apollo.BaseMutationOptions<
+  DeleteManufacturerMutation,
+  DeleteManufacturerMutationVariables
+>;
 export const CreateMetricDocument = gql`
-    mutation CreateMetric($input: CreateMetricInput!) {
-  createMetric(input: $input) {
-    success
-    message
+  mutation CreateMetric($input: CreateMetricInput!) {
+    createMetric(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type CreateMetricMutationFn = Apollo.MutationFunction<CreateMetricMutation, CreateMetricMutationVariables>;
+`;
+export type CreateMetricMutationFn = Apollo.MutationFunction<
+  CreateMetricMutation,
+  CreateMetricMutationVariables
+>;
 
 /**
  * __useCreateMetricMutation__
@@ -4387,22 +4480,33 @@ export type CreateMetricMutationFn = Apollo.MutationFunction<CreateMetricMutatio
  *   },
  * });
  */
-export function useCreateMetricMutation(baseOptions?: Apollo.MutationHookOptions<CreateMetricMutation, CreateMetricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateMetricMutation, CreateMetricMutationVariables>(CreateMetricDocument, options);
-      }
+export function useCreateMetricMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateMetricMutation, CreateMetricMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateMetricMutation, CreateMetricMutationVariables>(
+    CreateMetricDocument,
+    options,
+  );
+}
 export type CreateMetricMutationHookResult = ReturnType<typeof useCreateMetricMutation>;
 export type CreateMetricMutationResult = Apollo.MutationResult<CreateMetricMutation>;
-export type CreateMetricMutationOptions = Apollo.BaseMutationOptions<CreateMetricMutation, CreateMetricMutationVariables>;
+export type CreateMetricMutationOptions = Apollo.BaseMutationOptions<
+  CreateMetricMutation,
+  CreateMetricMutationVariables
+>;
 export const UpdateMetricDocument = gql`
-    mutation UpdateMetric($input: UpdateMetricInput!) {
-  updateMetric(input: $input) {
-    success
-    message
+  mutation UpdateMetric($input: UpdateMetricInput!) {
+    updateMetric(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateMetricMutationFn = Apollo.MutationFunction<UpdateMetricMutation, UpdateMetricMutationVariables>;
+`;
+export type UpdateMetricMutationFn = Apollo.MutationFunction<
+  UpdateMetricMutation,
+  UpdateMetricMutationVariables
+>;
 
 /**
  * __useUpdateMetricMutation__
@@ -4421,22 +4525,33 @@ export type UpdateMetricMutationFn = Apollo.MutationFunction<UpdateMetricMutatio
  *   },
  * });
  */
-export function useUpdateMetricMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMetricMutation, UpdateMetricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateMetricMutation, UpdateMetricMutationVariables>(UpdateMetricDocument, options);
-      }
+export function useUpdateMetricMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateMetricMutation, UpdateMetricMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateMetricMutation, UpdateMetricMutationVariables>(
+    UpdateMetricDocument,
+    options,
+  );
+}
 export type UpdateMetricMutationHookResult = ReturnType<typeof useUpdateMetricMutation>;
 export type UpdateMetricMutationResult = Apollo.MutationResult<UpdateMetricMutation>;
-export type UpdateMetricMutationOptions = Apollo.BaseMutationOptions<UpdateMetricMutation, UpdateMetricMutationVariables>;
+export type UpdateMetricMutationOptions = Apollo.BaseMutationOptions<
+  UpdateMetricMutation,
+  UpdateMetricMutationVariables
+>;
 export const DeleteMetricDocument = gql`
-    mutation DeleteMetric($_id: ObjectId!) {
-  deleteMetric(_id: $_id) {
-    success
-    message
+  mutation DeleteMetric($_id: ObjectId!) {
+    deleteMetric(_id: $_id) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteMetricMutationFn = Apollo.MutationFunction<DeleteMetricMutation, DeleteMetricMutationVariables>;
+`;
+export type DeleteMetricMutationFn = Apollo.MutationFunction<
+  DeleteMetricMutation,
+  DeleteMetricMutationVariables
+>;
 
 /**
  * __useDeleteMetricMutation__
@@ -4455,22 +4570,33 @@ export type DeleteMetricMutationFn = Apollo.MutationFunction<DeleteMetricMutatio
  *   },
  * });
  */
-export function useDeleteMetricMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMetricMutation, DeleteMetricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteMetricMutation, DeleteMetricMutationVariables>(DeleteMetricDocument, options);
-      }
+export function useDeleteMetricMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteMetricMutation, DeleteMetricMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteMetricMutation, DeleteMetricMutationVariables>(
+    DeleteMetricDocument,
+    options,
+  );
+}
 export type DeleteMetricMutationHookResult = ReturnType<typeof useDeleteMetricMutation>;
 export type DeleteMetricMutationResult = Apollo.MutationResult<DeleteMetricMutation>;
-export type DeleteMetricMutationOptions = Apollo.BaseMutationOptions<DeleteMetricMutation, DeleteMetricMutationVariables>;
+export type DeleteMetricMutationOptions = Apollo.BaseMutationOptions<
+  DeleteMetricMutation,
+  DeleteMetricMutationVariables
+>;
 export const CreateNavItemDocument = gql`
-    mutation CreateNavItem($input: CreateNavItemInput!) {
-  createNavItem(input: $input) {
-    success
-    message
+  mutation CreateNavItem($input: CreateNavItemInput!) {
+    createNavItem(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type CreateNavItemMutationFn = Apollo.MutationFunction<CreateNavItemMutation, CreateNavItemMutationVariables>;
+`;
+export type CreateNavItemMutationFn = Apollo.MutationFunction<
+  CreateNavItemMutation,
+  CreateNavItemMutationVariables
+>;
 
 /**
  * __useCreateNavItemMutation__
@@ -4489,22 +4615,33 @@ export type CreateNavItemMutationFn = Apollo.MutationFunction<CreateNavItemMutat
  *   },
  * });
  */
-export function useCreateNavItemMutation(baseOptions?: Apollo.MutationHookOptions<CreateNavItemMutation, CreateNavItemMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateNavItemMutation, CreateNavItemMutationVariables>(CreateNavItemDocument, options);
-      }
+export function useCreateNavItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateNavItemMutation, CreateNavItemMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateNavItemMutation, CreateNavItemMutationVariables>(
+    CreateNavItemDocument,
+    options,
+  );
+}
 export type CreateNavItemMutationHookResult = ReturnType<typeof useCreateNavItemMutation>;
 export type CreateNavItemMutationResult = Apollo.MutationResult<CreateNavItemMutation>;
-export type CreateNavItemMutationOptions = Apollo.BaseMutationOptions<CreateNavItemMutation, CreateNavItemMutationVariables>;
+export type CreateNavItemMutationOptions = Apollo.BaseMutationOptions<
+  CreateNavItemMutation,
+  CreateNavItemMutationVariables
+>;
 export const UpdateNavItemDocument = gql`
-    mutation UpdateNavItem($input: UpdateNavItemInput!) {
-  updateNavItem(input: $input) {
-    success
-    message
+  mutation UpdateNavItem($input: UpdateNavItemInput!) {
+    updateNavItem(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateNavItemMutationFn = Apollo.MutationFunction<UpdateNavItemMutation, UpdateNavItemMutationVariables>;
+`;
+export type UpdateNavItemMutationFn = Apollo.MutationFunction<
+  UpdateNavItemMutation,
+  UpdateNavItemMutationVariables
+>;
 
 /**
  * __useUpdateNavItemMutation__
@@ -4523,22 +4660,33 @@ export type UpdateNavItemMutationFn = Apollo.MutationFunction<UpdateNavItemMutat
  *   },
  * });
  */
-export function useUpdateNavItemMutation(baseOptions?: Apollo.MutationHookOptions<UpdateNavItemMutation, UpdateNavItemMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateNavItemMutation, UpdateNavItemMutationVariables>(UpdateNavItemDocument, options);
-      }
+export function useUpdateNavItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateNavItemMutation, UpdateNavItemMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateNavItemMutation, UpdateNavItemMutationVariables>(
+    UpdateNavItemDocument,
+    options,
+  );
+}
 export type UpdateNavItemMutationHookResult = ReturnType<typeof useUpdateNavItemMutation>;
 export type UpdateNavItemMutationResult = Apollo.MutationResult<UpdateNavItemMutation>;
-export type UpdateNavItemMutationOptions = Apollo.BaseMutationOptions<UpdateNavItemMutation, UpdateNavItemMutationVariables>;
+export type UpdateNavItemMutationOptions = Apollo.BaseMutationOptions<
+  UpdateNavItemMutation,
+  UpdateNavItemMutationVariables
+>;
 export const DeleteNavItemDocument = gql`
-    mutation DeleteNavItem($_id: ObjectId!) {
-  deleteNavItem(_id: $_id) {
-    success
-    message
+  mutation DeleteNavItem($_id: ObjectId!) {
+    deleteNavItem(_id: $_id) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteNavItemMutationFn = Apollo.MutationFunction<DeleteNavItemMutation, DeleteNavItemMutationVariables>;
+`;
+export type DeleteNavItemMutationFn = Apollo.MutationFunction<
+  DeleteNavItemMutation,
+  DeleteNavItemMutationVariables
+>;
 
 /**
  * __useDeleteNavItemMutation__
@@ -4557,22 +4705,33 @@ export type DeleteNavItemMutationFn = Apollo.MutationFunction<DeleteNavItemMutat
  *   },
  * });
  */
-export function useDeleteNavItemMutation(baseOptions?: Apollo.MutationHookOptions<DeleteNavItemMutation, DeleteNavItemMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteNavItemMutation, DeleteNavItemMutationVariables>(DeleteNavItemDocument, options);
-      }
+export function useDeleteNavItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteNavItemMutation, DeleteNavItemMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteNavItemMutation, DeleteNavItemMutationVariables>(
+    DeleteNavItemDocument,
+    options,
+  );
+}
 export type DeleteNavItemMutationHookResult = ReturnType<typeof useDeleteNavItemMutation>;
 export type DeleteNavItemMutationResult = Apollo.MutationResult<DeleteNavItemMutation>;
-export type DeleteNavItemMutationOptions = Apollo.BaseMutationOptions<DeleteNavItemMutation, DeleteNavItemMutationVariables>;
+export type DeleteNavItemMutationOptions = Apollo.BaseMutationOptions<
+  DeleteNavItemMutation,
+  DeleteNavItemMutationVariables
+>;
 export const CreateOptionsGroupDocument = gql`
-    mutation CreateOptionsGroup($input: CreateOptionsGroupInput!) {
-  createOptionsGroup(input: $input) {
-    success
-    message
+  mutation CreateOptionsGroup($input: CreateOptionsGroupInput!) {
+    createOptionsGroup(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type CreateOptionsGroupMutationFn = Apollo.MutationFunction<CreateOptionsGroupMutation, CreateOptionsGroupMutationVariables>;
+`;
+export type CreateOptionsGroupMutationFn = Apollo.MutationFunction<
+  CreateOptionsGroupMutation,
+  CreateOptionsGroupMutationVariables
+>;
 
 /**
  * __useCreateOptionsGroupMutation__
@@ -4591,22 +4750,36 @@ export type CreateOptionsGroupMutationFn = Apollo.MutationFunction<CreateOptions
  *   },
  * });
  */
-export function useCreateOptionsGroupMutation(baseOptions?: Apollo.MutationHookOptions<CreateOptionsGroupMutation, CreateOptionsGroupMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateOptionsGroupMutation, CreateOptionsGroupMutationVariables>(CreateOptionsGroupDocument, options);
-      }
+export function useCreateOptionsGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateOptionsGroupMutation,
+    CreateOptionsGroupMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateOptionsGroupMutation, CreateOptionsGroupMutationVariables>(
+    CreateOptionsGroupDocument,
+    options,
+  );
+}
 export type CreateOptionsGroupMutationHookResult = ReturnType<typeof useCreateOptionsGroupMutation>;
 export type CreateOptionsGroupMutationResult = Apollo.MutationResult<CreateOptionsGroupMutation>;
-export type CreateOptionsGroupMutationOptions = Apollo.BaseMutationOptions<CreateOptionsGroupMutation, CreateOptionsGroupMutationVariables>;
+export type CreateOptionsGroupMutationOptions = Apollo.BaseMutationOptions<
+  CreateOptionsGroupMutation,
+  CreateOptionsGroupMutationVariables
+>;
 export const UpdateOptionsGroupDocument = gql`
-    mutation UpdateOptionsGroup($input: UpdateOptionsGroupInput!) {
-  updateOptionsGroup(input: $input) {
-    success
-    message
+  mutation UpdateOptionsGroup($input: UpdateOptionsGroupInput!) {
+    updateOptionsGroup(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateOptionsGroupMutationFn = Apollo.MutationFunction<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>;
+`;
+export type UpdateOptionsGroupMutationFn = Apollo.MutationFunction<
+  UpdateOptionsGroupMutation,
+  UpdateOptionsGroupMutationVariables
+>;
 
 /**
  * __useUpdateOptionsGroupMutation__
@@ -4625,22 +4798,36 @@ export type UpdateOptionsGroupMutationFn = Apollo.MutationFunction<UpdateOptions
  *   },
  * });
  */
-export function useUpdateOptionsGroupMutation(baseOptions?: Apollo.MutationHookOptions<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>(UpdateOptionsGroupDocument, options);
-      }
+export function useUpdateOptionsGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateOptionsGroupMutation,
+    UpdateOptionsGroupMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>(
+    UpdateOptionsGroupDocument,
+    options,
+  );
+}
 export type UpdateOptionsGroupMutationHookResult = ReturnType<typeof useUpdateOptionsGroupMutation>;
 export type UpdateOptionsGroupMutationResult = Apollo.MutationResult<UpdateOptionsGroupMutation>;
-export type UpdateOptionsGroupMutationOptions = Apollo.BaseMutationOptions<UpdateOptionsGroupMutation, UpdateOptionsGroupMutationVariables>;
+export type UpdateOptionsGroupMutationOptions = Apollo.BaseMutationOptions<
+  UpdateOptionsGroupMutation,
+  UpdateOptionsGroupMutationVariables
+>;
 export const DeleteOptionsGroupDocument = gql`
-    mutation DeleteOptionsGroup($_id: ObjectId!) {
-  deleteOptionsGroup(_id: $_id) {
-    success
-    message
+  mutation DeleteOptionsGroup($_id: ObjectId!) {
+    deleteOptionsGroup(_id: $_id) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteOptionsGroupMutationFn = Apollo.MutationFunction<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>;
+`;
+export type DeleteOptionsGroupMutationFn = Apollo.MutationFunction<
+  DeleteOptionsGroupMutation,
+  DeleteOptionsGroupMutationVariables
+>;
 
 /**
  * __useDeleteOptionsGroupMutation__
@@ -4659,22 +4846,36 @@ export type DeleteOptionsGroupMutationFn = Apollo.MutationFunction<DeleteOptions
  *   },
  * });
  */
-export function useDeleteOptionsGroupMutation(baseOptions?: Apollo.MutationHookOptions<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>(DeleteOptionsGroupDocument, options);
-      }
+export function useDeleteOptionsGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteOptionsGroupMutation,
+    DeleteOptionsGroupMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>(
+    DeleteOptionsGroupDocument,
+    options,
+  );
+}
 export type DeleteOptionsGroupMutationHookResult = ReturnType<typeof useDeleteOptionsGroupMutation>;
 export type DeleteOptionsGroupMutationResult = Apollo.MutationResult<DeleteOptionsGroupMutation>;
-export type DeleteOptionsGroupMutationOptions = Apollo.BaseMutationOptions<DeleteOptionsGroupMutation, DeleteOptionsGroupMutationVariables>;
+export type DeleteOptionsGroupMutationOptions = Apollo.BaseMutationOptions<
+  DeleteOptionsGroupMutation,
+  DeleteOptionsGroupMutationVariables
+>;
 export const AddOptionToGroupDocument = gql`
-    mutation AddOptionToGroup($input: AddOptionToGroupInput!) {
-  addOptionToGroup(input: $input) {
-    success
-    message
+  mutation AddOptionToGroup($input: AddOptionToGroupInput!) {
+    addOptionToGroup(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type AddOptionToGroupMutationFn = Apollo.MutationFunction<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>;
+`;
+export type AddOptionToGroupMutationFn = Apollo.MutationFunction<
+  AddOptionToGroupMutation,
+  AddOptionToGroupMutationVariables
+>;
 
 /**
  * __useAddOptionToGroupMutation__
@@ -4693,22 +4894,36 @@ export type AddOptionToGroupMutationFn = Apollo.MutationFunction<AddOptionToGrou
  *   },
  * });
  */
-export function useAddOptionToGroupMutation(baseOptions?: Apollo.MutationHookOptions<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>(AddOptionToGroupDocument, options);
-      }
+export function useAddOptionToGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    AddOptionToGroupMutation,
+    AddOptionToGroupMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>(
+    AddOptionToGroupDocument,
+    options,
+  );
+}
 export type AddOptionToGroupMutationHookResult = ReturnType<typeof useAddOptionToGroupMutation>;
 export type AddOptionToGroupMutationResult = Apollo.MutationResult<AddOptionToGroupMutation>;
-export type AddOptionToGroupMutationOptions = Apollo.BaseMutationOptions<AddOptionToGroupMutation, AddOptionToGroupMutationVariables>;
+export type AddOptionToGroupMutationOptions = Apollo.BaseMutationOptions<
+  AddOptionToGroupMutation,
+  AddOptionToGroupMutationVariables
+>;
 export const UpdateOptionInGroupDocument = gql`
-    mutation UpdateOptionInGroup($input: UpdateOptionInGroupInput!) {
-  updateOptionInGroup(input: $input) {
-    success
-    message
+  mutation UpdateOptionInGroup($input: UpdateOptionInGroupInput!) {
+    updateOptionInGroup(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateOptionInGroupMutationFn = Apollo.MutationFunction<UpdateOptionInGroupMutation, UpdateOptionInGroupMutationVariables>;
+`;
+export type UpdateOptionInGroupMutationFn = Apollo.MutationFunction<
+  UpdateOptionInGroupMutation,
+  UpdateOptionInGroupMutationVariables
+>;
 
 /**
  * __useUpdateOptionInGroupMutation__
@@ -4727,22 +4942,38 @@ export type UpdateOptionInGroupMutationFn = Apollo.MutationFunction<UpdateOption
  *   },
  * });
  */
-export function useUpdateOptionInGroupMutation(baseOptions?: Apollo.MutationHookOptions<UpdateOptionInGroupMutation, UpdateOptionInGroupMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateOptionInGroupMutation, UpdateOptionInGroupMutationVariables>(UpdateOptionInGroupDocument, options);
-      }
-export type UpdateOptionInGroupMutationHookResult = ReturnType<typeof useUpdateOptionInGroupMutation>;
-export type UpdateOptionInGroupMutationResult = Apollo.MutationResult<UpdateOptionInGroupMutation>;
-export type UpdateOptionInGroupMutationOptions = Apollo.BaseMutationOptions<UpdateOptionInGroupMutation, UpdateOptionInGroupMutationVariables>;
-export const DeleteOptionFromGroupDocument = gql`
-    mutation DeleteOptionFromGroup($input: DeleteOptionFromGroupInput!) {
-  deleteOptionFromGroup(input: $input) {
-    success
-    message
-  }
+export function useUpdateOptionInGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateOptionInGroupMutation,
+    UpdateOptionInGroupMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateOptionInGroupMutation, UpdateOptionInGroupMutationVariables>(
+    UpdateOptionInGroupDocument,
+    options,
+  );
 }
-    `;
-export type DeleteOptionFromGroupMutationFn = Apollo.MutationFunction<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>;
+export type UpdateOptionInGroupMutationHookResult = ReturnType<
+  typeof useUpdateOptionInGroupMutation
+>;
+export type UpdateOptionInGroupMutationResult = Apollo.MutationResult<UpdateOptionInGroupMutation>;
+export type UpdateOptionInGroupMutationOptions = Apollo.BaseMutationOptions<
+  UpdateOptionInGroupMutation,
+  UpdateOptionInGroupMutationVariables
+>;
+export const DeleteOptionFromGroupDocument = gql`
+  mutation DeleteOptionFromGroup($input: DeleteOptionFromGroupInput!) {
+    deleteOptionFromGroup(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type DeleteOptionFromGroupMutationFn = Apollo.MutationFunction<
+  DeleteOptionFromGroupMutation,
+  DeleteOptionFromGroupMutationVariables
+>;
 
 /**
  * __useDeleteOptionFromGroupMutation__
@@ -4761,22 +4992,39 @@ export type DeleteOptionFromGroupMutationFn = Apollo.MutationFunction<DeleteOpti
  *   },
  * });
  */
-export function useDeleteOptionFromGroupMutation(baseOptions?: Apollo.MutationHookOptions<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>(DeleteOptionFromGroupDocument, options);
-      }
-export type DeleteOptionFromGroupMutationHookResult = ReturnType<typeof useDeleteOptionFromGroupMutation>;
-export type DeleteOptionFromGroupMutationResult = Apollo.MutationResult<DeleteOptionFromGroupMutation>;
-export type DeleteOptionFromGroupMutationOptions = Apollo.BaseMutationOptions<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>;
-export const MoveOptionDocument = gql`
-    mutation MoveOption($input: MoveOptionInput!) {
-  moveOption(input: $input) {
-    success
-    message
-  }
+export function useDeleteOptionFromGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteOptionFromGroupMutation,
+    DeleteOptionFromGroupMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>(
+    DeleteOptionFromGroupDocument,
+    options,
+  );
 }
-    `;
-export type MoveOptionMutationFn = Apollo.MutationFunction<MoveOptionMutation, MoveOptionMutationVariables>;
+export type DeleteOptionFromGroupMutationHookResult = ReturnType<
+  typeof useDeleteOptionFromGroupMutation
+>;
+export type DeleteOptionFromGroupMutationResult =
+  Apollo.MutationResult<DeleteOptionFromGroupMutation>;
+export type DeleteOptionFromGroupMutationOptions = Apollo.BaseMutationOptions<
+  DeleteOptionFromGroupMutation,
+  DeleteOptionFromGroupMutationVariables
+>;
+export const MoveOptionDocument = gql`
+  mutation MoveOption($input: MoveOptionInput!) {
+    moveOption(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type MoveOptionMutationFn = Apollo.MutationFunction<
+  MoveOptionMutation,
+  MoveOptionMutationVariables
+>;
 
 /**
  * __useMoveOptionMutation__
@@ -4795,22 +5043,33 @@ export type MoveOptionMutationFn = Apollo.MutationFunction<MoveOptionMutation, M
  *   },
  * });
  */
-export function useMoveOptionMutation(baseOptions?: Apollo.MutationHookOptions<MoveOptionMutation, MoveOptionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<MoveOptionMutation, MoveOptionMutationVariables>(MoveOptionDocument, options);
-      }
+export function useMoveOptionMutation(
+  baseOptions?: Apollo.MutationHookOptions<MoveOptionMutation, MoveOptionMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<MoveOptionMutation, MoveOptionMutationVariables>(
+    MoveOptionDocument,
+    options,
+  );
+}
 export type MoveOptionMutationHookResult = ReturnType<typeof useMoveOptionMutation>;
 export type MoveOptionMutationResult = Apollo.MutationResult<MoveOptionMutation>;
-export type MoveOptionMutationOptions = Apollo.BaseMutationOptions<MoveOptionMutation, MoveOptionMutationVariables>;
+export type MoveOptionMutationOptions = Apollo.BaseMutationOptions<
+  MoveOptionMutation,
+  MoveOptionMutationVariables
+>;
 export const CreateOrderStatusDocument = gql`
-    mutation CreateOrderStatus($input: CreateOrderStatusInput!) {
-  createOrderStatus(input: $input) {
-    success
-    message
+  mutation CreateOrderStatus($input: CreateOrderStatusInput!) {
+    createOrderStatus(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type CreateOrderStatusMutationFn = Apollo.MutationFunction<CreateOrderStatusMutation, CreateOrderStatusMutationVariables>;
+`;
+export type CreateOrderStatusMutationFn = Apollo.MutationFunction<
+  CreateOrderStatusMutation,
+  CreateOrderStatusMutationVariables
+>;
 
 /**
  * __useCreateOrderStatusMutation__
@@ -4829,22 +5088,36 @@ export type CreateOrderStatusMutationFn = Apollo.MutationFunction<CreateOrderSta
  *   },
  * });
  */
-export function useCreateOrderStatusMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrderStatusMutation, CreateOrderStatusMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateOrderStatusMutation, CreateOrderStatusMutationVariables>(CreateOrderStatusDocument, options);
-      }
+export function useCreateOrderStatusMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateOrderStatusMutation,
+    CreateOrderStatusMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateOrderStatusMutation, CreateOrderStatusMutationVariables>(
+    CreateOrderStatusDocument,
+    options,
+  );
+}
 export type CreateOrderStatusMutationHookResult = ReturnType<typeof useCreateOrderStatusMutation>;
 export type CreateOrderStatusMutationResult = Apollo.MutationResult<CreateOrderStatusMutation>;
-export type CreateOrderStatusMutationOptions = Apollo.BaseMutationOptions<CreateOrderStatusMutation, CreateOrderStatusMutationVariables>;
+export type CreateOrderStatusMutationOptions = Apollo.BaseMutationOptions<
+  CreateOrderStatusMutation,
+  CreateOrderStatusMutationVariables
+>;
 export const UpdateOrderStatusDocument = gql`
-    mutation UpdateOrderStatus($input: UpdateOrderStatusInput!) {
-  updateOrderStatus(input: $input) {
-    success
-    message
+  mutation UpdateOrderStatus($input: UpdateOrderStatusInput!) {
+    updateOrderStatus(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateOrderStatusMutationFn = Apollo.MutationFunction<UpdateOrderStatusMutation, UpdateOrderStatusMutationVariables>;
+`;
+export type UpdateOrderStatusMutationFn = Apollo.MutationFunction<
+  UpdateOrderStatusMutation,
+  UpdateOrderStatusMutationVariables
+>;
 
 /**
  * __useUpdateOrderStatusMutation__
@@ -4863,22 +5136,36 @@ export type UpdateOrderStatusMutationFn = Apollo.MutationFunction<UpdateOrderSta
  *   },
  * });
  */
-export function useUpdateOrderStatusMutation(baseOptions?: Apollo.MutationHookOptions<UpdateOrderStatusMutation, UpdateOrderStatusMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateOrderStatusMutation, UpdateOrderStatusMutationVariables>(UpdateOrderStatusDocument, options);
-      }
+export function useUpdateOrderStatusMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateOrderStatusMutation,
+    UpdateOrderStatusMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateOrderStatusMutation, UpdateOrderStatusMutationVariables>(
+    UpdateOrderStatusDocument,
+    options,
+  );
+}
 export type UpdateOrderStatusMutationHookResult = ReturnType<typeof useUpdateOrderStatusMutation>;
 export type UpdateOrderStatusMutationResult = Apollo.MutationResult<UpdateOrderStatusMutation>;
-export type UpdateOrderStatusMutationOptions = Apollo.BaseMutationOptions<UpdateOrderStatusMutation, UpdateOrderStatusMutationVariables>;
+export type UpdateOrderStatusMutationOptions = Apollo.BaseMutationOptions<
+  UpdateOrderStatusMutation,
+  UpdateOrderStatusMutationVariables
+>;
 export const DeleteOrderStatusDocument = gql`
-    mutation DeleteOrderStatus($_id: ObjectId!) {
-  deleteOrderStatus(_id: $_id) {
-    success
-    message
+  mutation DeleteOrderStatus($_id: ObjectId!) {
+    deleteOrderStatus(_id: $_id) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteOrderStatusMutationFn = Apollo.MutationFunction<DeleteOrderStatusMutation, DeleteOrderStatusMutationVariables>;
+`;
+export type DeleteOrderStatusMutationFn = Apollo.MutationFunction<
+  DeleteOrderStatusMutation,
+  DeleteOrderStatusMutationVariables
+>;
 
 /**
  * __useDeleteOrderStatusMutation__
@@ -4897,22 +5184,36 @@ export type DeleteOrderStatusMutationFn = Apollo.MutationFunction<DeleteOrderSta
  *   },
  * });
  */
-export function useDeleteOrderStatusMutation(baseOptions?: Apollo.MutationHookOptions<DeleteOrderStatusMutation, DeleteOrderStatusMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteOrderStatusMutation, DeleteOrderStatusMutationVariables>(DeleteOrderStatusDocument, options);
-      }
+export function useDeleteOrderStatusMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteOrderStatusMutation,
+    DeleteOrderStatusMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteOrderStatusMutation, DeleteOrderStatusMutationVariables>(
+    DeleteOrderStatusDocument,
+    options,
+  );
+}
 export type DeleteOrderStatusMutationHookResult = ReturnType<typeof useDeleteOrderStatusMutation>;
 export type DeleteOrderStatusMutationResult = Apollo.MutationResult<DeleteOrderStatusMutation>;
-export type DeleteOrderStatusMutationOptions = Apollo.BaseMutationOptions<DeleteOrderStatusMutation, DeleteOrderStatusMutationVariables>;
+export type DeleteOrderStatusMutationOptions = Apollo.BaseMutationOptions<
+  DeleteOrderStatusMutation,
+  DeleteOrderStatusMutationVariables
+>;
 export const CreateRoleDocument = gql`
-    mutation CreateRole($input: CreateRoleInput!) {
-  createRole(input: $input) {
-    success
-    message
+  mutation CreateRole($input: CreateRoleInput!) {
+    createRole(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type CreateRoleMutationFn = Apollo.MutationFunction<CreateRoleMutation, CreateRoleMutationVariables>;
+`;
+export type CreateRoleMutationFn = Apollo.MutationFunction<
+  CreateRoleMutation,
+  CreateRoleMutationVariables
+>;
 
 /**
  * __useCreateRoleMutation__
@@ -4931,22 +5232,33 @@ export type CreateRoleMutationFn = Apollo.MutationFunction<CreateRoleMutation, C
  *   },
  * });
  */
-export function useCreateRoleMutation(baseOptions?: Apollo.MutationHookOptions<CreateRoleMutation, CreateRoleMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateRoleMutation, CreateRoleMutationVariables>(CreateRoleDocument, options);
-      }
+export function useCreateRoleMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateRoleMutation, CreateRoleMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateRoleMutation, CreateRoleMutationVariables>(
+    CreateRoleDocument,
+    options,
+  );
+}
 export type CreateRoleMutationHookResult = ReturnType<typeof useCreateRoleMutation>;
 export type CreateRoleMutationResult = Apollo.MutationResult<CreateRoleMutation>;
-export type CreateRoleMutationOptions = Apollo.BaseMutationOptions<CreateRoleMutation, CreateRoleMutationVariables>;
+export type CreateRoleMutationOptions = Apollo.BaseMutationOptions<
+  CreateRoleMutation,
+  CreateRoleMutationVariables
+>;
 export const UpdateRoleDocument = gql`
-    mutation UpdateRole($input: UpdateRoleInput!) {
-  updateRole(input: $input) {
-    success
-    message
+  mutation UpdateRole($input: UpdateRoleInput!) {
+    updateRole(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateRoleMutationFn = Apollo.MutationFunction<UpdateRoleMutation, UpdateRoleMutationVariables>;
+`;
+export type UpdateRoleMutationFn = Apollo.MutationFunction<
+  UpdateRoleMutation,
+  UpdateRoleMutationVariables
+>;
 
 /**
  * __useUpdateRoleMutation__
@@ -4965,22 +5277,33 @@ export type UpdateRoleMutationFn = Apollo.MutationFunction<UpdateRoleMutation, U
  *   },
  * });
  */
-export function useUpdateRoleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRoleMutation, UpdateRoleMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateRoleMutation, UpdateRoleMutationVariables>(UpdateRoleDocument, options);
-      }
+export function useUpdateRoleMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateRoleMutation, UpdateRoleMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateRoleMutation, UpdateRoleMutationVariables>(
+    UpdateRoleDocument,
+    options,
+  );
+}
 export type UpdateRoleMutationHookResult = ReturnType<typeof useUpdateRoleMutation>;
 export type UpdateRoleMutationResult = Apollo.MutationResult<UpdateRoleMutation>;
-export type UpdateRoleMutationOptions = Apollo.BaseMutationOptions<UpdateRoleMutation, UpdateRoleMutationVariables>;
+export type UpdateRoleMutationOptions = Apollo.BaseMutationOptions<
+  UpdateRoleMutation,
+  UpdateRoleMutationVariables
+>;
 export const DeleteRoleDocument = gql`
-    mutation DeleteRole($_id: ObjectId!) {
-  deleteRole(_id: $_id) {
-    success
-    message
+  mutation DeleteRole($_id: ObjectId!) {
+    deleteRole(_id: $_id) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteRoleMutationFn = Apollo.MutationFunction<DeleteRoleMutation, DeleteRoleMutationVariables>;
+`;
+export type DeleteRoleMutationFn = Apollo.MutationFunction<
+  DeleteRoleMutation,
+  DeleteRoleMutationVariables
+>;
 
 /**
  * __useDeleteRoleMutation__
@@ -4999,22 +5322,33 @@ export type DeleteRoleMutationFn = Apollo.MutationFunction<DeleteRoleMutation, D
  *   },
  * });
  */
-export function useDeleteRoleMutation(baseOptions?: Apollo.MutationHookOptions<DeleteRoleMutation, DeleteRoleMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteRoleMutation, DeleteRoleMutationVariables>(DeleteRoleDocument, options);
-      }
+export function useDeleteRoleMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteRoleMutation, DeleteRoleMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteRoleMutation, DeleteRoleMutationVariables>(
+    DeleteRoleDocument,
+    options,
+  );
+}
 export type DeleteRoleMutationHookResult = ReturnType<typeof useDeleteRoleMutation>;
 export type DeleteRoleMutationResult = Apollo.MutationResult<DeleteRoleMutation>;
-export type DeleteRoleMutationOptions = Apollo.BaseMutationOptions<DeleteRoleMutation, DeleteRoleMutationVariables>;
+export type DeleteRoleMutationOptions = Apollo.BaseMutationOptions<
+  DeleteRoleMutation,
+  DeleteRoleMutationVariables
+>;
 export const UpdateRoleRuleDocument = gql`
-    mutation UpdateRoleRule($input: UpdateRoleRuleInput!) {
-  updateRoleRule(input: $input) {
-    success
-    message
+  mutation UpdateRoleRule($input: UpdateRoleRuleInput!) {
+    updateRoleRule(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateRoleRuleMutationFn = Apollo.MutationFunction<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>;
+`;
+export type UpdateRoleRuleMutationFn = Apollo.MutationFunction<
+  UpdateRoleRuleMutation,
+  UpdateRoleRuleMutationVariables
+>;
 
 /**
  * __useUpdateRoleRuleMutation__
@@ -5033,22 +5367,33 @@ export type UpdateRoleRuleMutationFn = Apollo.MutationFunction<UpdateRoleRuleMut
  *   },
  * });
  */
-export function useUpdateRoleRuleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>(UpdateRoleRuleDocument, options);
-      }
+export function useUpdateRoleRuleMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>(
+    UpdateRoleRuleDocument,
+    options,
+  );
+}
 export type UpdateRoleRuleMutationHookResult = ReturnType<typeof useUpdateRoleRuleMutation>;
 export type UpdateRoleRuleMutationResult = Apollo.MutationResult<UpdateRoleRuleMutation>;
-export type UpdateRoleRuleMutationOptions = Apollo.BaseMutationOptions<UpdateRoleRuleMutation, UpdateRoleRuleMutationVariables>;
+export type UpdateRoleRuleMutationOptions = Apollo.BaseMutationOptions<
+  UpdateRoleRuleMutation,
+  UpdateRoleRuleMutationVariables
+>;
 export const UpdateRoleNavDocument = gql`
-    mutation UpdateRoleNav($input: UpdateRoleNavInput!) {
-  updateRoleNav(input: $input) {
-    success
-    message
+  mutation UpdateRoleNav($input: UpdateRoleNavInput!) {
+    updateRoleNav(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateRoleNavMutationFn = Apollo.MutationFunction<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>;
+`;
+export type UpdateRoleNavMutationFn = Apollo.MutationFunction<
+  UpdateRoleNavMutation,
+  UpdateRoleNavMutationVariables
+>;
 
 /**
  * __useUpdateRoleNavMutation__
@@ -5067,22 +5412,33 @@ export type UpdateRoleNavMutationFn = Apollo.MutationFunction<UpdateRoleNavMutat
  *   },
  * });
  */
-export function useUpdateRoleNavMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>(UpdateRoleNavDocument, options);
-      }
+export function useUpdateRoleNavMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>(
+    UpdateRoleNavDocument,
+    options,
+  );
+}
 export type UpdateRoleNavMutationHookResult = ReturnType<typeof useUpdateRoleNavMutation>;
 export type UpdateRoleNavMutationResult = Apollo.MutationResult<UpdateRoleNavMutation>;
-export type UpdateRoleNavMutationOptions = Apollo.BaseMutationOptions<UpdateRoleNavMutation, UpdateRoleNavMutationVariables>;
+export type UpdateRoleNavMutationOptions = Apollo.BaseMutationOptions<
+  UpdateRoleNavMutation,
+  UpdateRoleNavMutationVariables
+>;
 export const CreateRubricVariantDocument = gql`
-    mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
-  createRubricVariant(input: $input) {
-    success
-    message
+  mutation CreateRubricVariant($input: CreateRubricVariantInput!) {
+    createRubricVariant(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type CreateRubricVariantMutationFn = Apollo.MutationFunction<CreateRubricVariantMutation, CreateRubricVariantMutationVariables>;
+`;
+export type CreateRubricVariantMutationFn = Apollo.MutationFunction<
+  CreateRubricVariantMutation,
+  CreateRubricVariantMutationVariables
+>;
 
 /**
  * __useCreateRubricVariantMutation__
@@ -5101,22 +5457,38 @@ export type CreateRubricVariantMutationFn = Apollo.MutationFunction<CreateRubric
  *   },
  * });
  */
-export function useCreateRubricVariantMutation(baseOptions?: Apollo.MutationHookOptions<CreateRubricVariantMutation, CreateRubricVariantMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateRubricVariantMutation, CreateRubricVariantMutationVariables>(CreateRubricVariantDocument, options);
-      }
-export type CreateRubricVariantMutationHookResult = ReturnType<typeof useCreateRubricVariantMutation>;
-export type CreateRubricVariantMutationResult = Apollo.MutationResult<CreateRubricVariantMutation>;
-export type CreateRubricVariantMutationOptions = Apollo.BaseMutationOptions<CreateRubricVariantMutation, CreateRubricVariantMutationVariables>;
-export const UpdateRubricVariantDocument = gql`
-    mutation UpdateRubricVariant($input: UpdateRubricVariantInput!) {
-  updateRubricVariant(input: $input) {
-    success
-    message
-  }
+export function useCreateRubricVariantMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateRubricVariantMutation,
+    CreateRubricVariantMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateRubricVariantMutation, CreateRubricVariantMutationVariables>(
+    CreateRubricVariantDocument,
+    options,
+  );
 }
-    `;
-export type UpdateRubricVariantMutationFn = Apollo.MutationFunction<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>;
+export type CreateRubricVariantMutationHookResult = ReturnType<
+  typeof useCreateRubricVariantMutation
+>;
+export type CreateRubricVariantMutationResult = Apollo.MutationResult<CreateRubricVariantMutation>;
+export type CreateRubricVariantMutationOptions = Apollo.BaseMutationOptions<
+  CreateRubricVariantMutation,
+  CreateRubricVariantMutationVariables
+>;
+export const UpdateRubricVariantDocument = gql`
+  mutation UpdateRubricVariant($input: UpdateRubricVariantInput!) {
+    updateRubricVariant(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type UpdateRubricVariantMutationFn = Apollo.MutationFunction<
+  UpdateRubricVariantMutation,
+  UpdateRubricVariantMutationVariables
+>;
 
 /**
  * __useUpdateRubricVariantMutation__
@@ -5135,22 +5507,38 @@ export type UpdateRubricVariantMutationFn = Apollo.MutationFunction<UpdateRubric
  *   },
  * });
  */
-export function useUpdateRubricVariantMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>(UpdateRubricVariantDocument, options);
-      }
-export type UpdateRubricVariantMutationHookResult = ReturnType<typeof useUpdateRubricVariantMutation>;
-export type UpdateRubricVariantMutationResult = Apollo.MutationResult<UpdateRubricVariantMutation>;
-export type UpdateRubricVariantMutationOptions = Apollo.BaseMutationOptions<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>;
-export const DeleteRubricVariantDocument = gql`
-    mutation DeleteRubricVariant($_id: ObjectId!) {
-  deleteRubricVariant(_id: $_id) {
-    success
-    message
-  }
+export function useUpdateRubricVariantMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateRubricVariantMutation,
+    UpdateRubricVariantMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateRubricVariantMutation, UpdateRubricVariantMutationVariables>(
+    UpdateRubricVariantDocument,
+    options,
+  );
 }
-    `;
-export type DeleteRubricVariantMutationFn = Apollo.MutationFunction<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>;
+export type UpdateRubricVariantMutationHookResult = ReturnType<
+  typeof useUpdateRubricVariantMutation
+>;
+export type UpdateRubricVariantMutationResult = Apollo.MutationResult<UpdateRubricVariantMutation>;
+export type UpdateRubricVariantMutationOptions = Apollo.BaseMutationOptions<
+  UpdateRubricVariantMutation,
+  UpdateRubricVariantMutationVariables
+>;
+export const DeleteRubricVariantDocument = gql`
+  mutation DeleteRubricVariant($_id: ObjectId!) {
+    deleteRubricVariant(_id: $_id) {
+      success
+      message
+    }
+  }
+`;
+export type DeleteRubricVariantMutationFn = Apollo.MutationFunction<
+  DeleteRubricVariantMutation,
+  DeleteRubricVariantMutationVariables
+>;
 
 /**
  * __useDeleteRubricVariantMutation__
@@ -5169,22 +5557,38 @@ export type DeleteRubricVariantMutationFn = Apollo.MutationFunction<DeleteRubric
  *   },
  * });
  */
-export function useDeleteRubricVariantMutation(baseOptions?: Apollo.MutationHookOptions<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>(DeleteRubricVariantDocument, options);
-      }
-export type DeleteRubricVariantMutationHookResult = ReturnType<typeof useDeleteRubricVariantMutation>;
-export type DeleteRubricVariantMutationResult = Apollo.MutationResult<DeleteRubricVariantMutation>;
-export type DeleteRubricVariantMutationOptions = Apollo.BaseMutationOptions<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>;
-export const CreateRubricDocument = gql`
-    mutation CreateRubric($input: CreateRubricInput!) {
-  createRubric(input: $input) {
-    success
-    message
-  }
+export function useDeleteRubricVariantMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteRubricVariantMutation,
+    DeleteRubricVariantMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>(
+    DeleteRubricVariantDocument,
+    options,
+  );
 }
-    `;
-export type CreateRubricMutationFn = Apollo.MutationFunction<CreateRubricMutation, CreateRubricMutationVariables>;
+export type DeleteRubricVariantMutationHookResult = ReturnType<
+  typeof useDeleteRubricVariantMutation
+>;
+export type DeleteRubricVariantMutationResult = Apollo.MutationResult<DeleteRubricVariantMutation>;
+export type DeleteRubricVariantMutationOptions = Apollo.BaseMutationOptions<
+  DeleteRubricVariantMutation,
+  DeleteRubricVariantMutationVariables
+>;
+export const CreateRubricDocument = gql`
+  mutation CreateRubric($input: CreateRubricInput!) {
+    createRubric(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type CreateRubricMutationFn = Apollo.MutationFunction<
+  CreateRubricMutation,
+  CreateRubricMutationVariables
+>;
 
 /**
  * __useCreateRubricMutation__
@@ -5203,22 +5607,33 @@ export type CreateRubricMutationFn = Apollo.MutationFunction<CreateRubricMutatio
  *   },
  * });
  */
-export function useCreateRubricMutation(baseOptions?: Apollo.MutationHookOptions<CreateRubricMutation, CreateRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateRubricMutation, CreateRubricMutationVariables>(CreateRubricDocument, options);
-      }
+export function useCreateRubricMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateRubricMutation, CreateRubricMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateRubricMutation, CreateRubricMutationVariables>(
+    CreateRubricDocument,
+    options,
+  );
+}
 export type CreateRubricMutationHookResult = ReturnType<typeof useCreateRubricMutation>;
 export type CreateRubricMutationResult = Apollo.MutationResult<CreateRubricMutation>;
-export type CreateRubricMutationOptions = Apollo.BaseMutationOptions<CreateRubricMutation, CreateRubricMutationVariables>;
+export type CreateRubricMutationOptions = Apollo.BaseMutationOptions<
+  CreateRubricMutation,
+  CreateRubricMutationVariables
+>;
 export const UpdateRubricDocument = gql`
-    mutation UpdateRubric($input: UpdateRubricInput!) {
-  updateRubric(input: $input) {
-    success
-    message
+  mutation UpdateRubric($input: UpdateRubricInput!) {
+    updateRubric(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateRubricMutationFn = Apollo.MutationFunction<UpdateRubricMutation, UpdateRubricMutationVariables>;
+`;
+export type UpdateRubricMutationFn = Apollo.MutationFunction<
+  UpdateRubricMutation,
+  UpdateRubricMutationVariables
+>;
 
 /**
  * __useUpdateRubricMutation__
@@ -5237,22 +5652,33 @@ export type UpdateRubricMutationFn = Apollo.MutationFunction<UpdateRubricMutatio
  *   },
  * });
  */
-export function useUpdateRubricMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRubricMutation, UpdateRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateRubricMutation, UpdateRubricMutationVariables>(UpdateRubricDocument, options);
-      }
+export function useUpdateRubricMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateRubricMutation, UpdateRubricMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateRubricMutation, UpdateRubricMutationVariables>(
+    UpdateRubricDocument,
+    options,
+  );
+}
 export type UpdateRubricMutationHookResult = ReturnType<typeof useUpdateRubricMutation>;
 export type UpdateRubricMutationResult = Apollo.MutationResult<UpdateRubricMutation>;
-export type UpdateRubricMutationOptions = Apollo.BaseMutationOptions<UpdateRubricMutation, UpdateRubricMutationVariables>;
+export type UpdateRubricMutationOptions = Apollo.BaseMutationOptions<
+  UpdateRubricMutation,
+  UpdateRubricMutationVariables
+>;
 export const DeleteRubricDocument = gql`
-    mutation DeleteRubric($_id: ObjectId!) {
-  deleteRubric(_id: $_id) {
-    success
-    message
+  mutation DeleteRubric($_id: ObjectId!) {
+    deleteRubric(_id: $_id) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteRubricMutationFn = Apollo.MutationFunction<DeleteRubricMutation, DeleteRubricMutationVariables>;
+`;
+export type DeleteRubricMutationFn = Apollo.MutationFunction<
+  DeleteRubricMutation,
+  DeleteRubricMutationVariables
+>;
 
 /**
  * __useDeleteRubricMutation__
@@ -5271,22 +5697,33 @@ export type DeleteRubricMutationFn = Apollo.MutationFunction<DeleteRubricMutatio
  *   },
  * });
  */
-export function useDeleteRubricMutation(baseOptions?: Apollo.MutationHookOptions<DeleteRubricMutation, DeleteRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteRubricMutation, DeleteRubricMutationVariables>(DeleteRubricDocument, options);
-      }
+export function useDeleteRubricMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteRubricMutation, DeleteRubricMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteRubricMutation, DeleteRubricMutationVariables>(
+    DeleteRubricDocument,
+    options,
+  );
+}
 export type DeleteRubricMutationHookResult = ReturnType<typeof useDeleteRubricMutation>;
 export type DeleteRubricMutationResult = Apollo.MutationResult<DeleteRubricMutation>;
-export type DeleteRubricMutationOptions = Apollo.BaseMutationOptions<DeleteRubricMutation, DeleteRubricMutationVariables>;
+export type DeleteRubricMutationOptions = Apollo.BaseMutationOptions<
+  DeleteRubricMutation,
+  DeleteRubricMutationVariables
+>;
 export const UpdateAttributeInRubricDocument = gql`
-    mutation UpdateAttributeInRubric($input: UpdateAttributeInRubricInput!) {
-  updateAttributeInRubric(input: $input) {
-    success
-    message
+  mutation UpdateAttributeInRubric($input: UpdateAttributeInRubricInput!) {
+    updateAttributeInRubric(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateAttributeInRubricMutationFn = Apollo.MutationFunction<UpdateAttributeInRubricMutation, UpdateAttributeInRubricMutationVariables>;
+`;
+export type UpdateAttributeInRubricMutationFn = Apollo.MutationFunction<
+  UpdateAttributeInRubricMutation,
+  UpdateAttributeInRubricMutationVariables
+>;
 
 /**
  * __useUpdateAttributeInRubricMutation__
@@ -5305,22 +5742,39 @@ export type UpdateAttributeInRubricMutationFn = Apollo.MutationFunction<UpdateAt
  *   },
  * });
  */
-export function useUpdateAttributeInRubricMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAttributeInRubricMutation, UpdateAttributeInRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateAttributeInRubricMutation, UpdateAttributeInRubricMutationVariables>(UpdateAttributeInRubricDocument, options);
-      }
-export type UpdateAttributeInRubricMutationHookResult = ReturnType<typeof useUpdateAttributeInRubricMutation>;
-export type UpdateAttributeInRubricMutationResult = Apollo.MutationResult<UpdateAttributeInRubricMutation>;
-export type UpdateAttributeInRubricMutationOptions = Apollo.BaseMutationOptions<UpdateAttributeInRubricMutation, UpdateAttributeInRubricMutationVariables>;
-export const UpdateShopDocument = gql`
-    mutation UpdateShop($input: UpdateShopInput!) {
-  updateShop(input: $input) {
-    success
-    message
-  }
+export function useUpdateAttributeInRubricMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateAttributeInRubricMutation,
+    UpdateAttributeInRubricMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateAttributeInRubricMutation,
+    UpdateAttributeInRubricMutationVariables
+  >(UpdateAttributeInRubricDocument, options);
 }
-    `;
-export type UpdateShopMutationFn = Apollo.MutationFunction<UpdateShopMutation, UpdateShopMutationVariables>;
+export type UpdateAttributeInRubricMutationHookResult = ReturnType<
+  typeof useUpdateAttributeInRubricMutation
+>;
+export type UpdateAttributeInRubricMutationResult =
+  Apollo.MutationResult<UpdateAttributeInRubricMutation>;
+export type UpdateAttributeInRubricMutationOptions = Apollo.BaseMutationOptions<
+  UpdateAttributeInRubricMutation,
+  UpdateAttributeInRubricMutationVariables
+>;
+export const UpdateShopDocument = gql`
+  mutation UpdateShop($input: UpdateShopInput!) {
+    updateShop(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type UpdateShopMutationFn = Apollo.MutationFunction<
+  UpdateShopMutation,
+  UpdateShopMutationVariables
+>;
 
 /**
  * __useUpdateShopMutation__
@@ -5339,22 +5793,33 @@ export type UpdateShopMutationFn = Apollo.MutationFunction<UpdateShopMutation, U
  *   },
  * });
  */
-export function useUpdateShopMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShopMutation, UpdateShopMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateShopMutation, UpdateShopMutationVariables>(UpdateShopDocument, options);
-      }
+export function useUpdateShopMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateShopMutation, UpdateShopMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateShopMutation, UpdateShopMutationVariables>(
+    UpdateShopDocument,
+    options,
+  );
+}
 export type UpdateShopMutationHookResult = ReturnType<typeof useUpdateShopMutation>;
 export type UpdateShopMutationResult = Apollo.MutationResult<UpdateShopMutation>;
-export type UpdateShopMutationOptions = Apollo.BaseMutationOptions<UpdateShopMutation, UpdateShopMutationVariables>;
+export type UpdateShopMutationOptions = Apollo.BaseMutationOptions<
+  UpdateShopMutation,
+  UpdateShopMutationVariables
+>;
 export const GenerateShopTokenDocument = gql`
-    mutation GenerateShopToken($_id: ObjectId!) {
-  generateShopToken(_id: $_id) {
-    success
-    message
+  mutation GenerateShopToken($_id: ObjectId!) {
+    generateShopToken(_id: $_id) {
+      success
+      message
+    }
   }
-}
-    `;
-export type GenerateShopTokenMutationFn = Apollo.MutationFunction<GenerateShopTokenMutation, GenerateShopTokenMutationVariables>;
+`;
+export type GenerateShopTokenMutationFn = Apollo.MutationFunction<
+  GenerateShopTokenMutation,
+  GenerateShopTokenMutationVariables
+>;
 
 /**
  * __useGenerateShopTokenMutation__
@@ -5373,22 +5838,36 @@ export type GenerateShopTokenMutationFn = Apollo.MutationFunction<GenerateShopTo
  *   },
  * });
  */
-export function useGenerateShopTokenMutation(baseOptions?: Apollo.MutationHookOptions<GenerateShopTokenMutation, GenerateShopTokenMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<GenerateShopTokenMutation, GenerateShopTokenMutationVariables>(GenerateShopTokenDocument, options);
-      }
+export function useGenerateShopTokenMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    GenerateShopTokenMutation,
+    GenerateShopTokenMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<GenerateShopTokenMutation, GenerateShopTokenMutationVariables>(
+    GenerateShopTokenDocument,
+    options,
+  );
+}
 export type GenerateShopTokenMutationHookResult = ReturnType<typeof useGenerateShopTokenMutation>;
 export type GenerateShopTokenMutationResult = Apollo.MutationResult<GenerateShopTokenMutation>;
-export type GenerateShopTokenMutationOptions = Apollo.BaseMutationOptions<GenerateShopTokenMutation, GenerateShopTokenMutationVariables>;
+export type GenerateShopTokenMutationOptions = Apollo.BaseMutationOptions<
+  GenerateShopTokenMutation,
+  GenerateShopTokenMutationVariables
+>;
 export const DeleteShopAssetDocument = gql`
-    mutation DeleteShopAsset($input: DeleteShopAssetInput!) {
-  deleteShopAsset(input: $input) {
-    success
-    message
+  mutation DeleteShopAsset($input: DeleteShopAssetInput!) {
+    deleteShopAsset(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteShopAssetMutationFn = Apollo.MutationFunction<DeleteShopAssetMutation, DeleteShopAssetMutationVariables>;
+`;
+export type DeleteShopAssetMutationFn = Apollo.MutationFunction<
+  DeleteShopAssetMutation,
+  DeleteShopAssetMutationVariables
+>;
 
 /**
  * __useDeleteShopAssetMutation__
@@ -5407,22 +5886,36 @@ export type DeleteShopAssetMutationFn = Apollo.MutationFunction<DeleteShopAssetM
  *   },
  * });
  */
-export function useDeleteShopAssetMutation(baseOptions?: Apollo.MutationHookOptions<DeleteShopAssetMutation, DeleteShopAssetMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteShopAssetMutation, DeleteShopAssetMutationVariables>(DeleteShopAssetDocument, options);
-      }
+export function useDeleteShopAssetMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteShopAssetMutation,
+    DeleteShopAssetMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteShopAssetMutation, DeleteShopAssetMutationVariables>(
+    DeleteShopAssetDocument,
+    options,
+  );
+}
 export type DeleteShopAssetMutationHookResult = ReturnType<typeof useDeleteShopAssetMutation>;
 export type DeleteShopAssetMutationResult = Apollo.MutationResult<DeleteShopAssetMutation>;
-export type DeleteShopAssetMutationOptions = Apollo.BaseMutationOptions<DeleteShopAssetMutation, DeleteShopAssetMutationVariables>;
+export type DeleteShopAssetMutationOptions = Apollo.BaseMutationOptions<
+  DeleteShopAssetMutation,
+  DeleteShopAssetMutationVariables
+>;
 export const UpdateShopAssetIndexDocument = gql`
-    mutation UpdateShopAssetIndex($input: UpdateShopAssetIndexInput!) {
-  updateShopAssetIndex(input: $input) {
-    success
-    message
+  mutation UpdateShopAssetIndex($input: UpdateShopAssetIndexInput!) {
+    updateShopAssetIndex(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateShopAssetIndexMutationFn = Apollo.MutationFunction<UpdateShopAssetIndexMutation, UpdateShopAssetIndexMutationVariables>;
+`;
+export type UpdateShopAssetIndexMutationFn = Apollo.MutationFunction<
+  UpdateShopAssetIndexMutation,
+  UpdateShopAssetIndexMutationVariables
+>;
 
 /**
  * __useUpdateShopAssetIndexMutation__
@@ -5441,22 +5934,39 @@ export type UpdateShopAssetIndexMutationFn = Apollo.MutationFunction<UpdateShopA
  *   },
  * });
  */
-export function useUpdateShopAssetIndexMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShopAssetIndexMutation, UpdateShopAssetIndexMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateShopAssetIndexMutation, UpdateShopAssetIndexMutationVariables>(UpdateShopAssetIndexDocument, options);
-      }
-export type UpdateShopAssetIndexMutationHookResult = ReturnType<typeof useUpdateShopAssetIndexMutation>;
-export type UpdateShopAssetIndexMutationResult = Apollo.MutationResult<UpdateShopAssetIndexMutation>;
-export type UpdateShopAssetIndexMutationOptions = Apollo.BaseMutationOptions<UpdateShopAssetIndexMutation, UpdateShopAssetIndexMutationVariables>;
-export const AddManyProductsToShopDocument = gql`
-    mutation AddManyProductsToShop($input: [AddProductToShopInput!]!) {
-  addManyProductsToShop(input: $input) {
-    success
-    message
-  }
+export function useUpdateShopAssetIndexMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateShopAssetIndexMutation,
+    UpdateShopAssetIndexMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateShopAssetIndexMutation, UpdateShopAssetIndexMutationVariables>(
+    UpdateShopAssetIndexDocument,
+    options,
+  );
 }
-    `;
-export type AddManyProductsToShopMutationFn = Apollo.MutationFunction<AddManyProductsToShopMutation, AddManyProductsToShopMutationVariables>;
+export type UpdateShopAssetIndexMutationHookResult = ReturnType<
+  typeof useUpdateShopAssetIndexMutation
+>;
+export type UpdateShopAssetIndexMutationResult =
+  Apollo.MutationResult<UpdateShopAssetIndexMutation>;
+export type UpdateShopAssetIndexMutationOptions = Apollo.BaseMutationOptions<
+  UpdateShopAssetIndexMutation,
+  UpdateShopAssetIndexMutationVariables
+>;
+export const AddManyProductsToShopDocument = gql`
+  mutation AddManyProductsToShop($input: [AddProductToShopInput!]!) {
+    addManyProductsToShop(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type AddManyProductsToShopMutationFn = Apollo.MutationFunction<
+  AddManyProductsToShopMutation,
+  AddManyProductsToShopMutationVariables
+>;
 
 /**
  * __useAddManyProductsToShopMutation__
@@ -5475,22 +5985,39 @@ export type AddManyProductsToShopMutationFn = Apollo.MutationFunction<AddManyPro
  *   },
  * });
  */
-export function useAddManyProductsToShopMutation(baseOptions?: Apollo.MutationHookOptions<AddManyProductsToShopMutation, AddManyProductsToShopMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddManyProductsToShopMutation, AddManyProductsToShopMutationVariables>(AddManyProductsToShopDocument, options);
-      }
-export type AddManyProductsToShopMutationHookResult = ReturnType<typeof useAddManyProductsToShopMutation>;
-export type AddManyProductsToShopMutationResult = Apollo.MutationResult<AddManyProductsToShopMutation>;
-export type AddManyProductsToShopMutationOptions = Apollo.BaseMutationOptions<AddManyProductsToShopMutation, AddManyProductsToShopMutationVariables>;
-export const DeleteProductFromShopDocument = gql`
-    mutation DeleteProductFromShop($input: DeleteProductFromShopInput!) {
-  deleteProductFromShop(input: $input) {
-    success
-    message
-  }
+export function useAddManyProductsToShopMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    AddManyProductsToShopMutation,
+    AddManyProductsToShopMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<AddManyProductsToShopMutation, AddManyProductsToShopMutationVariables>(
+    AddManyProductsToShopDocument,
+    options,
+  );
 }
-    `;
-export type DeleteProductFromShopMutationFn = Apollo.MutationFunction<DeleteProductFromShopMutation, DeleteProductFromShopMutationVariables>;
+export type AddManyProductsToShopMutationHookResult = ReturnType<
+  typeof useAddManyProductsToShopMutation
+>;
+export type AddManyProductsToShopMutationResult =
+  Apollo.MutationResult<AddManyProductsToShopMutation>;
+export type AddManyProductsToShopMutationOptions = Apollo.BaseMutationOptions<
+  AddManyProductsToShopMutation,
+  AddManyProductsToShopMutationVariables
+>;
+export const DeleteProductFromShopDocument = gql`
+  mutation DeleteProductFromShop($input: DeleteProductFromShopInput!) {
+    deleteProductFromShop(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type DeleteProductFromShopMutationFn = Apollo.MutationFunction<
+  DeleteProductFromShopMutation,
+  DeleteProductFromShopMutationVariables
+>;
 
 /**
  * __useDeleteProductFromShopMutation__
@@ -5509,22 +6036,39 @@ export type DeleteProductFromShopMutationFn = Apollo.MutationFunction<DeleteProd
  *   },
  * });
  */
-export function useDeleteProductFromShopMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProductFromShopMutation, DeleteProductFromShopMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteProductFromShopMutation, DeleteProductFromShopMutationVariables>(DeleteProductFromShopDocument, options);
-      }
-export type DeleteProductFromShopMutationHookResult = ReturnType<typeof useDeleteProductFromShopMutation>;
-export type DeleteProductFromShopMutationResult = Apollo.MutationResult<DeleteProductFromShopMutation>;
-export type DeleteProductFromShopMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromShopMutation, DeleteProductFromShopMutationVariables>;
-export const AddShopProductSupplierDocument = gql`
-    mutation AddShopProductSupplier($input: AddShopProductSupplierInput!) {
-  addShopProductSupplier(input: $input) {
-    success
-    message
-  }
+export function useDeleteProductFromShopMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteProductFromShopMutation,
+    DeleteProductFromShopMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteProductFromShopMutation, DeleteProductFromShopMutationVariables>(
+    DeleteProductFromShopDocument,
+    options,
+  );
 }
-    `;
-export type AddShopProductSupplierMutationFn = Apollo.MutationFunction<AddShopProductSupplierMutation, AddShopProductSupplierMutationVariables>;
+export type DeleteProductFromShopMutationHookResult = ReturnType<
+  typeof useDeleteProductFromShopMutation
+>;
+export type DeleteProductFromShopMutationResult =
+  Apollo.MutationResult<DeleteProductFromShopMutation>;
+export type DeleteProductFromShopMutationOptions = Apollo.BaseMutationOptions<
+  DeleteProductFromShopMutation,
+  DeleteProductFromShopMutationVariables
+>;
+export const AddShopProductSupplierDocument = gql`
+  mutation AddShopProductSupplier($input: AddShopProductSupplierInput!) {
+    addShopProductSupplier(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type AddShopProductSupplierMutationFn = Apollo.MutationFunction<
+  AddShopProductSupplierMutation,
+  AddShopProductSupplierMutationVariables
+>;
 
 /**
  * __useAddShopProductSupplierMutation__
@@ -5543,22 +6087,39 @@ export type AddShopProductSupplierMutationFn = Apollo.MutationFunction<AddShopPr
  *   },
  * });
  */
-export function useAddShopProductSupplierMutation(baseOptions?: Apollo.MutationHookOptions<AddShopProductSupplierMutation, AddShopProductSupplierMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddShopProductSupplierMutation, AddShopProductSupplierMutationVariables>(AddShopProductSupplierDocument, options);
-      }
-export type AddShopProductSupplierMutationHookResult = ReturnType<typeof useAddShopProductSupplierMutation>;
-export type AddShopProductSupplierMutationResult = Apollo.MutationResult<AddShopProductSupplierMutation>;
-export type AddShopProductSupplierMutationOptions = Apollo.BaseMutationOptions<AddShopProductSupplierMutation, AddShopProductSupplierMutationVariables>;
-export const UpdateShopProductSupplierDocument = gql`
-    mutation UpdateShopProductSupplier($input: UpdateShopProductSupplierInput!) {
-  updateShopProductSupplier(input: $input) {
-    success
-    message
-  }
+export function useAddShopProductSupplierMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    AddShopProductSupplierMutation,
+    AddShopProductSupplierMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    AddShopProductSupplierMutation,
+    AddShopProductSupplierMutationVariables
+  >(AddShopProductSupplierDocument, options);
 }
-    `;
-export type UpdateShopProductSupplierMutationFn = Apollo.MutationFunction<UpdateShopProductSupplierMutation, UpdateShopProductSupplierMutationVariables>;
+export type AddShopProductSupplierMutationHookResult = ReturnType<
+  typeof useAddShopProductSupplierMutation
+>;
+export type AddShopProductSupplierMutationResult =
+  Apollo.MutationResult<AddShopProductSupplierMutation>;
+export type AddShopProductSupplierMutationOptions = Apollo.BaseMutationOptions<
+  AddShopProductSupplierMutation,
+  AddShopProductSupplierMutationVariables
+>;
+export const UpdateShopProductSupplierDocument = gql`
+  mutation UpdateShopProductSupplier($input: UpdateShopProductSupplierInput!) {
+    updateShopProductSupplier(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type UpdateShopProductSupplierMutationFn = Apollo.MutationFunction<
+  UpdateShopProductSupplierMutation,
+  UpdateShopProductSupplierMutationVariables
+>;
 
 /**
  * __useUpdateShopProductSupplierMutation__
@@ -5577,22 +6138,39 @@ export type UpdateShopProductSupplierMutationFn = Apollo.MutationFunction<Update
  *   },
  * });
  */
-export function useUpdateShopProductSupplierMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShopProductSupplierMutation, UpdateShopProductSupplierMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateShopProductSupplierMutation, UpdateShopProductSupplierMutationVariables>(UpdateShopProductSupplierDocument, options);
-      }
-export type UpdateShopProductSupplierMutationHookResult = ReturnType<typeof useUpdateShopProductSupplierMutation>;
-export type UpdateShopProductSupplierMutationResult = Apollo.MutationResult<UpdateShopProductSupplierMutation>;
-export type UpdateShopProductSupplierMutationOptions = Apollo.BaseMutationOptions<UpdateShopProductSupplierMutation, UpdateShopProductSupplierMutationVariables>;
-export const DeleteShopProductSupplierDocument = gql`
-    mutation DeleteShopProductSupplier($_id: ObjectId!) {
-  deleteShopProductSupplier(_id: $_id) {
-    success
-    message
-  }
+export function useUpdateShopProductSupplierMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateShopProductSupplierMutation,
+    UpdateShopProductSupplierMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateShopProductSupplierMutation,
+    UpdateShopProductSupplierMutationVariables
+  >(UpdateShopProductSupplierDocument, options);
 }
-    `;
-export type DeleteShopProductSupplierMutationFn = Apollo.MutationFunction<DeleteShopProductSupplierMutation, DeleteShopProductSupplierMutationVariables>;
+export type UpdateShopProductSupplierMutationHookResult = ReturnType<
+  typeof useUpdateShopProductSupplierMutation
+>;
+export type UpdateShopProductSupplierMutationResult =
+  Apollo.MutationResult<UpdateShopProductSupplierMutation>;
+export type UpdateShopProductSupplierMutationOptions = Apollo.BaseMutationOptions<
+  UpdateShopProductSupplierMutation,
+  UpdateShopProductSupplierMutationVariables
+>;
+export const DeleteShopProductSupplierDocument = gql`
+  mutation DeleteShopProductSupplier($_id: ObjectId!) {
+    deleteShopProductSupplier(_id: $_id) {
+      success
+      message
+    }
+  }
+`;
+export type DeleteShopProductSupplierMutationFn = Apollo.MutationFunction<
+  DeleteShopProductSupplierMutation,
+  DeleteShopProductSupplierMutationVariables
+>;
 
 /**
  * __useDeleteShopProductSupplierMutation__
@@ -5611,22 +6189,39 @@ export type DeleteShopProductSupplierMutationFn = Apollo.MutationFunction<Delete
  *   },
  * });
  */
-export function useDeleteShopProductSupplierMutation(baseOptions?: Apollo.MutationHookOptions<DeleteShopProductSupplierMutation, DeleteShopProductSupplierMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteShopProductSupplierMutation, DeleteShopProductSupplierMutationVariables>(DeleteShopProductSupplierDocument, options);
-      }
-export type DeleteShopProductSupplierMutationHookResult = ReturnType<typeof useDeleteShopProductSupplierMutation>;
-export type DeleteShopProductSupplierMutationResult = Apollo.MutationResult<DeleteShopProductSupplierMutation>;
-export type DeleteShopProductSupplierMutationOptions = Apollo.BaseMutationOptions<DeleteShopProductSupplierMutation, DeleteShopProductSupplierMutationVariables>;
-export const CreateSupplierDocument = gql`
-    mutation CreateSupplier($input: CreateSupplierInput!) {
-  createSupplier(input: $input) {
-    success
-    message
-  }
+export function useDeleteShopProductSupplierMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteShopProductSupplierMutation,
+    DeleteShopProductSupplierMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DeleteShopProductSupplierMutation,
+    DeleteShopProductSupplierMutationVariables
+  >(DeleteShopProductSupplierDocument, options);
 }
-    `;
-export type CreateSupplierMutationFn = Apollo.MutationFunction<CreateSupplierMutation, CreateSupplierMutationVariables>;
+export type DeleteShopProductSupplierMutationHookResult = ReturnType<
+  typeof useDeleteShopProductSupplierMutation
+>;
+export type DeleteShopProductSupplierMutationResult =
+  Apollo.MutationResult<DeleteShopProductSupplierMutation>;
+export type DeleteShopProductSupplierMutationOptions = Apollo.BaseMutationOptions<
+  DeleteShopProductSupplierMutation,
+  DeleteShopProductSupplierMutationVariables
+>;
+export const CreateSupplierDocument = gql`
+  mutation CreateSupplier($input: CreateSupplierInput!) {
+    createSupplier(input: $input) {
+      success
+      message
+    }
+  }
+`;
+export type CreateSupplierMutationFn = Apollo.MutationFunction<
+  CreateSupplierMutation,
+  CreateSupplierMutationVariables
+>;
 
 /**
  * __useCreateSupplierMutation__
@@ -5645,22 +6240,33 @@ export type CreateSupplierMutationFn = Apollo.MutationFunction<CreateSupplierMut
  *   },
  * });
  */
-export function useCreateSupplierMutation(baseOptions?: Apollo.MutationHookOptions<CreateSupplierMutation, CreateSupplierMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateSupplierMutation, CreateSupplierMutationVariables>(CreateSupplierDocument, options);
-      }
+export function useCreateSupplierMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateSupplierMutation, CreateSupplierMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateSupplierMutation, CreateSupplierMutationVariables>(
+    CreateSupplierDocument,
+    options,
+  );
+}
 export type CreateSupplierMutationHookResult = ReturnType<typeof useCreateSupplierMutation>;
 export type CreateSupplierMutationResult = Apollo.MutationResult<CreateSupplierMutation>;
-export type CreateSupplierMutationOptions = Apollo.BaseMutationOptions<CreateSupplierMutation, CreateSupplierMutationVariables>;
+export type CreateSupplierMutationOptions = Apollo.BaseMutationOptions<
+  CreateSupplierMutation,
+  CreateSupplierMutationVariables
+>;
 export const UpdateSupplierDocument = gql`
-    mutation UpdateSupplier($input: UpdateSupplierInput!) {
-  updateSupplier(input: $input) {
-    success
-    message
+  mutation UpdateSupplier($input: UpdateSupplierInput!) {
+    updateSupplier(input: $input) {
+      success
+      message
+    }
   }
-}
-    `;
-export type UpdateSupplierMutationFn = Apollo.MutationFunction<UpdateSupplierMutation, UpdateSupplierMutationVariables>;
+`;
+export type UpdateSupplierMutationFn = Apollo.MutationFunction<
+  UpdateSupplierMutation,
+  UpdateSupplierMutationVariables
+>;
 
 /**
  * __useUpdateSupplierMutation__
@@ -5679,22 +6285,33 @@ export type UpdateSupplierMutationFn = Apollo.MutationFunction<UpdateSupplierMut
  *   },
  * });
  */
-export function useUpdateSupplierMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSupplierMutation, UpdateSupplierMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateSupplierMutation, UpdateSupplierMutationVariables>(UpdateSupplierDocument, options);
-      }
+export function useUpdateSupplierMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateSupplierMutation, UpdateSupplierMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateSupplierMutation, UpdateSupplierMutationVariables>(
+    UpdateSupplierDocument,
+    options,
+  );
+}
 export type UpdateSupplierMutationHookResult = ReturnType<typeof useUpdateSupplierMutation>;
 export type UpdateSupplierMutationResult = Apollo.MutationResult<UpdateSupplierMutation>;
-export type UpdateSupplierMutationOptions = Apollo.BaseMutationOptions<UpdateSupplierMutation, UpdateSupplierMutationVariables>;
+export type UpdateSupplierMutationOptions = Apollo.BaseMutationOptions<
+  UpdateSupplierMutation,
+  UpdateSupplierMutationVariables
+>;
 export const DeleteSupplierDocument = gql`
-    mutation DeleteSupplier($_id: ObjectId!) {
-  deleteSupplier(_id: $_id) {
-    success
-    message
+  mutation DeleteSupplier($_id: ObjectId!) {
+    deleteSupplier(_id: $_id) {
+      success
+      message
+    }
   }
-}
-    `;
-export type DeleteSupplierMutationFn = Apollo.MutationFunction<DeleteSupplierMutation, DeleteSupplierMutationVariables>;
+`;
+export type DeleteSupplierMutationFn = Apollo.MutationFunction<
+  DeleteSupplierMutation,
+  DeleteSupplierMutationVariables
+>;
 
 /**
  * __useDeleteSupplierMutation__
@@ -5713,25 +6330,33 @@ export type DeleteSupplierMutationFn = Apollo.MutationFunction<DeleteSupplierMut
  *   },
  * });
  */
-export function useDeleteSupplierMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSupplierMutation, DeleteSupplierMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteSupplierMutation, DeleteSupplierMutationVariables>(DeleteSupplierDocument, options);
-      }
+export function useDeleteSupplierMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteSupplierMutation, DeleteSupplierMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteSupplierMutation, DeleteSupplierMutationVariables>(
+    DeleteSupplierDocument,
+    options,
+  );
+}
 export type DeleteSupplierMutationHookResult = ReturnType<typeof useDeleteSupplierMutation>;
 export type DeleteSupplierMutationResult = Apollo.MutationResult<DeleteSupplierMutation>;
-export type DeleteSupplierMutationOptions = Apollo.BaseMutationOptions<DeleteSupplierMutation, DeleteSupplierMutationVariables>;
+export type DeleteSupplierMutationOptions = Apollo.BaseMutationOptions<
+  DeleteSupplierMutation,
+  DeleteSupplierMutationVariables
+>;
 export const GetBrandAlphabetListsDocument = gql`
-    query GetBrandAlphabetLists($input: BrandAlphabetInput) {
-  getBrandAlphabetLists(input: $input) {
-    letter
-    docs {
-      _id
-      itemId
-      name
+  query GetBrandAlphabetLists($input: BrandAlphabetInput) {
+    getBrandAlphabetLists(input: $input) {
+      letter
+      docs {
+        _id
+        itemId
+        name
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetBrandAlphabetListsQuery__
@@ -5749,29 +6374,50 @@ export const GetBrandAlphabetListsDocument = gql`
  *   },
  * });
  */
-export function useGetBrandAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>(GetBrandAlphabetListsDocument, options);
-      }
-export function useGetBrandAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>(GetBrandAlphabetListsDocument, options);
-        }
+export function useGetBrandAlphabetListsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetBrandAlphabetListsQuery,
+    GetBrandAlphabetListsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>(
+    GetBrandAlphabetListsDocument,
+    options,
+  );
+}
+export function useGetBrandAlphabetListsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetBrandAlphabetListsQuery,
+    GetBrandAlphabetListsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>(
+    GetBrandAlphabetListsDocument,
+    options,
+  );
+}
 export type GetBrandAlphabetListsQueryHookResult = ReturnType<typeof useGetBrandAlphabetListsQuery>;
-export type GetBrandAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetBrandAlphabetListsLazyQuery>;
-export type GetBrandAlphabetListsQueryResult = Apollo.QueryResult<GetBrandAlphabetListsQuery, GetBrandAlphabetListsQueryVariables>;
+export type GetBrandAlphabetListsLazyQueryHookResult = ReturnType<
+  typeof useGetBrandAlphabetListsLazyQuery
+>;
+export type GetBrandAlphabetListsQueryResult = Apollo.QueryResult<
+  GetBrandAlphabetListsQuery,
+  GetBrandAlphabetListsQueryVariables
+>;
 export const GetBrandCollectionAlphabetListsDocument = gql`
-    query GetBrandCollectionAlphabetLists($input: BrandCollectionAlphabetInput) {
-  getBrandCollectionAlphabetLists(input: $input) {
-    letter
-    docs {
-      _id
-      itemId
-      name
+  query GetBrandCollectionAlphabetLists($input: BrandCollectionAlphabetInput) {
+    getBrandCollectionAlphabetLists(input: $input) {
+      letter
+      docs {
+        _id
+        itemId
+        name
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetBrandCollectionAlphabetListsQuery__
@@ -5789,26 +6435,45 @@ export const GetBrandCollectionAlphabetListsDocument = gql`
  *   },
  * });
  */
-export function useGetBrandCollectionAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>(GetBrandCollectionAlphabetListsDocument, options);
-      }
-export function useGetBrandCollectionAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>(GetBrandCollectionAlphabetListsDocument, options);
-        }
-export type GetBrandCollectionAlphabetListsQueryHookResult = ReturnType<typeof useGetBrandCollectionAlphabetListsQuery>;
-export type GetBrandCollectionAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetBrandCollectionAlphabetListsLazyQuery>;
-export type GetBrandCollectionAlphabetListsQueryResult = Apollo.QueryResult<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>;
+export function useGetBrandCollectionAlphabetListsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetBrandCollectionAlphabetListsQuery,
+    GetBrandCollectionAlphabetListsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetBrandCollectionAlphabetListsQuery,
+    GetBrandCollectionAlphabetListsQueryVariables
+  >(GetBrandCollectionAlphabetListsDocument, options);
+}
+export function useGetBrandCollectionAlphabetListsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetBrandCollectionAlphabetListsQuery,
+    GetBrandCollectionAlphabetListsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetBrandCollectionAlphabetListsQuery,
+    GetBrandCollectionAlphabetListsQueryVariables
+  >(GetBrandCollectionAlphabetListsDocument, options);
+}
+export type GetBrandCollectionAlphabetListsQueryHookResult = ReturnType<
+  typeof useGetBrandCollectionAlphabetListsQuery
+>;
+export type GetBrandCollectionAlphabetListsLazyQueryHookResult = ReturnType<
+  typeof useGetBrandCollectionAlphabetListsLazyQuery
+>;
+export type GetBrandCollectionAlphabetListsQueryResult = Apollo.QueryResult<
+  GetBrandCollectionAlphabetListsQuery,
+  GetBrandCollectionAlphabetListsQueryVariables
+>;
 export const GetCategoriesAlphabetListsDocument = gql`
-    query GetCategoriesAlphabetLists($input: CategoryAlphabetInput) {
-  getCategoriesAlphabetLists(input: $input) {
-    letter
-    docs {
-      _id
-      slug
-      name
-      categories {
+  query GetCategoriesAlphabetLists($input: CategoryAlphabetInput) {
+    getCategoriesAlphabetLists(input: $input) {
+      letter
+      docs {
         _id
         slug
         name
@@ -5828,6 +6493,11 @@ export const GetCategoriesAlphabetListsDocument = gql`
                 _id
                 slug
                 name
+                categories {
+                  _id
+                  slug
+                  name
+                }
               }
             }
           }
@@ -5835,8 +6505,7 @@ export const GetCategoriesAlphabetListsDocument = gql`
       }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetCategoriesAlphabetListsQuery__
@@ -5854,29 +6523,52 @@ export const GetCategoriesAlphabetListsDocument = gql`
  *   },
  * });
  */
-export function useGetCategoriesAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetCategoriesAlphabetListsQuery, GetCategoriesAlphabetListsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCategoriesAlphabetListsQuery, GetCategoriesAlphabetListsQueryVariables>(GetCategoriesAlphabetListsDocument, options);
-      }
-export function useGetCategoriesAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCategoriesAlphabetListsQuery, GetCategoriesAlphabetListsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCategoriesAlphabetListsQuery, GetCategoriesAlphabetListsQueryVariables>(GetCategoriesAlphabetListsDocument, options);
-        }
-export type GetCategoriesAlphabetListsQueryHookResult = ReturnType<typeof useGetCategoriesAlphabetListsQuery>;
-export type GetCategoriesAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetCategoriesAlphabetListsLazyQuery>;
-export type GetCategoriesAlphabetListsQueryResult = Apollo.QueryResult<GetCategoriesAlphabetListsQuery, GetCategoriesAlphabetListsQueryVariables>;
+export function useGetCategoriesAlphabetListsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetCategoriesAlphabetListsQuery,
+    GetCategoriesAlphabetListsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetCategoriesAlphabetListsQuery, GetCategoriesAlphabetListsQueryVariables>(
+    GetCategoriesAlphabetListsDocument,
+    options,
+  );
+}
+export function useGetCategoriesAlphabetListsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCategoriesAlphabetListsQuery,
+    GetCategoriesAlphabetListsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetCategoriesAlphabetListsQuery,
+    GetCategoriesAlphabetListsQueryVariables
+  >(GetCategoriesAlphabetListsDocument, options);
+}
+export type GetCategoriesAlphabetListsQueryHookResult = ReturnType<
+  typeof useGetCategoriesAlphabetListsQuery
+>;
+export type GetCategoriesAlphabetListsLazyQueryHookResult = ReturnType<
+  typeof useGetCategoriesAlphabetListsLazyQuery
+>;
+export type GetCategoriesAlphabetListsQueryResult = Apollo.QueryResult<
+  GetCategoriesAlphabetListsQuery,
+  GetCategoriesAlphabetListsQueryVariables
+>;
 export const GetManufacturerAlphabetListsDocument = gql`
-    query GetManufacturerAlphabetLists($input: ManufacturerAlphabetInput) {
-  getManufacturerAlphabetLists(input: $input) {
-    letter
-    docs {
-      _id
-      itemId
-      name
+  query GetManufacturerAlphabetLists($input: ManufacturerAlphabetInput) {
+    getManufacturerAlphabetLists(input: $input) {
+      letter
+      docs {
+        _id
+        itemId
+        name
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetManufacturerAlphabetListsQuery__
@@ -5894,29 +6586,52 @@ export const GetManufacturerAlphabetListsDocument = gql`
  *   },
  * });
  */
-export function useGetManufacturerAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>(GetManufacturerAlphabetListsDocument, options);
-      }
-export function useGetManufacturerAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>(GetManufacturerAlphabetListsDocument, options);
-        }
-export type GetManufacturerAlphabetListsQueryHookResult = ReturnType<typeof useGetManufacturerAlphabetListsQuery>;
-export type GetManufacturerAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetManufacturerAlphabetListsLazyQuery>;
-export type GetManufacturerAlphabetListsQueryResult = Apollo.QueryResult<GetManufacturerAlphabetListsQuery, GetManufacturerAlphabetListsQueryVariables>;
+export function useGetManufacturerAlphabetListsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetManufacturerAlphabetListsQuery,
+    GetManufacturerAlphabetListsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetManufacturerAlphabetListsQuery,
+    GetManufacturerAlphabetListsQueryVariables
+  >(GetManufacturerAlphabetListsDocument, options);
+}
+export function useGetManufacturerAlphabetListsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetManufacturerAlphabetListsQuery,
+    GetManufacturerAlphabetListsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetManufacturerAlphabetListsQuery,
+    GetManufacturerAlphabetListsQueryVariables
+  >(GetManufacturerAlphabetListsDocument, options);
+}
+export type GetManufacturerAlphabetListsQueryHookResult = ReturnType<
+  typeof useGetManufacturerAlphabetListsQuery
+>;
+export type GetManufacturerAlphabetListsLazyQueryHookResult = ReturnType<
+  typeof useGetManufacturerAlphabetListsLazyQuery
+>;
+export type GetManufacturerAlphabetListsQueryResult = Apollo.QueryResult<
+  GetManufacturerAlphabetListsQuery,
+  GetManufacturerAlphabetListsQueryVariables
+>;
 export const GetSupplierAlphabetListsDocument = gql`
-    query GetSupplierAlphabetLists($input: SupplierAlphabetInput) {
-  getSupplierAlphabetLists(input: $input) {
-    letter
-    docs {
-      _id
-      itemId
-      name
+  query GetSupplierAlphabetLists($input: SupplierAlphabetInput) {
+    getSupplierAlphabetLists(input: $input) {
+      letter
+      docs {
+        _id
+        itemId
+        name
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetSupplierAlphabetListsQuery__
@@ -5934,26 +6649,45 @@ export const GetSupplierAlphabetListsDocument = gql`
  *   },
  * });
  */
-export function useGetSupplierAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>(GetSupplierAlphabetListsDocument, options);
-      }
-export function useGetSupplierAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>(GetSupplierAlphabetListsDocument, options);
-        }
-export type GetSupplierAlphabetListsQueryHookResult = ReturnType<typeof useGetSupplierAlphabetListsQuery>;
-export type GetSupplierAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetSupplierAlphabetListsLazyQuery>;
-export type GetSupplierAlphabetListsQueryResult = Apollo.QueryResult<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>;
+export function useGetSupplierAlphabetListsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetSupplierAlphabetListsQuery,
+    GetSupplierAlphabetListsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>(
+    GetSupplierAlphabetListsDocument,
+    options,
+  );
+}
+export function useGetSupplierAlphabetListsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetSupplierAlphabetListsQuery,
+    GetSupplierAlphabetListsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetSupplierAlphabetListsQuery, GetSupplierAlphabetListsQueryVariables>(
+    GetSupplierAlphabetListsDocument,
+    options,
+  );
+}
+export type GetSupplierAlphabetListsQueryHookResult = ReturnType<
+  typeof useGetSupplierAlphabetListsQuery
+>;
+export type GetSupplierAlphabetListsLazyQueryHookResult = ReturnType<
+  typeof useGetSupplierAlphabetListsLazyQuery
+>;
+export type GetSupplierAlphabetListsQueryResult = Apollo.QueryResult<
+  GetSupplierAlphabetListsQuery,
+  GetSupplierAlphabetListsQueryVariables
+>;
 export const GetOptionAlphabetListsDocument = gql`
-    query GetOptionAlphabetLists($input: OptionAlphabetInput!) {
-  getOptionAlphabetLists(input: $input) {
-    letter
-    docs {
-      _id
-      name
-      slug
-      options {
+  query GetOptionAlphabetLists($input: OptionAlphabetInput!) {
+    getOptionAlphabetLists(input: $input) {
+      letter
+      docs {
         _id
         name
         slug
@@ -5969,14 +6703,18 @@ export const GetOptionAlphabetListsDocument = gql`
               _id
               name
               slug
+              options {
+                _id
+                name
+                slug
+              }
             }
           }
         }
       }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetOptionAlphabetListsQuery__
@@ -5994,14 +6732,37 @@ export const GetOptionAlphabetListsDocument = gql`
  *   },
  * });
  */
-export function useGetOptionAlphabetListsQuery(baseOptions: Apollo.QueryHookOptions<GetOptionAlphabetListsQuery, GetOptionAlphabetListsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetOptionAlphabetListsQuery, GetOptionAlphabetListsQueryVariables>(GetOptionAlphabetListsDocument, options);
-      }
-export function useGetOptionAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOptionAlphabetListsQuery, GetOptionAlphabetListsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetOptionAlphabetListsQuery, GetOptionAlphabetListsQueryVariables>(GetOptionAlphabetListsDocument, options);
-        }
-export type GetOptionAlphabetListsQueryHookResult = ReturnType<typeof useGetOptionAlphabetListsQuery>;
-export type GetOptionAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetOptionAlphabetListsLazyQuery>;
-export type GetOptionAlphabetListsQueryResult = Apollo.QueryResult<GetOptionAlphabetListsQuery, GetOptionAlphabetListsQueryVariables>;
+export function useGetOptionAlphabetListsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetOptionAlphabetListsQuery,
+    GetOptionAlphabetListsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetOptionAlphabetListsQuery, GetOptionAlphabetListsQueryVariables>(
+    GetOptionAlphabetListsDocument,
+    options,
+  );
+}
+export function useGetOptionAlphabetListsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetOptionAlphabetListsQuery,
+    GetOptionAlphabetListsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetOptionAlphabetListsQuery, GetOptionAlphabetListsQueryVariables>(
+    GetOptionAlphabetListsDocument,
+    options,
+  );
+}
+export type GetOptionAlphabetListsQueryHookResult = ReturnType<
+  typeof useGetOptionAlphabetListsQuery
+>;
+export type GetOptionAlphabetListsLazyQueryHookResult = ReturnType<
+  typeof useGetOptionAlphabetListsLazyQuery
+>;
+export type GetOptionAlphabetListsQueryResult = Apollo.QueryResult<
+  GetOptionAlphabetListsQuery,
+  GetOptionAlphabetListsQueryVariables
+>;

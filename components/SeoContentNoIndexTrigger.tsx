@@ -12,7 +12,11 @@ const SeoContentNoIndexTrigger: React.FC<SeoContentNoIndexTriggerInterface> = ({
   const { configs } = useConfigContext();
   const [updateSeoContentMutation] = useUpdateSeoContent();
 
-  if (!seoContent || !configs.useNoIndexRules) {
+  if (!configs.useNoIndexRules) {
+    return null;
+  }
+
+  if (!seoContent) {
     return null;
   }
 
@@ -23,8 +27,11 @@ const SeoContentNoIndexTrigger: React.FC<SeoContentNoIndexTriggerInterface> = ({
         name={'showForIndex'}
         onChange={() => {
           updateSeoContentMutation({
+            _id: `${seoContent._id}`,
+            slug: seoContent.slug,
+            url: seoContent.url,
+            rubricSlug: seoContent.rubricSlug,
             companySlug: seoContent.companySlug,
-            seoContentId: `${seoContent._id}`,
             content: seoContent.content,
             showForIndex: !seoContent.showForIndex,
             metaTitleI18n: seoContent.metaTitleI18n,

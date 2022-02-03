@@ -6,7 +6,7 @@ import { CmsCompanyShopProductsListPageInterface } from '../../../pages/cms/comp
 import { COL_COMPANIES } from '../../collectionNames';
 import { CompanyModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
-import { getConsoleShopProducts } from '../product/getConsoleShopProducts';
+import { getConsoleShopProducts } from './getConsoleShopProducts';
 
 export const getCmsCompanyShopProductsListPageSsr = async (
   context: GetServerSidePropsContext,

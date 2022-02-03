@@ -35,7 +35,7 @@ export async function updateProductCategoryVisibility({
       // permission
       const { allow, message } = await getOperationPermission({
         context,
-        slug: 'updateProduct',
+        slug: 'updateProductCategories',
       });
       if (!allow) {
         mutationPayload = {

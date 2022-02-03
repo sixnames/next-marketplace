@@ -21,7 +21,7 @@ import AppSubNav from '../../../../layout/AppSubNav';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
 import { getProjectLinks } from '../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../lib/i18n';
-import { getRoleRulesAst } from '../../../../lib/roleUtils';
+import { getRoleRulesAst } from '../../../../lib/roleRuleUtils';
 import {
   castDbData,
   getAppInitialData,

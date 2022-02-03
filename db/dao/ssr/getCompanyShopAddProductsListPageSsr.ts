@@ -4,7 +4,7 @@ import { alwaysString } from '../../../lib/arrayUtils';
 import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
 import { CompanyShopAddProductsListPageInterface } from '../../../pages/cms/companies/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/add/[...filters]';
-import { getAddShopProductSsrData } from '../product/getAddShopProductSsrData';
+import { getAddShopProductSsrData } from './getAddShopProductSsrData';
 
 export const getCompanyShopAddProductsListPageSsr = async (
   context: GetServerSidePropsContext,

@@ -42,7 +42,7 @@ export async function updateProductManufacturer({
       // permission
       const { allow, message } = await getOperationPermission({
         context,
-        slug: 'updateProduct',
+        slug: 'updateProductBrand',
       });
       if (!allow) {
         mutationPayload = {

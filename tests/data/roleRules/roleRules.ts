@@ -1,6 +1,6 @@
 import { RoleRuleModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
-import { roleRulesBase } from '../../../lib/roleUtils';
+import { roleRulesBase } from '../../../lib/roleRuleUtils';
 
 const roleRules: RoleRuleModel[] = roleRulesBase.map((base) => {
   return {

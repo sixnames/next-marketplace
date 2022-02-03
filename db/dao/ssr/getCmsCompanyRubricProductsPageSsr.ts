@@ -6,7 +6,7 @@ import { CmsCompanyRubricProductsPageInterface } from '../../../pages/cms/compan
 import { COL_COMPANIES } from '../../collectionNames';
 import { getDatabase } from '../../mongodb';
 import { CompanyInterface } from '../../uiInterfaces';
-import { getConsoleCompanyRubricProducts } from '../product/getConsoleCompanyRubricProducts';
+import { getConsoleCompanyRubricProducts } from './getConsoleCompanyRubricProducts';
 
 export const getCmsCompanyRubricProductsPageSsr = async (
   context: GetServerSidePropsContext,

@@ -4,7 +4,7 @@ import { alwaysString } from '../../../lib/arrayUtils';
 import { getConsoleRubricLinks } from '../../../lib/linkUtils';
 import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
 import { CmsRubricProductsListPageInterface } from '../../../pages/cms/rubrics/[rubricSlug]/products/[...filters]';
-import { getConsoleRubricProducts } from '../product/getConsoleRubricProducts';
+import { getConsoleRubricProducts } from './getConsoleRubricProducts';
 
 export const getCmsRubricProductsListPageSsr = async (
   context: GetServerSidePropsContext,

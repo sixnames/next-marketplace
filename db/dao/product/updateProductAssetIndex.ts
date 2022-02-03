@@ -40,7 +40,7 @@ export async function updateProductAssetIndex({
       // permission
       const { allow, message } = await getOperationPermission({
         context,
-        slug: 'updateProduct',
+        slug: 'updateProductAssets',
       });
       if (!allow) {
         mutationPayload = {

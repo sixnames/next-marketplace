@@ -31,7 +31,7 @@ export async function updateProductNumberAttribute({
     // permission
     const { allow, message } = await getOperationPermission({
       context,
-      slug: 'updateProduct',
+      slug: 'updateProductAttributes',
     });
     if (!allow) {
       return {

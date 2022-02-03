@@ -124,6 +124,12 @@ export type RoleRuleSlugType =
   | 'createProduct'
   | 'updateProduct'
   | 'deleteProduct'
+  | 'updateProductAttributes'
+  | 'updateProductAssets'
+  | 'updateProductVariants'
+  | 'updateProductCategories'
+  | 'updateProductBrand'
+  | 'updateProductSeoContent'
 
   // Role
   | 'createRole'
@@ -806,6 +812,46 @@ export const roleRulesBase: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление товара',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateProductAttributes',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление атрибутов товара',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateProductAssets',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление изображений товара',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateProductCategories',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление категорий товара',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateProductBrand',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление бренда/производителя товара',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateProductSeoContent',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление СЕО контента товара',
     },
   },
 

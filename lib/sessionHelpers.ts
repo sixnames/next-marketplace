@@ -23,7 +23,7 @@ import { MessageSlug } from '../types/messageSlugTypes';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import { getApiMessageValue, getValidationMessages } from '../db/dao/messages/apiMessageUtils';
 import { getCityFieldData, getI18nLocaleValue } from './i18n';
-import { RoleRuleSlugType } from './roleUtils';
+import { RoleRuleSlugType } from './roleRuleUtils';
 
 export const getSessionUser = async (context: NexusContext): Promise<UserModel | null> => {
   // Get session user

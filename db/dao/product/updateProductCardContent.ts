@@ -5,7 +5,7 @@ import { ProductPayloadModel } from '../../dbModels';
 import { DaoPropsInterface, SeoContentCitiesInterface } from '../../uiInterfaces';
 
 export interface UpdateProductCardContentInputInterface {
-  cardContent: SeoContentCitiesInterface;
+  seoContentsList: SeoContentCitiesInterface;
   companySlug: string;
 }
 
@@ -26,7 +26,7 @@ export async function updateProductCardContent({
     // Permission
     const { allow, message } = await getOperationPermission({
       context,
-      slug: 'updateProduct',
+      slug: 'updateProductSeoContent',
     });
     if (!allow) {
       return {
@@ -35,9 +35,9 @@ export async function updateProductCardContent({
       };
     }
 
-    const { cardContent, companySlug } = input;
+    const { seoContentsList, companySlug } = input;
     await updateCitiesSeoContent({
-      seoContentsList: cardContent,
+      seoContentsList,
       companySlug,
     });
 

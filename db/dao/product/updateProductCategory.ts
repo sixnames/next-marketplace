@@ -53,7 +53,7 @@ export async function updateProductCategory({
       // permission
       const { allow, message } = await getOperationPermission({
         context,
-        slug: 'updateProduct',
+        slug: 'updateProductCategories',
       });
       if (!allow) {
         mutationPayload = {

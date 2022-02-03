@@ -44,7 +44,7 @@ export async function addProductToVariant({
       // permission
       const { allow, message } = await getOperationPermission({
         context,
-        slug: 'updateProduct',
+        slug: 'updateProductVariants',
       });
       if (!allow) {
         mutationPayload = {

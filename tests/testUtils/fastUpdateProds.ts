@@ -1,8 +1,8 @@
 import { Db } from 'mongodb';
-import { ID_COUNTER_STEP } from '../../config/common';
+import { ID_COUNTER_STEP, PAGE_EDITOR_DEFAULT_VALUE_STRING } from '../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_ID_COUNTERS } from '../../db/collectionNames';
-import { IdCounterModel } from '../../db/dbModels';
+import { COL_ID_COUNTERS, COL_SEO_CONTENTS } from '../../db/collectionNames';
+import { IdCounterModel, SeoContentModel } from '../../db/dbModels';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -34,7 +34,23 @@ async function updateProds() {
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
-    const { client } = await getProdDb(dbConfig);
+    const { db, client } = await getProdDb(dbConfig);
+    const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+    const count = await seoContentsCollection.countDocuments({
+      content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      $or: [
+        {
+          showForIndex: false,
+        },
+        {
+          showForIndex: {
+            $exists: false,
+          },
+        },
+      ],
+    });
+    const countAll = await seoContentsCollection.countDocuments({});
+    console.log({ count, countAll, diff: countAll - count });
 
     // disconnect form db
     await client.close();

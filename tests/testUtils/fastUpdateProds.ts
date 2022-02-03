@@ -36,7 +36,10 @@ async function updateProds() {
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
     const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
-    const count = await seoContentsCollection.countDocuments({
+
+    const countBefore = await seoContentsCollection.countDocuments({});
+
+    await seoContentsCollection.deleteMany({
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       $or: [
         {
@@ -49,8 +52,10 @@ async function updateProds() {
         },
       ],
     });
-    const countAll = await seoContentsCollection.countDocuments({});
-    console.log({ count, countAll, diff: countAll - count });
+
+    const countAfter = await seoContentsCollection.countDocuments({});
+
+    console.log({ countBefore, countAfter, diff: countBefore - countAfter });
 
     // disconnect form db
     await client.close();

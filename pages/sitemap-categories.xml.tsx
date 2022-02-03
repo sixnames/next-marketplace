@@ -163,37 +163,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         )
         .toArray();
 
+      // remove broken seo contents
+      for await (const { url, _id } of seoContents) {
+        if (
+          url.includes(`/${DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}`) &&
+          companySlug !== DEFAULT_COMPANY_SLUG
+        ) {
+          await seoContentsCollection.findOneAndDelete({ _id });
+        }
+      }
+
       seoContents.forEach(({ url }) => {
         const newUrl = url
           .replace(`/${companySlug}/${DEFAULT_CITY}`, '')
           .replace(`/${DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}`, '');
-        // const test = '/catalogue/seks_igrushki/price-1500_2999';
-        /*const res = {
-          url: '/0/msk/catalogue/seks_igrushki/price-1500_2999',
-          iii: '61a5fd4e5b1b2cda9fcd992c',
-          _id: '61dc44d07ac5db01b200c178',
-          stug: '60f7e3e7a0b6810009577480604325cbab3d5114fb2bc09f60f710ea53de1a00082b1c86f8e4b2f2c00c8cab2ca5b3e0top',
-          slug: '0604325cbab3d5114fb2bc09f60f710ea53de1a00082b1c86f8e4b2f2c00c8cab2ca5b3e0top',
-          content: '{"id":"1","version":1,"rows":[]}',
-          seoLocales: [],
-          companySlug: '5',
-          rubricSlug: 'seks_igrushki',
-          metaDescriptionI18n: null,
-          metaTitleI18n: null,
-          showForIndex: true,
-          titleI18n: null,
-        };*/
-
-        /*if (newUrl === test) {
-          console.log({
-            url,
-            ...rest,
-          });
-        }*/
         if (!initialSlugs.includes(newUrl)) {
           initialSlugs.push(newUrl);
         }
       });
+
       continue;
     }
 

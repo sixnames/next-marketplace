@@ -29,7 +29,7 @@ import {
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { getNextItemId } from '../lib/itemIdUtils';
-import { updateCitiesSeoContent } from '../lib/seoContentUtils';
+import { updateCitiesSeoContent } from '../lib/seoContentUniquenessUtils';
 import {
   getOperationPermission,
   getRequestParams,

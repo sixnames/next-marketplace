@@ -1,5 +1,5 @@
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { updateCitiesSeoContent } from '../../../lib/seoContentUtils';
+import { updateCitiesSeoContent } from '../../../lib/seoContentUniquenessUtils';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import { ProductPayloadModel } from '../../dbModels';
 import { DaoPropsInterface, SeoContentCitiesInterface } from '../../uiInterfaces';

@@ -17,16 +17,15 @@ const ConsoleRubricProductConstructor: React.FC<ConsoleRubricProductConstructorI
   cardContent,
   companySlug,
 }) => {
-  const initialValues = {
-    cardContent,
-    companySlug,
-  };
   const [updateProductCardContentMutation] = useUpdateProductCardContent();
 
   return (
     <Inner testId={'product-card-constructor'}>
       <Formik<UpdateProductCardContentInputInterface>
-        initialValues={initialValues}
+        initialValues={{
+          seoContentsList: cardContent,
+          companySlug,
+        }}
         onSubmit={(values) => {
           updateProductCardContentMutation(values).catch(console.log);
         }}

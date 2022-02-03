@@ -844,6 +844,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
       languages: { url: `/cms/languages` },
       manufacturers: { url: `/cms/manufacturers` },
       metrics: { url: `/cms/metrics` },
+      myTasks: { url: `/cms/my-tasks` },
       nav: { url: `/cms/nav` },
       options: {
         url: `/cms/options`,
@@ -983,6 +984,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
             },
           },
         },
+        myTasks: { url: `/console/${companyId}/my-tasks` },
         orders: {
           url: `/console/${companyId}/orders`,
           order: {

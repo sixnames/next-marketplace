@@ -540,29 +540,25 @@ export async function getCatalogueAllSeoContents(
   const textBottomEditUrl = `${baseEditUrl}/seo-content/${seoContentBottomSlug}`;
 
   if (!seoContentTop) {
-    const newBottomSeoContent = await seoContentsCollection.insertOne({
+    seoContentTop = {
+      _id: new ObjectId(),
       url: props.asPath,
       slug: seoContentTopSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       companySlug: props.companySlug,
       rubricSlug,
-    });
-    seoContentTop = await seoContentsCollection.findOne({
-      _id: newBottomSeoContent.insertedId,
-    });
+    };
   }
 
   if (!seoContentBottom) {
-    const newBottomSeoContent = await seoContentsCollection.insertOne({
+    seoContentBottom = {
+      _id: new ObjectId(),
       url: props.asPath,
       slug: seoContentBottomSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       companySlug: props.companySlug,
       rubricSlug,
-    });
-    seoContentBottom = await seoContentsCollection.findOne({
-      _id: newBottomSeoContent.insertedId,
-    });
+    };
   }
 
   return {
@@ -803,19 +799,14 @@ export async function getRubricSeoContent({
   });
 
   if (!seoContent) {
-    const newSeoContentResult = await seoContentsCollection.insertOne({
+    const newSeoContent = {
+      _id: new ObjectId(),
       url: seoContentSlugPayload.url,
       slug: seoContentSlugPayload.seoContentSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       rubricSlug,
       companySlug,
-    });
-    if (!newSeoContentResult.acknowledged) {
-      return null;
-    }
-    const newSeoContent = await seoContentsCollection.findOne({
-      _id: newSeoContentResult.insertedId,
-    });
+    };
     return newSeoContent;
   }
 
@@ -883,19 +874,14 @@ export async function getCategorySeoContent({
   });
 
   if (!seoContent) {
-    const newSeoContentResult = await seoContentsCollection.insertOne({
+    const newSeoContent = {
+      _id: new ObjectId(),
       url: seoContentSlugPayload.url,
       slug: seoContentSlugPayload.seoContentSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       rubricSlug,
       companySlug,
-    });
-    if (!newSeoContentResult.acknowledged) {
-      return null;
-    }
-    const newSeoContent = await seoContentsCollection.findOne({
-      _id: newSeoContentResult.insertedId,
-    });
+    };
     return newSeoContent;
   }
 
@@ -965,19 +951,14 @@ export async function getProductSeoContent({
   });
 
   if (!seoContent) {
-    const newSeoContentResult = await seoContentsCollection.insertOne({
+    const newSeoContent = {
+      _id: new ObjectId(),
       url: seoContentSlugPayload.url,
       slug: seoContentSlugPayload.seoContentSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       companySlug,
       rubricSlug,
-    });
-    if (!newSeoContentResult.acknowledged) {
-      return null;
-    }
-    const newSeoContent = await seoContentsCollection.findOne({
-      _id: newSeoContentResult.insertedId,
-    });
+    };
     return newSeoContent;
   }
 
@@ -1030,18 +1011,15 @@ export async function getSeoContentBySlug({
   });
 
   if (!seoContent) {
-    const createdSeoContentResult = await seoContentsCollection.insertOne({
+    seoContent = {
+      _id: new ObjectId(),
       slug: seoContentSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       seoLocales: [],
       companySlug,
       rubricSlug,
       url,
-    });
-
-    seoContent = await seoContentsCollection.findOne({
-      _id: createdSeoContentResult.insertedId,
-    });
+    };
   }
 
   return seoContent;

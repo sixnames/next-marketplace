@@ -8,8 +8,11 @@ import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateSeoContentInputInterface {
-  seoContentId: string;
+  _id: string;
+  slug: string;
+  url: string;
   content: string;
+  rubricSlug: string;
   companySlug: string;
   showForIndex?: boolean | null;
   titleI18n?: TranslationModel | null;
@@ -33,17 +36,26 @@ export async function updateSeoContent({
       };
     }
 
-    const { content, titleI18n, metaDescriptionI18n, metaTitleI18n, companySlug, showForIndex } =
-      input;
-    const seoContentId = new ObjectId(input.seoContentId);
+    const {
+      content,
+      titleI18n,
+      metaDescriptionI18n,
+      metaTitleI18n,
+      companySlug,
+      showForIndex,
+      rubricSlug,
+      slug,
+      url,
+    } = input;
+    const _id = new ObjectId(input._id);
     const oldSeoContent = await seoContentsCollection.findOne({
-      _id: seoContentId,
+      _id,
     });
 
     // check uniqueness
     await checkSeoContentUniqueness({
       companySlug,
-      seoContentId: new ObjectId(seoContentId),
+      seoContentId: _id,
       text: content,
       oldText: oldSeoContent?.content,
     });
@@ -51,7 +63,7 @@ export async function updateSeoContent({
     // update
     const updatedSeoContentResult = await seoContentsCollection.findOneAndUpdate(
       {
-        _id: new ObjectId(seoContentId),
+        _id,
       },
       {
         $set: {
@@ -60,7 +72,15 @@ export async function updateSeoContent({
           metaDescriptionI18n,
           metaTitleI18n,
           showForIndex,
+          companySlug,
+          rubricSlug,
+          slug,
+          url,
+          seoLocales: oldSeoContent?.seoLocales || [],
         },
+      },
+      {
+        upsert: true,
       },
     );
     if (!updatedSeoContentResult.ok) {

@@ -70,6 +70,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     company = await companiesCollection.findOne({ domain });
   }
   const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
+  // const companySlug = '5';
 
   // get configs
   const projectConfigs = await configsCollection
@@ -162,6 +163,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         )
         .toArray();
 
+      // remove broken seo contents
+      for await (const { url, _id } of seoContents) {
+        if (
+          url.includes(`/${DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}`) &&
+          companySlug !== DEFAULT_COMPANY_SLUG
+        ) {
+          await seoContentsCollection.findOneAndDelete({ _id });
+        }
+      }
+
       seoContents.forEach(({ url }) => {
         const newUrl = url
           .replace(`/${companySlug}/${DEFAULT_CITY}`, '')
@@ -170,6 +181,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           initialSlugs.push(newUrl);
         }
       });
+
       continue;
     }
 

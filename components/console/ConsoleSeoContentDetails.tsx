@@ -28,8 +28,11 @@ const ConsoleSeoContentDetails: React.FC<ConsoleSeoContentDetailsInterface> = ({
         initialValues={seoContent}
         onSubmit={(values) => {
           updateSeoContentMutation({
+            _id: `${seoContent._id}`,
+            slug: seoContent.slug,
+            rubricSlug: seoContent.rubricSlug,
+            url: seoContent.rubricSlug,
             companySlug,
-            seoContentId: `${seoContent._id}`,
             content: values.content,
             showForIndex: values.showForIndex,
             metaTitleI18n: values.metaTitleI18n,

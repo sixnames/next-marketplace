@@ -1,22 +1,16 @@
+import ConsoleTasksList, { ConsoleTasksListInterface } from 'components/console/ConsoleTasksList';
+import Inner from 'components/Inner';
+import WpTitle from 'components/WpTitle';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import ConsoleTasksList, {
-  ConsoleTasksListInterface,
-} from '../../../components/console/ConsoleTasksList';
-import Inner from '../../../components/Inner';
-import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_COMPANY_SLUG } from '../../../config/common';
-import { getCompanyTasksListSsr } from '../../../db/dao/ssr/getCompanyTasksListSsr';
-import AppContentWrapper from '../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
-import { getCmsLinks } from '../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../lib/ssrUtils';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { getCompanyTasksListSsr } from 'db/dao/ssr/getCompanyTasksListSsr';
+import { getCmsLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-const pageTitle = 'Задачи';
+const pageTitle = 'Мои адачи';
 interface TasksListConsumerInterface extends ConsoleTasksListInterface {}
 
 const TasksListConsumer: React.FC<TasksListConsumerInterface> = ({ basePath, tasks }) => {
@@ -41,6 +35,9 @@ const TasksListPage: React.FC<TasksListPageInterface> = ({ layoutProps, tasks, b
     </ConsoleLayout>
   );
 };
+
+// ConsoleMyTasksList
+// getMyTasksListSsr
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,

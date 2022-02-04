@@ -14,12 +14,12 @@ import WpLink from '../Link/WpLink';
 import { ConfirmModalInterface } from '../Modal/ConfirmModal';
 import WpTable, { WpTableColumn } from '../WpTable';
 
-export interface ConsoleTasksListInterface {
+export interface ConsoleMyTasksListInterface {
   tasks: TaskInterface[];
   basePath: string;
 }
 
-const ConsoleTasksList: React.FC<ConsoleTasksListInterface> = ({ basePath, tasks }) => {
+const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ basePath, tasks }) => {
   const router = useRouter();
   const { locale } = useLocaleContext();
   const { showModal } = useAppContext();
@@ -134,4 +134,4 @@ const ConsoleTasksList: React.FC<ConsoleTasksListInterface> = ({ basePath, tasks
   );
 };
 
-export default ConsoleTasksList;
+export default ConsoleMyTasksList;

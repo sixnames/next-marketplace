@@ -1,18 +1,18 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { ATTRIBUTE_OPTIONS_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
+import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import {
   OptionInterface,
   ProductAttributeInterface,
   ProductSummaryInterface,
-} from '../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import {
   useUpdateProductNumberAttribute,
   useUpdateProductSelectAttribute,
   useUpdateProductTextAttribute,
-} from '../../hooks/mutations/useProductMutations';
-import { noNaN } from '../../lib/numbers';
+} from 'hooks/mutations/useProductMutations';
+import { noNaN } from 'lib/numbers';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import FakeInput from '../FormElements/Input/FakeInput';
@@ -225,7 +225,7 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                             })}
                           </div>
 
-                          <FixedButtons>
+                          <FixedButtons lowTop>
                             <WpButton testId={'submit-number-attributes'} type={'submit'}>
                               Сохранить
                             </WpButton>
@@ -276,7 +276,7 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                             );
                           })}
 
-                          <FixedButtons>
+                          <FixedButtons lowTop>
                             <WpButton testId={'submit-text-attributes'} type={'submit'}>
                               Сохранить
                             </WpButton>

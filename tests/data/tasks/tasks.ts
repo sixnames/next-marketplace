@@ -9,7 +9,7 @@ const tasks: TaskModel[] = [
     _id: getObjectId('task a'),
     itemId: '000001',
     stateEnum: TASK_STATE_PENDING,
-    productId: getObjectId('000010'),
+    productId: getObjectId('000150'),
     createdById: getObjectId('admin'),
     companySlug: DEFAULT_COMPANY_SLUG,
     variantId: getObjectId('task variant product attributes'),

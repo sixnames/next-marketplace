@@ -15,7 +15,7 @@ import {
   SessionLogEventVariantEnum,
   SortDirectionModel,
   SupplierPriceVariantModel,
-} from '../db/dbModels';
+} from 'db/dbModels';
 
 export type RequestMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH';
 export const REQUEST_METHOD_GET = 'GET' as RequestMethodType;

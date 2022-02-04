@@ -1,5 +1,6 @@
 import WpLink from 'components/Link/WpLink';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { TASK_STATE_IN_PROGRESS } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useUserContext } from 'context/userContext';
@@ -105,7 +106,7 @@ const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ tasks }) =>
                           confirm: () => {
                             updateTaskMutation({
                               _id: `${dataItem._id}`,
-                              stateEnum: dataItem.stateEnum,
+                              stateEnum: TASK_STATE_IN_PROGRESS,
                               nameI18n: dataItem.nameI18n,
                               companySlug: dataItem.companySlug,
                               product: dataItem.product,

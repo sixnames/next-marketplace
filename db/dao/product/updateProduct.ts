@@ -1,17 +1,17 @@
 import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { checkBarcodeIntersects, trimProductName } from '../../../lib/productUtils';
+import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
-import { updateProductSchema } from '../../../validation/productSchema';
-import { COL_PRODUCT_SUMMARIES } from '../../collectionNames';
-import { ProductPayloadModel, ProductSummaryModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+} from 'lib/sessionHelpers';
+import { execUpdateProductTitles } from 'lib/updateProductTitles';
+import { updateProductSchema } from 'validation/productSchema';
+import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
+import { ProductPayloadModel, ProductSummaryModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { CreateProductInputInterface } from './createProduct';
 
 export interface UpdateProductInputInterface extends CreateProductInputInterface {

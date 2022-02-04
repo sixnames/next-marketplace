@@ -1,13 +1,13 @@
-import { SORT_ASC } from '../../../config/common';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getShortName } from '../../../lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
-import { COL_TASK_VARIANTS, COL_TASKS, COL_USERS } from '../../collectionNames';
-import { getDatabase } from '../../mongodb';
-import { TaskInterface } from '../../uiInterfaces';
+import { SORT_ASC } from 'config/common';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getShortName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { COL_TASK_VARIANTS, COL_TASKS, COL_USERS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { TaskInterface } from 'db/uiInterfaces';
 import { getTaskNestedFieldsPipeline } from './getCompanyTaskSsr';
 
-export interface GetCompanyTaskVariantsListSsr {
+export interface GetCompanyTasksListSsr {
   companySlug: string;
   locale: string;
 }
@@ -15,11 +15,11 @@ export interface GetCompanyTaskVariantsListSsr {
 export async function getCompanyTasksListSsr({
   companySlug,
   locale,
-}: GetCompanyTaskVariantsListSsr): Promise<TaskInterface[] | null> {
+}: GetCompanyTasksListSsr): Promise<TaskInterface[] | null> {
   try {
     const { db } = await getDatabase();
     const tasksCollection = db.collection<TaskInterface>(COL_TASKS);
-    const taskVariantsAggregation = await tasksCollection
+    const tasksAggregation = await tasksCollection
       .aggregate<TaskInterface>([
         {
           $match: {
@@ -67,7 +67,7 @@ export async function getCompanyTasksListSsr({
         },
       ])
       .toArray();
-    const taskVariants: TaskInterface[] = taskVariantsAggregation.map((taskVariant) => {
+    const tasks: TaskInterface[] = tasksAggregation.map((taskVariant) => {
       const variant = taskVariant.variant
         ? {
             ...taskVariant.variant,
@@ -103,9 +103,9 @@ export async function getCompanyTasksListSsr({
           : null,
       };
     });
-    return taskVariants;
+    return tasks;
   } catch (e) {
-    console.log('getCompanyTaskVariantsListSsr error', e);
+    console.log('getCompanyTasksListSsr error', e);
     return null;
   }
 }

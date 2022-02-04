@@ -183,6 +183,13 @@ export async function updateIndexes(db: Db) {
   // Tasks
   await createCollectionIfNotExist(COL_TASKS);
   const tasksCollection = db.collection<TaskModel>(COL_TASKS);
+  await tasksCollection.createIndex({
+    companySlug: 1,
+    variantId: 1,
+    stateEnum: 1,
+    createdAt: 1,
+    _id: 1,
+  });
   await tasksCollection.createIndex({ companySlug: 1, stateEnum: 1, createdAt: 1, _id: 1 });
   await tasksCollection.createIndex({ companySlug: 1, createdAt: 1, _id: 1 });
 

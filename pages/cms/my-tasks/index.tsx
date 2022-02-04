@@ -1,24 +1,25 @@
-import ConsoleTasksList, { ConsoleTasksListInterface } from 'components/console/ConsoleTasksList';
+import ConsoleMyTasksList, {
+  ConsoleMyTasksListInterface,
+} from 'components/console/ConsoleMyTasksList';
 import Inner from 'components/Inner';
 import WpTitle from 'components/WpTitle';
+import { getMyTasksListSsr } from 'db/dao/ssr/getMyTasksListSsr';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
-import { getCompanyTasksListSsr } from 'db/dao/ssr/getCompanyTasksListSsr';
 import { getCmsLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Мои адачи';
-interface TasksListConsumerInterface extends ConsoleTasksListInterface {}
+interface TasksListConsumerInterface extends ConsoleMyTasksListInterface {}
 
 const TasksListConsumer: React.FC<TasksListConsumerInterface> = ({ basePath, tasks }) => {
   return (
     <AppContentWrapper>
       <Inner>
         <WpTitle>{pageTitle}</WpTitle>
-        <ConsoleTasksList basePath={basePath} tasks={tasks} />
+        <ConsoleMyTasksList basePath={basePath} tasks={tasks} />
       </Inner>
     </AppContentWrapper>
   );
@@ -36,7 +37,6 @@ const TasksListPage: React.FC<TasksListPageInterface> = ({ layoutProps, tasks, b
   );
 };
 
-// ConsoleMyTasksList
 // getMyTasksListSsr
 
 export const getServerSideProps = async (
@@ -49,9 +49,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getCompanyTasksListSsr({
+  const payload = await getMyTasksListSsr({
+    sessionUser: props.layoutProps.sessionUser.me,
     locale: props.sessionLocale,
-    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   if (!payload) {

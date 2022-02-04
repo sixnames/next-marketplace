@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { COL_ROLE_RULES } from '../db/collectionNames';
-import { ObjectIdModel, RoleRuleBase } from '../db/dbModels';
+import { ObjectIdModel, RoleRuleBase, RoleRuleModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import { RoleRuleInterface } from '../db/uiInterfaces';
 import { getFieldStringLocale } from './i18n';
@@ -1323,4 +1323,29 @@ export async function getRoleRulesAst({
   }, []);
 
   return roleRulesAst;
+}
+
+interface GetRoleRulesInterface {
+  roleId: ObjectIdModel | string;
+}
+
+export async function getRoleRules({ roleId }: GetRoleRulesInterface): Promise<RoleRuleModel[]> {
+  const { db } = await getDatabase();
+  const roleRulesCollection = db.collection<RoleRuleModel>(COL_ROLE_RULES);
+
+  const rules = await roleRulesCollection
+    .find(
+      {
+        roleId: new ObjectId(roleId),
+      },
+      {
+        projection: {
+          slug: true,
+          allow: true,
+        },
+      },
+    )
+    .toArray();
+
+  return rules;
 }

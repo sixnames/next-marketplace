@@ -10,7 +10,7 @@ import {
 } from 'config/common';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCmsProduct } from 'lib/productUtils';
+import { getFullProductSummary } from 'lib/productUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { CmsProductAttributesPageInterface } from 'pages/cms/rubrics/[rubricSlug]/products/product/[productId]/attributes';
 import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS } from 'db/collectionNames';
@@ -37,7 +37,7 @@ export const getCmsProductAttributesPageSsr = async (
     return null;
   }
 
-  const productPayload = await getCmsProduct({
+  const productPayload = await getFullProductSummary({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
@@ -47,9 +47,9 @@ export const getCmsProductAttributesPageSsr = async (
     return null;
   }
 
-  const { product, categoriesList } = productPayload;
-  const attributesGroupIds: ObjectIdModel[] = product.rubric?.attributesGroupIds || [];
-  let cmsCardAttributeIds: ObjectIdModel[] = product.rubric?.cmsCardAttributeIds || [];
+  const { summary, categoriesList } = productPayload;
+  const attributesGroupIds: ObjectIdModel[] = summary.rubric?.attributesGroupIds || [];
+  let cmsCardAttributeIds: ObjectIdModel[] = summary.rubric?.cmsCardAttributeIds || [];
   if (categoriesList.length > 0) {
     cmsCardAttributeIds = categoriesList.reduce((acc: ObjectIdModel[], category) => {
       const categoryCmsCardAttributeIds = category.cmsCardAttributeIds.reduce(
@@ -116,7 +116,7 @@ export const getCmsProductAttributesPageSsr = async (
     const selectAttributesAST: ProductAttributeInterface[] = [];
 
     for await (const attribute of group.attributes || []) {
-      const currentProductAttribute = product.attributes.find(({ attributeId }) => {
+      const currentProductAttribute = summary.attributes.find(({ attributeId }) => {
         return attributeId.equals(attribute._id);
       });
       let productAttribute: ProductAttributeInterface | null = null;
@@ -201,7 +201,7 @@ export const getCmsProductAttributesPageSsr = async (
   }
 
   const finalProduct: ProductSummaryInterface = {
-    ...product,
+    ...summary,
     attributesGroups: sortObjectsByField(productAttributesGroups),
   };
 

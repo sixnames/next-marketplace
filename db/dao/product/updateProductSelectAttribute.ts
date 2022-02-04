@@ -1,4 +1,5 @@
 import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { getFullProductSummary } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, TASK_STATE_IN_PROGRESS } from 'config/common';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
@@ -12,7 +13,6 @@ import {
   COL_PRODUCT_FACETS,
   COL_PRODUCT_SUMMARIES,
   COL_SHOP_PRODUCTS,
-  COL_TASK_VARIANTS,
   COL_TASKS,
 } from 'db/collectionNames';
 import {
@@ -24,10 +24,9 @@ import {
   ProductSummaryModel,
   ShopProductModel,
   TaskModel,
-  TaskVariantModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
+import { DaoPropsInterface, ProductAttributeInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductSelectAttributeInputInterface {
   productId: string;
@@ -40,7 +39,7 @@ export async function updateProductSelectAttribute({
   context,
   input,
 }: DaoPropsInterface<UpdateProductSelectAttributeInputInterface>): Promise<ProductPayloadModel> {
-  const { getApiMessage } = await getRequestParams(context);
+  const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
   const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
@@ -82,30 +81,141 @@ export async function updateProductSelectAttribute({
       }
 
       const selectedOptionsIds = input.selectedOptionsIds.map((_id) => new ObjectId(_id));
-      const productId = new ObjectId(input.productId);
       const attributeId = new ObjectId(input.attributeId);
       const productAttributeId = new ObjectId(input.productAttributeId);
+
+      // get summary
+      const summaryPayload = await getFullProductSummary({
+        locale,
+        productId: input.productId,
+        companySlug: DEFAULT_COMPANY_SLUG,
+      });
+      if (!summaryPayload) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('products.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+      const { summary } = summaryPayload;
+
+      // get product attribute
+      let productAttribute = summary.attributes.find((productAttribute) => {
+        return productAttribute.attributeId.equals(attributeId);
+      });
+      const productAttributeNotExist = !productAttribute;
+
+      // create new product attribute if original is absent
+      if (!productAttribute) {
+        productAttribute = {
+          _id: productAttributeId,
+          attributeId,
+          optionIds: [],
+          filterSlugs: [],
+          number: undefined,
+          textI18n: {},
+          readableValueI18n: {},
+        };
+      }
+
+      // get attribute
+      const attribute = await attributesCollection.findOne({
+        _id: attributeId,
+      });
+      if (!attribute) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('products.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // update product attribute
+      // get selected options tree
+      const finalOptionIds: ObjectIdModel[] = [];
+      for await (const optionId of selectedOptionsIds) {
+        const optionsTreeIds = await getParentTreeIds({
+          collectionName: COL_OPTIONS,
+          _id: optionId,
+          acc: [],
+        });
+        optionsTreeIds.forEach((_id) => finalOptionIds.push(_id));
+      }
+      const finalOptions = await optionsCollection
+        .find({
+          _id: {
+            $in: finalOptionIds,
+          },
+        })
+        .toArray();
+      const finalFilterSlugs = finalOptions.map(
+        ({ slug }) => `${attribute.slug}${FILTER_SEPARATOR}${slug}`,
+      );
+      const oldFilterSlugs = [...productAttribute.filterSlugs];
+      const readableValueI18n = getAttributeReadableValueLocales({
+        productAttribute: {
+          ...productAttribute,
+          attribute: {
+            ...attribute,
+            options: finalOptions,
+          },
+        },
+        gender: summary.gender,
+      });
+      productAttribute.readableValueI18n = readableValueI18n;
+      productAttribute.optionIds = finalOptionIds;
+      productAttribute.filterSlugs = finalFilterSlugs;
+
+      const updatedSummary = { ...summary };
+
+      // remove attribute if value is empty
+      if (finalOptionIds.length < 1) {
+        updatedSummary.attributes = updatedSummary.attributes.filter((productAttribute) => {
+          return !productAttribute.attributeId.equals(attributeId);
+        });
+        updatedSummary.attributeIds = updatedSummary.attributeIds.filter((existingAttributeId) => {
+          return !existingAttributeId.equals(attributeId);
+        });
+        updatedSummary.filterSlugs = updatedSummary.filterSlugs.filter((filterSlug) => {
+          return !oldFilterSlugs.includes(filterSlug);
+        });
+      } else {
+        // add new attribute
+        if (productAttributeNotExist) {
+          updatedSummary.attributeIds.push(attributeId);
+          updatedSummary.attributes.push(productAttribute);
+          finalFilterSlugs.forEach((filterSlug) => {
+            updatedSummary.filterSlugs.push(filterSlug);
+          });
+        } else {
+          // update existing attribute
+          updatedSummary.attributes = updatedSummary.attributes.reduce(
+            (acc: ProductAttributeInterface[], prevProductAttribute) => {
+              if (prevProductAttribute.attributeId.equals(attributeId) && productAttribute) {
+                return [...acc, productAttribute];
+              }
+              return [...acc, prevProductAttribute];
+            },
+            [],
+          );
+          updatedSummary.filterSlugs = updatedSummary.filterSlugs.filter((filterSlug) => {
+            return !oldFilterSlugs.includes(filterSlug);
+          });
+          finalFilterSlugs.forEach((filterSlug) => {
+            updatedSummary.filterSlugs.push(filterSlug);
+          });
+        }
+      }
 
       // TODO draft
       if (role.isContentManager && user) {
         const tasksCollection = db.collection<TaskModel>(COL_TASKS);
-        const taskVariantsCollection = db.collection<TaskVariantModel>(COL_TASK_VARIANTS);
-        const taskVariant = await taskVariantsCollection.findOne({
-          slug: getTaskVariantSlugByRule('updateProductAttributes'),
-          companySlug: DEFAULT_COMPANY_SLUG,
-        });
-        if (!taskVariant) {
-          mutationPayload = {
-            success: false,
-            message: await getApiMessage('products.update.error'),
-          };
-          await session.abortTransaction();
-          return;
-        }
 
         const task = await tasksCollection.findOne({
-          productId,
-          variantId: taskVariant._id,
+          productId: summary._id,
+          variantSlug: getTaskVariantSlugByRule('updateProductAttributes'),
           executorId: user._id,
           stateEnum: TASK_STATE_IN_PROGRESS,
         });
@@ -128,238 +238,24 @@ export async function updateProductSelectAttribute({
         }
       }
 
-      // Check if product exist
-      const summary = await productSummariesCollection.findOne({ _id: productId });
-      if (!summary) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage('products.update.error'),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
-      // Check if product attribute exist
-      let productAttribute = summary.attributes.find((productAttribute) => {
-        return productAttribute.attributeId.equals(attributeId);
-      });
-
-      // Check attribute availability
-      const attribute = await attributesCollection.findOne({ _id: attributeId });
-      if (!attribute) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage('products.update.error'),
-        };
-        await session.abortTransaction();
-        return;
-      }
-      const productAttributeNotExist = !productAttribute;
-
-      // Create new product attribute if original is absent
-      if (!productAttribute) {
-        productAttribute = {
-          _id: productAttributeId,
-          attributeId,
-          optionIds: [],
-          filterSlugs: [],
-          number: undefined,
-          textI18n: {},
-          readableValueI18n: {},
-        };
-      }
-
-      // Get selected options tree
-      const finalOptionIds: ObjectIdModel[] = [];
-      for await (const optionId of selectedOptionsIds) {
-        const optionsTreeIds = await getParentTreeIds({
-          collectionName: COL_OPTIONS,
-          _id: optionId,
-          acc: [],
-        });
-        optionsTreeIds.forEach((_id) => finalOptionIds.push(_id));
-      }
-      const finalOptions = await optionsCollection
-        .find({
-          _id: {
-            $in: finalOptionIds,
-          },
-        })
-        .toArray();
-
-      // Update or create product attribute
-      const finalFilterSlugs = finalOptions.map(
-        ({ slug }) => `${attribute.slug}${FILTER_SEPARATOR}${slug}`,
-      );
-
-      const oldFilterSlugs = [...productAttribute.filterSlugs];
-
-      const readableValueI18n = getAttributeReadableValueLocales({
-        productAttribute: {
-          ...productAttribute,
-          attribute: {
-            ...attribute,
-            options: finalOptions,
-          },
-        },
-        gender: summary.gender,
-      });
-      productAttribute.readableValueI18n = readableValueI18n;
-
-      // add new product attribute if not exist
-      if (productAttributeNotExist && finalOptionIds.length > 0) {
-        const updatedSummaryResult = await productSummariesCollection.findOneAndUpdate(
-          {
-            _id: summary._id,
-          },
-          {
-            $push: {
-              attributes: {
-                ...productAttribute,
-                optionIds: finalOptionIds,
-                filterSlugs: finalFilterSlugs,
-              },
-            },
-            $addToSet: {
-              attributeIds: attributeId,
-              filterSlugs: {
-                $each: finalFilterSlugs,
-              },
-            },
-          },
-        );
-        if (!updatedSummaryResult.ok) {
-          mutationPayload = {
-            success: false,
-            message: await getApiMessage('products.update.error'),
-          };
-          await session.abortTransaction();
-          return;
-        }
-
-        await shopProductsCollection.updateMany(
-          {
-            productId: summary._id,
-          },
-          {
-            $addToSet: {
-              filterSlugs: {
-                $each: finalFilterSlugs,
-              },
-            },
-          },
-        );
-        await productFacetsCollection.findOneAndUpdate(
-          {
-            _id: summary._id,
-          },
-          {
-            $addToSet: {
-              attributeIds: attributeId,
-              filterSlugs: {
-                $each: finalFilterSlugs,
-              },
-            },
-          },
-        );
-
-        // update product title
-        execUpdateProductTitles(`productId=${summary._id.toHexString()}`);
-
-        mutationPayload = {
-          success: true,
-          message: await getApiMessage('products.update.success'),
-        };
-        return;
-      }
-
-      // remove attribute if value is empty
-      if (finalOptionIds.length < 1) {
-        const updatedProductAttributeResult = await productSummariesCollection.findOneAndUpdate(
-          {
-            _id: summary._id,
-          },
-          {
-            $pull: {
-              attributeIds: attributeId,
-              attributes: {
-                attributeId,
-              },
-            },
-            $pullAll: {
-              filterSlugs: oldFilterSlugs,
-            },
-          },
-        );
-        if (!updatedProductAttributeResult.ok) {
-          mutationPayload = {
-            success: false,
-            message: await getApiMessage('products.update.error'),
-          };
-          await session.abortTransaction();
-          return;
-        }
-        await shopProductsCollection.updateMany(
-          {
-            productId: summary._id,
-          },
-          {
-            $pullAll: {
-              filterSlugs: oldFilterSlugs,
-            },
-          },
-        );
-        await productFacetsCollection.findOneAndUpdate(
-          {
-            _id: summary._id,
-          },
-          {
-            $pull: {
-              attributeIds: attributeId,
-            },
-            $pullAll: {
-              filterSlugs: oldFilterSlugs,
-            },
-          },
-        );
-
-        // update product title
-        execUpdateProductTitles(`productId=${summary._id.toHexString()}`);
-
-        mutationPayload = {
-          success: true,
-          message: await getApiMessage('products.update.success'),
-        };
-        return;
-      }
-
-      // update attribute
-      const updatedFilterSlugs = summary.filterSlugs.reduce((acc: string[], filterSlug) => {
-        if (oldFilterSlugs.includes(filterSlug)) {
-          return acc;
-        }
-        return [...acc, filterSlug];
-      }, finalFilterSlugs);
       const updatedProductAttributeResult = await productSummariesCollection.findOneAndUpdate(
         {
           _id: summary._id,
         },
         {
           $set: {
-            'attributes.$[oldAttribute]': {
-              ...productAttribute,
-              optionIds: finalOptionIds,
-              filterSlugs: finalFilterSlugs,
-            },
-            filterSlugs: updatedFilterSlugs,
+            filterSlugs: updatedSummary.filterSlugs,
+            attributeIds: updatedSummary.attributeIds,
+            attributes: updatedSummary.attributes.map((productAttribute) => {
+              return {
+                _id: productAttribute._id,
+                attributeId: productAttribute.attributeId,
+                filterSlugs: productAttribute.filterSlugs,
+                optionIds: productAttribute.optionIds,
+                readableValueI18n: productAttribute.readableValueI18n,
+              };
+            }),
           },
-        },
-        {
-          arrayFilters: [
-            {
-              'oldAttribute._id': productAttribute._id,
-            },
-          ],
         },
       );
       if (!updatedProductAttributeResult.ok) {
@@ -376,7 +272,7 @@ export async function updateProductSelectAttribute({
         },
         {
           $set: {
-            filterSlugs: updatedFilterSlugs,
+            filterSlugs: updatedSummary.filterSlugs,
           },
         },
       );
@@ -386,7 +282,8 @@ export async function updateProductSelectAttribute({
         },
         {
           $set: {
-            filterSlugs: updatedFilterSlugs,
+            filterSlugs: updatedSummary.filterSlugs,
+            attributeIds: updatedSummary.attributeIds,
           },
         },
       );

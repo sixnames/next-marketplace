@@ -13,7 +13,7 @@ import {
 import CmsProductLayout from '../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
-import { getCmsProduct } from '../../../../../../../../lib/productUtils';
+import { getFullProductSummary } from '../../../../../../../../lib/productUtils';
 import {
   castDbData,
   getConsoleInitialData,
@@ -113,7 +113,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getCmsProduct({
+  const payload = await getFullProductSummary({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: companyResult.slug,
@@ -132,7 +132,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      product: castDbData(payload.product),
+      product: castDbData(payload.summary),
       cardContent: castDbData(payload.cardContent),
       companySlug: companyResult.slug,
       pageCompany: castDbData(props.layoutProps.pageCompany),

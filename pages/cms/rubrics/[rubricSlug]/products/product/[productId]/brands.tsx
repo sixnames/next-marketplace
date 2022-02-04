@@ -24,7 +24,7 @@ import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from '../../../../../../../lib/i18n';
 import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
-import { getCmsProduct } from '../../../../../../../lib/productUtils';
+import { getFullProductSummary } from '../../../../../../../lib/productUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -108,7 +108,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getCmsProduct({
+  const payload = await getFullProductSummary({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
@@ -119,12 +119,12 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
-  const { product } = payload;
+  const { summary } = payload;
 
-  const manufacturerEntity = product.manufacturerSlug
+  const manufacturerEntity = summary.manufacturerSlug
     ? await manufacturersCollection.findOne(
         {
-          itemId: product.manufacturerSlug,
+          itemId: summary.manufacturerSlug,
         },
         {
           projection: {
@@ -142,9 +142,9 @@ export const getServerSideProps = async (
       }
     : null;
 
-  const brandEntity = product.brandSlug
+  const brandEntity = summary.brandSlug
     ? await brandsCollection.findOne(
-        { itemId: product.brandSlug },
+        { itemId: summary.brandSlug },
         {
           projection: {
             _id: true,
@@ -161,10 +161,10 @@ export const getServerSideProps = async (
       }
     : null;
 
-  const brandCollectionEntity = product.brandCollectionSlug
+  const brandCollectionEntity = summary.brandCollectionSlug
     ? await brandCollectionsCollection.findOne(
         {
-          itemId: product.brandCollectionSlug,
+          itemId: summary.brandCollectionSlug,
         },
         {
           projection: {
@@ -185,7 +185,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      product: castDbData(product),
+      product: castDbData(summary),
       brand: castDbData(brand),
       brandCollection: castDbData(brandCollection),
       manufacturer: castDbData(manufacturer),

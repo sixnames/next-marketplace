@@ -1147,6 +1147,7 @@ export interface TaskModel extends TimestampModel {
   nameI18n?: TranslationModel | null;
   createdById: ObjectIdModel;
   variantId?: ObjectIdModel | null;
+  variantSlug?: string;
   executorId?: ObjectIdModel | null;
   productId?: ObjectIdModel | null;
   log: TaskLogModel[];

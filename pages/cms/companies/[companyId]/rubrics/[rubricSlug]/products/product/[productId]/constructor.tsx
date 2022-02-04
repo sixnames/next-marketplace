@@ -12,7 +12,7 @@ import {
 } from '../../../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
 import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
-import { getCmsProduct } from '../../../../../../../../../lib/productUtils';
+import { getFullProductSummary } from '../../../../../../../../../lib/productUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -128,7 +128,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getCmsProduct({
+  const payload = await getFullProductSummary({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: companyResult.slug,
@@ -140,7 +140,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product, cardContent } = payload;
+  const { summary, cardContent } = payload;
 
   const links = getCmsCompanyLinks({
     companyId: companyResult._id,
@@ -149,7 +149,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      product: castDbData(product),
+      product: castDbData(summary),
       cardContent: castDbData(cardContent),
       pageCompany: castDbData(companyResult),
       routeBasePath: links.root,

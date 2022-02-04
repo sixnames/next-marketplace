@@ -46,12 +46,12 @@ interface GetCmsProductInterface {
 }
 
 interface GetCmsProductPayloadInterface {
-  product: ProductSummaryInterface;
+  summary: ProductSummaryInterface;
   categoriesList: CategoryInterface[];
   cardContent: SeoContentCitiesInterface;
 }
 
-export async function getCmsProduct({
+export async function getFullProductSummary({
   productId,
   locale,
   companySlug,
@@ -203,7 +203,7 @@ export async function getCmsProduct({
   }
 
   return {
-    product,
+    summary: product,
     categoriesList: initialProduct.categories || [],
     cardContent,
   };
@@ -270,7 +270,7 @@ export async function getConsoleShopProduct({
     return null;
   }
 
-  const productPayload = await getCmsProduct({
+  const productPayload = await getFullProductSummary({
     companySlug,
     locale,
     productId: shopProductResult.productId.toHexString(),
@@ -278,7 +278,7 @@ export async function getConsoleShopProduct({
   if (!productPayload) {
     return null;
   }
-  const { cardContent, product } = productPayload;
+  const { cardContent, summary } = productPayload;
 
   const shopProduct: ShopProductInterface = {
     ...shopProductResult,
@@ -287,7 +287,7 @@ export async function getConsoleShopProduct({
       locale,
     }),
     summary: {
-      ...product,
+      ...summary,
       cardContentCities: cardContent,
     },
   };

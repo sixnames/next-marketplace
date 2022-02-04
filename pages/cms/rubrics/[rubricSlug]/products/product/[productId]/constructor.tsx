@@ -7,7 +7,7 @@ import { DEFAULT_COMPANY_SLUG } from '../../../../../../../config/common';
 import { AppContentWrapperBreadCrumbs } from '../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
-import { getCmsProduct } from '../../../../../../../lib/productUtils';
+import { getFullProductSummary } from '../../../../../../../lib/productUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -85,7 +85,7 @@ export const getServerSideProps = async (
 
   const companySlug = DEFAULT_COMPANY_SLUG;
 
-  const payload = await getCmsProduct({
+  const payload = await getFullProductSummary({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug,
@@ -97,12 +97,12 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product, cardContent } = payload;
+  const { summary, cardContent } = payload;
 
   return {
     props: {
       ...props,
-      product: castDbData(product),
+      product: castDbData(summary),
       cardContent: castDbData(cardContent),
       companySlug,
     },

@@ -3,7 +3,7 @@ import { TaskVariantModel } from 'db/dbModels';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { COL_TASK_VARIANTS, COL_TASKS, COL_USERS } from 'db/collectionNames';
+import { COL_PRODUCT_SUMMARIES, COL_TASK_VARIANTS, COL_TASKS, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { TaskInterface, UserInterface } from 'db/uiInterfaces';
 import { getUserAllowedTaskVariants } from 'lib/taskUtils';
@@ -83,6 +83,13 @@ export async function getMyTasksListSsr({
         },
       },
       {
+        $lookup: {
+          as: 'product',
+          from: COL_PRODUCT_SUMMARIES,
+          ...getTaskNestedFieldsPipeline('productId'),
+        },
+      },
+      {
         $addFields: {
           variant: {
             $arrayElemAt: ['$variant', 0],
@@ -92,6 +99,9 @@ export async function getMyTasksListSsr({
           },
           executor: {
             $arrayElemAt: ['$executor', 0],
+          },
+          product: {
+            $arrayElemAt: ['$product', 0],
           },
         },
       },
@@ -128,37 +138,43 @@ export async function getMyTasksListSsr({
       .toArray();
 
     const tasksAggregation = [...userTasksAggregation, ...newTasksAggregation];
-    const tasks: TaskInterface[] = tasksAggregation.map((taskVariant) => {
-      const variant = taskVariant.variant
+    const tasks: TaskInterface[] = tasksAggregation.map((task) => {
+      const variant = task.variant
         ? {
-            ...taskVariant.variant,
-            name: getFieldStringLocale(taskVariant.variant.nameI18n, locale),
+            ...task.variant,
+            name: getFieldStringLocale(task.variant.nameI18n, locale),
           }
         : null;
-      const originalName = getFieldStringLocale(taskVariant.nameI18n, locale);
+      const originalName = getFieldStringLocale(task.nameI18n, locale);
       const name = originalName || variant?.name;
 
       return {
-        ...taskVariant,
+        ...task,
         name,
         variant,
-        creator: taskVariant.creator
+        product: task.product
           ? {
-              ...taskVariant.creator,
-              shortName: getShortName(taskVariant.creator),
+              ...task.product,
+              snippetTitle: getFieldStringLocale(task.product.snippetTitleI18n, locale),
+            }
+          : null,
+        creator: task.creator
+          ? {
+              ...task.creator,
+              shortName: getShortName(task.creator),
               formattedPhone: {
-                raw: phoneToRaw(taskVariant.creator.phone),
-                readable: phoneToReadable(taskVariant.creator.phone),
+                raw: phoneToRaw(task.creator.phone),
+                readable: phoneToReadable(task.creator.phone),
               },
             }
           : null,
-        executor: taskVariant.executor
+        executor: task.executor
           ? {
-              ...taskVariant.executor,
-              shortName: getShortName(taskVariant.executor),
+              ...task.executor,
+              shortName: getShortName(task.executor),
               formattedPhone: {
-                raw: phoneToRaw(taskVariant.executor.phone),
-                readable: phoneToReadable(taskVariant.executor.phone),
+                raw: phoneToRaw(task.executor.phone),
+                readable: phoneToReadable(task.executor.phone),
               },
             }
           : null,

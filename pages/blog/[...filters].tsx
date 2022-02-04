@@ -13,7 +13,7 @@ import { FILTER_SEPARATOR, REQUEST_METHOD_POST } from '../../config/common';
 import { useAppContext } from '../../context/appContext';
 import { useConfigContext } from '../../context/configContext';
 import { UpdateBlogAttributeCountersInputInterface } from '../../db/dao/blog/updateBlogAttributeCounters';
-import { getCatalogueBlogSsr } from '../../db/dao/ssr/getCatalogueBlogSsr';
+import { getCatalogueBlogSsr } from 'db/dao/ssr/getCatalogueBlogSsr';
 import {
   BlogAttributeInterface,
   BlogPostInterface,

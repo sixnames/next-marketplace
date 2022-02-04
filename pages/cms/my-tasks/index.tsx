@@ -6,9 +6,9 @@ import WpTitle from 'components/WpTitle';
 import { getMyTasksListSsr } from 'db/dao/ssr/getMyTasksListSsr';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/getProjectLinks';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import { getCmsLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Мои адачи';
@@ -58,13 +58,13 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsLinks({});
+  const links = getProjectLinks();
 
   return {
     props: {
       ...props,
       tasks: castDbData(payload),
-      basePath: links.root,
+      basePath: links.cms.url,
     },
   };
 };

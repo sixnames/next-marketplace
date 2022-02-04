@@ -1,11 +1,13 @@
-import { useRouter } from 'next/router';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
+import { useUserContext } from 'context/userContext';
+import { useUpdateTask } from 'hooks/mutations/useTaskMutations';
 import * as React from 'react';
 import { getConstantOptionName, TASK_STATE_OPTIONS } from 'config/constantSelects';
 import { useLocaleContext } from 'context/localeContext';
 import { TaskInterface } from 'db/uiInterfaces';
-import { getConsoleTaskLinks } from 'lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
-import WpLink from '../Link/WpLink';
 import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface ConsoleMyTasksListInterface {
@@ -13,24 +15,18 @@ export interface ConsoleMyTasksListInterface {
   basePath: string;
 }
 
-const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ basePath, tasks }) => {
-  const router = useRouter();
+const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ tasks }) => {
+  const { showModal } = useAppContext();
   const { locale } = useLocaleContext();
+  const { sessionUser } = useUserContext();
+  const [updateTaskMutation] = useUpdateTask();
 
   const columns: WpTableColumn<TaskInterface>[] = [
     {
       headTitle: 'Название',
       accessor: 'name',
       render: ({ dataItem }) => {
-        const links = getConsoleTaskLinks({
-          basePath,
-          taskId: dataItem._id,
-        });
-        return (
-          <WpLink href={links.root} testId={`${dataItem.name}`}>
-            {dataItem.name}
-          </WpLink>
-        );
+        return <div data-cy={`${dataItem.name}`}>{dataItem.name}</div>;
       },
     },
     {
@@ -45,6 +41,13 @@ const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ basePath, t
       },
     },
     {
+      accessor: 'product',
+      headTitle: 'Товар',
+      render: ({ cellData }) => {
+        return cellData?.snippetTitle;
+      },
+    },
+    {
       headTitle: 'Добавлена пользователем',
       render: ({ dataItem }) => {
         return dataItem.creator?.shortName;
@@ -53,23 +56,44 @@ const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ basePath, t
     {
       headTitle: 'Испольнитель',
       render: ({ dataItem }) => {
-        return dataItem.executor?.shortName || 'Не назначен';
+        return dataItem.executor ? (
+          <div data-cy={`${dataItem.name}-executor`}>{dataItem.executor?.shortName}</div>
+        ) : (
+          'Не назначен'
+        );
       },
     },
     {
       render: ({ dataItem }) => {
-        const links = getConsoleTaskLinks({
-          basePath,
-          taskId: dataItem._id,
-        });
         return (
           <div className='flex justify-end'>
             <ContentItemControls
               testId={`${dataItem.name}`}
-              updateTitle={'Редактировать тип задачи'}
-              updateHandler={() => {
-                router.push(links.root).catch(console.log);
-              }}
+              createTitle={'Выполнить задачу'}
+              createHandler={
+                dataItem.executor || !sessionUser
+                  ? undefined
+                  : () => {
+                      showModal<ConfirmModalInterface>({
+                        variant: CONFIRM_MODAL,
+                        props: {
+                          testId: 'accept-task-modal',
+                          message: `Вы уверенны, что хотите выполнить задачу ${dataItem.name}?`,
+                          confirm: () => {
+                            updateTaskMutation({
+                              _id: `${dataItem._id}`,
+                              stateEnum: dataItem.stateEnum,
+                              nameI18n: dataItem.nameI18n,
+                              companySlug: dataItem.companySlug,
+                              product: dataItem.product,
+                              variantId: `${dataItem.variantId}`,
+                              executor: sessionUser,
+                            }).catch(console.log);
+                          },
+                        },
+                      });
+                    }
+              }
             />
           </div>
         );

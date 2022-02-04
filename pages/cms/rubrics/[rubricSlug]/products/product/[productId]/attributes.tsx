@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ConsoleRubricProductAttributes from '../../../../../../../components/console/ConsoleRubricProductAttributes';
-import { getCmsProductAttributesPageSsr } from '../../../../../../../db/dao/ssr/getCmsProductAttributesPageSsr';
+import { getCmsProductAttributesPageSsr } from 'db/dao/ssr/getCmsProductAttributesPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   ProductSummaryInterface,

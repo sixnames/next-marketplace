@@ -1,11 +1,12 @@
+import { getNextItemId } from 'lib/itemIdUtils';
 import { ObjectId } from 'mongodb';
-import { TASK_STATE_PENDING } from '../../../config/common';
+import { TASK_STATE_PENDING } from 'config/common';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_TASKS } from '../../collectionNames';
-import { TaskModel, TaskPayloadModel, TranslationModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface, ProductSummaryInterface, UserInterface } from '../../uiInterfaces';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { COL_TASKS } from 'db/collectionNames';
+import { TaskModel, TaskPayloadModel, TranslationModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface, ProductSummaryInterface, UserInterface } from 'db/uiInterfaces';
 
 export interface CreateTaskInputInterface {
   companySlug: string;
@@ -45,7 +46,9 @@ export async function createTask({
     }
 
     // create
+    const itemId = await getNextItemId(COL_TASKS);
     const createdTaskResult = await tasksCollection.insertOne({
+      itemId,
       nameI18n: input.nameI18n,
       companySlug: input.companySlug,
       stateEnum: TASK_STATE_PENDING,

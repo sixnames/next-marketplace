@@ -13,7 +13,7 @@ import Pager from '../../../components/Pager';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
 import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from '../../../config/modalVariants';
-import { getCmsBrandsListPageSsr } from '../../../db/dao/ssr/getCmsBrandsListPageSsr';
+import { getCmsBrandsListPageSsr } from 'db/dao/ssr/getCmsBrandsListPageSsr';
 import { AppPaginationInterface, BrandInterface } from '../../../db/uiInterfaces';
 import { useDeleteBrandMutation } from '../../../generated/apolloComponents';
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';

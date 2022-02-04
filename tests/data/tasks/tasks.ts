@@ -7,6 +7,7 @@ require('dotenv').config();
 const tasks: TaskModel[] = [
   {
     _id: getObjectId('task a'),
+    itemId: '000001',
     stateEnum: TASK_STATE_PENDING,
     productId: getObjectId('000010'),
     createdById: getObjectId('admin'),
@@ -18,6 +19,7 @@ const tasks: TaskModel[] = [
   },
   {
     _id: getObjectId('task b'),
+    itemId: '000002',
     stateEnum: TASK_STATE_PENDING,
     productId: getObjectId('000010'),
     createdById: getObjectId('admin'),
@@ -30,6 +32,7 @@ const tasks: TaskModel[] = [
   },
   {
     _id: getObjectId('task c'),
+    itemId: '000003',
     stateEnum: TASK_STATE_PENDING,
     productId: getObjectId('000010'),
     createdById: getObjectId('admin'),

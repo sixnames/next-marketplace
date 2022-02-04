@@ -7,22 +7,22 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_COMPANY_SLUG,
   SORT_DESC,
-} from '../../../config/common';
-import { sortObjectsByField } from '../../../lib/arrayUtils';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getCmsProduct } from '../../../lib/productUtils';
-import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
-import { CmsProductAttributesPageInterface } from '../../../pages/cms/rubrics/[rubricSlug]/products/product/[productId]/attributes';
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS } from '../../collectionNames';
-import { ObjectIdModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+} from 'config/common';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsProduct } from 'lib/productUtils';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { CmsProductAttributesPageInterface } from 'pages/cms/rubrics/[rubricSlug]/products/product/[productId]/attributes';
+import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS } from 'db/collectionNames';
+import { ObjectIdModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import {
   AttributesGroupInterface,
   OptionInterface,
   ProductAttributeInterface,
   ProductAttributesGroupInterface,
   ProductSummaryInterface,
-} from '../../uiInterfaces';
+} from 'db/uiInterfaces';
 
 export const getCmsProductAttributesPageSsr = async (
   context: GetServerSidePropsContext,

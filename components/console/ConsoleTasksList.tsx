@@ -77,11 +77,11 @@ const ConsoleTasksList: React.FC<ConsoleTasksListInterface> = ({ basePath, tasks
           <div className='flex justify-end'>
             <ContentItemControls
               testId={`${dataItem.name}`}
-              updateTitle={'Редактировать тип задачи'}
+              updateTitle={'Редактировать задачу'}
               updateHandler={() => {
                 router.push(links.root).catch(console.log);
               }}
-              deleteTitle={'Удалить тип задачи'}
+              deleteTitle={'Удалить задачу'}
               deleteHandler={() => {
                 showModal<ConfirmModalInterface>({
                   variant: CONFIRM_MODAL,

@@ -1,18 +1,20 @@
+import WpNotification from 'components/WpNotification';
+import { useUserContext } from 'context/userContext';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import WpButton from '../../components/button/WpButton';
 import Inner from '../../components/Inner';
-import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import WpTitle from '../../components/WpTitle';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG } from '../../config/common';
-import { CONFIRM_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
-import { useConfigContext } from '../../context/configContext';
-import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from '../../db/uiInterfaces';
-import { useDeleteProduct } from '../../hooks/mutations/useProductMutations';
-import { getConsoleRubricLinks } from '../../lib/linkUtils';
-import { ClientNavItemInterface } from '../../types/clientTypes';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG } from 'config/common';
+import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
+import { useConfigContext } from 'context/configContext';
+import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
+import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { ClientNavItemInterface } from 'types/clientTypes';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
 
@@ -44,6 +46,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
   companySlug,
   hideDeleteButton,
 }) => {
+  const { sessionUser } = useUserContext();
   const { query } = useRouter();
   const { domainCompany } = useConfigContext();
   const { showModal } = useAppContext();
@@ -136,44 +139,58 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
         >
           {product.cardTitle}
         </WpTitle>
-        <div className='mb-4 flex gap-4'>
-          <WpButton
-            frameClassName='w-auto'
-            size={'small'}
-            onClick={() => {
-              window.open(
-                `/${companySlug || domainCompany?.slug || DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}/${
-                  product.slug
-                }`,
-                '_blank',
-              );
-            }}
-          >
-            Карточка товара
-          </WpButton>
-          {hideDeleteButton ? null : (
+        <div className='space-y-6'>
+          <div className='mb-4 flex gap-4'>
             <WpButton
               frameClassName='w-auto'
-              theme={'secondary'}
               size={'small'}
               onClick={() => {
-                showModal<ConfirmModalInterface>({
-                  variant: CONFIRM_MODAL,
-                  props: {
-                    testId: 'delete-product-modal',
-                    message: `Вы уверенны, что хотите удалить товар ${product.cardTitle}?`,
-                    confirm: () => {
-                      deleteProductFromRubricMutation({
-                        productId: `${product._id}`,
-                      }).catch((e) => console.log(e));
-                    },
-                  },
-                });
+                window.open(
+                  `/${companySlug || domainCompany?.slug || DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}/${
+                    product.slug
+                  }`,
+                  '_blank',
+                );
               }}
             >
-              Удалить товар
+              Карточка товара
             </WpButton>
-          )}
+            {hideDeleteButton ? null : (
+              <WpButton
+                frameClassName='w-auto'
+                theme={'secondary'}
+                size={'small'}
+                onClick={() => {
+                  showModal<ConfirmModalInterface>({
+                    variant: CONFIRM_MODAL,
+                    props: {
+                      testId: 'delete-product-modal',
+                      message: `Вы уверенны, что хотите удалить товар ${product.cardTitle}?`,
+                      confirm: () => {
+                        deleteProductFromRubricMutation({
+                          productId: `${product._id}`,
+                        }).catch((e) => console.log(e));
+                      },
+                    },
+                  });
+                }}
+              >
+                Удалить товар
+              </WpButton>
+            )}
+          </div>
+
+          {sessionUser?.role?.isContentManager ? (
+            <div className='max-w-[980px]'>
+              <WpNotification
+                variant={'warning'}
+                testId={'draft-warning'}
+                message={
+                  'Вы редактируете черновик товара. Все изменения должны быть утверждены модератором.'
+                }
+              />
+            </div>
+          ) : null}
         </div>
       </Inner>
       <AppSubNav navConfig={navConfig} />

@@ -1,8 +1,10 @@
+import WpLink from 'components/Link/WpLink';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useUserContext } from 'context/userContext';
 import { useUpdateTask } from 'hooks/mutations/useTaskMutations';
+import { getProjectLinks } from 'lib/getProjectLinks';
 import * as React from 'react';
 import { getConstantOptionName, TASK_STATE_OPTIONS } from 'config/constantSelects';
 import { useLocaleContext } from 'context/localeContext';
@@ -23,10 +25,17 @@ const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ tasks }) =>
 
   const columns: WpTableColumn<TaskInterface>[] = [
     {
+      headTitle: 'ID',
+      accessor: 'itemId',
+      render: ({ dataItem }) => {
+        return <div data-cy={`${dataItem.itemId}`}>{dataItem.itemId}</div>;
+      },
+    },
+    {
       headTitle: 'Название',
       accessor: 'name',
       render: ({ dataItem }) => {
-        return <div data-cy={`${dataItem.name}`}>{dataItem.name}</div>;
+        return <div>{dataItem.name}</div>;
       },
     },
     {
@@ -41,10 +50,24 @@ const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ tasks }) =>
       },
     },
     {
-      accessor: 'product',
       headTitle: 'Товар',
-      render: ({ cellData }) => {
-        return cellData?.snippetTitle;
+      render: ({ dataItem }) => {
+        if (dataItem.executor && dataItem.product) {
+          const links = getProjectLinks({
+            productId: dataItem.product._id,
+            rubricSlug: dataItem.product.rubricSlug,
+          });
+          return (
+            <WpLink
+              target={'_blank'}
+              testId={`${dataItem.itemId}-product-link`}
+              href={links.cms.rubrics.rubricSlug.products.product.productId.url}
+            >
+              {dataItem.product.snippetTitle}
+            </WpLink>
+          );
+        }
+        return dataItem.product?.snippetTitle;
       },
     },
     {
@@ -57,7 +80,7 @@ const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ tasks }) =>
       headTitle: 'Испольнитель',
       render: ({ dataItem }) => {
         return dataItem.executor ? (
-          <div data-cy={`${dataItem.name}-executor`}>{dataItem.executor?.shortName}</div>
+          <div data-cy={`${dataItem.itemId}-executor`}>{dataItem.executor?.shortName}</div>
         ) : (
           'Не назначен'
         );
@@ -68,7 +91,7 @@ const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ tasks }) =>
         return (
           <div className='flex justify-end'>
             <ContentItemControls
-              testId={`${dataItem.name}`}
+              testId={`${dataItem.itemId}`}
               createTitle={'Выполнить задачу'}
               createHandler={
                 dataItem.executor || !sessionUser
@@ -78,7 +101,7 @@ const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ tasks }) =>
                         variant: CONFIRM_MODAL,
                         props: {
                           testId: 'accept-task-modal',
-                          message: `Вы уверенны, что хотите выполнить задачу ${dataItem.name}?`,
+                          message: `Вы уверенны, что хотите выполнить задачу ${dataItem.itemId}?`,
                           confirm: () => {
                             updateTaskMutation({
                               _id: `${dataItem._id}`,

@@ -1,5 +1,6 @@
 import { getProjectLinks } from 'lib/getProjectLinks';
 
+const taskItemId = '000001';
 describe('Tasks', () => {
   const links = getProjectLinks();
   beforeEach(() => {
@@ -10,10 +11,12 @@ describe('Tasks', () => {
     cy.getByCy('tasks-list').should('exist');
 
     // should accept task
-    cy.getByCy('Заполнить атрибуты-create').click();
+    cy.getByCy(`${taskItemId}-create`).click();
     cy.getByCy('accept-task-modal').should('exist');
     cy.getByCy('confirm').click();
     cy.wait(1500);
-    cy.getByCy('Заполнить атрибуты-executor').should('exist');
+    cy.getByCy(`${taskItemId}-executor`).should('exist');
+    cy.visitLinkHref(`${taskItemId}-product-link`);
+    cy.getByCy(`draft-warning`).should('exist');
   });
 });

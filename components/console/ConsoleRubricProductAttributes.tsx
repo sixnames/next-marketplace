@@ -226,7 +226,11 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                           </div>
 
                           <FixedButtons lowTop>
-                            <WpButton testId={'submit-number-attributes'} type={'submit'}>
+                            <WpButton
+                              testId={'submit-number-attributes'}
+                              size={'small'}
+                              type={'submit'}
+                            >
                               Сохранить
                             </WpButton>
                           </FixedButtons>
@@ -277,7 +281,11 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                           })}
 
                           <FixedButtons lowTop>
-                            <WpButton testId={'submit-text-attributes'} type={'submit'}>
+                            <WpButton
+                              testId={'submit-text-attributes'}
+                              size={'small'}
+                              type={'submit'}
+                            >
                               Сохранить
                             </WpButton>
                           </FixedButtons>

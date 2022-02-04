@@ -1,17 +1,20 @@
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { ObjectId } from 'mongodb';
-import { FILTER_SEPARATOR } from '../../../config/common';
+import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, TASK_STATE_IN_PROGRESS } from 'config/common';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getAttributeReadableValueLocales } from '../../../lib/productAttributesUtils';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { getParentTreeIds } from '../../../lib/treeUtils';
-import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
+import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { getParentTreeIds } from 'lib/treeUtils';
+import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
   COL_PRODUCT_FACETS,
   COL_PRODUCT_SUMMARIES,
   COL_SHOP_PRODUCTS,
-} from '../../collectionNames';
+  COL_TASK_VARIANTS,
+  COL_TASKS,
+} from 'db/collectionNames';
 import {
   AttributeModel,
   ObjectIdModel,
@@ -20,9 +23,11 @@ import {
   ProductPayloadModel,
   ProductSummaryModel,
   ShopProductModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+  TaskModel,
+  TaskVariantModel,
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductSelectAttributeInputInterface {
   productId: string;
@@ -53,7 +58,7 @@ export async function updateProductSelectAttribute({
   try {
     await session.withTransaction(async () => {
       // permission
-      const { allow, message } = await getOperationPermission({
+      const { allow, message, role, user } = await getOperationPermission({
         context,
         slug: 'updateProductAttributes',
       });
@@ -80,6 +85,48 @@ export async function updateProductSelectAttribute({
       const productId = new ObjectId(input.productId);
       const attributeId = new ObjectId(input.attributeId);
       const productAttributeId = new ObjectId(input.productAttributeId);
+
+      // TODO draft
+      if (role.isContentManager && user) {
+        const tasksCollection = db.collection<TaskModel>(COL_TASKS);
+        const taskVariantsCollection = db.collection<TaskVariantModel>(COL_TASK_VARIANTS);
+        const taskVariant = await taskVariantsCollection.findOne({
+          slug: getTaskVariantSlugByRule('updateProductAttributes'),
+          companySlug: DEFAULT_COMPANY_SLUG,
+        });
+        if (!taskVariant) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('products.update.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        const task = await tasksCollection.findOne({
+          productId,
+          variantId: taskVariant._id,
+          executorId: user._id,
+          stateEnum: TASK_STATE_IN_PROGRESS,
+        });
+        console.log(task);
+
+        if (!task) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('products.update.error'),
+          };
+          await session.abortTransaction();
+          return;
+        } else {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('products.update.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+      }
 
       // Check if product exist
       const summary = await productSummariesCollection.findOne({ _id: productId });

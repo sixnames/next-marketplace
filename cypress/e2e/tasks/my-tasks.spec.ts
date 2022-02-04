@@ -30,8 +30,6 @@ describe('Tasks', () => {
     // clear select attribute
     cy.getByCy('Объем-attribute-clear').click();
     cy.wait(1500);
-
-    // open options modal
     cy.getByCy('Объем-attribute').click();
     cy.getByCy('select-attribute-options-modal').should('exist');
     cy.getByCy('option-350').click();
@@ -40,8 +38,6 @@ describe('Tasks', () => {
     // clear multi-select attribute
     // cy.getByCy('Виноград-attribute-clear').click();
     // cy.wait(1500);
-
-    // open options modal
     // cy.getByCy('Виноград-attribute').click();
     // cy.getByCy('multi-select-attribute-options-modal').should('exist');
     // cy.getByCy('option-Бага').click();

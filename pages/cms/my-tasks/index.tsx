@@ -37,8 +37,6 @@ const TasksListPage: React.FC<TasksListPageInterface> = ({ layoutProps, tasks, b
   );
 };
 
-// getMyTasksListSsr
-
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<TasksListPageInterface>> => {

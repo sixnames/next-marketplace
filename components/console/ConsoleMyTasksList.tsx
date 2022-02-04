@@ -1,17 +1,11 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { getConstantOptionName, TASK_STATE_OPTIONS } from 'config/constantSelects';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
 import { useLocaleContext } from 'context/localeContext';
 import { TaskInterface } from 'db/uiInterfaces';
-import { useDeleteTask } from 'hooks/mutations/useTaskMutations';
 import { getConsoleTaskLinks } from 'lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
-import FixedButtons from '../button/FixedButtons';
-import WpButton from '../button/WpButton';
 import WpLink from '../Link/WpLink';
-import { ConfirmModalInterface } from '../Modal/ConfirmModal';
 import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface ConsoleMyTasksListInterface {
@@ -22,11 +16,6 @@ export interface ConsoleMyTasksListInterface {
 const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ basePath, tasks }) => {
   const router = useRouter();
   const { locale } = useLocaleContext();
-  const { showModal } = useAppContext();
-  const [deleteTaskMutation] = useDeleteTask();
-  const links = getConsoleTaskLinks({
-    basePath,
-  });
 
   const columns: WpTableColumn<TaskInterface>[] = [
     {
@@ -81,20 +70,6 @@ const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ basePath, t
               updateHandler={() => {
                 router.push(links.root).catch(console.log);
               }}
-              deleteTitle={'Удалить тип задачи'}
-              deleteHandler={() => {
-                showModal<ConfirmModalInterface>({
-                  variant: CONFIRM_MODAL,
-                  props: {
-                    message: `Вы уверенны, что хотите удалить задачу ${dataItem.name}?`,
-                    confirm: () => {
-                      deleteTaskMutation({
-                        _id: `${dataItem._id}`,
-                      }).catch(console.log);
-                    },
-                  },
-                });
-              }}
             />
           </div>
         );
@@ -105,31 +80,8 @@ const ConsoleMyTasksList: React.FC<ConsoleMyTasksListInterface> = ({ basePath, t
   return (
     <div className='relative' data-cy={'tasks-list'}>
       <div className='overflow-x-auto overflow-y-hidden'>
-        <WpTable<TaskInterface>
-          testIdKey={'name'}
-          columns={columns}
-          data={tasks}
-          onRowDoubleClick={(dataItem) => {
-            const links = getConsoleTaskLinks({
-              basePath,
-              taskId: dataItem._id,
-            });
-            router.push(links.root).catch(console.log);
-          }}
-        />
+        <WpTable<TaskInterface> testIdKey={'name'} columns={columns} data={tasks} />
       </div>
-      <FixedButtons>
-        <WpButton
-          size='small'
-          frameClassName='w-auto'
-          testId={'create-task-button'}
-          onClick={() => {
-            router.push(links.create).catch(console.log);
-          }}
-        >
-          Создать задачу
-        </WpButton>
-      </FixedButtons>
     </div>
   );
 };

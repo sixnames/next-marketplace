@@ -1,5 +1,5 @@
-import { DEFAULT_COMPANY_SLUG, TASK_STATE_PENDING } from '../../../config/common';
-import { TaskModel } from '../../../db/dbModels';
+import { DEFAULT_COMPANY_SLUG, TASK_STATE_PENDING } from 'config/common';
+import { TaskModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();
@@ -10,7 +10,6 @@ const tasks: TaskModel[] = [
     stateEnum: TASK_STATE_PENDING,
     productId: getObjectId('000010'),
     createdById: getObjectId('admin'),
-    executorId: getObjectId('content manager'),
     companySlug: DEFAULT_COMPANY_SLUG,
     variantId: getObjectId('task variant product attributes'),
     createdAt: new Date(),

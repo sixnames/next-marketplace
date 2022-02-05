@@ -1,11 +1,11 @@
 import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getAttributeReadableValueLocales } from '../../../lib/productAttributesUtils';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_ATTRIBUTES, COL_PRODUCT_SUMMARIES } from '../../collectionNames';
-import { AttributeModel, ProductPayloadModel, ProductSummaryModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { COL_ATTRIBUTES, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
+import { AttributeModel, ProductPayloadModel, ProductSummaryModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductNumberAttributeItemInputInterface {
   productAttributeId: string;

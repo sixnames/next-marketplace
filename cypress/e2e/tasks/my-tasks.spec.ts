@@ -1,3 +1,4 @@
+import { TaskModel } from 'db/dbModels';
 import { getProjectLinks } from 'lib/getProjectLinks';
 
 const taskItemId = '000001';
@@ -28,31 +29,58 @@ describe('Tasks', () => {
     cy.getByCy('product-attributes-list').should('exist');
 
     // clear select attribute
+    // task log 1
     cy.getByCy('Объем-attribute-clear').click();
     cy.wait(1500);
+    // task log 2
     cy.getByCy('Объем-attribute').click();
     cy.getByCy('select-attribute-options-modal').should('exist');
     cy.getByCy('option-350').click();
-    // cy.wait(1500);
+    cy.wait(1500);
+    // count task logs
+    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
+      const task = taskResult as unknown as TaskModel | null;
+      assert((task?.log || []).length === 2);
+    });
 
     // clear multi-select attribute
-    // cy.getByCy('Виноград-attribute-clear').click();
-    // cy.wait(1500);
-    // cy.getByCy('Виноград-attribute').click();
-    // cy.getByCy('multi-select-attribute-options-modal').should('exist');
-    // cy.getByCy('option-Бага').click();
-    // cy.getByCy('option-Бикал').click();
-    // cy.getByCy('options-submit').click();
-    // cy.wait(1500);
+    // task log 3
+    cy.getByCy('Виноград-attribute-clear').click();
+    cy.wait(1500);
+    // task log 4
+    cy.getByCy('Виноград-attribute').click();
+    cy.getByCy('multi-select-attribute-options-modal').should('exist');
+    cy.getByCy('option-Бага').click();
+    cy.getByCy('option-Бикал').click();
+    cy.getByCy('options-submit').click();
+    cy.wait(1500);
+    // count task logs
+    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
+      const task = taskResult as unknown as TaskModel | null;
+      assert((task?.log || []).length === 4);
+    });
 
     // update number attributes
-    // cy.getByCy('Крепость-attribute').clear().type('10');
-    // cy.getByCy('Количество в упаковке-attribute').clear().type('10');
-    // cy.getByCy('submit-number-attributes').click();
-    // cy.wait(1500);
+    // task log 5
+    cy.getByCy('Крепость-attribute').clear().type('10');
+    cy.getByCy('Количество в упаковке-attribute').clear().type('10');
+    cy.getByCy('submit-number-attributes').click();
+    cy.wait(1500);
+    // count task logs
+    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
+      const task = taskResult as unknown as TaskModel | null;
+      assert((task?.log || []).length === 5);
+    });
 
     // update text attributes
-    // cy.getByCy('Текстовый-attribute-ru').clear().type('lorem');
-    // cy.getByCy('submit-text-attributes').click();
+    // task log 6
+    cy.getByCy('Текстовый-attribute-ru').clear().type('lorem');
+    cy.getByCy('submit-text-attributes').click();
+
+    // count task logs
+    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
+      const task = taskResult as unknown as TaskModel | null;
+      assert((task?.log || []).length === 6);
+    });
   });
 });

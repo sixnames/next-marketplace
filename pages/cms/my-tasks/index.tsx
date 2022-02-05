@@ -11,7 +11,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-const pageTitle = 'Мои адачи';
+const pageTitle = 'Мои задачи';
 interface TasksListConsumerInterface extends ConsoleMyTasksListInterface {}
 
 const TasksListConsumer: React.FC<TasksListConsumerInterface> = ({ basePath, tasks }) => {

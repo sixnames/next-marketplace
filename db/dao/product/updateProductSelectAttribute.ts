@@ -1,5 +1,5 @@
 import { getTaskVariantSlugByRule } from 'config/constantSelects';
-import { getFullProductSummary } from 'lib/productUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { ObjectId } from 'mongodb';
 import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR } from 'config/common';
@@ -85,11 +85,15 @@ export async function updateProductSelectAttribute({
       const productAttributeId = new ObjectId(input.productAttributeId);
       const diff: SummaryDiffModel = {};
 
-      // get summary
-      const summaryPayload = await getFullProductSummary({
+      // get summary or summary draft
+      const taskVariantSlug = getTaskVariantSlugByRule('updateProductAttributes');
+      const summaryPayload = await getFullProductSummaryWithDraft({
         locale,
         productId: input.productId,
         companySlug: DEFAULT_COMPANY_SLUG,
+        taskVariantSlug,
+        userId: user?._id,
+        isContentManager: role.isContentManager,
       });
       if (!summaryPayload) {
         mutationPayload = {
@@ -223,7 +227,7 @@ export async function updateProductSelectAttribute({
       if (role.isContentManager && user) {
         const task = await findOrCreateUserTask({
           productId: summary._id,
-          variantSlug: getTaskVariantSlugByRule('updateProductAttributes'),
+          variantSlug: taskVariantSlug,
           executorId: user._id,
         });
 

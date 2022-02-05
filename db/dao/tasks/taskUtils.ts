@@ -54,40 +54,53 @@ export async function getUserAllowedTaskVariants({
   return taskVariantSlugs;
 }
 
-export interface FindOrCreateUserTaskInterface {
-  productId?: ObjectIdModel;
-  executorId: ObjectIdModel;
+export interface FindUserTaskInterface {
+  productId?: ObjectIdModel | string;
+  executorId: ObjectIdModel | string;
   variantSlug: string;
+}
+
+export async function findUserTask({
+  executorId,
+  productId,
+  variantSlug,
+}: FindUserTaskInterface): Promise<TaskModel | null> {
+  const { db } = await getDatabase();
+  const tasksCollection = db.collection<TaskModel>(COL_TASKS);
+  const productIdQuery = productId ? { productId: new ObjectId(productId) } : {};
+  const task = await tasksCollection.findOne({
+    ...productIdQuery,
+    variantSlug,
+    executorId: new ObjectId(executorId),
+    stateEnum: {
+      $in: [TASK_STATE_IN_PROGRESS, TASK_STATE_PENDING],
+    },
+  });
+  return task;
 }
 
 export async function findOrCreateUserTask({
   executorId,
   productId,
   variantSlug,
-}: FindOrCreateUserTaskInterface): Promise<TaskModel | null> {
+}: FindUserTaskInterface): Promise<TaskModel | null> {
   try {
     const { db } = await getDatabase();
     const tasksCollection = db.collection<TaskModel>(COL_TASKS);
-
-    const productIdQuery = productId ? { productId } : {};
-    let task = await tasksCollection.findOne({
-      ...productIdQuery,
+    let task = await findUserTask({
       variantSlug,
       executorId,
-      stateEnum: {
-        $in: [TASK_STATE_IN_PROGRESS, TASK_STATE_PENDING],
-      },
+      productId,
     });
 
     if (!task) {
       const itemId = await getNextItemId(COL_TASKS);
       const newTaskResult = await tasksCollection.insertOne({
         itemId,
-        productId,
-        // variantSlug: getTaskVariantSlugByRule('updateProductAttributes'),
+        productId: new ObjectId(productId),
         variantSlug,
-        executorId,
-        createdById: executorId,
+        executorId: new ObjectId(executorId),
+        createdById: new ObjectId(executorId),
         stateEnum: TASK_STATE_IN_PROGRESS,
         log: [],
         companySlug: DEFAULT_COMPANY_SLUG,
@@ -111,12 +124,12 @@ export async function findOrCreateUserTask({
 }
 
 export interface AddTaskLogItemInterface {
-  taskId: ObjectIdModel;
+  taskId: ObjectIdModel | string;
   prevStateEnum: TaskStateModel;
   nextStateEnum: TaskStateModel;
   diff?: SummaryDiffModel | null;
   draft?: JSONObjectModel | null;
-  createdById: ObjectIdModel;
+  createdById: ObjectIdModel | string;
   comment?: string;
 }
 
@@ -132,7 +145,7 @@ export async function addTaskLogItem({
   const { db } = await getDatabase();
   const tasksCollection = db.collection<TaskModel>(COL_TASKS);
   const task = await tasksCollection.findOne({
-    _id: taskId,
+    _id: new ObjectId(taskId),
   });
   if (!task) {
     return false;
@@ -143,10 +156,10 @@ export async function addTaskLogItem({
     diff,
     prevStateEnum,
     nextStateEnum,
-    createdAt: new Date(),
     comment,
     draft,
-    createdById,
+    createdById: new ObjectId(createdById),
+    createdAt: new Date(),
   };
   const updatedTask = await tasksCollection.findOneAndUpdate(
     {

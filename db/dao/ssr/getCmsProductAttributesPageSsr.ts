@@ -1,3 +1,4 @@
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext } from 'next';
 import {
@@ -10,7 +11,7 @@ import {
 } from 'config/common';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getFullProductSummary } from 'lib/productUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { CmsProductAttributesPageInterface } from 'pages/cms/rubrics/[rubricSlug]/products/product/[productId]/attributes';
 import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS } from 'db/collectionNames';
@@ -37,17 +38,22 @@ export const getCmsProductAttributesPageSsr = async (
     return null;
   }
 
-  const productPayload = await getFullProductSummary({
+  const productPayload = await getFullProductSummaryWithDraft({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
+    userId: props.layoutProps.sessionUser.me._id,
+    isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
+    taskVariantSlug: getTaskVariantSlugByRule('updateProductAttributes'),
   });
 
   if (!productPayload) {
     return null;
   }
 
-  const { summary, categoriesList } = productPayload;
+  const { categoriesList } = productPayload;
+  let summary = productPayload.summary;
+
   const attributesGroupIds: ObjectIdModel[] = summary.rubric?.attributesGroupIds || [];
   let cmsCardAttributeIds: ObjectIdModel[] = summary.rubric?.cmsCardAttributeIds || [];
   if (categoriesList.length > 0) {

@@ -1,7 +1,8 @@
+import { findUserTask } from 'db/dao/tasks/taskUtils';
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
-import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
-import { COL_OPTIONS, COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from '../db/collectionNames';
+import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { COL_OPTIONS, COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
@@ -10,7 +11,7 @@ import {
   shopProductShopPipeline,
   shopProductSupplierProductsPipeline,
   summaryPipeline,
-} from '../db/dao/constantPipelines';
+} from 'db/dao/constantPipelines';
 import {
   ObjectIdModel,
   OptionModel,
@@ -18,8 +19,8 @@ import {
   ProductSummaryModel,
   ShopProductModel,
   TranslationModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import {
   AttributeInterface,
   BarcodeDoublesInterface,
@@ -33,19 +34,19 @@ import {
   ShopProductBarcodeDoublesInterface,
   ShopProductInterface,
   SupplierProductInterface,
-} from '../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import { getFieldStringLocale } from './i18n';
 import { noNaN } from './numbers';
 import { getSupplierPrice } from './priceUtils';
 import { getProductAllSeoContents } from './seoContentUtils';
 
-interface GetCmsProductInterface {
+interface GetFullProductSummaryInterface {
   productId: string;
   companySlug: string;
   locale: string;
 }
 
-interface GetCmsProductPayloadInterface {
+interface GetFullProductSummaryPayloadInterface {
   summary: ProductSummaryInterface;
   categoriesList: CategoryInterface[];
   cardContent: SeoContentCitiesInterface;
@@ -55,7 +56,7 @@ export async function getFullProductSummary({
   productId,
   locale,
   companySlug,
-}: GetCmsProductInterface): Promise<GetCmsProductPayloadInterface | null> {
+}: GetFullProductSummaryInterface): Promise<GetFullProductSummaryPayloadInterface | null> {
   const { db } = await getDatabase();
   const productSummariesCollection = db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
   const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
@@ -206,6 +207,54 @@ export async function getFullProductSummary({
     summary: product,
     categoriesList: initialProduct.categories || [],
     cardContent,
+  };
+}
+
+interface GetFullProductSummaryWithDraftPayloadInterface extends GetFullProductSummaryInterface {
+  userId?: ObjectIdModel | string;
+  isContentManager?: boolean;
+  taskVariantSlug: string;
+}
+
+export async function getFullProductSummaryWithDraft({
+  companySlug,
+  userId,
+  isContentManager,
+  locale,
+  productId,
+  taskVariantSlug,
+}: GetFullProductSummaryWithDraftPayloadInterface): Promise<GetFullProductSummaryPayloadInterface | null> {
+  const summaryPayload = await getFullProductSummary({
+    locale,
+    productId,
+    companySlug,
+  });
+  if (!summaryPayload) {
+    return null;
+  }
+
+  const { categoriesList, cardContent } = summaryPayload;
+  let summary = summaryPayload.summary;
+
+  if (isContentManager && userId) {
+    const task = await findUserTask({
+      productId,
+      variantSlug: taskVariantSlug,
+      executorId: userId,
+    });
+    if (task) {
+      const lastLog = task.log[task.log.length - 1];
+      if (lastLog) {
+        const draft = lastLog.draft as ProductSummaryInterface | null;
+        summary = draft || summaryPayload.summary;
+      }
+    }
+  }
+
+  return {
+    cardContent,
+    categoriesList,
+    summary,
   };
 }
 

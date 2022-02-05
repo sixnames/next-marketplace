@@ -1,7 +1,8 @@
 import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { getFullProductSummary } from 'lib/productUtils';
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { ObjectId } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, TASK_STATE_IN_PROGRESS } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR } from 'config/common';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -13,7 +14,6 @@ import {
   COL_PRODUCT_FACETS,
   COL_PRODUCT_SUMMARIES,
   COL_SHOP_PRODUCTS,
-  COL_TASKS,
 } from 'db/collectionNames';
 import {
   AttributeModel,
@@ -23,7 +23,7 @@ import {
   ProductPayloadModel,
   ProductSummaryModel,
   ShopProductModel,
-  TaskModel,
+  SummaryDiffModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface, ProductAttributeInterface } from 'db/uiInterfaces';
@@ -83,6 +83,7 @@ export async function updateProductSelectAttribute({
       const selectedOptionsIds = input.selectedOptionsIds.map((_id) => new ObjectId(_id));
       const attributeId = new ObjectId(input.attributeId);
       const productAttributeId = new ObjectId(input.productAttributeId);
+      const diff: SummaryDiffModel = {};
 
       // get summary
       const summaryPayload = await getFullProductSummary({
@@ -181,6 +182,9 @@ export async function updateProductSelectAttribute({
         updatedSummary.filterSlugs = updatedSummary.filterSlugs.filter((filterSlug) => {
           return !oldFilterSlugs.includes(filterSlug);
         });
+        diff.deleted = {
+          attributes: productAttribute._id,
+        };
       } else {
         // add new attribute
         if (productAttributeNotExist) {
@@ -189,6 +193,9 @@ export async function updateProductSelectAttribute({
           finalFilterSlugs.forEach((filterSlug) => {
             updatedSummary.filterSlugs.push(filterSlug);
           });
+          diff.added = {
+            attributes: productAttribute._id,
+          };
         } else {
           // update existing attribute
           updatedSummary.attributes = updatedSummary.attributes.reduce(
@@ -206,29 +213,38 @@ export async function updateProductSelectAttribute({
           finalFilterSlugs.forEach((filterSlug) => {
             updatedSummary.filterSlugs.push(filterSlug);
           });
+          diff.updated = {
+            attributes: productAttribute._id,
+          };
         }
       }
 
-      // TODO draft
+      // create task log for content manager
       if (role.isContentManager && user) {
-        const tasksCollection = db.collection<TaskModel>(COL_TASKS);
-
-        const task = await tasksCollection.findOne({
+        const task = await findOrCreateUserTask({
           productId: summary._id,
           variantSlug: getTaskVariantSlugByRule('updateProductAttributes'),
           executorId: user._id,
-          stateEnum: TASK_STATE_IN_PROGRESS,
         });
-        console.log(task);
 
         if (!task) {
           mutationPayload = {
             success: false,
-            message: await getApiMessage('products.update.error'),
+            message: await getApiMessage('tasks.create.error'),
           };
           await session.abortTransaction();
           return;
-        } else {
+        }
+
+        const newTaskLogResult = await addTaskLogItem({
+          taskId: task._id,
+          diff,
+          prevStateEnum: task.stateEnum,
+          nextStateEnum: task.stateEnum,
+          draft: updatedSummary,
+          createdById: user._id,
+        });
+        if (!newTaskLogResult) {
           mutationPayload = {
             success: false,
             message: await getApiMessage('products.update.error'),
@@ -236,6 +252,13 @@ export async function updateProductSelectAttribute({
           await session.abortTransaction();
           return;
         }
+
+        mutationPayload = {
+          success: true,
+          message: await getApiMessage('products.update.success'),
+        };
+        await session.abortTransaction();
+        return;
       }
 
       const updatedProductAttributeResult = await productSummariesCollection.findOneAndUpdate(

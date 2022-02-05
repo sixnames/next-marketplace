@@ -6,7 +6,7 @@ import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { COL_PRODUCT_SUMMARIES, COL_TASK_VARIANTS, COL_TASKS, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { TaskInterface, UserInterface } from 'db/uiInterfaces';
-import { getUserAllowedTaskVariants } from 'lib/taskUtils';
+import { getUserAllowedTaskVariants } from 'db/dao/tasks/taskUtils';
 import { ObjectId } from 'mongodb';
 import { getTaskNestedFieldsPipeline } from './getCompanyTaskSsr';
 

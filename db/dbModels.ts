@@ -498,6 +498,16 @@ export interface DiffModel {
   updated: Record<string, any>;
 }
 
+export interface SummaryDiffActionFieldsModel {
+  attributes: ObjectIdModel;
+}
+
+export interface SummaryDiffModel {
+  added?: SummaryDiffActionFieldsModel;
+  deleted?: SummaryDiffActionFieldsModel;
+  updated?: SummaryDiffActionFieldsModel;
+}
+
 export interface OrderLogUserModel {
   name: string;
   lastName?: string | null;
@@ -1132,7 +1142,7 @@ export interface TaskLogModel {
   _id: ObjectIdModel;
   prevStateEnum: TaskStateModel;
   nextStateEnum: TaskStateModel;
-  diff?: DiffModel | null;
+  diff?: SummaryDiffModel | null;
   draft?: JSONObjectModel | null;
   createdById: ObjectIdModel;
   comment?: string;

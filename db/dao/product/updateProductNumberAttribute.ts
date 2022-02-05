@@ -104,10 +104,11 @@ export async function updateProductNumberAttribute({
         await session.abortTransaction();
         return;
       }
-      const { summary } = summaryPayload;
 
+      const { summary } = summaryPayload;
       let productAttributes = summary.attributes;
       let attributeIds = summary.attributeIds;
+
       for await (const inputAttribute of input.attributes) {
         const { number } = inputAttribute;
         const productAttributeId = new ObjectId(inputAttribute.productAttributeId);
@@ -130,6 +131,7 @@ export async function updateProductNumberAttribute({
           return _id.equals(productAttributeId);
         });
 
+        // get attribute
         const attribute = await attributesCollection.findOne({ _id: attributeId });
         if (!attribute) {
           continue;

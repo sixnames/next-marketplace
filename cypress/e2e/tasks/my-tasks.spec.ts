@@ -36,7 +36,7 @@ describe('Tasks', () => {
     cy.getByCy('Объем-attribute').click();
     cy.getByCy('select-attribute-options-modal').should('exist');
     cy.getByCy('option-350').click();
-    cy.wait(1500);
+    cy.wait(2000);
     // count task logs
     cy.getByCy('product-attributes-list').should('exist');
     cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
@@ -54,7 +54,7 @@ describe('Tasks', () => {
     cy.getByCy('option-Бага').click();
     cy.getByCy('option-Бикал').click();
     cy.getByCy('options-submit').click();
-    cy.wait(1500);
+    cy.wait(2000);
     // count task logs
     cy.getByCy('product-attributes-list').should('exist');
     cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
@@ -67,12 +67,11 @@ describe('Tasks', () => {
     cy.getByCy('Крепость-attribute').clear().type('10');
     cy.getByCy('Количество в упаковке-attribute').clear().type('10');
     cy.getByCy('submit-number-attributes').click();
-    cy.wait(1500);
+    cy.wait(2000);
     // count task logs
     cy.getByCy('product-attributes-list').should('exist');
     cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
       const task = taskResult as unknown as TaskModel | null;
-      console.log(task);
       assert((task?.log || []).length === 5, 'Task log should have length 5');
     });
 
@@ -80,6 +79,7 @@ describe('Tasks', () => {
     // task log 6
     cy.getByCy('Текстовый-attribute-ru').clear().type('lorem');
     cy.getByCy('submit-text-attributes').click();
+    cy.wait(2000);
     // count task logs
     cy.getByCy('product-attributes-list').should('exist');
     cy.task('getTaskFromDb', taskItemId).then((taskResult) => {

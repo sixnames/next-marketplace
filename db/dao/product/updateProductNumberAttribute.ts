@@ -1,11 +1,25 @@
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_ATTRIBUTES, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
-import { AttributeModel, ProductPayloadModel, ProductSummaryModel } from 'db/dbModels';
+import { COL_ATTRIBUTES, COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
+import {
+  AttributeModel,
+  ProductFacetModel,
+  ProductPayloadModel,
+  ProductSummaryModel,
+  SummaryDiffModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
+import {
+  DaoPropsInterface,
+  ProductAttributeInterface,
+  ProductSummaryInterface,
+} from 'db/uiInterfaces';
 
 export interface UpdateProductNumberAttributeItemInputInterface {
   productAttributeId: string;
@@ -22,137 +36,255 @@ export async function updateProductNumberAttribute({
   input,
   context,
 }: DaoPropsInterface<UpdateProductNumberAttributeInputInterface>): Promise<ProductPayloadModel> {
+  const { getApiMessage, locale } = await getRequestParams(context);
+  const { db, client } = await getDatabase();
+  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+  const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+
+  const session = client.startSession();
+
+  let mutationPayload: ProductPayloadModel = {
+    success: false,
+    message: await getApiMessage('products.update.error'),
+  };
+
   try {
-    const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-    const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-
-    // permission
-    const { allow, message } = await getOperationPermission({
-      context,
-      slug: 'updateProductAttributes',
-    });
-    if (!allow) {
-      return {
-        success: false,
-        message,
-      };
-    }
-
-    // check input
-    if (!input) {
-      return {
-        success: false,
-        message: await getApiMessage('products.update.error'),
-      };
-    }
-    const { attributes } = input;
-
-    // get summary
-    const productId = new ObjectId(input.productId);
-    const summary = await productSummariesCollection.findOne({ _id: productId });
-    if (!summary) {
-      return {
-        success: false,
-        message: await getApiMessage('products.update.error'),
-      };
-    }
-
-    for await (const inputAttribute of attributes) {
-      const { number } = inputAttribute;
-      const productAttributeId = new ObjectId(inputAttribute.productAttributeId);
-      const attributeId = new ObjectId(inputAttribute.attributeId);
-      if (!number) {
-        await productSummariesCollection.findOneAndUpdate(
-          {
-            _id: summary._id,
-          },
-          {
-            $pull: {
-              attributeIds: attributeId,
-              attributes: {
-                attributeId,
-              },
-            },
-          },
-        );
-        continue;
-      }
-
-      // Check if product attribute exist
-      let productAttribute = summary.attributes.find(({ _id }) => {
-        return _id.equals(productAttributeId);
+    await session.withTransaction(async () => {
+      // permission
+      const { allow, message, role, user } = await getOperationPermission({
+        context,
+        slug: 'updateProductAttributes',
       });
-
-      const attribute = await attributesCollection.findOne({ _id: attributeId });
-      if (!attribute) {
-        continue;
-      }
-      const productAttributeNotExist = !productAttribute;
-
-      // Create new product attribute if original is absent
-      if (!productAttribute) {
-        productAttribute = {
-          _id: productAttributeId,
-          attributeId,
-          optionIds: [],
-          filterSlugs: [],
-          number,
-          textI18n: {},
-          readableValueI18n: {},
+      if (!allow) {
+        mutationPayload = {
+          success: false,
+          message,
         };
+        await session.abortTransaction();
+        return;
       }
-      const readableValueI18n = getAttributeReadableValueLocales({
-        productAttribute: {
-          ...productAttribute,
-          attribute,
+
+      // check input
+      if (!input) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('products.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // get summary or summary draft
+      const diff: SummaryDiffModel = {
+        added: {
+          numberAttributes: [],
         },
-        gender: summary.gender,
+        updated: {
+          numberAttributes: [],
+        },
+        deleted: {
+          numberAttributes: [],
+        },
+      };
+      const taskVariantSlug = getTaskVariantSlugByRule('updateProductAttributes');
+      const summaryPayload = await getFullProductSummaryWithDraft({
+        locale,
+        productId: input.productId,
+        companySlug: DEFAULT_COMPANY_SLUG,
+        taskVariantSlug,
+        userId: user?._id,
+        isContentManager: role.isContentManager,
       });
-      productAttribute.readableValueI18n = readableValueI18n;
-
-      if (productAttributeNotExist) {
-        await productSummariesCollection.findOneAndUpdate(
-          {
-            _id: summary._id,
-          },
-          {
-            $push: {
-              attributes: productAttribute,
-            },
-          },
-        );
-      } else {
-        await productSummariesCollection.findOneAndUpdate(
-          {
-            _id: summary._id,
-          },
-          {
-            $set: {
-              'attributes.$[oldAttribute]': {
-                ...productAttribute,
-                number: inputAttribute.number,
-              },
-            },
-          },
-          {
-            arrayFilters: [{ 'oldAttribute._id': { $eq: productAttribute._id } }],
-          },
-        );
+      if (!summaryPayload) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('products.update.error'),
+        };
+        await session.abortTransaction();
+        return;
       }
-    }
+      const { summary } = summaryPayload;
 
-    return {
-      success: true,
-      message: await getApiMessage('products.update.success'),
-      payload: summary,
-    };
+      let productAttributes = summary.attributes;
+      let attributeIds = summary.attributeIds;
+      for await (const inputAttribute of input.attributes) {
+        const { number } = inputAttribute;
+        const productAttributeId = new ObjectId(inputAttribute.productAttributeId);
+        const attributeId = new ObjectId(inputAttribute.attributeId);
+
+        // remove attribute if value not set
+        if (!number && number !== 0) {
+          productAttributes = productAttributes.filter((productAttribute) => {
+            return !productAttribute.attributeId.equals(attributeId);
+          });
+          attributeIds = attributeIds.filter((_id) => {
+            return !_id.equals(attributeId);
+          });
+          diff.deleted?.numberAttributes?.push(productAttributeId);
+          continue;
+        }
+
+        // get product attribute
+        let productAttribute = summary.attributes.find(({ _id }) => {
+          return _id.equals(productAttributeId);
+        });
+
+        const attribute = await attributesCollection.findOne({ _id: attributeId });
+        if (!attribute) {
+          continue;
+        }
+        const productAttributeNotExist = !productAttribute;
+
+        // create new product attribute if original is absent
+        if (!productAttribute) {
+          productAttribute = {
+            _id: productAttributeId,
+            attributeId,
+            optionIds: [],
+            filterSlugs: [],
+            number,
+            textI18n: {},
+            readableValueI18n: {},
+          };
+        }
+        const readableValueI18n = getAttributeReadableValueLocales({
+          productAttribute: {
+            ...productAttribute,
+            attribute,
+          },
+          gender: summary.gender,
+        });
+        productAttribute.readableValueI18n = readableValueI18n;
+
+        // add new attribute
+        if (productAttributeNotExist) {
+          productAttributes.push(productAttribute);
+          attributeIds.push(attributeId);
+          diff.added?.numberAttributes?.push(productAttributeId);
+          continue;
+        }
+
+        if (productAttribute.number !== number) {
+          productAttribute.number = number;
+
+          // update existing attribute
+          productAttributes = productAttributes.reduce(
+            (acc: ProductAttributeInterface[], prevProductAttribute) => {
+              if (prevProductAttribute._id.equals(productAttributeId) && productAttribute) {
+                return [...acc, productAttribute];
+              }
+              return [...acc, prevProductAttribute];
+            },
+            [],
+          );
+          diff.updated?.numberAttributes?.push(productAttributeId);
+        }
+      }
+
+      // create task log for content manager
+      const updatedSummary: ProductSummaryInterface = {
+        ...summary,
+        attributeIds,
+        attributes: productAttributes,
+      };
+      if (role.isContentManager && user) {
+        const task = await findOrCreateUserTask({
+          productId: summary._id,
+          variantSlug: taskVariantSlug,
+          executorId: user._id,
+        });
+
+        if (!task) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('tasks.create.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        const newTaskLogResult = await addTaskLogItem({
+          taskId: task._id,
+          diff,
+          prevStateEnum: task.stateEnum,
+          nextStateEnum: task.stateEnum,
+          draft: updatedSummary,
+          createdById: user._id,
+        });
+        if (!newTaskLogResult) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('products.update.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        mutationPayload = {
+          success: true,
+          message: await getApiMessage('products.update.success'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // update documents
+      const updatedProductAttributeResult = await productSummariesCollection.findOneAndUpdate(
+        {
+          _id: summary._id,
+        },
+        {
+          $set: {
+            attributeIds: updatedSummary.attributeIds,
+            attributes: updatedSummary.attributes.map((productAttribute) => {
+              return {
+                _id: productAttribute._id,
+                attributeId: productAttribute.attributeId,
+                filterSlugs: productAttribute.filterSlugs,
+                optionIds: productAttribute.optionIds,
+                readableValueI18n: productAttribute.readableValueI18n,
+                number: productAttribute.number,
+                textI18n: productAttribute.textI18n,
+              };
+            }),
+          },
+        },
+      );
+      if (!updatedProductAttributeResult.ok) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('products.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+      await productFacetsCollection.findOneAndUpdate(
+        {
+          _id: summary._id,
+        },
+        {
+          $set: {
+            attributeIds: updatedSummary.attributeIds,
+          },
+        },
+      );
+
+      mutationPayload = {
+        success: true,
+        message: await getApiMessage('products.update.success'),
+        payload: summary,
+      };
+    });
+
+    return mutationPayload;
   } catch (e) {
     console.log('updateProductNumberAttribute', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),
     };
+  } finally {
+    await session.endSession();
   }
 }

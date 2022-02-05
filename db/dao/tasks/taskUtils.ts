@@ -161,6 +161,7 @@ export async function addTaskLogItem({
     createdById: new ObjectId(createdById),
     createdAt: new Date(),
   };
+
   const updatedTask = await tasksCollection.findOneAndUpdate(
     {
       _id: task._id,

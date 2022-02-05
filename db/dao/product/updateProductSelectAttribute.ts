@@ -187,7 +187,7 @@ export async function updateProductSelectAttribute({
           return !oldFilterSlugs.includes(filterSlug);
         });
         diff.deleted = {
-          attributes: productAttribute._id,
+          selectAttributes: [productAttribute._id],
         };
       } else {
         // add new attribute
@@ -198,7 +198,7 @@ export async function updateProductSelectAttribute({
             updatedSummary.filterSlugs.push(filterSlug);
           });
           diff.added = {
-            attributes: productAttribute._id,
+            selectAttributes: [productAttribute._id],
           };
         } else {
           // update existing attribute
@@ -218,7 +218,7 @@ export async function updateProductSelectAttribute({
             updatedSummary.filterSlugs.push(filterSlug);
           });
           diff.updated = {
-            attributes: productAttribute._id,
+            selectAttributes: [productAttribute._id],
           };
         }
       }
@@ -265,6 +265,7 @@ export async function updateProductSelectAttribute({
         return;
       }
 
+      // update documents
       const updatedProductAttributeResult = await productSummariesCollection.findOneAndUpdate(
         {
           _id: summary._id,
@@ -280,6 +281,8 @@ export async function updateProductSelectAttribute({
                 filterSlugs: productAttribute.filterSlugs,
                 optionIds: productAttribute.optionIds,
                 readableValueI18n: productAttribute.readableValueI18n,
+                number: productAttribute.number,
+                textI18n: productAttribute.textI18n,
               };
             }),
           },
@@ -293,16 +296,6 @@ export async function updateProductSelectAttribute({
         await session.abortTransaction();
         return;
       }
-      await shopProductsCollection.updateMany(
-        {
-          productId: summary._id,
-        },
-        {
-          $set: {
-            filterSlugs: updatedSummary.filterSlugs,
-          },
-        },
-      );
       await productFacetsCollection.findOneAndUpdate(
         {
           _id: summary._id,
@@ -311,6 +304,16 @@ export async function updateProductSelectAttribute({
           $set: {
             filterSlugs: updatedSummary.filterSlugs,
             attributeIds: updatedSummary.attributeIds,
+          },
+        },
+      );
+      await shopProductsCollection.updateMany(
+        {
+          productId: summary._id,
+        },
+        {
+          $set: {
+            filterSlugs: updatedSummary.filterSlugs,
           },
         },
       );

@@ -499,7 +499,9 @@ export interface DiffModel {
 }
 
 export interface SummaryDiffActionFieldsModel {
-  attributes: ObjectIdModel;
+  selectAttributes?: ObjectIdModel[];
+  numberAttributes?: ObjectIdModel[];
+  textAttributes?: ObjectIdModel[];
 }
 
 export interface SummaryDiffModel {

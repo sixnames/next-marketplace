@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 
 type DynamicPagePropType = ObjectId | string | null;
+
 export interface LinkPropsInterface {
   card?: DynamicPagePropType;
   blogPostSlug?: DynamicPagePropType;
@@ -579,8 +580,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
       },
       product: {
         url: `/api/product`,
-        asset: { url: `/api/product/asset-` },
-        assets: { url: `/api/product/assets` },
+        assets: { url: `/api/product/assets`, add: { url: `/api/product/assets/add` } },
         attributes: {
           url: `/api/product/attributes`,
           brandCollection: { url: `/api/product/attributes/brand-collection` },
@@ -597,7 +597,6 @@ export function getProjectLinks(props?: LinkPropsInterface) {
         },
         copy: { url: `/api/product/copy` },
         counter: { url: `/api/product/counter` },
-        deleteAsset: { url: `/api/product/delete-asset` },
         searchModal: { url: `/api/product/search-modal` },
         syncError: { url: `/api/product/sync-error` },
         variants: { url: `/api/product/variants` },

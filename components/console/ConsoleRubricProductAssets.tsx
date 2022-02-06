@@ -59,7 +59,7 @@ const ConsoleRubricProductAssets: React.FC<ConsoleRubricProductAssetsInterface> 
             formData.append('productId', `${summary._id}`);
 
             const links = getProjectLinks();
-            fetch(links.api.product.assets.url, {
+            fetch(links.api.product.assets.add.url, {
               method: REQUEST_METHOD_POST,
               body: formData,
             })

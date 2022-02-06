@@ -1,11 +1,19 @@
-import { ObjectId } from 'mongodb';
-import { deleteUpload, getMainImage } from '../../../lib/assetUtils/assetUtils';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
+import { deleteUpload, getMainImage } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from '../../collectionNames';
-import { ProductPayloadModel, ProductSummaryModel, ShopProductModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import {
+  ProductPayloadModel,
+  ProductSummaryModel,
+  ShopProductModel,
+  SummaryDiffModel,
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface DeleteProductAssetInputInterface {
   productId: string;
@@ -16,9 +24,9 @@ export async function deleteProductAsset({
   input,
   context,
 }: DaoPropsInterface<DeleteProductAssetInputInterface>): Promise<ProductPayloadModel> {
-  const { getApiMessage } = await getRequestParams(context);
+  const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const summariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
   const session = client.startSession();
@@ -37,7 +45,7 @@ export async function deleteProductAsset({
       }
 
       // permission
-      const { allow, message } = await getOperationPermission({
+      const { allow, message, user, role } = await getOperationPermission({
         context,
         slug: 'updateProductAssets',
       });
@@ -50,24 +58,92 @@ export async function deleteProductAsset({
         return;
       }
 
-      const { productId, assetIndex } = input;
+      const { assetIndex } = input;
 
-      // check product availability
-      const productObjectId = new ObjectId(productId);
-      const product = await summariesCollection.findOne({ _id: productObjectId });
-      if (!product) {
+      // get summary or summary draft
+      const taskVariantSlug = getTaskVariantSlugByRule('updateProductAssets');
+      const summaryPayload = await getFullProductSummaryWithDraft({
+        locale,
+        productId: input.productId,
+        companySlug: DEFAULT_COMPANY_SLUG,
+        taskVariantSlug,
+        userId: user?._id,
+        isContentManager: role.isContentManager,
+      });
+      if (!summaryPayload) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.notFound`),
+          message: await getApiMessage('products.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+      const { summary } = summaryPayload;
+      const updatedSummary = { ...summary };
+
+      // update assets
+      let assetUrl: string = '';
+      const updatedAssets = updatedSummary.assets.reduce((acc: string[], asset, index) => {
+        if (index === assetIndex) {
+          assetUrl = asset;
+          return acc;
+        }
+        return [...acc, asset];
+      }, []);
+      updatedSummary.assets = updatedAssets;
+      updatedSummary.mainImage = getMainImage(updatedAssets);
+      const diff: SummaryDiffModel = {
+        deleted: {
+          assets: updatedAssets,
+        },
+      };
+
+      // create task log for content manager
+      if (role.isContentManager && user) {
+        const task = await findOrCreateUserTask({
+          productId: summary._id,
+          variantSlug: taskVariantSlug,
+          executorId: user._id,
+        });
+
+        if (!task) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('tasks.create.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        const newTaskLogResult = await addTaskLogItem({
+          taskId: task._id,
+          diff,
+          prevStateEnum: task.stateEnum,
+          nextStateEnum: task.stateEnum,
+          draft: updatedSummary,
+          createdById: user._id,
+        });
+
+        if (!newTaskLogResult) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('products.update.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        mutationPayload = {
+          success: true,
+          message: await getApiMessage('products.update.success'),
         };
         await session.abortTransaction();
         return;
       }
 
-      // delete product asset
-      const currentAsset = product.assets[assetIndex];
-      if (currentAsset) {
-        const removedAsset = await deleteUpload(`${currentAsset}`);
+      // delete local file
+      if (assetUrl) {
+        const removedAsset = await deleteUpload(assetUrl);
         if (!removedAsset) {
           mutationPayload = {
             success: false,
@@ -78,70 +154,46 @@ export async function deleteProductAsset({
         }
       }
 
-      // Update product assets
-      const updatedProductAssetsResult = product.assets.reduce((acc: string[], asset, index) => {
-        if (index === assetIndex) {
-          return acc;
-        }
-        return [...acc, asset];
-      }, []);
-      const mainImage = getMainImage(updatedProductAssetsResult);
-
-      // Update product
-      const updatedProductResult = await summariesCollection.findOneAndUpdate(
+      // update documents
+      const updatedProductAssetsResult = await productSummariesCollection.findOneAndUpdate(
         {
-          _id: product._id,
+          _id: summary._id,
         },
         {
           $set: {
-            mainImage,
-            assets: updatedProductAssetsResult,
-            updatedAt: new Date(),
+            assets: updatedSummary.assets,
+            mainImage: updatedSummary.mainImage,
           },
         },
-        {
-          returnDocument: 'after',
-        },
       );
-      const updatedProduct = updatedProductResult.value;
-      if (!updatedProductResult.ok || !updatedProduct) {
+      if (!updatedProductAssetsResult.ok) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.error`),
+          message: await getApiMessage('products.update.error'),
         };
         await session.abortTransaction();
         return;
       }
-
-      const updatedShopProductsResult = await shopProductsCollection.updateMany(
+      await shopProductsCollection.updateMany(
         {
-          productId: product._id,
+          productId: summary._id,
         },
         {
           $set: {
-            mainImage,
-            updatedAt: new Date(),
+            mainImage: updatedSummary.mainImage,
           },
         },
       );
-      if (!updatedShopProductsResult.acknowledged) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.update.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
 
       mutationPayload = {
         success: true,
         message: await getApiMessage('products.update.success'),
-        payload: updatedProduct,
       };
     });
 
     return mutationPayload;
   } catch (e) {
+    console.log('deleteProductAsset error', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

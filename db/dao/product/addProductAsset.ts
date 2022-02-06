@@ -187,7 +187,7 @@ export async function addProductAsset(context: NextContextInterface): Promise<Pr
 
     return mutationPayload;
   } catch (e) {
-    console.log('addProductAsset', e);
+    console.log('addProductAsset error', e);
     return mutationPayload;
   } finally {
     await session.endSession();

@@ -87,14 +87,9 @@ describe('Tasks', () => {
       const task = taskResult as unknown as TaskModel | null;
       assert((task?.log || []).length === 6, 'Task log should have length 6');
     });
-
-    // update assets
-    cy.getByCy('attributes').click();
-    cy.wait(1500);
-    cy.getByCy('product-assets-list').should('exist');
   });
 
-  it.only('Should display user tasks and update product assets', () => {
+  it('Should display user tasks and update product assets', () => {
     const taskItemId = '000002';
     cy.getByCy('tasks-list').should('exist');
 
@@ -123,10 +118,24 @@ describe('Tasks', () => {
       testId: 'asset-preview-1',
       moveKeyCode: KEY_CODES.arrowLeft,
     });
+    cy.wait(1500);
+    cy.getByCy('product-assets-list').should('exist');
     cy.wait(2000);
     cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
       const task = taskResult as unknown as TaskModel | null;
       assert((task?.log || []).length === 2, 'Task log should have length 2');
+    });
+
+    // delete asset
+    // task log 3
+    cy.getByCy('asset-preview-remove-1').click();
+    cy.getByCy('confirm').click();
+    cy.wait(1500);
+    cy.get('[data-rbd-drag-handle-draggable-id]').should('have.length', 1);
+    cy.wait(2000);
+    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
+      const task = taskResult as unknown as TaskModel | null;
+      assert((task?.log || []).length === 3, 'Task log should have length 3');
     });
   });
 });

@@ -10,6 +10,7 @@ export const config = {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+  // add
   if (req.method === REQUEST_METHOD_POST) {
     const payload = await addProductAsset({ req, res });
     sendApiRouteResponse({

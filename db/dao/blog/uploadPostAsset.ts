@@ -1,27 +1,23 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_BLOG_CONTENT } from '../../../config/common';
-import { storeUploads } from '../../../lib/assetUtils/assetUtils';
+import { ASSETS_DIST_BLOG_CONTENT } from 'config/common';
+import { storeUploads } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { parseApiFormData, UploadRestApiImageInterface } from '../../../lib/restApi';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_BLOG_POSTS } from '../../collectionNames';
-import { BlogPostModel, ConstructorAssetPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { parseApiFormData } from 'lib/restApi';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { COL_BLOG_POSTS } from 'db/collectionNames';
+import { BlogPostModel, ConstructorAssetPayloadModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 
-export interface UpdateBlogPostPreviewFieldsInterface {
+export interface UpdateBlogPostFieldsInterface {
   blogPostId: string;
 }
-
-export interface UploadBlogPostAssetInputInterface
-  extends UploadRestApiImageInterface,
-    UpdateBlogPostPreviewFieldsInterface {}
 
 export async function uploadPostAsset(req: NextApiRequest, res: NextApiResponse) {
   const { db } = await getDatabase();
   const { getApiMessage } = await getRequestParams({ req, res });
   const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
-  const formData = await parseApiFormData<UpdateBlogPostPreviewFieldsInterface>(req);
+  const formData = await parseApiFormData<UpdateBlogPostFieldsInterface>(req);
 
   let payload: ConstructorAssetPayloadModel = {
     success: false,

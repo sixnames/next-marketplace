@@ -12,6 +12,11 @@ declare namespace Cypress {
     };
   }
 
+  interface DragAndDropInterface {
+    testId: string;
+    moveKeyCode: number;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable {
     /**
@@ -19,6 +24,7 @@ declare namespace Cypress {
      * @example cy.dataCy('greeting')
      */
     getByCy(testId: string): Chainable<Element>;
+    dndReorder(props: DragAndDropInterface): Chainable<Element>;
     visitBlank(testId: string, additionalPath?: string): void;
     visitLinkHref(testId: string): void;
     shouldSuccess(log?: string): void;

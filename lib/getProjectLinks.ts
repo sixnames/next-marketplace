@@ -579,8 +579,8 @@ export function getProjectLinks(props?: LinkPropsInterface) {
       },
       product: {
         url: `/api/product`,
-        addProductAsset: { url: `/api/product/add-product-asset` },
         asset: { url: `/api/product/asset-` },
+        assets: { url: `/api/product/assets` },
         attributes: {
           url: `/api/product/attributes`,
           brandCollection: { url: `/api/product/attributes/brand-collection` },

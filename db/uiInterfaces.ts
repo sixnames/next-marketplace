@@ -69,7 +69,7 @@ import {
   TaskLogModel,
 } from './dbModels';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { MessageSlug } from '../types/messageSlugTypes';
+import { MessageSlug } from 'types/messageSlugTypes';
 
 // Blog
 export interface BlogAttributeInterface extends BlogAttributeModel {
@@ -842,12 +842,14 @@ export interface SsrConfigsInterface {
   buyButtonText: string;
 }
 
+export interface NextContextInterface {
+  req: NextApiRequest;
+  res: NextApiResponse;
+}
+
 export interface DaoPropsInterface<TInput> {
   input?: TInput;
-  context: {
-    req: NextApiRequest;
-    res: NextApiResponse;
-  };
+  context: NextContextInterface;
 }
 
 export interface ShopProductsAggregationInterface {

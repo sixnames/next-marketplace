@@ -64,7 +64,11 @@ const WpDropZone: React.FC<WpDropZoneInterface> = ({
             : 'Перетащите файлы сюда. Или нажмите для выбора.'}
         </div>
 
-        <input {...getInputProps()} className='absolute inset-0 z-30 block' />
+        <input
+          {...getInputProps()}
+          data-cy={'drop-zone-input'}
+          className='absolute inset-0 z-30 block'
+        />
       </div>
     </InputLine>
   );

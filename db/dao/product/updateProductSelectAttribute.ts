@@ -83,7 +83,6 @@ export async function updateProductSelectAttribute({
       const selectedOptionsIds = input.selectedOptionsIds.map((_id) => new ObjectId(_id));
       const attributeId = new ObjectId(input.attributeId);
       const productAttributeId = new ObjectId(input.productAttributeId);
-      const diff: SummaryDiffModel = {};
 
       // get summary or summary draft
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductAttributes');
@@ -174,6 +173,7 @@ export async function updateProductSelectAttribute({
       productAttribute.filterSlugs = finalFilterSlugs;
 
       const updatedSummary = { ...summary };
+      const diff: SummaryDiffModel = {};
 
       // remove attribute if value is empty
       if (finalOptionIds.length < 1) {

@@ -1,23 +1,21 @@
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ConsoleRubricProductAssets from '../../../../../../../../../components/console/ConsoleRubricProductAssets';
-import { COL_COMPANIES } from '../../../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../../../db/mongodb';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   ProductSummaryInterface,
-} from '../../../../../../../../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
-import { getFullProductSummary } from '../../../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../../../lib/ssrUtils';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ProductAssetsInterface {
   product: ProductSummaryInterface;
@@ -72,7 +70,7 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({
       breadcrumbs={breadcrumbs}
       basePath={routeBasePath}
     >
-      <ConsoleRubricProductAssets product={product} />
+      <ConsoleRubricProductAssets summary={product} />
     </CmsProductLayout>
   );
 };
@@ -119,10 +117,13 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getFullProductSummary({
+  const payload = await getFullProductSummaryWithDraft({
     locale: props.sessionLocale,
     productId: `${productId}`,
-    companySlug: companyResult.slug,
+    companySlug: DEFAULT_COMPANY_SLUG,
+    userId: props.layoutProps.sessionUser.me._id,
+    isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
+    taskVariantSlug: getTaskVariantSlugByRule('updateProductAssets'),
   });
 
   if (!payload) {

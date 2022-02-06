@@ -1,14 +1,15 @@
+import { KEY_CODES } from 'config/common';
 import { TaskModel } from 'db/dbModels';
 import { getProjectLinks } from 'lib/getProjectLinks';
 
-const taskItemId = '000001';
 describe('Tasks', () => {
   const links = getProjectLinks();
   beforeEach(() => {
     cy.testAuth(links.cms.myTasks.url, 'contentManager@gmail.com');
   });
 
-  it('Should display user tasks', () => {
+  it('Should display user tasks and update product attributes', () => {
+    const taskItemId = '000001';
     cy.getByCy('tasks-list').should('exist');
 
     // accept task
@@ -85,6 +86,47 @@ describe('Tasks', () => {
     cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
       const task = taskResult as unknown as TaskModel | null;
       assert((task?.log || []).length === 6, 'Task log should have length 6');
+    });
+
+    // update assets
+    cy.getByCy('attributes').click();
+    cy.wait(1500);
+    cy.getByCy('product-assets-list').should('exist');
+  });
+
+  it.only('Should display user tasks and update product assets', () => {
+    const taskItemId = '000002';
+    cy.getByCy('tasks-list').should('exist');
+
+    // visit task product
+    cy.visitLinkHref(`${taskItemId}-product-link`);
+    cy.wait(1500);
+    cy.getByCy('assets').click();
+    cy.wait(1500);
+    cy.getByCy('product-assets-list').should('exist');
+
+    // upload asset
+    // task log 1
+    cy.getByCy('drop-zone-input').attachFile('test-image-3.png', { subjectType: 'drag-n-drop' });
+    cy.wait(1500);
+    cy.getByCy('product-assets-list').should('exist');
+    cy.get('[data-rbd-drag-handle-draggable-id]').should('have.length', 2);
+    cy.wait(2000);
+    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
+      const task = taskResult as unknown as TaskModel | null;
+      assert((task?.log || []).length === 1, 'Task log should have length 1');
+    });
+
+    // update asset index
+    // task log 2
+    cy.dndReorder({
+      testId: 'asset-preview-1',
+      moveKeyCode: KEY_CODES.arrowLeft,
+    });
+    cy.wait(2000);
+    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
+      const task = taskResult as unknown as TaskModel | null;
+      assert((task?.log || []).length === 2, 'Task log should have length 2');
     });
   });
 });

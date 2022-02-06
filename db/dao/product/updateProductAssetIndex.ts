@@ -1,11 +1,11 @@
 import { ObjectId } from 'mongodb';
-import { getMainImage, reorderAssets } from '../../../lib/assetUtils/assetUtils';
+import { getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from '../../collectionNames';
-import { ProductPayloadModel, ProductSummaryModel, ShopProductModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { ProductPayloadModel, ProductSummaryModel, ShopProductModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductAssetIndexInputInterface {
   productId: string;

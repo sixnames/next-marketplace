@@ -1,25 +1,22 @@
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ConsoleRubricProductCategories from '../../../../../../../components/console/ConsoleRubricProductCategories';
-import { DEFAULT_COMPANY_SLUG } from '../../../../../../../config/common';
-import { COL_CATEGORIES } from '../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../db/mongodb';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { COL_CATEGORIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CategoryInterface,
   ProductCategoryInterface,
   ProductSummaryInterface,
-} from '../../../../../../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
-import { getFullProductSummary } from '../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../lib/ssrUtils';
-import { getTreeFromList } from '../../../../../../../lib/treeUtils';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 
 interface ProductCategoriesInterface {
   product: ProductSummaryInterface;
@@ -86,10 +83,13 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getFullProductSummary({
+  const payload = await getFullProductSummaryWithDraft({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
+    userId: props.layoutProps.sessionUser.me._id,
+    isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
+    taskVariantSlug: getTaskVariantSlugByRule('updateProductCategories'),
   });
 
   if (!payload) {

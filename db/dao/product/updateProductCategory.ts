@@ -1,23 +1,28 @@
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { getParentTreeSlugs } from '../../../lib/treeUtils';
-import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { getParentTreeSlugs } from 'lib/treeUtils';
+import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import {
   COL_CATEGORIES,
   COL_PRODUCT_FACETS,
   COL_PRODUCT_SUMMARIES,
   COL_SHOP_PRODUCTS,
-} from '../../collectionNames';
+} from 'db/collectionNames';
 import {
   CategoryModel,
   ProductFacetModel,
   ProductPayloadModel,
   ProductSummaryModel,
   ShopProductModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+  SummaryDiffModel,
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductCategoryInputInterface {
   productId: string;
@@ -29,7 +34,7 @@ export async function updateProductCategory({
   context,
 }: DaoPropsInterface<UpdateProductCategoryInputInterface>): Promise<ProductPayloadModel> {
   const { db, client } = await getDatabase();
-  const { getApiMessage } = await getRequestParams(context);
+  const { getApiMessage, locale } = await getRequestParams(context);
   const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
   const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
@@ -51,7 +56,7 @@ export async function updateProductCategory({
       }
 
       // permission
-      const { allow, message } = await getOperationPermission({
+      const { allow, message, user, role } = await getOperationPermission({
         context,
         slug: 'updateProductCategories',
       });
@@ -64,23 +69,30 @@ export async function updateProductCategory({
         return;
       }
 
-      const { productId, categoryId } = input;
-
       // check product availability
-      const productObjectId = new ObjectId(productId);
-      const product = await productFacetsCollection.findOne({ _id: productObjectId });
-      if (!product) {
+      const taskVariantSlug = getTaskVariantSlugByRule('updateProductCategories');
+      const summaryPayload = await getFullProductSummaryWithDraft({
+        locale,
+        productId: input.productId,
+        companySlug: DEFAULT_COMPANY_SLUG,
+        taskVariantSlug,
+        userId: user?._id,
+        isContentManager: role.isContentManager,
+      });
+      if (!summaryPayload) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.notFound`),
+          message: await getApiMessage('products.update.notFound'),
         };
         await session.abortTransaction();
         return;
       }
+      const { summary } = summaryPayload;
+      const updatedSummary = { ...summary };
+      const diff: SummaryDiffModel = {};
 
-      // check category availability
-      const categoryObjectId = new ObjectId(categoryId);
-      const category = await categoriesCollection.findOne({ _id: categoryObjectId });
+      // get category
+      const category = await categoriesCollection.findOne({ _id: new ObjectId(input.categoryId) });
       if (!category) {
         mutationPayload = {
           success: false,
@@ -99,96 +111,144 @@ export async function updateProductCategory({
           },
           parentId: category.parentId,
           slug: {
-            $in: product.filterSlugs,
+            $in: summary.filterSlugs,
           },
         });
       }
 
       // toggle category in product
-      const selected = product.filterSlugs.some((slug) => slug === category.slug);
+      const selected = summary.filterSlugs.some((slug) => slug === category.slug);
       const categoryParentTreeSlugs = await getParentTreeSlugs({
         _id: category._id,
         collectionName: COL_CATEGORIES,
         acc: [],
       });
-
-      let updater: Record<string, any> = {
-        $addToSet: {
-          filterSlugs: {
-            $each: categoryParentTreeSlugs,
-          },
-        },
-      };
       if (selected) {
         if (countSelectedSiblings > 0) {
-          updater = {
-            $pull: {
-              filterSlugs: category.slug,
-              titleCategorySlugs: category.slug,
-            },
+          updatedSummary.filterSlugs = updatedSummary.filterSlugs.filter((slug) => {
+            return slug !== category.slug;
+          });
+          updatedSummary.titleCategorySlugs = updatedSummary.titleCategorySlugs.filter((slug) => {
+            return slug !== category.slug;
+          });
+          diff.deleted = {
+            categories: [category.slug],
           };
         } else {
-          updater = {
-            $pullAll: {
-              filterSlugs: categoryParentTreeSlugs,
-              titleCategorySlugs: categoryParentTreeSlugs,
-            },
+          updatedSummary.filterSlugs = updatedSummary.filterSlugs.filter((slug) => {
+            return !categoryParentTreeSlugs.includes(slug);
+          });
+          updatedSummary.titleCategorySlugs = updatedSummary.titleCategorySlugs.filter((slug) => {
+            return !categoryParentTreeSlugs.includes(slug);
+          });
+          diff.deleted = {
+            categories: categoryParentTreeSlugs,
           };
         }
+      } else {
+        categoryParentTreeSlugs.forEach((slug) => {
+          updatedSummary.filterSlugs.push(slug);
+        });
+        diff.added = {
+          categories: categoryParentTreeSlugs,
+        };
       }
 
-      // update product
-      const updatedSummaryResult = await productSummariesCollection.findOneAndUpdate(
+      // create task log for content manager
+      if (role.isContentManager && user) {
+        const task = await findOrCreateUserTask({
+          productId: summary._id,
+          variantSlug: taskVariantSlug,
+          executorId: user._id,
+        });
+
+        if (!task) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('tasks.create.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        const newTaskLogResult = await addTaskLogItem({
+          taskId: task._id,
+          diff,
+          prevStateEnum: task.stateEnum,
+          nextStateEnum: task.stateEnum,
+          draft: updatedSummary,
+          createdById: user._id,
+        });
+        if (!newTaskLogResult) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('products.update.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        mutationPayload = {
+          success: true,
+          message: await getApiMessage('products.update.success'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // update documents
+      const updatedProductAttributeResult = await productSummariesCollection.findOneAndUpdate(
         {
-          _id: product._id,
+          _id: summary._id,
         },
-        updater,
+        {
+          $set: {
+            filterSlugs: updatedSummary.filterSlugs,
+            titleCategorySlugs: updatedSummary.titleCategorySlugs,
+          },
+        },
       );
+      if (!updatedProductAttributeResult.ok) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('products.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
       await productFacetsCollection.findOneAndUpdate(
         {
-          _id: product._id,
+          _id: summary._id,
         },
-        updater,
-      );
-      const updatedProduct = updatedSummaryResult.value;
-      if (!updatedSummaryResult.ok || !updatedProduct || !updatedSummaryResult.ok) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.update.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
-      // update shop products
-      const updatedShopProductsResult = await shopProductsCollection.updateMany(
         {
-          productId: product._id,
+          $set: {
+            filterSlugs: updatedSummary.filterSlugs,
+          },
         },
-        updater,
       );
-      if (!updatedShopProductsResult.acknowledged) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.update.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
+      await shopProductsCollection.updateMany(
+        {
+          productId: summary._id,
+        },
+        {
+          $set: {
+            filterSlugs: updatedSummary.filterSlugs,
+          },
+        },
+      );
 
       // update product title
-      execUpdateProductTitles(`productId=${updatedProduct._id.toHexString()}`);
+      execUpdateProductTitles(`productId=${summary._id.toHexString()}`);
 
       mutationPayload = {
         success: true,
-        message: await getApiMessage('shopProducts.update.success'),
-        payload: updatedProduct,
+        message: await getApiMessage('products.update.success'),
       };
     });
 
     return mutationPayload;
   } catch (e) {
-    console.log(e);
+    console.log('updateProductCategory error', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

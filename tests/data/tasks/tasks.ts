@@ -2,6 +2,7 @@ import { DEFAULT_COMPANY_SLUG, TASK_STATE_PENDING } from 'config/common';
 import {
   TASK_VARIANT_SLUG_PRODUCT_ASSETS,
   TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
+  TASK_VARIANT_SLUG_PRODUCT_CATEGORIES,
   TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
 } from 'config/constantSelects';
 import { TaskModel } from 'db/dbModels';
@@ -9,49 +10,60 @@ import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();
 
-const tasks: TaskModel[] = [
+interface TaskBaseModel
+  extends Omit<
+    TaskModel,
+    | '_id'
+    | 'createdById'
+    | 'createdAt'
+    | 'companySlug'
+    | 'updatedAt'
+    | 'log'
+    | 'itemId'
+    | 'stateEnum'
+  > {}
+
+function generateTasks(bases: TaskBaseModel[]): TaskModel[] {
+  return bases.map((base, index) => {
+    return {
+      ...base,
+      _id: getObjectId(`task ${index + 1}`),
+      stateEnum: TASK_STATE_PENDING,
+      itemId: `00000${index + 1}`,
+      companySlug: DEFAULT_COMPANY_SLUG,
+      createdById: getObjectId('admin'),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      log: [],
+    };
+  });
+}
+
+const taskBases: TaskBaseModel[] = [
   {
-    _id: getObjectId('task a'),
-    itemId: '000001',
-    stateEnum: TASK_STATE_PENDING,
     productId: getObjectId('000150'),
-    createdById: getObjectId('admin'),
-    companySlug: DEFAULT_COMPANY_SLUG,
     variantId: getObjectId('task variant product attributes'),
     variantSlug: TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    log: [],
   },
   {
-    _id: getObjectId('task b'),
-    itemId: '000002',
-    stateEnum: TASK_STATE_PENDING,
     productId: getObjectId('000010'),
-    createdById: getObjectId('admin'),
     executorId: getObjectId('content manager'),
-    companySlug: DEFAULT_COMPANY_SLUG,
     variantId: getObjectId('task variant product assets'),
     variantSlug: TASK_VARIANT_SLUG_PRODUCT_ASSETS,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    log: [],
   },
   {
-    _id: getObjectId('task c'),
-    itemId: '000003',
-    stateEnum: TASK_STATE_PENDING,
     productId: getObjectId('000010'),
-    createdById: getObjectId('admin'),
     executorId: getObjectId('content manager'),
-    companySlug: DEFAULT_COMPANY_SLUG,
     variantId: getObjectId('task variant product seo text'),
     variantSlug: TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    log: [],
+  },
+  {
+    productId: getObjectId('000010'),
+    executorId: getObjectId('content manager'),
+    variantId: getObjectId('task variant product categories'),
+    variantSlug: TASK_VARIANT_SLUG_PRODUCT_CATEGORIES,
   },
 ];
 
 // @ts-ignore
-export = tasks;
+export = generateTasks(taskBases);

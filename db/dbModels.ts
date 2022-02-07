@@ -503,6 +503,8 @@ export interface SummaryDiffActionFieldsModel {
   numberAttributes?: ObjectIdModel[];
   textAttributes?: ObjectIdModel[];
   assets?: string[];
+  categories?: string[];
+  categoryVisibility?: string;
 }
 
 export interface SummaryDiffModel {

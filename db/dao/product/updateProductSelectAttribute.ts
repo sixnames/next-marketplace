@@ -97,7 +97,7 @@ export async function updateProductSelectAttribute({
       if (!summaryPayload) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage('products.update.error'),
+          message: await getApiMessage('products.update.notFound'),
         };
         await session.abortTransaction();
         return;

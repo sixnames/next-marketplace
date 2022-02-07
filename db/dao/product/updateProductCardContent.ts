@@ -1,8 +1,8 @@
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { updateCitiesSeoContent } from '../../../lib/seoContentUniquenessUtils';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { ProductPayloadModel } from '../../dbModels';
-import { DaoPropsInterface, SeoContentCitiesInterface } from '../../uiInterfaces';
+import { updateCitiesSeoContent } from 'lib/seoContentUniquenessUtils';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { ProductPayloadModel } from 'db/dbModels';
+import { DaoPropsInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductCardContentInputInterface {
   seoContentsList: SeoContentCitiesInterface;

@@ -1,8 +1,8 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { UpdateProductCardContentInputInterface } from '../../db/dao/product/updateProductCardContent';
-import { ProductSummaryInterface, SeoContentCitiesInterface } from '../../db/uiInterfaces';
-import { useUpdateProductCardContent } from '../../hooks/mutations/useProductMutations';
+import { UpdateProductCardContentInputInterface } from 'db/dao/product/updateProductCardContent';
+import { ProductSummaryInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
+import { useUpdateProductCardContent } from 'hooks/mutations/useProductMutations';
 import WpButton from '../button/WpButton';
 import Inner from '../Inner';
 import SeoContentEditor from '../SeoContentEditor';
@@ -33,7 +33,7 @@ const ConsoleRubricProductConstructor: React.FC<ConsoleRubricProductConstructorI
         {() => {
           return (
             <Form>
-              <SeoContentEditor filedName={'cardContent'} />
+              <SeoContentEditor filedName={'seoContentsList'} />
 
               <div className='mb-12 mt-4 flex'>
                 <WpButton

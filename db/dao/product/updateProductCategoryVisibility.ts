@@ -1,11 +1,11 @@
 import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
-import { COL_CATEGORIES, COL_PRODUCT_SUMMARIES } from '../../collectionNames';
-import { CategoryModel, ProductPayloadModel, ProductSummaryModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { execUpdateProductTitles } from 'lib/updateProductTitles';
+import { COL_CATEGORIES, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
+import { CategoryModel, ProductPayloadModel, ProductSummaryModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { UpdateProductCategoryInputInterface } from './updateProductCategory';
 
 export async function updateProductCategoryVisibility({

@@ -138,4 +138,27 @@ describe('Tasks', () => {
       assert((task?.log || []).length === 3, 'Task log should have length 3');
     });
   });
+
+  it.only('Should display user tasks and update product categories', () => {
+    const taskItemId = '000004';
+    cy.getByCy('tasks-list').should('exist');
+
+    // visit task product
+    cy.visitLinkHref(`${taskItemId}-product-link`);
+    cy.wait(1500);
+    cy.getByCy('categories').click();
+    cy.wait(1500);
+    cy.getByCy('product-categories-list').should('exist');
+
+    // update categories
+    // task log 1
+    cy.getByCy('Односолодовый A-1-checkbox').click();
+    cy.wait(1500);
+    cy.getByCy('Односолодовый A-1-checkbox').should('not.be.checked');
+    cy.wait(2000);
+    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
+      const task = taskResult as unknown as TaskModel | null;
+      assert((task?.log || []).length === 1, 'Task log should have length 1');
+    });
+  });
 });

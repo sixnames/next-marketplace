@@ -1,4 +1,4 @@
-import { getConsoleRubricLinks } from '../../../lib/linkUtils';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { fixtureIds } from '../../fixtures/fixtureIds';
 
 describe('Product categories', () => {

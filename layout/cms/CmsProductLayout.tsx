@@ -88,7 +88,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
       },
       {
         name: 'Связи',
-        testId: 'connections',
+        testId: 'variants',
         path: links.product.variants,
         hidden: hideConnectionsPath,
         exact: true,

@@ -498,6 +498,11 @@ export interface DiffModel {
   updated: Record<string, any>;
 }
 
+export interface SummaryDiffVariantModel {
+  variantId: ObjectIdModel;
+  productId: ObjectIdModel;
+}
+
 export interface SummaryDiffActionFieldsModel {
   selectAttributes?: ObjectIdModel[];
   numberAttributes?: ObjectIdModel[];
@@ -505,6 +510,8 @@ export interface SummaryDiffActionFieldsModel {
   assets?: string[];
   categories?: string[];
   titleCategorySlugs?: string;
+  variants?: ObjectIdModel;
+  variantProducts?: SummaryDiffVariantModel;
 }
 
 export interface SummaryDiffModel {

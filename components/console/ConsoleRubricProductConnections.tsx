@@ -50,7 +50,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
 
   return (
     <ContentItemControls
-      testId={`${variant.attribute?.name}-connection-product`}
+      testId={`${variant.attribute?.name}-variant-product`}
       createTitle={'Добавить товар к связи'}
       createHandler={() => {
         showModal<ProductSearchModalInterface>({
@@ -58,7 +58,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
           props: {
             rubricSlug: product.rubricSlug,
             createTitle: 'Добавить товар в связь',
-            testId: 'add-product-to-connection-modal',
+            testId: 'add-product-to-variant-modal',
             excludedProductsIds,
             excludedOptionsSlugs,
             attributesIds: [`${variant.attributeId}`],
@@ -79,13 +79,13 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
 export interface ProductConnectionsItemInterface {
   product: ProductSummaryInterface;
   variant: ProductVariantInterface;
-  connectionIndex: number;
+  variantIndex: number;
 }
 
 const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
   variant,
   product,
-  connectionIndex,
+  variantIndex,
 }) => {
   const { showErrorNotification } = useNotificationsContext();
   const { showModal } = useAppContext();
@@ -146,7 +146,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       render: ({ dataItem, rowIndex }) => {
         return (
           <ContentItemControls
-            testId={`${connectionIndex}-${rowIndex}`}
+            testId={`${variantIndex}-${rowIndex}`}
             justifyContent={'flex-end'}
             updateTitle={'Редактировать товар'}
             updateHandler={() => {
@@ -162,7 +162,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
                 variant: CONFIRM_MODAL,
                 props: {
                   message: `Вы уверенны, что хотите удалить ${dataItem.summary?.snippetTitle} из связи ${variant.attribute?.name}?`,
-                  testId: 'delete-product-from-connection-modal',
+                  testId: 'delete-product-from-variant-modal',
                   confirm: () => {
                     if (!dataItem.summary) {
                       showErrorNotification({
@@ -191,7 +191,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 
   return (
     <WpAccordion
-      testId={`${variant.attribute.name}-connection`}
+      testId={`${variant.attribute.name}-variant`}
       title={`${variant.attribute.name}`}
       isOpen
       className='mb-8'
@@ -201,7 +201,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
         <WpTable<ProductVariantItemInterface>
           columns={columns}
           data={products}
-          tableTestId={`${variant.attribute.name}-connection-list`}
+          tableTestId={`${variant.attribute.name}-variant-list`}
           testIdKey={'product.name'}
           onRowDoubleClick={(dataItem) => {
             const links = getCmsLinks({
@@ -227,15 +227,15 @@ const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsI
   const [createProductConnectionMutation] = useCreateProductVariant();
 
   return (
-    <Inner testId={'product-connections-list'}>
+    <Inner testId={'product-variants-list'}>
       <div className='mb-8'>
-        {product.variants.map((connection, connectionIndex) => {
+        {product.variants.map((variant, variantIndex) => {
           return (
             <ProductConnectionsItem
-              key={`${connection._id}`}
+              key={`${variant._id}`}
               product={product}
-              variant={connection}
-              connectionIndex={connectionIndex}
+              variant={variant}
+              variantIndex={variantIndex}
             />
           );
         })}
@@ -244,7 +244,7 @@ const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsI
       <FixedButtons>
         <WpButton
           size={'small'}
-          testId={`create-connection`}
+          testId={`create-variant`}
           onClick={() =>
             showModal<CreateConnectionModalInterface>({
               variant: CREATE_CONNECTION_MODAL,

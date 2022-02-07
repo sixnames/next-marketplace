@@ -429,7 +429,7 @@ export async function getCardData({
       rubricSlug: rubric.slug,
     });
 
-    // card connections
+    // card variants
     const excludedAttributesIds: ObjectIdModel[] = [];
     const cardVariants = await getCardVariants({
       variants: product.variants,

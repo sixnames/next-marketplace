@@ -134,4 +134,46 @@ describe('Tasks', () => {
     cy.getByCy('Купажированный-view-checkbox').should('be.checked');
     cy.countTaskLogs(taskItemId, 2);
   });
+
+  it('Should display user tasks and update product variants', () => {
+    const taskItemId = '000005';
+    cy.getByCy('tasks-list').should('exist');
+
+    // visit task product
+    cy.visitLinkHref(`${taskItemId}-product-link`);
+    cy.wait(1500);
+    cy.getByCy('variants').click();
+    cy.wait(1500);
+    cy.getByCy('product-variants-list').should('exist');
+
+    // update variants
+    // task log 1
+    cy.getByCy('create-variant').click();
+    cy.getByCy('create-variant-modal').should('exist');
+    cy.selectOptionByTestId('attributeId', 'Объем');
+    cy.getByCy('create-variant-submit').click();
+    cy.wait(1500);
+    cy.countTaskLogs(taskItemId, 1);
+
+    // task log 2
+    cy.getByCy('Объем-variant-product-create').click();
+    cy.getByCy('add-product-to-variant-modal').should('exist');
+    cy.getByCy('product-search-list-1-row').then(($row: any) => {
+      const button = $row.find('button');
+      cy.wrap(button).click();
+    });
+    cy.countTaskLogs(taskItemId, 2);
+
+    // task log 3
+    // delete first product
+    cy.getByCy('2-1-delete').click();
+    cy.getByCy('confirm').click();
+    cy.countTaskLogs(taskItemId, 3);
+
+    // task log 4
+    // delete first product
+    cy.getByCy('2-0-delete').click();
+    cy.getByCy('confirm').click();
+    cy.countTaskLogs(taskItemId, 4);
+  });
 });

@@ -1,21 +1,30 @@
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getFullProductSummary, getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { addProductToConnectionSchema } from '../../../validation/productSchema';
-import { COL_OPTIONS, COL_PRODUCT_SUMMARIES } from '../../collectionNames';
+} from 'lib/sessionHelpers';
+import { addProductToConnectionSchema } from 'validation/productSchema';
+import { COL_OPTIONS, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
 import {
+  ObjectIdModel,
   OptionModel,
   ProductPayloadModel,
   ProductSummaryModel,
-  ProductVariantItemModel,
-  ProductVariantModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+  SummaryDiffModel,
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import {
+  DaoPropsInterface,
+  ProductVariantInterface,
+  ProductVariantItemInterface,
+} from 'db/uiInterfaces';
 
 export interface AddProductToVariantInputInterface {
   productId: string;
@@ -27,7 +36,7 @@ export async function addProductToVariant({
   input,
   context,
 }: DaoPropsInterface<AddProductToVariantInputInterface>): Promise<ProductPayloadModel> {
-  const { getApiMessage } = await getRequestParams(context);
+  const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
   const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
@@ -36,13 +45,13 @@ export async function addProductToVariant({
 
   let mutationPayload: ProductPayloadModel = {
     success: false,
-    message: await getApiMessage(`products.connection.updateError`),
+    message: await getApiMessage(`products.variant.updateError`),
   };
 
   try {
     await session.withTransaction(async () => {
       // permission
-      const { allow, message } = await getOperationPermission({
+      const { allow, message, user, role } = await getOperationPermission({
         context,
         slug: 'updateProductVariants',
       });
@@ -72,16 +81,19 @@ export async function addProductToVariant({
       });
       await validationSchema.validate(input);
 
-      // Check all entities availability
-      const productId = new ObjectId(input.productId);
+      // get summary or summary draft
       const addProductId = new ObjectId(input.addProductId);
       const variantId = new ObjectId(input.variantId);
-      const summary = await productSummariesCollection.findOne({ _id: productId });
-      const addSummary = await productSummariesCollection.findOne({ _id: addProductId });
-      const variant = summary?.variants.find((variant) => {
-        return variant._id.equals(variantId);
+      const taskVariantSlug = getTaskVariantSlugByRule('updateProductVariants');
+      const summaryPayload = await getFullProductSummaryWithDraft({
+        locale,
+        productId: input.productId,
+        companySlug: DEFAULT_COMPANY_SLUG,
+        taskVariantSlug,
+        userId: user?._id,
+        isContentManager: role.isContentManager,
       });
-      if (!summary || !addSummary || !variant) {
+      if (!summaryPayload) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.update.notFound`),
@@ -89,8 +101,38 @@ export async function addProductToVariant({
         await session.abortTransaction();
         return;
       }
+      const { summary } = summaryPayload;
+      const updatedSummary = { ...summary };
+      const diff: SummaryDiffModel = {};
 
-      // Check attribute existence in added product
+      const addSummaryPayload = await getFullProductSummary({
+        locale,
+        productId: input.addProductId,
+        companySlug: DEFAULT_COMPANY_SLUG,
+      });
+      if (!addSummaryPayload) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage(`products.update.notFound`),
+        };
+        await session.abortTransaction();
+        return;
+      }
+      const addSummary = addSummaryPayload.summary;
+
+      const variant = updatedSummary.variants.find((variant) => {
+        return variant._id.equals(variantId);
+      });
+      if (!addSummary || !variant) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage(`products.update.error`),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // check attribute existence in added product
       const addProductAttribute = addSummary.attributes.find(({ attributeId }) => {
         return variant.attributeId.equals(attributeId);
       });
@@ -98,94 +140,195 @@ export async function addProductToVariant({
       if (!addProductAttribute || !addProductOptionId) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage('products.connection.noAttributeError'),
+          message: await getApiMessage('products.variant.noAttributeError'),
         };
         await session.abortTransaction();
         return;
       }
 
-      // Check attribute value in added product
-      // it should have attribute value and shouldn't intersect with existing values in connection
-      const connectionOptionIds = variant.products.reduce((acc: ObjectId[], { optionId }) => {
+      // check attribute value in added product
+      // it should have attribute value and shouldn't intersect with existing values in variant
+      const variantOptionIds = variant.products.reduce((acc: ObjectId[], { optionId }) => {
         return [...acc, optionId];
       }, []);
-      const includes = connectionOptionIds.some((_id) => {
+      const includes = variantOptionIds.some((_id) => {
         return _id.equals(addProductOptionId);
       });
+
       if (includes) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage('products.connection.intersect'),
+          message: await getApiMessage('products.variant.intersect'),
         };
         await session.abortTransaction();
         return;
       }
 
-      // Find current option
+      // find current option
       const option = await optionsCollection.findOne({
         _id: addProductOptionId,
       });
       if (!option) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.connection.updateError`),
+          message: await getApiMessage(`products.variant.updateError`),
         };
         await session.abortTransaction();
         return;
       }
 
-      // Create connection item
-      const updatedVariantProducts: ProductVariantItemModel[] = [
+      // update variants with new variant item
+      const updateProductIds: ObjectIdModel[] = [];
+      const updatedVariantProducts: ProductVariantItemInterface[] = [
         ...variant.products,
         {
           _id: new ObjectId(),
           optionId: option._id,
           productId: addProductId,
           productSlug: addSummary.slug,
+          isCurrent: false,
+          summary: {
+            ...addSummary,
+            variants: [],
+          },
+          option: {
+            ...option,
+            name: getFieldStringLocale(option.nameI18n, locale),
+          },
         },
       ];
-      const updateProductIds = variant.products.map(({ productId }) => {
-        return productId;
+      updatedVariantProducts.forEach(({ productId }) => {
+        if (!productId.equals(addSummary._id)) {
+          updateProductIds.push(productId);
+        }
       });
-      const updatedVariant: ProductVariantModel = {
+      const updatedVariant: ProductVariantInterface = {
         ...variant,
         products: updatedVariantProducts,
       };
 
-      // Update connection
-      const updatedSummaryResult = await productSummariesCollection.updateMany(
-        {
-          _id: {
-            $in: updateProductIds,
-          },
+      const updateVariants = updatedSummary.variants.reduce(
+        (acc: ProductVariantInterface[], variant) => {
+          if (variant._id.equals(variantId)) {
+            return [...acc, updatedVariant];
+          }
+          return [...acc, variant];
         },
-        {
-          $set: {
-            'variants.$[oldVariant]': updatedVariant,
-          },
-        },
-        {
-          arrayFilters: [
-            {
-              'oldVariant._id': { $eq: variant._id },
-            },
-          ],
-        },
+        [],
       );
-      const updatedAddSummaryResult = await productSummariesCollection.findOneAndUpdate(
+      updatedSummary.variants = updateVariants;
+      diff.added = {
+        variantProducts: {
+          productId: addSummary._id,
+          variantId: variant._id,
+        },
+      };
+
+      // create task log for content manager
+      if (role.isContentManager && user) {
+        const task = await findOrCreateUserTask({
+          productId: summary._id,
+          variantSlug: taskVariantSlug,
+          executorId: user._id,
+        });
+
+        if (!task) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('tasks.create.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        const newTaskLogResult = await addTaskLogItem({
+          taskId: task._id,
+          diff,
+          prevStateEnum: task.stateEnum,
+          nextStateEnum: task.stateEnum,
+          draft: updatedSummary,
+          createdById: user._id,
+        });
+        if (!newTaskLogResult) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('products.update.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        mutationPayload = {
+          success: true,
+          message: await getApiMessage('products.update.success'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // update documents
+      if (updateProductIds.length > 0) {
+        const updatedSummaryResult = await productSummariesCollection.updateMany(
+          {
+            _id: {
+              $in: updateProductIds,
+            },
+          },
+          {
+            $set: {
+              'variants.$[oldVariant].products': updatedVariantProducts.map((variantProduct) => {
+                return {
+                  _id: variantProduct._id,
+                  optionId: variantProduct.optionId,
+                  productId: variantProduct.productId,
+                  productSlug: variantProduct.productSlug,
+                };
+              }),
+            },
+          },
+          {
+            arrayFilters: [
+              {
+                'oldVariant._id': variant._id,
+              },
+            ],
+          },
+        );
+        if (!updatedSummaryResult.acknowledged) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage(`products.variant.updateError`),
+          };
+          await session.abortTransaction();
+          return;
+        }
+      }
+      const updatedAddedSummaryResult = await productSummariesCollection.findOneAndUpdate(
         {
-          _id: addProductId,
+          _id: addSummary._id,
         },
         {
           $push: {
-            variants: updatedVariant,
+            variants: {
+              _id: updatedVariant._id,
+              attributeId: updatedVariant.attributeId,
+              attributeSlug: updatedVariant.attributeSlug,
+              products: updatedVariantProducts.map((variantProduct) => {
+                return {
+                  _id: variantProduct._id,
+                  optionId: variantProduct.optionId,
+                  productId: variantProduct.productId,
+                  productSlug: variantProduct.productSlug,
+                };
+              }),
+            },
           },
         },
       );
-      if (!updatedSummaryResult.acknowledged || !updatedAddSummaryResult.ok) {
+      if (!updatedAddedSummaryResult.ok) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.connection.updateError`),
+          message: await getApiMessage(`products.variant.updateError`),
         };
         await session.abortTransaction();
         return;
@@ -193,8 +336,7 @@ export async function addProductToVariant({
 
       mutationPayload = {
         success: true,
-        message: await getApiMessage('products.connection.addProductSuccess'),
-        payload: summary,
+        message: await getApiMessage('products.variant.addProductSuccess'),
       };
     });
 

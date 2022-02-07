@@ -4,6 +4,7 @@ import {
   TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
   TASK_VARIANT_SLUG_PRODUCT_CATEGORIES,
   TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
+  TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
 } from 'config/constantSelects';
 import { TaskModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
@@ -62,6 +63,12 @@ const taskBases: TaskBaseModel[] = [
     executorId: getObjectId('content manager'),
     variantId: getObjectId('task variant product categories'),
     variantSlug: TASK_VARIANT_SLUG_PRODUCT_CATEGORIES,
+  },
+  {
+    productId: getObjectId('000010'),
+    executorId: getObjectId('content manager'),
+    variantId: getObjectId('task variant product variants'),
+    variantSlug: TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
   },
 ];
 

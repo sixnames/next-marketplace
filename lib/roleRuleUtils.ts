@@ -832,6 +832,14 @@ export const roleRulesBase: RoleRuleBaseExtended[] = [
   },
   {
     allow: false,
+    slug: 'updateProductVariants',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление связей товара',
+    },
+  },
+  {
+    allow: false,
     slug: 'updateProductCategories',
     descriptionI18n: {},
     nameI18n: {

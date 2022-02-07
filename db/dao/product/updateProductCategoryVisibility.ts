@@ -1,9 +1,18 @@
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import { COL_CATEGORIES, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
-import { CategoryModel, ProductPayloadModel, ProductSummaryModel } from 'db/dbModels';
+import {
+  CategoryModel,
+  ProductPayloadModel,
+  ProductSummaryModel,
+  SummaryDiffModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import { UpdateProductCategoryInputInterface } from './updateProductCategory';
@@ -13,7 +22,7 @@ export async function updateProductCategoryVisibility({
   input,
 }: DaoPropsInterface<UpdateProductCategoryInputInterface>): Promise<ProductPayloadModel> {
   const { db, client } = await getDatabase();
-  const { getApiMessage } = await getRequestParams(context);
+  const { getApiMessage, locale } = await getRequestParams(context);
   const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
   const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
 
@@ -33,7 +42,7 @@ export async function updateProductCategoryVisibility({
       }
 
       // permission
-      const { allow, message } = await getOperationPermission({
+      const { allow, message, user, role } = await getOperationPermission({
         context,
         slug: 'updateProductCategories',
       });
@@ -46,23 +55,30 @@ export async function updateProductCategoryVisibility({
         return;
       }
 
-      const { productId, categoryId } = input;
-
-      // check product availability
-      const productObjectId = new ObjectId(productId);
-      const product = await productSummariesCollection.findOne({ _id: productObjectId });
-      if (!product) {
+      // get summary or summary draft
+      const taskVariantSlug = getTaskVariantSlugByRule('updateProductCategories');
+      const summaryPayload = await getFullProductSummaryWithDraft({
+        locale,
+        productId: input.productId,
+        companySlug: DEFAULT_COMPANY_SLUG,
+        taskVariantSlug,
+        userId: user?._id,
+        isContentManager: role.isContentManager,
+      });
+      if (!summaryPayload) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.notFound`),
+          message: await getApiMessage('products.update.notFound'),
         };
         await session.abortTransaction();
         return;
       }
+      const { summary } = summaryPayload;
+      const updatedSummary = { ...summary };
+      const diff: SummaryDiffModel = {};
 
-      // check category availability
-      const categoryObjectId = new ObjectId(categoryId);
-      const category = await categoriesCollection.findOne({ _id: categoryObjectId });
+      // get category
+      const category = await categoriesCollection.findOne({ _id: new ObjectId(input.categoryId) });
       if (!category) {
         mutationPayload = {
           success: false,
@@ -73,44 +89,89 @@ export async function updateProductCategoryVisibility({
       }
 
       // toggle category in product
-      const selected = product.titleCategorySlugs.some((slug) => slug === category.slug);
-      let updater: Record<string, any> = {
-        $addToSet: {
-          titleCategorySlugs: category.slug,
-        },
-      };
+      const selected = updatedSummary.titleCategorySlugs.some((slug) => slug === category.slug);
       if (selected) {
-        updater = {
-          $pull: {
-            titleCategorySlugs: category.slug,
-          },
+        updatedSummary.titleCategorySlugs = updatedSummary.titleCategorySlugs.filter((slug) => {
+          return slug !== category.slug;
+        });
+        diff.deleted = {
+          titleCategorySlugs: category.slug,
+        };
+      } else {
+        updatedSummary.titleCategorySlugs.push(category.slug);
+        diff.added = {
+          titleCategorySlugs: category.slug,
         };
       }
 
-      // update product
-      const updatedSummaryResult = await productSummariesCollection.findOneAndUpdate(
+      // create task log for content manager
+      if (role.isContentManager && user) {
+        const task = await findOrCreateUserTask({
+          productId: summary._id,
+          variantSlug: taskVariantSlug,
+          executorId: user._id,
+        });
+
+        if (!task) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('tasks.create.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        const newTaskLogResult = await addTaskLogItem({
+          taskId: task._id,
+          diff,
+          prevStateEnum: task.stateEnum,
+          nextStateEnum: task.stateEnum,
+          draft: updatedSummary,
+          createdById: user._id,
+        });
+        if (!newTaskLogResult) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('products.update.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        mutationPayload = {
+          success: true,
+          message: await getApiMessage('products.update.success'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // update documents
+      const updatedProductAttributeResult = await productSummariesCollection.findOneAndUpdate(
         {
-          _id: product._id,
+          _id: summary._id,
         },
-        updater,
+        {
+          $set: {
+            titleCategorySlugs: updatedSummary.titleCategorySlugs,
+          },
+        },
       );
-      const updatedProduct = updatedSummaryResult.value;
-      if (!updatedSummaryResult.ok || !updatedProduct || !updatedSummaryResult.ok) {
+      if (!updatedProductAttributeResult.ok) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.error`),
+          message: await getApiMessage('products.update.error'),
         };
         await session.abortTransaction();
         return;
       }
 
       // update product title
-      execUpdateProductTitles(`productId=${updatedProduct._id.toHexString()}`);
+      execUpdateProductTitles(`productId=${summary._id.toHexString()}`);
 
       mutationPayload = {
         success: true,
         message: await getApiMessage('products.update.success'),
-        payload: updatedProduct,
       };
     });
 

@@ -504,7 +504,7 @@ export interface SummaryDiffActionFieldsModel {
   textAttributes?: ObjectIdModel[];
   assets?: string[];
   categories?: string[];
-  categoryVisibility?: string;
+  titleCategorySlugs?: string;
 }
 
 export interface SummaryDiffModel {

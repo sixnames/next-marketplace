@@ -69,7 +69,7 @@ export async function updateProductCategory({
         return;
       }
 
-      // check product availability
+      // get summary or summary draft
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductCategories');
       const summaryPayload = await getFullProductSummaryWithDraft({
         locale,

@@ -139,7 +139,7 @@ describe('Tasks', () => {
     });
   });
 
-  it.only('Should display user tasks and update product categories', () => {
+  it('Should display user tasks and update product categories', () => {
     const taskItemId = '000004';
     cy.getByCy('tasks-list').should('exist');
 
@@ -159,6 +159,16 @@ describe('Tasks', () => {
     cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
       const task = taskResult as unknown as TaskModel | null;
       assert((task?.log || []).length === 1, 'Task log should have length 1');
+    });
+
+    // task log 2
+    cy.getByCy('Купажированный-view-checkbox').click();
+    cy.wait(1500);
+    cy.getByCy('Купажированный-view-checkbox').should('be.checked');
+    cy.wait(2000);
+    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
+      const task = taskResult as unknown as TaskModel | null;
+      assert((task?.log || []).length === 2, 'Task log should have length 2');
     });
   });
 });

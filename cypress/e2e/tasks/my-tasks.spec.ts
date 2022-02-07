@@ -1,5 +1,4 @@
 import { KEY_CODES } from 'config/common';
-import { TaskModel } from 'db/dbModels';
 import { getProjectLinks } from 'lib/getProjectLinks';
 
 describe('Tasks', () => {
@@ -37,13 +36,9 @@ describe('Tasks', () => {
     cy.getByCy('Объем-attribute').click();
     cy.getByCy('select-attribute-options-modal').should('exist');
     cy.getByCy('option-350').click();
-    cy.wait(2000);
-    // count task logs
+    cy.wait(1500);
     cy.getByCy('product-attributes-list').should('exist');
-    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
-      const task = taskResult as unknown as TaskModel | null;
-      assert((task?.log || []).length === 2, 'Task log should have length 2');
-    });
+    cy.countTaskLogs(taskItemId, 2);
 
     // clear multi-select attribute
     // task log 3
@@ -55,38 +50,26 @@ describe('Tasks', () => {
     cy.getByCy('option-Бага').click();
     cy.getByCy('option-Бикал').click();
     cy.getByCy('options-submit').click();
-    cy.wait(2000);
-    // count task logs
+    cy.wait(1500);
     cy.getByCy('product-attributes-list').should('exist');
-    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
-      const task = taskResult as unknown as TaskModel | null;
-      assert((task?.log || []).length === 4, 'Task log should have length 4');
-    });
+    cy.countTaskLogs(taskItemId, 4);
 
     // update number attributes
     // task log 5
     cy.getByCy('Крепость-attribute').clear().type('10');
     cy.getByCy('Количество в упаковке-attribute').clear().type('10');
     cy.getByCy('submit-number-attributes').click();
-    cy.wait(2000);
-    // count task logs
+    cy.wait(1500);
     cy.getByCy('product-attributes-list').should('exist');
-    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
-      const task = taskResult as unknown as TaskModel | null;
-      assert((task?.log || []).length === 5, 'Task log should have length 5');
-    });
+    cy.countTaskLogs(taskItemId, 5);
 
     // update text attributes
     // task log 6
     cy.getByCy('Текстовый-attribute-ru').clear().type('lorem');
     cy.getByCy('submit-text-attributes').click();
-    cy.wait(2000);
-    // count task logs
+    cy.wait(1500);
     cy.getByCy('product-attributes-list').should('exist');
-    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
-      const task = taskResult as unknown as TaskModel | null;
-      assert((task?.log || []).length === 6, 'Task log should have length 6');
-    });
+    cy.countTaskLogs(taskItemId, 6);
   });
 
   it('Should display user tasks and update product assets', () => {
@@ -106,11 +89,7 @@ describe('Tasks', () => {
     cy.wait(1500);
     cy.getByCy('product-assets-list').should('exist');
     cy.get('[data-rbd-drag-handle-draggable-id]').should('have.length', 2);
-    cy.wait(2000);
-    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
-      const task = taskResult as unknown as TaskModel | null;
-      assert((task?.log || []).length === 1, 'Task log should have length 1');
-    });
+    cy.countTaskLogs(taskItemId, 1);
 
     // update asset index
     // task log 2
@@ -120,11 +99,7 @@ describe('Tasks', () => {
     });
     cy.wait(1500);
     cy.getByCy('product-assets-list').should('exist');
-    cy.wait(2000);
-    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
-      const task = taskResult as unknown as TaskModel | null;
-      assert((task?.log || []).length === 2, 'Task log should have length 2');
-    });
+    cy.countTaskLogs(taskItemId, 2);
 
     // delete asset
     // task log 3
@@ -132,11 +107,7 @@ describe('Tasks', () => {
     cy.getByCy('confirm').click();
     cy.wait(1500);
     cy.get('[data-rbd-drag-handle-draggable-id]').should('have.length', 1);
-    cy.wait(2000);
-    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
-      const task = taskResult as unknown as TaskModel | null;
-      assert((task?.log || []).length === 3, 'Task log should have length 3');
-    });
+    cy.countTaskLogs(taskItemId, 3);
   });
 
   it('Should display user tasks and update product categories', () => {
@@ -155,20 +126,12 @@ describe('Tasks', () => {
     cy.getByCy('Односолодовый A-1-checkbox').click();
     cy.wait(1500);
     cy.getByCy('Односолодовый A-1-checkbox').should('not.be.checked');
-    cy.wait(2000);
-    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
-      const task = taskResult as unknown as TaskModel | null;
-      assert((task?.log || []).length === 1, 'Task log should have length 1');
-    });
+    cy.countTaskLogs(taskItemId, 1);
 
     // task log 2
     cy.getByCy('Купажированный-view-checkbox').click();
     cy.wait(1500);
     cy.getByCy('Купажированный-view-checkbox').should('be.checked');
-    cy.wait(2000);
-    cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
-      const task = taskResult as unknown as TaskModel | null;
-      assert((task?.log || []).length === 2, 'Task log should have length 2');
-    });
+    cy.countTaskLogs(taskItemId, 2);
   });
 });

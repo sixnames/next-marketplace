@@ -2,6 +2,7 @@ import 'cypress-file-upload';
 import 'cypress-localstorage-commands';
 import { KEY_CODES } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
+import { TaskModel } from 'db/dbModels';
 import { getProjectLinks } from 'lib/getProjectLinks';
 
 // ***********************************************
@@ -147,6 +148,14 @@ Cypress.Commands.add('signOut', (redirect = '/') => {
   cy.visit('/api/auth/signout');
   cy.get('[type="submit"]').click();
   cy.visit(redirect);
+});
+
+Cypress.Commands.add('countTaskLogs', (taskItemId: string, length: number) => {
+  cy.wait(2000);
+  cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
+    const task = taskResult as unknown as TaskModel | null;
+    assert((task?.log || []).length === length, `Task log should have length ${length}`);
+  });
 });
 
 Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOrderInterface) => {

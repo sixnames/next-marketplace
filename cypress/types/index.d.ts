@@ -24,6 +24,7 @@ declare namespace Cypress {
      * @example cy.dataCy('greeting')
      */
     getByCy(testId: string): Chainable<Element>;
+    countTaskLogs(taskItemId: string, length: number): void;
     dndReorder(props: DragAndDropInterface): Chainable<Element>;
     visitBlank(testId: string, additionalPath?: string): void;
     visitLinkHref(testId: string): void;

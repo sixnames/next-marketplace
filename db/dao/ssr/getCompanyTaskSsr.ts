@@ -9,6 +9,7 @@ import { TaskInterface } from 'db/uiInterfaces';
 export interface GetCompanyTaskSsr {
   taskId: string;
   locale: string;
+  noProduct?: boolean;
 }
 
 export function getTaskNestedFieldsPipeline(field: string) {
@@ -46,6 +47,7 @@ export function getTaskNestedFieldsPipeline(field: string) {
 export async function getCompanyTaskSsr({
   taskId,
   locale,
+  noProduct,
 }: GetCompanyTaskSsr): Promise<TaskInterface | null> {
   try {
     const { db } = await getDatabase();
@@ -154,7 +156,10 @@ export async function getCompanyTaskSsr({
         : null,
     };
 
-    return task;
+    return {
+      ...task,
+      product: noProduct ? null : task.product,
+    };
   } catch (e) {
     console.log('getCompanyTaskVariantsListSsr error', e);
     return null;

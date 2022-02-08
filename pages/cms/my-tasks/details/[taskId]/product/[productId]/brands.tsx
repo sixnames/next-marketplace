@@ -1,7 +1,11 @@
 import ConsoleRubricProductBrands from 'components/console/ConsoleRubricProductBrands';
 import { getTaskVariantSlugByRule } from 'config/constantSelects';
-import CmsProductLayout from 'layout/cms/CmsProductLayout';
+import { getCompanyTaskSsr } from 'db/dao/ssr/getCompanyTaskSsr';
+import CmsTaskProductLayout, {
+  CmsTaskProductLayoutInterface,
+} from 'layout/cms/CmsTaskProductLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/getProjectLinks';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
@@ -13,61 +17,47 @@ import {
   BrandCollectionInterface,
   BrandInterface,
   ManufacturerInterface,
-  ProductSummaryInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-interface ProductBrandsInterface {
-  product: ProductSummaryInterface;
+interface ProductBrandsInterface extends CmsTaskProductLayoutInterface {
   brand?: BrandInterface | null;
   brandCollection?: BrandCollectionInterface | null;
   manufacturer?: ManufacturerInterface | null;
 }
 
 const ProductBrands: React.FC<ProductBrandsInterface> = ({
+  task,
   product,
   brand,
   brandCollection,
   manufacturer,
 }) => {
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     productId: product._id,
-    rubricSlug: product.rubricSlug,
+    taskId: task._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Бренд / Производитель',
+    currentPageName: `Бренд / Производитель товара`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: links.parentLink,
-      },
-      {
-        name: `${product.rubric?.name}`,
-        href: links.parentLink,
-      },
-      {
-        name: `Товары`,
-        href: links.product.parentLink,
-      },
-      {
-        name: `${product.cardTitle}`,
-        href: links.product.root,
+        name: 'Мои задачи',
+        href: links.cms.myTasks.url,
       },
     ],
   };
 
   return (
-    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
+    <CmsTaskProductLayout product={product} task={task} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductBrands
         product={product}
         brand={brand}
         brandCollection={brandCollection}
         manufacturer={manufacturer}
       />
-    </CmsProductLayout>
+    </CmsTaskProductLayout>
   );
 };
 
@@ -92,6 +82,17 @@ export const getServerSideProps = async (
   const brandCollectionsCollection = db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
   const { props } = await getAppInitialData({ context });
   if (!props) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const task = await getCompanyTaskSsr({
+    locale: props.sessionLocale,
+    taskId: `${query.taskId}`,
+    noProduct: true,
+  });
+  if (!task) {
     return {
       notFound: true,
     };
@@ -181,6 +182,7 @@ export const getServerSideProps = async (
       brand: castDbData(brand),
       brandCollection: castDbData(brandCollection),
       manufacturer: castDbData(manufacturer),
+      task: castDbData(task),
     },
   };
 };

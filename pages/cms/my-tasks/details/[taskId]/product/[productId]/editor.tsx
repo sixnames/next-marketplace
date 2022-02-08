@@ -1,57 +1,51 @@
 import ConsoleRubricProductEditor, {
   ConsoleRubricProductEditorInterface,
 } from 'components/console/ConsoleRubricProductEditor';
-import CmsProductLayout from 'layout/cms/CmsProductLayout';
+import { getCompanyTaskSsr } from 'db/dao/ssr/getCompanyTaskSsr';
+import CmsTaskProductLayout, {
+  CmsTaskProductLayoutInterface,
+} from 'layout/cms/CmsTaskProductLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/getProjectLinks';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { getFullProductSummary } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-interface ProductAttributesInterface extends ConsoleRubricProductEditorInterface {}
+interface ProductAttributesInterface
+  extends ConsoleRubricProductEditorInterface,
+    CmsTaskProductLayoutInterface {}
 
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({
+  task,
   product,
-  cardContent,
+  seoContentsList,
   companySlug,
 }) => {
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     productId: product._id,
-    rubricSlug: product.rubricSlug,
+    taskId: task._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Контент карточки',
+    currentPageName: `Контент карточки товара`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: links.parentLink,
-      },
-      {
-        name: `${product.rubric?.name}`,
-        href: links.parentLink,
-      },
-      {
-        name: `Товары`,
-        href: links.product.parentLink,
-      },
-      {
-        name: `${product.cardTitle}`,
-        href: links.product.root,
+        name: 'Мои задачи',
+        href: links.cms.myTasks.url,
       },
     ],
   };
 
   return (
-    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
+    <CmsTaskProductLayout task={task} product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductEditor
         product={product}
-        cardContent={cardContent}
+        seoContentsList={seoContentsList}
         companySlug={companySlug}
       />
-    </CmsProductLayout>
+    </CmsTaskProductLayout>
   );
 };
 
@@ -79,8 +73,18 @@ export const getServerSideProps = async (
     };
   }
 
-  const companySlug = DEFAULT_COMPANY_SLUG;
+  const task = await getCompanyTaskSsr({
+    locale: props.sessionLocale,
+    taskId: `${query.taskId}`,
+    noProduct: true,
+  });
+  if (!task) {
+    return {
+      notFound: true,
+    };
+  }
 
+  const companySlug = DEFAULT_COMPANY_SLUG;
   const payload = await getFullProductSummary({
     locale: props.sessionLocale,
     productId: `${productId}`,
@@ -99,7 +103,8 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(summary),
-      cardContent: castDbData(cardContent),
+      seoContentsList: castDbData(cardContent),
+      task: castDbData(task),
       companySlug,
     },
   };

@@ -12,7 +12,7 @@ export interface CompanyProductDetailsInterface extends ConsoleRubricProductEdit
 const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
   product,
   children,
-  cardContent,
+  seoContentsList,
   companySlug,
 }) => {
   const { originalName, mainImage } = product;
@@ -33,7 +33,7 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
 
       <ConsoleRubricProductEditor
         product={product}
-        cardContent={cardContent}
+        seoContentsList={seoContentsList}
         companySlug={companySlug}
       />
     </Inner>

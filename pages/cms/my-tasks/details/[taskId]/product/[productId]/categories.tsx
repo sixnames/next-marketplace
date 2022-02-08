@@ -1,7 +1,11 @@
 import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProductCategories';
 import { getTaskVariantSlugByRule } from 'config/constantSelects';
-import CmsProductLayout from 'layout/cms/CmsProductLayout';
+import { getCompanyTaskSsr } from 'db/dao/ssr/getCompanyTaskSsr';
+import CmsTaskProductLayout, {
+  CmsTaskProductLayoutInterface,
+} from 'layout/cms/CmsTaskProductLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/getProjectLinks';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
@@ -11,49 +15,38 @@ import {
   AppContentWrapperBreadCrumbs,
   CategoryInterface,
   ProductCategoryInterface,
-  ProductSummaryInterface,
 } from 'db/uiInterfaces';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { getTreeFromList } from 'lib/treeUtils';
 
-interface ProductCategoriesInterface {
-  product: ProductSummaryInterface;
+interface ProductCategoriesInterface extends CmsTaskProductLayoutInterface {
   categoriesTree: ProductCategoryInterface[];
 }
 
-const ProductCategories: React.FC<ProductCategoriesInterface> = ({ product, categoriesTree }) => {
-  const links = getConsoleRubricLinks({
+const ProductCategories: React.FC<ProductCategoriesInterface> = ({
+  product,
+  task,
+  categoriesTree,
+}) => {
+  const links = getProjectLinks({
     productId: product._id,
-    rubricSlug: product.rubricSlug,
+    taskId: task._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Категории',
+    currentPageName: `Категории товара`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: links.parentLink,
-      },
-      {
-        name: `${product.rubric?.name}`,
-        href: links.parentLink,
-      },
-      {
-        name: `Товары`,
-        href: links.product.parentLink,
-      },
-      {
-        name: `${product.cardTitle}`,
-        href: links.product.root,
+        name: 'Мои задачи',
+        href: links.cms.myTasks.url,
       },
     ],
   };
 
   return (
-    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
+    <CmsTaskProductLayout task={task} product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductCategories product={product} categoriesTree={categoriesTree} />
-    </CmsProductLayout>
+    </CmsTaskProductLayout>
   );
 };
 
@@ -78,6 +71,17 @@ export const getServerSideProps = async (
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
   const { props } = await getAppInitialData({ context });
   if (!props) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const task = await getCompanyTaskSsr({
+    locale: props.sessionLocale,
+    taskId: `${query.taskId}`,
+    noProduct: true,
+  });
+  if (!task) {
     return {
       notFound: true,
     };
@@ -124,6 +128,7 @@ export const getServerSideProps = async (
       ...props,
       product: castDbData(summary),
       categoriesTree: castDbData(categoriesTree),
+      task: castDbData(task),
     },
   };
 };

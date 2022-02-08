@@ -74,7 +74,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
       <ConsoleRubricProductEditor
         product={product}
         companySlug={pageCompany.slug}
-        cardContent={cardContent}
+        seoContentsList={cardContent}
       />
     </CmsProductLayout>
   );

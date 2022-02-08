@@ -21,15 +21,11 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, task }) =>
     taskId: task._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `${product.cardTitle}`,
+    currentPageName: `Детали товара`,
     config: [
       {
         name: 'Мои задачи',
         href: links.cms.myTasks.url,
-      },
-      {
-        name: `${task.name}`,
-        href: links.cms.myTasks.details.taskId.url,
       },
     ],
   };
@@ -66,6 +62,7 @@ export const getServerSideProps = async (
   const task = await getCompanyTaskSsr({
     locale: props.sessionLocale,
     taskId: `${query.taskId}`,
+    noProduct: true,
   });
   if (!task) {
     return {
@@ -92,10 +89,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(payload.summary),
-      task: castDbData({
-        ...task,
-        product: null,
-      }),
+      task: castDbData(task),
     },
   };
 };

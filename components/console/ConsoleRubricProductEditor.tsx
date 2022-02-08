@@ -9,12 +9,12 @@ import SeoContentEditor from '../SeoContentEditor';
 
 export interface ConsoleRubricProductEditorInterface {
   product: ProductSummaryInterface;
-  cardContent: SeoContentCitiesInterface;
+  seoContentsList: SeoContentCitiesInterface;
   companySlug: string;
 }
 
 const ConsoleRubricProductEditor: React.FC<ConsoleRubricProductEditorInterface> = ({
-  cardContent,
+  seoContentsList,
   companySlug,
 }) => {
   const [updateProductCardContentMutation] = useUpdateProductCardContent();
@@ -23,7 +23,7 @@ const ConsoleRubricProductEditor: React.FC<ConsoleRubricProductEditorInterface> 
     <Inner testId={'product-card-editor'}>
       <Formik<UpdateProductCardContentInputInterface>
         initialValues={{
-          seoContentsList: cardContent,
+          seoContentsList,
           companySlug,
         }}
         onSubmit={(values) => {

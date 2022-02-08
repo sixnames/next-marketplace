@@ -36,7 +36,7 @@ const CmsTaskProductLayout: React.FC<CmsTaskProductLayoutInterface> = ({
         >
           {product.cardTitle}
         </WpTitle>
-        <div className='space-y-6'>
+        <div className='mb-12'>
           {sessionUser?.role?.isContentManager || sessionUser?.role?.isInspector ? (
             <div className='max-w-[980px]'>
               <WpNotification

@@ -15,7 +15,7 @@ interface ProductAttributesInterface extends ConsoleRubricProductEditorInterface
 
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({
   product,
-  cardContent,
+  seoContentsList,
   companySlug,
 }) => {
   const links = getConsoleRubricLinks({
@@ -48,7 +48,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductEditor
         product={product}
-        cardContent={cardContent}
+        seoContentsList={seoContentsList}
         companySlug={companySlug}
       />
     </CmsProductLayout>
@@ -99,7 +99,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(summary),
-      cardContent: castDbData(cardContent),
+      seoContentsList: castDbData(cardContent),
       companySlug,
     },
   };

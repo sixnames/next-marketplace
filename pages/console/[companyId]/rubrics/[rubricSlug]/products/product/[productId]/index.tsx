@@ -28,7 +28,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   product,
   routeBasePath,
   companySlug,
-  cardContent,
+  seoContentsList,
   pageCompany,
 }) => {
   const links = getConsoleCompanyLinks({
@@ -71,7 +71,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
         routeBasePath={routeBasePath}
         product={product}
         companySlug={companySlug}
-        cardContent={cardContent}
+        seoContentsList={seoContentsList}
       />
     </CmsProductLayout>
   );
@@ -133,7 +133,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(payload.summary),
-      cardContent: castDbData(payload.cardContent),
+      seoContentsList: castDbData(payload.cardContent),
       companySlug: companyResult.slug,
       pageCompany: castDbData(props.layoutProps.pageCompany),
       routeBasePath: links.parentLink,

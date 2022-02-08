@@ -69,7 +69,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, compan
       <CompanyProductDetails
         routeBasePath={''}
         product={summary}
-        cardContent={cardContentCities}
+        seoContentsList={cardContentCities}
         companySlug={companySlug}
       />
     </ConsoleShopProductLayout>

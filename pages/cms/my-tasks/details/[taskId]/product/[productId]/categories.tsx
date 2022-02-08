@@ -1,26 +1,35 @@
+import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProductCategories';
 import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import CmsProductLayout from 'layout/cms/CmsProductLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ConsoleRubricProductDetails from '../../../../../../../components/console/ConsoleRubricProductDetails';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
-import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
-import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
-import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import { COL_CATEGORIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  CategoryInterface,
+  ProductCategoryInterface,
+  ProductSummaryInterface,
+} from 'db/uiInterfaces';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 
-interface ProductDetailsInterface {
+interface ProductCategoriesInterface {
   product: ProductSummaryInterface;
+  categoriesTree: ProductCategoryInterface[];
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
+const ProductCategories: React.FC<ProductCategoriesInterface> = ({ product, categoriesTree }) => {
   const links = getConsoleRubricLinks({
     productId: product._id,
     rubricSlug: product.rubricSlug,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `${product.cardTitle}`,
+    currentPageName: 'Категории',
     config: [
       {
         name: 'Рубрикатор',
@@ -28,28 +37,34 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: `Товары`,
         href: links.product.parentLink,
+      },
+      {
+        name: `${product.cardTitle}`,
+        href: links.product.root,
       },
     ],
   };
 
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <ConsoleRubricProductDetails product={product} />
+      <ConsoleRubricProductCategories product={product} categoriesTree={categoriesTree} />
     </CmsProductLayout>
   );
 };
 
-interface ProductPageInterface extends GetAppInitialDataPropsInterface, ProductDetailsInterface {}
+interface ProductPageInterface
+  extends GetAppInitialDataPropsInterface,
+    ProductCategoriesInterface {}
 
 const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <ProductDetails {...props} />
+      <ProductCategories {...props} />
     </ConsoleLayout>
   );
 };
@@ -59,6 +74,8 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { productId } = query;
+  const { db } = await getDatabase();
+  const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -72,7 +89,7 @@ export const getServerSideProps = async (
     companySlug: DEFAULT_COMPANY_SLUG,
     userId: props.layoutProps.sessionUser.me._id,
     isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
-    taskVariantSlug: getTaskVariantSlugByRule('updateProduct'),
+    taskVariantSlug: getTaskVariantSlugByRule('updateProductCategories'),
   });
 
   if (!payload) {
@@ -81,11 +98,32 @@ export const getServerSideProps = async (
     };
   }
 
+  const { summary } = payload;
+
+  // Get rubric categories
+  const initialCategories = await categoriesCollection
+    .find({
+      rubricId: summary.rubric?._id,
+    })
+    .toArray();
+  const categories: ProductCategoryInterface[] = initialCategories.map((category) => {
+    return {
+      ...category,
+      categories: [],
+      selected: summary.filterSlugs.some((slug) => slug === category.slug),
+    };
+  });
+
+  const categoriesTree = getTreeFromList<ProductCategoryInterface>({
+    list: categories,
+    childrenFieldName: 'categories',
+  });
+
   return {
     props: {
       ...props,
-      product: castDbData(payload.summary),
-      companySlug: DEFAULT_COMPANY_SLUG,
+      product: castDbData(summary),
+      categoriesTree: castDbData(categoriesTree),
     },
   };
 };

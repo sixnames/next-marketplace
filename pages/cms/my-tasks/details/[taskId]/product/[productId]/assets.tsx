@@ -1,29 +1,26 @@
-import * as React from 'react';
+import ConsoleRubricProductAssets from 'components/console/ConsoleRubricProductAssets';
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import CmsProductLayout from 'layout/cms/CmsProductLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ConsoleRubricProductConstructor, {
-  ConsoleRubricProductConstructorInterface,
-} from '../../../../../../../components/console/ConsoleRubricProductConstructor';
+import * as React from 'react';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
+import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
-import { getFullProductSummary } from 'lib/productUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 
-interface ProductAttributesInterface extends ConsoleRubricProductConstructorInterface {}
+interface ProductAssetsInterface {
+  product: ProductSummaryInterface;
+}
 
-const ProductAttributes: React.FC<ProductAttributesInterface> = ({
-  product,
-  cardContent,
-  companySlug,
-}) => {
+const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
   const links = getConsoleRubricLinks({
     productId: product._id,
     rubricSlug: product.rubricSlug,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Контент карточки',
+    currentPageName: 'Изображения',
     config: [
       {
         name: 'Рубрикатор',
@@ -46,23 +43,17 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
 
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <ConsoleRubricProductConstructor
-        product={product}
-        cardContent={cardContent}
-        companySlug={companySlug}
-      />
+      <ConsoleRubricProductAssets summary={product} />
     </CmsProductLayout>
   );
 };
 
-interface ProductPageInterface
-  extends GetAppInitialDataPropsInterface,
-    ProductAttributesInterface {}
+interface ProductPageInterface extends GetAppInitialDataPropsInterface, ProductAssetsInterface {}
 
 const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <ProductAttributes {...props} />
+      <ProductAssets {...props} />
     </ConsoleLayout>
   );
 };
@@ -79,12 +70,13 @@ export const getServerSideProps = async (
     };
   }
 
-  const companySlug = DEFAULT_COMPANY_SLUG;
-
-  const payload = await getFullProductSummary({
+  const payload = await getFullProductSummaryWithDraft({
     locale: props.sessionLocale,
     productId: `${productId}`,
-    companySlug,
+    companySlug: DEFAULT_COMPANY_SLUG,
+    userId: props.layoutProps.sessionUser.me._id,
+    isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
+    taskVariantSlug: getTaskVariantSlugByRule('updateProductAssets'),
   });
 
   if (!payload) {
@@ -93,14 +85,10 @@ export const getServerSideProps = async (
     };
   }
 
-  const { summary, cardContent } = payload;
-
   return {
     props: {
       ...props,
-      product: castDbData(summary),
-      cardContent: castDbData(cardContent),
-      companySlug,
+      product: castDbData(payload.summary),
     },
   };
 };

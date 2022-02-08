@@ -1,46 +1,47 @@
+import ConsoleRubricProductDetails from 'components/console/ConsoleRubricProductDetails';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { getCompanyTaskSsr } from 'db/dao/ssr/getCompanyTaskSsr';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import CmsTaskProductLayout, {
+  CmsTaskProductLayoutInterface,
+} from 'layout/cms/CmsTaskProductLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/getProjectLinks';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ConsoleRubricProductDetails from '../../../../../../../components/console/ConsoleRubricProductDetails';
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
-import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
-import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
-import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-interface ProductDetailsInterface {
-  product: ProductSummaryInterface;
-}
+interface ProductDetailsInterface extends CmsTaskProductLayoutInterface {}
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
-  const links = getConsoleRubricLinks({
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, task }) => {
+  const links = getProjectLinks({
     productId: product._id,
-    rubricSlug: product.rubricSlug,
+    taskId: task._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${product.cardTitle}`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: links.parentLink,
+        name: 'Мои задачи',
+        href: links.cms.myTasks.url,
       },
       {
-        name: `${product.rubric?.name}`,
-        href: links.root,
+        name: `${task.name}`,
+        href: links.cms.myTasks.details.taskId.url,
       },
       {
-        name: `Товары`,
-        href: links.product.parentLink,
+        name: `${product?.cardTitle}`,
+        href: links.cms.myTasks.details.taskId.product.productId.url,
       },
     ],
   };
 
   return (
-    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
+    <CmsTaskProductLayout product={product} task={task} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductDetails product={product} />
-    </CmsProductLayout>
+    </CmsTaskProductLayout>
   );
 };
 
@@ -66,6 +67,16 @@ export const getServerSideProps = async (
     };
   }
 
+  const task = await getCompanyTaskSsr({
+    locale: props.sessionLocale,
+    taskId: `${query.taskId}`,
+  });
+  if (!task) {
+    return {
+      notFound: true,
+    };
+  }
+
   const payload = await getFullProductSummaryWithDraft({
     locale: props.sessionLocale,
     productId: `${productId}`,
@@ -85,7 +96,10 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(payload.summary),
-      companySlug: DEFAULT_COMPANY_SLUG,
+      task: castDbData({
+        ...task,
+        product: null,
+      }),
     },
   };
 };

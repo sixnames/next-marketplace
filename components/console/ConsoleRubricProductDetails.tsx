@@ -14,7 +14,6 @@ import WpImage from '../WpImage';
 
 interface ConsoleRubricProductDetailsInterface {
   product: ProductSummaryInterface;
-  companySlug: string;
 }
 
 const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface> = ({

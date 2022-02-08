@@ -2,21 +2,17 @@ import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ConsoleRubricProductDetails from '../../../../../../../../../components/console/ConsoleRubricProductDetails';
-import { COL_COMPANIES } from '../../../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../../../db/mongodb';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   ProductSummaryInterface,
-} from '../../../../../../../../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
-import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
-import { getFullProductSummary } from '../../../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../../../lib/ssrUtils';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getFullProductSummary } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
 
 interface ProductDetailsInterface {
@@ -68,7 +64,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
       basePath={routeBasePath}
       breadcrumbs={breadcrumbs}
     >
-      <ConsoleRubricProductDetails product={product} companySlug={`${pageCompany?.slug}`} />
+      <ConsoleRubricProductDetails product={product} />
     </CmsProductLayout>
   );
 };

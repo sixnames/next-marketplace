@@ -1,7 +1,6 @@
 import { ObjectId } from 'mongodb';
 
 type DynamicPagePropType = ObjectId | string | null;
-
 export interface LinkPropsInterface {
   card?: DynamicPagePropType;
   blogPostSlug?: DynamicPagePropType;
@@ -843,7 +842,30 @@ export function getProjectLinks(props?: LinkPropsInterface) {
       languages: { url: `/cms/languages` },
       manufacturers: { url: `/cms/manufacturers` },
       metrics: { url: `/cms/metrics` },
-      myTasks: { url: `/cms/my-tasks` },
+      myTasks: {
+        url: `/cms/my-tasks`,
+        details: {
+          url: `/cms/my-tasks/details`,
+          taskId: {
+            url: `/cms/my-tasks/details/${taskId}`,
+            product: {
+              url: `/cms/my-tasks/details/${taskId}/product`,
+              productId: {
+                url: `/cms/my-tasks/details/${taskId}/product/${productId}`,
+                assets: { url: `/cms/my-tasks/details/${taskId}/product/${productId}/assets` },
+                attributes: {
+                  url: `/cms/my-tasks/details/${taskId}/product/${productId}/attributes`,
+                },
+                brands: { url: `/cms/my-tasks/details/${taskId}/product/${productId}/brands` },
+                categories: {
+                  url: `/cms/my-tasks/details/${taskId}/product/${productId}/categories`,
+                },
+                variants: { url: `/cms/my-tasks/details/${taskId}/product/${productId}/variants` },
+              },
+            },
+          },
+        },
+      },
       nav: { url: `/cms/nav` },
       options: {
         url: `/cms/options`,

@@ -18,6 +18,7 @@ import { DaoPropsInterface } from 'db/uiInterfaces';
 export interface DeleteProductAssetInputInterface {
   productId: string;
   assetIndex: number;
+  taskId?: string | null;
 }
 
 export async function deleteProductAsset({
@@ -58,16 +59,15 @@ export async function deleteProductAsset({
         return;
       }
 
-      const { assetIndex } = input;
+      const { assetIndex, taskId } = input;
 
       // get summary or summary draft
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductAssets');
       const summaryPayload = await getFullProductSummaryWithDraft({
+        taskId,
         locale,
         productId: input.productId,
         companySlug: DEFAULT_COMPANY_SLUG,
-        taskVariantSlug,
-        userId: user?._id,
         isContentManager: role.isContentManager,
       });
       if (!summaryPayload) {
@@ -104,6 +104,7 @@ export async function deleteProductAsset({
           productId: summary._id,
           variantSlug: taskVariantSlug,
           executorId: user._id,
+          taskId,
         });
 
         if (!task) {

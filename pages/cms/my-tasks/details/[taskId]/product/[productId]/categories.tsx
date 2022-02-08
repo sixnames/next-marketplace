@@ -1,8 +1,5 @@
 import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProductCategories';
-import {
-  getTaskVariantSlugByRule,
-  TASK_VARIANT_SLUG_PRODUCT_CATEGORIES,
-} from 'config/constantSelects';
+import { TASK_VARIANT_SLUG_PRODUCT_CATEGORIES } from 'config/constantSelects';
 import { getCompanyTaskSsr } from 'db/dao/ssr/getCompanyTaskSsr';
 import CmsTaskProductLayout, {
   CmsTaskProductLayoutInterface,
@@ -91,12 +88,11 @@ export const getServerSideProps = async (
   }
 
   const payload = await getFullProductSummaryWithDraft({
+    taskId: task._id.toHexString(),
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
-    userId: props.layoutProps.sessionUser.me._id,
     isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
-    taskVariantSlug: getTaskVariantSlugByRule('updateProductCategories'),
   });
 
   if (!payload) {

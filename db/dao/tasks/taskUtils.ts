@@ -1,9 +1,4 @@
-import {
-  DEFAULT_COMPANY_SLUG,
-  ROLE_SLUG_ADMIN,
-  TASK_STATE_IN_PROGRESS,
-  TASK_STATE_PENDING,
-} from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROLE_SLUG_ADMIN, TASK_STATE_PENDING } from 'config/common';
 import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { COL_TASKS } from 'db/collectionNames';
 import {
@@ -54,43 +49,40 @@ export async function getUserAllowedTaskVariants({
   return taskVariantSlugs;
 }
 
-export interface FindUserTaskInterface {
+export interface FindTaskInterface {
+  taskId?: string | null;
+}
+
+export async function findTask({ taskId }: FindTaskInterface): Promise<TaskModel | null> {
+  if (!taskId) {
+    return null;
+  }
+  const { db } = await getDatabase();
+  const tasksCollection = db.collection<TaskModel>(COL_TASKS);
+  const task = await tasksCollection.findOne({
+    _id: new ObjectId(taskId),
+  });
+  return task;
+}
+
+export interface FindOrCreateUserTaskInterface extends FindTaskInterface {
+  taskId?: string | null;
   productId?: ObjectIdModel | string;
   executorId: ObjectIdModel | string;
   variantSlug: string;
 }
 
-export async function findUserTask({
-  executorId,
-  productId,
-  variantSlug,
-}: FindUserTaskInterface): Promise<TaskModel | null> {
-  const { db } = await getDatabase();
-  const tasksCollection = db.collection<TaskModel>(COL_TASKS);
-  const productIdQuery = productId ? { productId: new ObjectId(productId) } : {};
-  const task = await tasksCollection.findOne({
-    ...productIdQuery,
-    variantSlug,
-    executorId: new ObjectId(executorId),
-    stateEnum: {
-      $in: [TASK_STATE_IN_PROGRESS, TASK_STATE_PENDING],
-    },
-  });
-  return task;
-}
-
 export async function findOrCreateUserTask({
+  taskId,
   executorId,
   productId,
   variantSlug,
-}: FindUserTaskInterface): Promise<TaskModel | null> {
+}: FindOrCreateUserTaskInterface): Promise<TaskModel | null> {
   try {
     const { db } = await getDatabase();
     const tasksCollection = db.collection<TaskModel>(COL_TASKS);
-    let task = await findUserTask({
-      variantSlug,
-      executorId,
-      productId,
+    let task = await findTask({
+      taskId,
     });
 
     if (!task) {

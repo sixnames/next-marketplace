@@ -1,4 +1,3 @@
-import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext } from 'next';
 import {
@@ -29,7 +28,7 @@ export const getCmsProductAttributesPageSsr = async (
   context: GetServerSidePropsContext,
 ): Promise<CmsProductAttributesPageInterface | null> => {
   const { query } = context;
-  const { productId } = query;
+  const { productId, taskId } = query;
   const { db } = await getDatabase();
   const attributesGroupsCollection = db.collection<AttributesGroupInterface>(COL_ATTRIBUTES_GROUPS);
   const optionsCollection = db.collection<OptionInterface>(COL_OPTIONS);
@@ -39,12 +38,11 @@ export const getCmsProductAttributesPageSsr = async (
   }
 
   const productPayload = await getFullProductSummaryWithDraft({
+    taskId: `${taskId}`,
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
-    userId: props.layoutProps.sessionUser.me._id,
     isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
-    taskVariantSlug: getTaskVariantSlugByRule('updateProductAttributes'),
   });
 
   if (!productPayload) {

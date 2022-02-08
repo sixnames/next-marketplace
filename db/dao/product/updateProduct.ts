@@ -21,6 +21,7 @@ import { DaoPropsInterface } from 'db/uiInterfaces';
 import { CreateProductInputInterface } from './createProduct';
 
 export interface UpdateProductInputInterface extends Omit<CreateProductInputInterface, 'rubricId'> {
+  taskId?: string | null;
   productId: string;
 }
 
@@ -68,16 +69,15 @@ export async function updateProduct({
       });
       await validationSchema.validate(input);
 
-      const { productId, ...values } = input;
+      const { productId, taskId, ...values } = input;
 
       // get summary or summary draft
       const taskVariantSlug = getTaskVariantSlugByRule('updateProduct');
       const summaryPayload = await getFullProductSummaryWithDraft({
+        taskId,
         locale,
         productId,
         companySlug: DEFAULT_COMPANY_SLUG,
-        taskVariantSlug,
-        userId: user?._id,
         isContentManager: role.isContentManager,
       });
       if (!summaryPayload) {
@@ -128,6 +128,7 @@ export async function updateProduct({
           productId: summary._id,
           variantSlug: taskVariantSlug,
           executorId: user._id,
+          taskId,
         });
 
         if (!task) {

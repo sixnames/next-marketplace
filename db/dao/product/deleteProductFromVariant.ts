@@ -1,7 +1,7 @@
 import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'config/common';
 import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
+import { getFullProductSummary, getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import {
@@ -22,6 +22,7 @@ import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface, ProductVariantInterface } from 'db/uiInterfaces';
 
 export interface DeleteProductFromVariantInputInterface {
+  taskId?: string | null;
   productId: string;
   deleteProductId: string;
   variantId: string;
@@ -82,10 +83,9 @@ export async function deleteProductFromVariant({
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductVariants');
       const summaryPayload = await getFullProductSummaryWithDraft({
         locale,
+        taskId: input.taskId,
         productId: input.productId,
         companySlug: DEFAULT_COMPANY_SLUG,
-        taskVariantSlug,
-        userId: user?._id,
         isContentManager: role.isContentManager,
       });
       if (!summaryPayload) {
@@ -100,13 +100,10 @@ export async function deleteProductFromVariant({
       const updatedSummary = { ...summary };
       const diff: SummaryDiffModel = {};
 
-      const deleteSummaryPayload = await getFullProductSummaryWithDraft({
+      const deleteSummaryPayload = await getFullProductSummary({
         locale,
         productId: input.deleteProductId,
         companySlug: DEFAULT_COMPANY_SLUG,
-        taskVariantSlug,
-        userId: user?._id,
-        isContentManager: role.isContentManager,
       });
       if (!deleteSummaryPayload) {
         mutationPayload = {
@@ -189,6 +186,7 @@ export async function deleteProductFromVariant({
           productId: summary._id,
           variantSlug: taskVariantSlug,
           executorId: user._id,
+          taskId: input.taskId,
         });
 
         if (!task) {

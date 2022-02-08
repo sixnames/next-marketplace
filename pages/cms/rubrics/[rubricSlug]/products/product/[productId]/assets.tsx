@@ -1,4 +1,3 @@
-import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ConsoleRubricProductAssets from '../../../../../../../components/console/ConsoleRubricProductAssets';
@@ -74,9 +73,7 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
-    userId: props.layoutProps.sessionUser.me._id,
     isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
-    taskVariantSlug: getTaskVariantSlugByRule('updateProductAssets'),
   });
 
   if (!payload) {

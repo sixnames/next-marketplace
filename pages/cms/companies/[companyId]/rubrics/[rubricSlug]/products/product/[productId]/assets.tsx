@@ -1,5 +1,4 @@
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
-import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -121,9 +120,7 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
-    userId: props.layoutProps.sessionUser.me._id,
     isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
-    taskVariantSlug: getTaskVariantSlugByRule('updateProductAssets'),
   });
 
   if (!payload) {

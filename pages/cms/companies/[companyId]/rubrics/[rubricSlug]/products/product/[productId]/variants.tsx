@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ConsoleRubricProductConnections from '../../../../../../../../../components/console/ConsoleRubricProductConnections';
+import ConsoleRubricProductVariants from 'components/console/ConsoleRubricProductVariants';
 import { COL_COMPANIES } from '../../../../../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../../../../../db/mongodb';
 import {
@@ -72,7 +72,7 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({
       breadcrumbs={breadcrumbs}
       basePath={routeBasePath}
     >
-      <ConsoleRubricProductConnections product={product} />
+      <ConsoleRubricProductVariants product={product} />
     </CmsProductLayout>
   );
 };

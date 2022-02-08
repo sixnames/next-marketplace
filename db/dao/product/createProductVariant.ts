@@ -29,6 +29,7 @@ import { DaoPropsInterface, ProductVariantInterface } from 'db/uiInterfaces';
 export interface CreateProductVariantInputInterface {
   productId: string;
   attributeId: string;
+  taskId?: string | null;
 }
 
 export async function createProductVariant({
@@ -87,9 +88,8 @@ export async function createProductVariant({
         locale,
         productId: input.productId,
         companySlug: DEFAULT_COMPANY_SLUG,
-        taskVariantSlug,
-        userId: user?._id,
         isContentManager: role.isContentManager,
+        taskId: input.taskId,
       });
       if (!summaryPayload) {
         mutationPayload = {
@@ -200,6 +200,7 @@ export async function createProductVariant({
           productId: summary._id,
           variantSlug: taskVariantSlug,
           executorId: user._id,
+          taskId: input.taskId,
         });
 
         if (!task) {

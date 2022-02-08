@@ -1,4 +1,6 @@
 import { Form, Formik } from 'formik';
+import { alwaysString } from 'lib/arrayUtils';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ProductSummaryInterface } from 'db/uiInterfaces';
 import { useUpdateProduct } from 'hooks/mutations/useProductMutations';
@@ -19,6 +21,7 @@ interface ConsoleRubricProductDetailsInterface {
 const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface> = ({
   product,
 }) => {
+  const router = useRouter();
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
   });
@@ -51,6 +54,7 @@ const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface
           showLoading();
           return updateProductMutation({
             ...values,
+            taskId: alwaysString(router.query.taskId),
             productId: `${product._id}`,
             barcode: (values.barcode || []).filter((currentBarcode) => {
               return Boolean(currentBarcode);

@@ -27,6 +27,7 @@ import { DaoPropsInterface } from 'db/uiInterfaces';
 export interface UpdateProductCategoryInputInterface {
   productId: string;
   categoryId: string;
+  taskId?: string | null;
 }
 
 export async function updateProductCategory({
@@ -72,11 +73,10 @@ export async function updateProductCategory({
       // get summary or summary draft
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductCategories');
       const summaryPayload = await getFullProductSummaryWithDraft({
+        taskId: input.taskId,
         locale,
         productId: input.productId,
         companySlug: DEFAULT_COMPANY_SLUG,
-        taskVariantSlug,
-        userId: user?._id,
         isContentManager: role.isContentManager,
       });
       if (!summaryPayload) {
@@ -160,6 +160,7 @@ export async function updateProductCategory({
           productId: summary._id,
           variantSlug: taskVariantSlug,
           executorId: user._id,
+          taskId: input.taskId,
         });
 
         if (!task) {

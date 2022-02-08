@@ -27,6 +27,7 @@ import {
 } from 'db/uiInterfaces';
 
 export interface AddProductToVariantInputInterface {
+  taskId?: string | null;
   productId: string;
   addProductId: string;
   variantId: string;
@@ -89,8 +90,7 @@ export async function addProductToVariant({
         locale,
         productId: input.productId,
         companySlug: DEFAULT_COMPANY_SLUG,
-        taskVariantSlug,
-        userId: user?._id,
+        taskId: input.taskId,
         isContentManager: role.isContentManager,
       });
       if (!summaryPayload) {
@@ -230,6 +230,7 @@ export async function addProductToVariant({
           productId: summary._id,
           variantSlug: taskVariantSlug,
           executorId: user._id,
+          taskId: input.taskId,
         });
 
         if (!task) {

@@ -15,11 +15,11 @@ import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { getFullProductSummary } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-interface ProductAttributesInterface
+interface ProductEditorInterface
   extends ConsoleRubricProductEditorInterface,
     CmsTaskProductLayoutInterface {}
 
-const ProductAttributes: React.FC<ProductAttributesInterface> = ({
+const ProductEditor: React.FC<ProductEditorInterface> = ({
   task,
   product,
   seoContentsList,
@@ -50,14 +50,12 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
   );
 };
 
-interface ProductPageInterface
-  extends GetAppInitialDataPropsInterface,
-    ProductAttributesInterface {}
+interface ProductPageInterface extends GetAppInitialDataPropsInterface, ProductEditorInterface {}
 
 const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <ProductAttributes {...props} />
+      <ProductEditor {...props} />
     </ConsoleLayout>
   );
 };

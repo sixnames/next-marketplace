@@ -17,6 +17,7 @@ import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductBrandInputInterface {
+  taskId?: string | null;
   productId: string;
   brandSlug?: string | null;
 }
@@ -64,16 +65,15 @@ export async function updateProductBrand({
         return;
       }
 
-      const { brandSlug } = input;
+      const { brandSlug, taskId } = input;
 
       // get summary or summary draft
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductBrand');
       const summaryPayload = await getFullProductSummaryWithDraft({
         locale,
+        taskId,
         productId: input.productId,
         companySlug: DEFAULT_COMPANY_SLUG,
-        taskVariantSlug,
-        userId: user?._id,
         isContentManager: role.isContentManager,
       });
       if (!summaryPayload) {
@@ -107,6 +107,7 @@ export async function updateProductBrand({
           productId: summary._id,
           variantSlug: taskVariantSlug,
           executorId: user._id,
+          taskId,
         });
 
         if (!task) {

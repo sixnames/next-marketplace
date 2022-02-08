@@ -18,6 +18,7 @@ import { DaoPropsInterface } from 'db/uiInterfaces';
 export interface UpdateProductManufacturerInputInterface {
   productId: string;
   manufacturerSlug?: string | null;
+  taskId?: string | null;
 }
 
 export async function updateProductManufacturer({
@@ -63,16 +64,15 @@ export async function updateProductManufacturer({
         return;
       }
 
-      const { manufacturerSlug } = input;
+      const { manufacturerSlug, taskId } = input;
 
       // get summary or summary draft
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductBrand');
       const summaryPayload = await getFullProductSummaryWithDraft({
         locale,
+        taskId,
         productId: input.productId,
         companySlug: DEFAULT_COMPANY_SLUG,
-        taskVariantSlug,
-        userId: user?._id,
         isContentManager: role.isContentManager,
       });
       if (!summaryPayload) {
@@ -105,6 +105,7 @@ export async function updateProductManufacturer({
           productId: summary._id,
           variantSlug: taskVariantSlug,
           executorId: user._id,
+          taskId,
         });
 
         if (!task) {

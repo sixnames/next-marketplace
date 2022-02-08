@@ -1,8 +1,5 @@
-import ConsoleRubricProductConnections from 'components/console/ConsoleRubricProductConnections';
-import {
-  getTaskVariantSlugByRule,
-  TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
-} from 'config/constantSelects';
+import ConsoleRubricProductVariants from 'components/console/ConsoleRubricProductVariants';
+import { TASK_VARIANT_SLUG_PRODUCT_VARIANTS } from 'config/constantSelects';
 import { getCompanyTaskSsr } from 'db/dao/ssr/getCompanyTaskSsr';
 import CmsTaskProductLayout, {
   CmsTaskProductLayoutInterface,
@@ -35,7 +32,7 @@ const ProductVariants: React.FC<ProductVariantsPropsInterface> = ({ product, tas
 
   return (
     <CmsTaskProductLayout task={task} product={product} breadcrumbs={breadcrumbs}>
-      <ConsoleRubricProductConnections product={product} />
+      <ConsoleRubricProductVariants product={product} />
     </CmsTaskProductLayout>
   );
 };
@@ -76,12 +73,11 @@ export const getServerSideProps = async (
   }
 
   const payload = await getFullProductSummaryWithDraft({
+    taskId: task._id.toHexString(),
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
-    userId: props.layoutProps.sessionUser.me._id,
     isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
-    taskVariantSlug: getTaskVariantSlugByRule('updateProductVariants'),
   });
 
   if (!payload) {

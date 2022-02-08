@@ -16,6 +16,7 @@ import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductAssetIndexInputInterface {
+  taskId?: string | null;
   productId: string;
   assetUrl: string;
   assetNewIndex: number;
@@ -58,16 +59,15 @@ export async function updateProductAssetIndex({
         await session.abortTransaction();
         return;
       }
-      const { assetNewIndex, assetUrl } = input;
+      const { assetNewIndex, assetUrl, taskId } = input;
 
       // get summary or summary draft
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductAssets');
       const summaryPayload = await getFullProductSummaryWithDraft({
+        taskId,
         locale,
         productId: input.productId,
         companySlug: DEFAULT_COMPANY_SLUG,
-        taskVariantSlug,
-        userId: user?._id,
         isContentManager: role.isContentManager,
       });
       if (!summaryPayload) {
@@ -110,6 +110,7 @@ export async function updateProductAssetIndex({
           productId: summary._id,
           variantSlug: taskVariantSlug,
           executorId: user._id,
+          taskId,
         });
 
         if (!task) {

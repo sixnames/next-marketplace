@@ -1,4 +1,4 @@
-import { findUserTask } from 'db/dao/tasks/taskUtils';
+import { findTask } from 'db/dao/tasks/taskUtils';
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
@@ -127,20 +127,25 @@ export async function getFullProductSummary({
       });
 
       if (variantProductSummary && option) {
-        variantProducts.push({
+        const isCurrent = variantProductSummary._id.equals(initialProduct._id);
+        const castedVariantProducts: ProductVariantItemInterface = {
           ...variantProduct,
+          isCurrent,
           summary: {
             ...variantProductSummary,
             snippetTitle: getFieldStringLocale(variantProductSummary.snippetTitleI18n, locale),
             cardTitle: getFieldStringLocale(variantProductSummary.cardTitleI18n, locale),
           },
-          option: option
-            ? {
-                ...option,
-                name: getFieldStringLocale(option.nameI18n, locale),
-              }
-            : null,
-        });
+          option: {
+            ...option,
+            name: getFieldStringLocale(option.nameI18n, locale),
+          },
+        };
+        if (isCurrent) {
+          variantProducts.unshift(castedVariantProducts);
+        } else {
+          variantProducts.push(castedVariantProducts);
+        }
       }
     }
 
@@ -211,19 +216,20 @@ export async function getFullProductSummary({
 }
 
 interface GetFullProductSummaryWithDraftPayloadInterface extends GetFullProductSummaryInterface {
-  userId?: ObjectIdModel | string;
+  taskId?: string | null;
   isContentManager?: boolean;
-  taskVariantSlug: string;
 }
 
 export async function getFullProductSummaryWithDraft({
   companySlug,
-  userId,
   isContentManager,
   locale,
   productId,
-  taskVariantSlug,
+  taskId,
 }: GetFullProductSummaryWithDraftPayloadInterface): Promise<GetFullProductSummaryPayloadInterface | null> {
+  if (isContentManager && !taskId) {
+    return null;
+  }
   const summaryPayload = await getFullProductSummary({
     locale,
     productId,
@@ -236,11 +242,9 @@ export async function getFullProductSummaryWithDraft({
   const { categoriesList, cardContent } = summaryPayload;
   let summary = summaryPayload.summary;
 
-  if (isContentManager && userId) {
-    const task = await findUserTask({
-      productId,
-      variantSlug: taskVariantSlug,
-      executorId: userId,
+  if (isContentManager) {
+    const task = await findTask({
+      taskId,
     });
     if (task) {
       const lastLog = task.log[task.log.length - 1];

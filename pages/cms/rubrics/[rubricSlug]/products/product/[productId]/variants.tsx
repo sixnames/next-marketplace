@@ -1,7 +1,6 @@
-import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ConsoleRubricProductConnections from '../../../../../../../components/console/ConsoleRubricProductConnections';
+import ConsoleRubricProductVariants from 'components/console/ConsoleRubricProductVariants';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
@@ -43,7 +42,7 @@ const ProductVariants: React.FC<ProductVariantsPropsInterface> = ({ product }) =
 
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <ConsoleRubricProductConnections product={product} />
+      <ConsoleRubricProductVariants product={product} />
     </CmsProductLayout>
   );
 };
@@ -76,9 +75,7 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
-    userId: props.layoutProps.sessionUser.me._id,
     isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
-    taskVariantSlug: getTaskVariantSlugByRule('updateProductVariants'),
   });
 
   if (!payload) {

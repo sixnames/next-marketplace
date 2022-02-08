@@ -29,6 +29,7 @@ export interface UpdateProductNumberAttributeItemInputInterface {
 
 export interface UpdateProductNumberAttributeInputInterface {
   productId: string;
+  taskId?: string | null;
   attributes: UpdateProductNumberAttributeItemInputInterface[];
 }
 
@@ -90,10 +91,9 @@ export async function updateProductNumberAttribute({
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductAttributes');
       const summaryPayload = await getFullProductSummaryWithDraft({
         locale,
+        taskId: input.taskId,
         productId: input.productId,
         companySlug: DEFAULT_COMPANY_SLUG,
-        taskVariantSlug,
-        userId: user?._id,
         isContentManager: role.isContentManager,
       });
       if (!summaryPayload) {
@@ -195,6 +195,7 @@ export async function updateProductNumberAttribute({
           productId: summary._id,
           variantSlug: taskVariantSlug,
           executorId: user._id,
+          taskId: input.taskId,
         });
 
         if (!task) {

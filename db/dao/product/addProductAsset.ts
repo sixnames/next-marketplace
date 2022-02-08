@@ -22,6 +22,7 @@ import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 
 export interface AddProductAssetInterface {
   productId: string;
+  taskId?: string | null;
 }
 
 export async function addProductAsset(context: NextContextInterface): Promise<ProductPayloadModel> {
@@ -63,10 +64,9 @@ export async function addProductAsset(context: NextContextInterface): Promise<Pr
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductAssets');
       const summaryPayload = await getFullProductSummaryWithDraft({
         locale,
+        taskId: formData.fields.taskId,
         productId: formData.fields.productId,
         companySlug: DEFAULT_COMPANY_SLUG,
-        taskVariantSlug,
-        userId: user?._id,
         isContentManager: role.isContentManager,
       });
       if (!summaryPayload) {
@@ -111,6 +111,7 @@ export async function addProductAsset(context: NextContextInterface): Promise<Pr
           productId: summary._id,
           variantSlug: taskVariantSlug,
           executorId: user._id,
+          taskId: formData.fields.taskId,
         });
 
         if (!task) {

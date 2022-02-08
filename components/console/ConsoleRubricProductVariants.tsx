@@ -1,23 +1,21 @@
+import { alwaysString } from 'lib/arrayUtils';
+import { useRouter } from 'next/router';
 import * as React from 'react';
-import { FILTER_SEPARATOR } from '../../config/common';
-import {
-  CONFIRM_MODAL,
-  CREATE_CONNECTION_MODAL,
-  PRODUCT_SEARCH_MODAL,
-} from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
-import { useNotificationsContext } from '../../context/notificationsContext';
+import { FILTER_SEPARATOR } from 'config/common';
+import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
+import { useNotificationsContext } from 'context/notificationsContext';
 import {
   ProductVariantInterface,
   ProductVariantItemInterface,
   ProductSummaryInterface,
-} from '../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import {
   useAddProductToVariant,
   useCreateProductVariant,
   useDeleteProductFromVariant,
-} from '../../hooks/mutations/useProductMutations';
-import { getCmsLinks } from '../../lib/linkUtils';
+} from 'hooks/mutations/useProductMutations';
+import { getCmsLinks } from 'lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -30,15 +28,16 @@ import TableRowImage from '../TableRowImage';
 import WpAccordion from '../WpAccordion';
 import WpTable, { WpTableColumn } from '../WpTable';
 
-interface ProductConnectionControlsInterface {
+interface ProductVariantControlsInterface {
   variant: ProductVariantInterface;
   product: ProductSummaryInterface;
 }
 
-const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = ({
+const ProductVariantControls: React.FC<ProductVariantControlsInterface> = ({
   variant,
   product,
 }) => {
+  const router = useRouter();
   const { showModal } = useAppContext();
   const [addProductToConnectionMutation] = useAddProductToVariant();
 
@@ -64,6 +63,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
             attributesIds: [`${variant.attributeId}`],
             createHandler: (addProduct) => {
               addProductToConnectionMutation({
+                taskId: alwaysString(router.query.taskId),
                 addProductId: `${addProduct._id}`,
                 variantId: `${variant._id}`,
                 productId: `${product._id}`,
@@ -76,17 +76,18 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
   );
 };
 
-export interface ProductConnectionsItemInterface {
+export interface ProductVariantsItemInterface {
   product: ProductSummaryInterface;
   variant: ProductVariantInterface;
   variantIndex: number;
 }
 
-const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
+const ProductVariantsItem: React.FC<ProductVariantsItemInterface> = ({
   variant,
   product,
   variantIndex,
 }) => {
+  const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
   const { showModal } = useAppContext();
   const [deleteProductFromConnectionMutation] = useDeleteProductFromVariant();
@@ -171,6 +172,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
                       return;
                     }
                     deleteProductFromConnectionMutation({
+                      taskId: alwaysString(router.query.taskId),
                       deleteProductId: `${dataItem.summary._id}`,
                       variantId: `${variant._id}`,
                       productId: `${product._id}`,
@@ -195,7 +197,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       title={`${variant.attribute.name}`}
       isOpen
       className='mb-8'
-      titleRight={<ProductConnectionControls variant={variant} product={product} />}
+      titleRight={<ProductVariantControls variant={variant} product={product} />}
     >
       <div className='mt-4'>
         <WpTable<ProductVariantItemInterface>
@@ -216,13 +218,14 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
   );
 };
 
-interface ConsoleRubricProductConnectionsInterface {
+interface ConsoleRubricProductVariantsInterface {
   product: ProductSummaryInterface;
 }
 
-const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsInterface> = ({
+const ConsoleRubricProductVariants: React.FC<ConsoleRubricProductVariantsInterface> = ({
   product,
 }) => {
+  const router = useRouter();
   const { showModal } = useAppContext();
   const [createProductConnectionMutation] = useCreateProductVariant();
 
@@ -231,7 +234,7 @@ const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsI
       <div className='mb-8'>
         {product.variants.map((variant, variantIndex) => {
           return (
-            <ProductConnectionsItem
+            <ProductVariantsItem
               key={`${variant._id}`}
               product={product}
               variant={variant}
@@ -251,7 +254,10 @@ const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsI
               props: {
                 product,
                 confirm: (input) => {
-                  createProductConnectionMutation(input).catch(console.log);
+                  createProductConnectionMutation({
+                    taskId: alwaysString(router.query.taskId),
+                    ...input,
+                  }).catch(console.log);
                 },
               },
             })
@@ -264,4 +270,4 @@ const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsI
   );
 };
 
-export default ConsoleRubricProductConnections;
+export default ConsoleRubricProductVariants;

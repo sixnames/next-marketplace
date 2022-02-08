@@ -36,6 +36,7 @@ export interface UpdateProductTextAttributeItemInputInterface {
 export interface UpdateProductTextAttributeInputInterface {
   productId: string;
   attributes: UpdateProductTextAttributeItemInputInterface[];
+  taskId?: string | null;
 }
 
 export async function updateProductTextAttribute({
@@ -97,9 +98,8 @@ export async function updateProductTextAttribute({
       const summaryPayload = await getFullProductSummaryWithDraft({
         locale,
         productId: input.productId,
+        taskId: input.taskId,
         companySlug: DEFAULT_COMPANY_SLUG,
-        taskVariantSlug,
-        userId: user?._id,
         isContentManager: role.isContentManager,
       });
       if (!summaryPayload) {
@@ -203,6 +203,7 @@ export async function updateProductTextAttribute({
           productId: summary._id,
           variantSlug: taskVariantSlug,
           executorId: user._id,
+          taskId: input.taskId,
         });
 
         if (!task) {

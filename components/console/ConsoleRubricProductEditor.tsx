@@ -1,4 +1,6 @@
 import { Form, Formik } from 'formik';
+import { alwaysString } from 'lib/arrayUtils';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { UpdateProductCardContentInputInterface } from 'db/dao/product/updateProductCardContent';
 import { ProductSummaryInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
@@ -17,6 +19,7 @@ const ConsoleRubricProductEditor: React.FC<ConsoleRubricProductEditorInterface> 
   seoContentsList,
   companySlug,
 }) => {
+  const router = useRouter();
   const [updateProductCardContentMutation] = useUpdateProductCardContent();
 
   return (
@@ -27,7 +30,10 @@ const ConsoleRubricProductEditor: React.FC<ConsoleRubricProductEditorInterface> 
           companySlug,
         }}
         onSubmit={(values) => {
-          updateProductCardContentMutation(values).catch(console.log);
+          updateProductCardContentMutation({
+            taskId: alwaysString(router.query.taskId),
+            ...values,
+          }).catch(console.log);
         }}
       >
         {() => {

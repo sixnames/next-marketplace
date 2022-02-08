@@ -8,7 +8,7 @@ import {
   useUpdateProductAssetIndex,
 } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { alwaysArray } from 'lib/arrayUtils';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import AssetsManager from '../AssetsManager';
 import WpDropZone from '../FormElements/Upload/WpDropZone';
 import Inner from '../Inner';
@@ -25,7 +25,6 @@ const ConsoleRubricProductAssets: React.FC<ConsoleRubricProductAssetsInterface> 
 
   const [deleteProductAssetMutation] = useDeleteProductAsset();
   const [updateProductAssetIndexMutation] = useUpdateProductAssetIndex();
-
   return (
     <Inner testId={'product-assets-list'}>
       <AssetsManager
@@ -33,16 +32,18 @@ const ConsoleRubricProductAssets: React.FC<ConsoleRubricProductAssetsInterface> 
         assetsTitle={summary.originalName}
         onRemoveHandler={(assetIndex) => {
           deleteProductAssetMutation({
+            taskId: alwaysString(router.query.taskId),
             productId: `${summary._id}`,
             assetIndex,
-          }).catch((e) => console.log(e));
+          }).catch(console.log);
         }}
         onReorderHandler={({ assetNewIndex, assetUrl }) => {
           updateProductAssetIndexMutation({
+            taskId: alwaysString(router.query.taskId),
             productId: `${summary._id}`,
             assetNewIndex,
             assetUrl,
-          }).catch((e) => console.log(e));
+          }).catch(console.log);
         }}
       />
 
@@ -57,6 +58,9 @@ const ConsoleRubricProductAssets: React.FC<ConsoleRubricProductAssetsInterface> 
               formData.append(`assets[${index}]`, file);
             });
             formData.append('productId', `${summary._id}`);
+            if (router.query.taskId) {
+              formData.append('taskId', `${router.query.taskId}`);
+            }
 
             const links = getProjectLinks();
             fetch(links.api.product.assets.add.url, {

@@ -5,6 +5,7 @@ import { ProductPayloadModel } from 'db/dbModels';
 import { DaoPropsInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductCardContentInputInterface {
+  taskId?: string | null;
   seoContentsList: SeoContentCitiesInterface;
   companySlug: string;
 }

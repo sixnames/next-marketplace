@@ -103,6 +103,8 @@ export async function updateProductSelectAttribute({
         return;
       }
       const { summary } = summaryPayload;
+      const updatedSummary = { ...summary };
+      const diff: SummaryDiffModel = {};
 
       // get product attribute
       let productAttribute = summary.attributes.find((productAttribute) => {
@@ -171,9 +173,6 @@ export async function updateProductSelectAttribute({
       productAttribute.readableValueI18n = readableValueI18n;
       productAttribute.optionIds = finalOptionIds;
       productAttribute.filterSlugs = finalFilterSlugs;
-
-      const updatedSummary = { ...summary };
-      const diff: SummaryDiffModel = {};
 
       // remove attribute if value is empty
       if (finalOptionIds.length < 1) {

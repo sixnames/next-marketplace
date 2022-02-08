@@ -504,14 +504,17 @@ export interface SummaryDiffVariantModel {
 }
 
 export interface SummaryDiffActionFieldsModel {
-  selectAttributes?: ObjectIdModel[];
-  numberAttributes?: ObjectIdModel[];
-  textAttributes?: ObjectIdModel[];
-  assets?: string[];
-  categories?: string[];
-  titleCategorySlugs?: string;
-  variants?: ObjectIdModel;
-  variantProducts?: SummaryDiffVariantModel;
+  selectAttributes?: ObjectIdModel[] | null;
+  numberAttributes?: ObjectIdModel[] | null;
+  textAttributes?: ObjectIdModel[] | null;
+  assets?: string[] | null;
+  categories?: string[] | null;
+  titleCategorySlugs?: string | null;
+  variants?: ObjectIdModel | null;
+  variantProducts?: SummaryDiffVariantModel | null;
+  brand?: string | null;
+  brandCollection?: string | null;
+  manufacturer?: string | null;
 }
 
 export interface SummaryDiffModel {

@@ -176,4 +176,44 @@ describe('Tasks', () => {
     cy.getByCy('confirm').click();
     cy.countTaskLogs(taskItemId, 4);
   });
+
+  it('Should display user tasks and update product brand / collection / manufacturer', () => {
+    const taskItemId = '000006';
+    cy.getByCy('tasks-list').should('exist');
+
+    // visit task product
+    cy.visitLinkHref(`${taskItemId}-product-link`);
+    cy.wait(1500);
+    cy.getByCy('brands').click();
+    cy.wait(1500);
+    cy.getByCy('product-brands-list').should('exist');
+
+    // update brand / collection / manufacturer
+    // task log 1
+    cy.getByCy('brand-input-clear').click();
+    cy.wait(1500);
+    // task log 2
+    cy.getByCy('brand-input').click();
+    cy.getByCy('brand-options-modal').should('exist');
+    cy.getByCy('option-Brand B').click();
+    cy.countTaskLogs(taskItemId, 2);
+
+    // task log 3
+    cy.getByCy('brand-collection-input').click();
+    cy.getByCy('brand-collection-options-modal').should('exist');
+    cy.getByCy('option-Brand collection B').click();
+    cy.wait(1500);
+    cy.countTaskLogs(taskItemId, 3);
+
+    // task log 4
+    cy.getByCy('manufacturer-input-clear').click();
+    cy.wait(1500);
+
+    // task log 5
+    cy.getByCy('manufacturer-input').click();
+    cy.getByCy('manufacturer-options-modal').should('exist');
+    cy.getByCy('option-Manufacturer B').click();
+    cy.wait(1500);
+    cy.countTaskLogs(taskItemId, 5);
+  });
 });

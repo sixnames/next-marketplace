@@ -2,6 +2,7 @@ import { DEFAULT_COMPANY_SLUG, TASK_STATE_PENDING } from 'config/common';
 import {
   TASK_VARIANT_SLUG_PRODUCT_ASSETS,
   TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
+  TASK_VARIANT_SLUG_PRODUCT_BRANDS,
   TASK_VARIANT_SLUG_PRODUCT_CATEGORIES,
   TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
   TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
@@ -69,6 +70,12 @@ const taskBases: TaskBaseModel[] = [
     executorId: getObjectId('content manager'),
     variantId: getObjectId('task variant product variants'),
     variantSlug: TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
+  },
+  {
+    productId: getObjectId('000010'),
+    executorId: getObjectId('content manager'),
+    variantId: getObjectId('task variant product brand'),
+    variantSlug: TASK_VARIANT_SLUG_PRODUCT_BRANDS,
   },
 ];
 

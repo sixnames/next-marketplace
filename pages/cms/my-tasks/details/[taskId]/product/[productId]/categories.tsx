@@ -1,5 +1,8 @@
 import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProductCategories';
-import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import {
+  getTaskVariantSlugByRule,
+  TASK_VARIANT_SLUG_PRODUCT_CATEGORIES,
+} from 'config/constantSelects';
 import { getCompanyTaskSsr } from 'db/dao/ssr/getCompanyTaskSsr';
 import CmsTaskProductLayout, {
   CmsTaskProductLayoutInterface,
@@ -81,7 +84,7 @@ export const getServerSideProps = async (
     taskId: `${query.taskId}`,
     noProduct: true,
   });
-  if (!task) {
+  if (!task || task.variantSlug !== TASK_VARIANT_SLUG_PRODUCT_CATEGORIES) {
     return {
       notFound: true,
     };

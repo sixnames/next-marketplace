@@ -1,6 +1,7 @@
 import ConsoleRubricProductEditor, {
   ConsoleRubricProductEditorInterface,
 } from 'components/console/ConsoleRubricProductEditor';
+import { TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT } from 'config/constantSelects';
 import { getCompanyTaskSsr } from 'db/dao/ssr/getCompanyTaskSsr';
 import CmsTaskProductLayout, {
   CmsTaskProductLayoutInterface,
@@ -78,7 +79,7 @@ export const getServerSideProps = async (
     taskId: `${query.taskId}`,
     noProduct: true,
   });
-  if (!task) {
+  if (!task || task.variantSlug !== TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT) {
     return {
       notFound: true,
     };

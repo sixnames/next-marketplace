@@ -1,4 +1,4 @@
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'config/common';
 import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -245,7 +245,7 @@ export async function addProductToVariant({
           taskId: task._id,
           diff,
           prevStateEnum: task.stateEnum,
-          nextStateEnum: task.stateEnum,
+          nextStateEnum: TASK_STATE_IN_PROGRESS,
           draft: updatedSummary,
           createdById: user._id,
         });

@@ -3,7 +3,11 @@ import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
-import { ATTRIBUTE_VARIANT_SELECT, DEFAULT_COMPANY_SLUG } from 'config/common';
+import {
+  ATTRIBUTE_VARIANT_SELECT,
+  DEFAULT_COMPANY_SLUG,
+  TASK_STATE_IN_PROGRESS,
+} from 'config/common';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
@@ -211,7 +215,7 @@ export async function createProductVariant({
           taskId: task._id,
           diff,
           prevStateEnum: task.stateEnum,
-          nextStateEnum: task.stateEnum,
+          nextStateEnum: TASK_STATE_IN_PROGRESS,
           draft: updatedSummary,
           createdById: user._id,
         });

@@ -2,7 +2,7 @@ import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { ObjectId } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, TASK_STATE_IN_PROGRESS } from 'config/common';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -244,7 +244,7 @@ export async function updateProductSelectAttribute({
           taskId: task._id,
           diff,
           prevStateEnum: task.stateEnum,
-          nextStateEnum: task.stateEnum,
+          nextStateEnum: TASK_STATE_IN_PROGRESS,
           draft: updatedSummary,
           createdById: user._id,
         });

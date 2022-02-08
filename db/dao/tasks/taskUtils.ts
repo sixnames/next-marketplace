@@ -101,7 +101,7 @@ export async function findOrCreateUserTask({
         variantSlug,
         executorId: new ObjectId(executorId),
         createdById: new ObjectId(executorId),
-        stateEnum: TASK_STATE_IN_PROGRESS,
+        stateEnum: TASK_STATE_PENDING,
         log: [],
         companySlug: DEFAULT_COMPANY_SLUG,
         createdAt: new Date(),
@@ -167,6 +167,9 @@ export async function addTaskLogItem({
       _id: task._id,
     },
     {
+      $set: {
+        stateEnum: nextStateEnum,
+      },
       $push: {
         log: taskLogItem,
       },

@@ -2,6 +2,7 @@ import {
   ASSETS_DIST_PRODUCTS,
   ASSETS_PRODUCT_IMAGE_WIDTH,
   DEFAULT_COMPANY_SLUG,
+  TASK_STATE_IN_PROGRESS,
 } from 'config/common';
 import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
@@ -125,7 +126,7 @@ export async function addProductAsset(context: NextContextInterface): Promise<Pr
           taskId: task._id,
           diff,
           prevStateEnum: task.stateEnum,
-          nextStateEnum: task.stateEnum,
+          nextStateEnum: TASK_STATE_IN_PROGRESS,
           draft: updatedSummary,
           createdById: user._id,
         });

@@ -22,12 +22,9 @@ describe('Tasks', () => {
     // navigate to the task product
     cy.wait(1500);
     cy.getByCy(`draft-warning`).should('exist');
-
-    // update task product attributes
-    cy.getByCy('attributes').click();
-    cy.wait(1500);
     cy.getByCy('product-attributes-list').should('exist');
 
+    // update task product attributes
     // clear select attribute
     // task log 1
     cy.getByCy('Объем-attribute-clear').click();
@@ -79,8 +76,6 @@ describe('Tasks', () => {
     // visit task product
     cy.visitLinkHref(`${taskItemId}-product-link`);
     cy.wait(1500);
-    cy.getByCy('assets').click();
-    cy.wait(1500);
     cy.getByCy('product-assets-list').should('exist');
 
     // upload asset
@@ -117,8 +112,6 @@ describe('Tasks', () => {
     // visit task product
     cy.visitLinkHref(`${taskItemId}-product-link`);
     cy.wait(1500);
-    cy.getByCy('categories').click();
-    cy.wait(1500);
     cy.getByCy('product-categories-list').should('exist');
 
     // update categories
@@ -141,8 +134,6 @@ describe('Tasks', () => {
 
     // visit task product
     cy.visitLinkHref(`${taskItemId}-product-link`);
-    cy.wait(1500);
-    cy.getByCy('variants').click();
     cy.wait(1500);
     cy.getByCy('product-variants-list').should('exist');
 
@@ -183,8 +174,6 @@ describe('Tasks', () => {
 
     // visit task product
     cy.visitLinkHref(`${taskItemId}-product-link`);
-    cy.wait(1500);
-    cy.getByCy('brands').click();
     cy.wait(1500);
     cy.getByCy('product-brands-list').should('exist');
 

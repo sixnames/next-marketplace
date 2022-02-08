@@ -22,9 +22,9 @@ import {
   TASK_STATE_MODERATION,
   TASK_STATE_PENDING,
 } from './common';
-import { TranslationModel } from '../db/dbModels';
-import { getFieldStringLocale } from '../lib/i18n';
-import { iconTypesList } from '../types/iconTypes';
+import { TranslationModel } from 'db/dbModels';
+import { getFieldStringLocale } from 'lib/i18n';
+import { iconTypesList } from 'types/iconTypes';
 import { getConstantTranslation } from './constantTranslations';
 
 export const DEFAULT_LAYOUT = 'default';

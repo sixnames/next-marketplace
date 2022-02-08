@@ -1,4 +1,4 @@
-import { getProjectLinks } from '../../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/getProjectLinks';
 
 describe('Rubric products', () => {
   const links = getProjectLinks();
@@ -32,10 +32,6 @@ describe('Rubric products', () => {
     cy.getByCy(`submit-product`).click();
     cy.wait(1500);
     cy.getByCy(`${updatedProductName}-product-title`).should('exist');
-
-    // Should display product assets page
-    cy.getByCy('assets').click();
-    cy.getByCy('product-assets-list').should('exist');
 
     // Should delete product from rubric
     cy.visit(links.cms.rubrics.url);

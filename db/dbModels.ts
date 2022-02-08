@@ -1,3 +1,4 @@
+import { CreateProductInputInterface } from 'db/dao/product/createProduct';
 import { ObjectId } from 'mongodb';
 import { GEO_POINT_TYPE } from 'config/common';
 import { IpInfoInterface } from 'types/clientTypes';
@@ -515,6 +516,7 @@ export interface SummaryDiffActionFieldsModel {
   brand?: string | null;
   brandCollection?: string | null;
   manufacturer?: string | null;
+  details?: Partial<CreateProductInputInterface> | null;
 }
 
 export interface SummaryDiffModel {

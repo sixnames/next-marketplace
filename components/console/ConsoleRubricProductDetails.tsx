@@ -1,10 +1,10 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { ProductSummaryInterface } from '../../db/uiInterfaces';
-import { useUpdateProduct } from '../../hooks/mutations/useProductMutations';
+import { ProductSummaryInterface } from 'db/uiInterfaces';
+import { useUpdateProduct } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { updateProductSchema } from '../../validation/productSchema';
+import { updateProductSchema } from 'validation/productSchema';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import FormikMultiLineInput from '../FormElements/Input/FormikMultiLineInput';
@@ -53,7 +53,6 @@ const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface
           return updateProductMutation({
             ...values,
             productId: `${product._id}`,
-            rubricId: `${product.rubricId}`,
             barcode: (values.barcode || []).filter((currentBarcode) => {
               return Boolean(currentBarcode);
             }),

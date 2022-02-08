@@ -216,4 +216,26 @@ describe('Tasks', () => {
     cy.wait(1500);
     cy.countTaskLogs(taskItemId, 5);
   });
+
+  it('Should display user tasks and update product details', () => {
+    const updatedProductName = 'updatedProductName';
+    const updatedProductDescription = 'updatedProductDescription';
+    const taskItemId = '000007';
+    cy.getByCy('tasks-list').should('exist');
+
+    // visit task product
+    cy.visitLinkHref(`${taskItemId}-product-link`);
+    cy.wait(1500);
+    cy.getByCy('product-details').should('exist');
+
+    // update brand / collection / manufacturer
+    // task log 1
+    cy.getByCy('nameI18n-ru').clear().type(updatedProductName);
+    cy.getByCy('originalName').clear().type(updatedProductName);
+    cy.getByCy('descriptionI18n-ru').clear().type(updatedProductDescription);
+    cy.getByCy(`submit-product`).click();
+    cy.wait(1500);
+    cy.getByCy(`${updatedProductName}-product-title`).should('exist');
+    cy.countTaskLogs(taskItemId, 1);
+  });
 });

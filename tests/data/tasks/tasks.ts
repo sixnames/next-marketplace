@@ -4,6 +4,7 @@ import {
   TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
   TASK_VARIANT_SLUG_PRODUCT_BRANDS,
   TASK_VARIANT_SLUG_PRODUCT_CATEGORIES,
+  TASK_VARIANT_SLUG_PRODUCT_DETAILS,
   TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
   TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
 } from 'config/constantSelects';
@@ -76,6 +77,12 @@ const taskBases: TaskBaseModel[] = [
     executorId: getObjectId('content manager'),
     variantId: getObjectId('task variant product brand'),
     variantSlug: TASK_VARIANT_SLUG_PRODUCT_BRANDS,
+  },
+  {
+    productId: getObjectId('000010'),
+    executorId: getObjectId('content manager'),
+    variantId: getObjectId('task variant product details'),
+    variantSlug: TASK_VARIANT_SLUG_PRODUCT_DETAILS,
   },
 ];
 

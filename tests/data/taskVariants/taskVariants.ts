@@ -10,6 +10,7 @@ import {
   TASK_PRICE_SLUG_PRODUCT_ATTRIBUTE_SELECT,
   TASK_PRICE_SLUG_PRODUCT_BRANDS,
   TASK_PRICE_SLUG_PRODUCT_CATEGORIES,
+  TASK_PRICE_SLUG_PRODUCT_DETAILS,
   TASK_PRICE_SLUG_PRODUCT_SEO_CONTENT,
   TASK_PRICE_SLUG_PRODUCT_VARIANTS,
   TASK_PRICE_TARGET_FIELD,
@@ -18,6 +19,7 @@ import {
   TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
   TASK_VARIANT_SLUG_PRODUCT_BRANDS,
   TASK_VARIANT_SLUG_PRODUCT_CATEGORIES,
+  TASK_VARIANT_SLUG_PRODUCT_DETAILS,
   TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
   TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
 } from 'config/constantSelects';
@@ -248,6 +250,34 @@ const taskVariants: TaskVariantModel[] = [
         action: TASK_PRICE_ACTION_UPDATED,
         price: 10,
         slug: TASK_PRICE_SLUG_PRODUCT_BRANDS,
+        target: TASK_PRICE_TARGET_FIELD,
+      },
+    ],
+  },
+  {
+    _id: getObjectId('task variant product details'),
+    slug: TASK_VARIANT_SLUG_PRODUCT_DETAILS,
+    companySlug: DEFAULT_COMPANY_SLUG,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Заполнить детали товара',
+    },
+    prices: [
+      {
+        action: TASK_PRICE_ACTION_ADDED,
+        price: 50,
+        slug: TASK_PRICE_SLUG_PRODUCT_DETAILS,
+        target: TASK_PRICE_TARGET_FIELD,
+      },
+      {
+        action: TASK_PRICE_ACTION_DELETED,
+        price: 0,
+        slug: TASK_PRICE_SLUG_PRODUCT_DETAILS,
+        target: TASK_PRICE_TARGET_FIELD,
+      },
+      {
+        action: TASK_PRICE_ACTION_UPDATED,
+        price: 10,
+        slug: TASK_PRICE_SLUG_PRODUCT_DETAILS,
         target: TASK_PRICE_TARGET_FIELD,
       },
     ],

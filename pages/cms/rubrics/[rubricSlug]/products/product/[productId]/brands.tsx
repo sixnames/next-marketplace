@@ -1,35 +1,24 @@
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ConsoleRubricProductBrands from '../../../../../../../components/console/ConsoleRubricProductBrands';
-import { DEFAULT_COMPANY_SLUG } from '../../../../../../../config/common';
-import {
-  COL_BRAND_COLLECTIONS,
-  COL_BRANDS,
-  COL_MANUFACTURERS,
-} from '../../../../../../../db/collectionNames';
-import {
-  BrandCollectionModel,
-  BrandModel,
-  ManufacturerModel,
-} from '../../../../../../../db/dbModels';
-import { getDatabase } from '../../../../../../../db/mongodb';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_MANUFACTURERS } from 'db/collectionNames';
+import { BrandCollectionModel, BrandModel, ManufacturerModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   BrandCollectionInterface,
   BrandInterface,
   ManufacturerInterface,
   ProductSummaryInterface,
-} from '../../../../../../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from '../../../../../../../lib/i18n';
-import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
-import { getFullProductSummary } from '../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../lib/ssrUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ProductBrandsInterface {
   product: ProductSummaryInterface;
@@ -108,10 +97,13 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getFullProductSummary({
+  const payload = await getFullProductSummaryWithDraft({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
+    userId: props.layoutProps.sessionUser.me._id,
+    isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
+    taskVariantSlug: getTaskVariantSlugByRule('updateProductBrand'),
   });
 
   if (!payload) {

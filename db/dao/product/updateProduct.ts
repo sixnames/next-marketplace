@@ -1,6 +1,12 @@
-import { ObjectId } from 'mongodb';
+import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'config/common';
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
+import {
+  checkBarcodeIntersects,
+  getFullProductSummaryWithDraft,
+  trimProductName,
+} from 'lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
@@ -9,12 +15,12 @@ import {
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import { updateProductSchema } from 'validation/productSchema';
 import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
-import { ProductPayloadModel, ProductSummaryModel } from 'db/dbModels';
+import { ProductPayloadModel, ProductSummaryModel, SummaryDiffModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import { CreateProductInputInterface } from './createProduct';
 
-export interface UpdateProductInputInterface extends CreateProductInputInterface {
+export interface UpdateProductInputInterface extends Omit<CreateProductInputInterface, 'rubricId'> {
   productId: string;
 }
 
@@ -42,7 +48,7 @@ export async function updateProduct({
       }
 
       // permission
-      const { allow, message } = await getOperationPermission({
+      const { allow, message, user, role } = await getOperationPermission({
         context,
         slug: 'updateProduct',
       });
@@ -62,19 +68,43 @@ export async function updateProduct({
       });
       await validationSchema.validate(input);
 
-      const { productId, rubricId, ...values } = input;
+      const { productId, ...values } = input;
 
-      // check product availability
-      const productObjectId = new ObjectId(productId);
-      const summary = await productSummariesCollection.findOne({ _id: productObjectId });
-      if (!summary) {
+      // get summary or summary draft
+      const taskVariantSlug = getTaskVariantSlugByRule('updateProduct');
+      const summaryPayload = await getFullProductSummaryWithDraft({
+        locale,
+        productId,
+        companySlug: DEFAULT_COMPANY_SLUG,
+        taskVariantSlug,
+        userId: user?._id,
+        isContentManager: role.isContentManager,
+      });
+      if (!summaryPayload) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.notFound`),
+          message: await getApiMessage('products.update.notFound'),
         };
         await session.abortTransaction();
         return;
       }
+      const { summary } = summaryPayload;
+      const { originalName, nameI18n } = trimProductName({
+        nameI18n: values.nameI18n,
+        originalName: values.originalName,
+      });
+      const updatedSummary = {
+        ...summary,
+        ...values,
+        videos: (values.videos || []).filter((url) => url),
+        nameI18n,
+        originalName,
+      };
+      const diff: SummaryDiffModel = {
+        updated: {
+          details: values,
+        },
+      };
 
       // check barcode intersects
       const barcodeDoubles = await checkBarcodeIntersects({
@@ -92,11 +122,49 @@ export async function updateProduct({
         return;
       }
 
-      // update product
-      const { originalName, nameI18n } = trimProductName({
-        nameI18n: values.nameI18n,
-        originalName: values.originalName,
-      });
+      // create task log for content manager
+      if (role.isContentManager && user) {
+        const task = await findOrCreateUserTask({
+          productId: summary._id,
+          variantSlug: taskVariantSlug,
+          executorId: user._id,
+        });
+
+        if (!task) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('tasks.create.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        const newTaskLogResult = await addTaskLogItem({
+          taskId: task._id,
+          diff,
+          prevStateEnum: task.stateEnum,
+          nextStateEnum: TASK_STATE_IN_PROGRESS,
+          draft: updatedSummary,
+          createdById: user._id,
+        });
+        if (!newTaskLogResult) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('products.update.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        mutationPayload = {
+          success: true,
+          message: await getApiMessage('products.update.success'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // update documents
       const updatedProductResult = await productSummariesCollection.findOneAndUpdate(
         {
           _id: summary._id,
@@ -105,7 +173,6 @@ export async function updateProduct({
           $set: {
             ...values,
             videos: (values.videos || []).filter((url) => url),
-            rubricId: new ObjectId(rubricId),
             nameI18n,
             originalName,
             updatedAt: new Date(),
@@ -138,7 +205,7 @@ export async function updateProduct({
 
     return mutationPayload;
   } catch (e) {
-    console.log(e);
+    console.log('updateProduct error', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

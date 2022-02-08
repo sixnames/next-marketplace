@@ -761,6 +761,9 @@ export function getProjectLinks(props?: LinkPropsInterface) {
                     categories: {
                       url: `/cms/companies/${companyId}/rubrics/${rubricSlug}/products/product/${productId}/categories`,
                     },
+                    editor: {
+                      url: `/cms/companies/${companyId}/rubrics/${rubricSlug}/products/product/${productId}/editor`,
+                    },
                     variants: {
                       url: `/cms/companies/${companyId}/rubrics/${rubricSlug}/products/product/${productId}/variants`,
                     },
@@ -860,6 +863,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
                 categories: {
                   url: `/cms/my-tasks/details/${taskId}/product/${productId}/categories`,
                 },
+                editor: { url: `/cms/my-tasks/details/${taskId}/product/${productId}/editor` },
                 variants: { url: `/cms/my-tasks/details/${taskId}/product/${productId}/variants` },
               },
             },
@@ -931,6 +935,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
                 categories: {
                   url: `/cms/rubrics/${rubricSlug}/products/product/${productId}/categories`,
                 },
+                editor: { url: `/cms/rubrics/${rubricSlug}/products/product/${productId}/editor` },
                 variants: {
                   url: `/cms/rubrics/${rubricSlug}/products/product/${productId}/variants`,
                 },

@@ -1,23 +1,19 @@
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ConsoleRubricProductConstructor from '../../../../../../../../../components/console/ConsoleRubricProductConstructor';
-import { COL_COMPANIES } from '../../../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../../../db/mongodb';
+import ConsoleRubricProductEditor from 'components/console/ConsoleRubricProductEditor';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   ProductSummaryInterface,
   SeoContentCitiesInterface,
-} from '../../../../../../../../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
-import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
-import { getFullProductSummary } from '../../../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../../../lib/ssrUtils';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getFullProductSummary } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
 
 interface ProductAttributesInterface {
@@ -75,7 +71,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
       breadcrumbs={breadcrumbs}
       basePath={routeBasePath}
     >
-      <ConsoleRubricProductConstructor
+      <ConsoleRubricProductEditor
         product={product}
         companySlug={pageCompany.slug}
         cardContent={cardContent}

@@ -1,11 +1,11 @@
 import * as React from 'react';
-import ConsoleRubricProductConstructor, {
-  ConsoleRubricProductConstructorInterface,
-} from '../console/ConsoleRubricProductConstructor';
+import ConsoleRubricProductEditor, {
+  ConsoleRubricProductEditorInterface,
+} from 'components/console/ConsoleRubricProductEditor';
 import Inner from '../Inner';
 import WpImage from '../WpImage';
 
-export interface CompanyProductDetailsInterface extends ConsoleRubricProductConstructorInterface {
+export interface CompanyProductDetailsInterface extends ConsoleRubricProductEditorInterface {
   routeBasePath: string;
 }
 
@@ -31,7 +31,7 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
 
       {children}
 
-      <ConsoleRubricProductConstructor
+      <ConsoleRubricProductEditor
         product={product}
         cardContent={cardContent}
         companySlug={companySlug}

@@ -7,20 +7,20 @@ import WpButton from '../button/WpButton';
 import Inner from '../Inner';
 import SeoContentEditor from '../SeoContentEditor';
 
-export interface ConsoleRubricProductConstructorInterface {
+export interface ConsoleRubricProductEditorInterface {
   product: ProductSummaryInterface;
   cardContent: SeoContentCitiesInterface;
   companySlug: string;
 }
 
-const ConsoleRubricProductConstructor: React.FC<ConsoleRubricProductConstructorInterface> = ({
+const ConsoleRubricProductEditor: React.FC<ConsoleRubricProductEditorInterface> = ({
   cardContent,
   companySlug,
 }) => {
   const [updateProductCardContentMutation] = useUpdateProductCardContent();
 
   return (
-    <Inner testId={'product-card-constructor'}>
+    <Inner testId={'product-card-editor'}>
       <Formik<UpdateProductCardContentInputInterface>
         initialValues={{
           seoContentsList: cardContent,
@@ -53,4 +53,4 @@ const ConsoleRubricProductConstructor: React.FC<ConsoleRubricProductConstructorI
   );
 };
 
-export default ConsoleRubricProductConstructor;
+export default ConsoleRubricProductEditor;

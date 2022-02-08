@@ -1,26 +1,26 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { DEFAULT_CITY } from '../../config/common';
-import { useConfigContext } from '../../context/configContext';
-import { CompanyInterface, ProductFacetInterface, RubricInterface } from '../../db/uiInterfaces';
+import { DEFAULT_CITY } from 'config/common';
+import { useConfigContext } from 'context/configContext';
+import { CompanyInterface, ProductFacetInterface, RubricInterface } from 'db/uiInterfaces';
 import WpButton from '../button/WpButton';
 import Inner from '../Inner';
 import WpAccordion from '../WpAccordion';
 
-export interface CompanyProductConstructorInterface {
+export interface CompanyProductEditorInterface {
   product: ProductFacetInterface;
   rubric: RubricInterface;
   currentCompany?: CompanyInterface | null;
   routeBasePath: string;
 }
 
-const CompanyProductConstructor: React.FC<CompanyProductConstructorInterface> = ({ product }) => {
+const CompanyProductEditor: React.FC<CompanyProductEditorInterface> = ({ product }) => {
   const { cities } = useConfigContext();
 
   const initialValues = {};
 
   return (
-    <Inner testId={'product-card-constructor'}>
+    <Inner testId={'product-card-editor'}>
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
@@ -63,4 +63,4 @@ const CompanyProductConstructor: React.FC<CompanyProductConstructorInterface> = 
   );
 };
 
-export default CompanyProductConstructor;
+export default CompanyProductEditor;

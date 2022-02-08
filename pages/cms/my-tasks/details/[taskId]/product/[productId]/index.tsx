@@ -31,10 +31,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, task }) =>
         name: `${task.name}`,
         href: links.cms.myTasks.details.taskId.url,
       },
-      {
-        name: `${product?.cardTitle}`,
-        href: links.cms.myTasks.details.taskId.product.productId.url,
-      },
     ],
   };
 

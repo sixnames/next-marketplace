@@ -109,8 +109,8 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
       },
       {
         name: 'Контент карточки',
-        testId: 'constructor',
-        path: links.product.constructor,
+        testId: 'editor',
+        path: links.product.editor,
         hidden: hideCardConstructor,
         exact: true,
       },

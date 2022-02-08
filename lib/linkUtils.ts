@@ -55,7 +55,7 @@ export function getConsoleProductLinks({
     attributes: `${root}/attributes`,
     brands: `${root}/brands`,
     categories: `${root}/categories`,
-    constructor: `${root}/constructor`,
+    editor: `${root}/editor`,
     variants: `${root}/variants`,
     suppliers: `${root}/suppliers`,
   };

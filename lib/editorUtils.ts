@@ -1,4 +1,4 @@
-export function getConstructorDefaultValue(initialValue?: string) {
+export function getEditorDefaultValue(initialValue?: string) {
   const emptyValue = {
     id: '1',
     version: 1,

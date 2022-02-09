@@ -13,27 +13,27 @@ import {
   DEFAULT_LOCALE,
   FILTER_SEPARATOR,
   GEO_POINT_TYPE,
-} from '../../config/common';
-import { CONFIRM_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
-import { useConfigContext } from '../../context/configContext';
-import { useLocaleContext } from '../../context/localeContext';
-import { AddressModel, ConfigModel, JSONObjectModel, TranslationModel } from '../../db/dbModels';
-import { CategoryInterface, RubricInterface } from '../../db/uiInterfaces';
+} from 'config/common';
+import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
+import { useConfigContext } from 'context/configContext';
+import { useLocaleContext } from 'context/localeContext';
+import { AddressModel, ConfigModel, JSONObjectModel, TranslationModel } from 'db/dbModels';
+import { CategoryInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   useUpdateConfigMutation,
   useUpdateRubricNavItemConfigMutation,
   useUpdateVisibleCategoriesInNavDropdownMutation,
-} from '../../generated/apolloComponents';
+} from 'generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { getReadableAddress } from '../../lib/addressUtils';
-import { alwaysArray } from '../../lib/arrayUtils';
-import { getConstructorDefaultValue } from '../../lib/constructorUtils';
-import { GeocodeResultInterface } from '../../lib/geocode';
-import { noNaN } from '../../lib/numbers';
-import { InputType } from '../../types/clientTypes';
-import { updateConfigSchema } from '../../validation/configSchema';
+import { getReadableAddress } from 'lib/addressUtils';
+import { alwaysArray } from 'lib/arrayUtils';
+import { getEditorDefaultValue } from 'lib/editorUtils';
+import { GeocodeResultInterface } from 'lib/geocode';
+import { noNaN } from 'lib/numbers';
+import { InputType } from 'types/clientTypes';
+import { updateConfigSchema } from 'validation/configSchema';
 import ButtonCross from '../button/ButtonCross';
 import WpButton from '../button/WpButton';
 import { ConfirmModalInterface } from '../Modal/ConfirmModal';
@@ -714,7 +714,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
           {({ values, setFieldValue }) => {
             const fieldName = `cities.${DEFAULT_CITY}.${DEFAULT_LOCALE}`;
             const fieldValue = get(values, fieldName);
-            const constructorValue = getConstructorDefaultValue(fieldValue);
+            const constructorValue = getEditorDefaultValue(fieldValue);
 
             return (
               <Form>

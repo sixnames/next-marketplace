@@ -6,30 +6,30 @@ import {
   FILTER_SEPARATOR,
   PAGE_STATE_PUBLISHED,
   SORT_DESC,
-} from '../../../config/common';
-import { alwaysArray } from '../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../lib/castUrlFilters';
-import { castCatalogueParamToObject } from '../../../lib/catalogueUtils';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getConsoleBlogLinks } from '../../../lib/linkUtils';
-import { noNaN } from '../../../lib/numbers';
-import { castDbData, getSiteInitialData } from '../../../lib/ssrUtils';
-import { BlogListPageInterface } from '../../../pages/blog/[...filters]';
+} from 'config/common';
+import { alwaysArray } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import { castCatalogueParamToObject } from 'lib/catalogueUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getConsoleBlogLinks } from 'lib/linkUtils';
+import { noNaN } from 'lib/numbers';
+import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import { BlogListPageInterface } from 'pages/blog/[...filters]';
 import {
   COL_BLOG_ATTRIBUTES,
   COL_BLOG_LIKES,
   COL_BLOG_POSTS,
   COL_OPTIONS,
-} from '../../collectionNames';
-import { AttributeViewVariantModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+} from 'db/collectionNames';
+import { AttributeViewVariantModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import {
   BlogAttributeInterface,
   BlogPostInterface,
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
   OptionInterface,
-} from '../../uiInterfaces';
+} from 'db/uiInterfaces';
 
 export const getCatalogueBlogSsr = async (
   context: GetServerSidePropsContext,

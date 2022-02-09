@@ -1,25 +1,21 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ConsoleRubricProductCategories from '../../../../../../../components/console/ConsoleRubricProductCategories';
-import { DEFAULT_COMPANY_SLUG } from '../../../../../../../config/common';
-import { COL_CATEGORIES } from '../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../db/mongodb';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { COL_CATEGORIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CategoryInterface,
   ProductCategoryInterface,
   ProductSummaryInterface,
-} from '../../../../../../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
-import { getCmsProduct } from '../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../lib/ssrUtils';
-import { getTreeFromList } from '../../../../../../../lib/treeUtils';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 
 interface ProductCategoriesInterface {
   product: ProductSummaryInterface;
@@ -86,10 +82,11 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getCmsProduct({
+  const payload = await getFullProductSummaryWithDraft({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
+    isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
   });
 
   if (!payload) {
@@ -98,19 +95,19 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product } = payload;
+  const { summary } = payload;
 
   // Get rubric categories
   const initialCategories = await categoriesCollection
     .find({
-      rubricId: product.rubric?._id,
+      rubricId: summary.rubric?._id,
     })
     .toArray();
   const categories: ProductCategoryInterface[] = initialCategories.map((category) => {
     return {
       ...category,
       categories: [],
-      selected: product.filterSlugs.some((slug) => slug === category.slug),
+      selected: summary.filterSlugs.some((slug) => slug === category.slug),
     };
   });
 
@@ -122,7 +119,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      product: castDbData(product),
+      product: castDbData(summary),
       categoriesTree: castDbData(categoriesTree),
     },
   };

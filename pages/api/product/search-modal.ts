@@ -4,7 +4,7 @@ import { REQUEST_METHOD_GET } from '../../../config/common';
 import {
   getRubricProductsList,
   GetRubricProductsListInputInterface,
-} from '../../../db/dao/product/getRubricProductsList';
+} from '../../../db/dao/ssr/getRubricProductsList';
 import { alwaysString } from '../../../lib/arrayUtils';
 import { getRequestParams } from '../../../lib/sessionHelpers';
 

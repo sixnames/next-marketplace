@@ -41,7 +41,7 @@ import {
   ProductsPaginatedAggregationInterface,
   summaryPipeline,
 } from '../constantPipelines';
-import { castSummaryForUI } from './castSummaryForUI';
+import { castSummaryForUI } from '../product/castSummaryForUI';
 
 export interface GetConsoleRubricProductsInputInterface {
   locale: string;

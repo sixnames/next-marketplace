@@ -579,8 +579,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
       },
       product: {
         url: `/api/product`,
-        addProductAsset: { url: `/api/product/add-product-asset` },
-        asset: { url: `/api/product/asset-` },
+        assets: { url: `/api/product/assets`, add: { url: `/api/product/assets/add` } },
         attributes: {
           url: `/api/product/attributes`,
           brandCollection: { url: `/api/product/attributes/brand-collection` },
@@ -597,7 +596,6 @@ export function getProjectLinks(props?: LinkPropsInterface) {
         },
         copy: { url: `/api/product/copy` },
         counter: { url: `/api/product/counter` },
-        deleteAsset: { url: `/api/product/delete-asset` },
         searchModal: { url: `/api/product/search-modal` },
         syncError: { url: `/api/product/sync-error` },
         variants: { url: `/api/product/variants` },
@@ -763,6 +761,9 @@ export function getProjectLinks(props?: LinkPropsInterface) {
                     categories: {
                       url: `/cms/companies/${companyId}/rubrics/${rubricSlug}/products/product/${productId}/categories`,
                     },
+                    editor: {
+                      url: `/cms/companies/${companyId}/rubrics/${rubricSlug}/products/product/${productId}/editor`,
+                    },
                     variants: {
                       url: `/cms/companies/${companyId}/rubrics/${rubricSlug}/products/product/${productId}/variants`,
                     },
@@ -844,6 +845,31 @@ export function getProjectLinks(props?: LinkPropsInterface) {
       languages: { url: `/cms/languages` },
       manufacturers: { url: `/cms/manufacturers` },
       metrics: { url: `/cms/metrics` },
+      myTasks: {
+        url: `/cms/my-tasks`,
+        details: {
+          url: `/cms/my-tasks/details`,
+          taskId: {
+            url: `/cms/my-tasks/details/${taskId}`,
+            product: {
+              url: `/cms/my-tasks/details/${taskId}/product`,
+              productId: {
+                url: `/cms/my-tasks/details/${taskId}/product/${productId}`,
+                assets: { url: `/cms/my-tasks/details/${taskId}/product/${productId}/assets` },
+                attributes: {
+                  url: `/cms/my-tasks/details/${taskId}/product/${productId}/attributes`,
+                },
+                brands: { url: `/cms/my-tasks/details/${taskId}/product/${productId}/brands` },
+                categories: {
+                  url: `/cms/my-tasks/details/${taskId}/product/${productId}/categories`,
+                },
+                editor: { url: `/cms/my-tasks/details/${taskId}/product/${productId}/editor` },
+                variants: { url: `/cms/my-tasks/details/${taskId}/product/${productId}/variants` },
+              },
+            },
+          },
+        },
+      },
       nav: { url: `/cms/nav` },
       options: {
         url: `/cms/options`,
@@ -909,6 +935,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
                 categories: {
                   url: `/cms/rubrics/${rubricSlug}/products/product/${productId}/categories`,
                 },
+                editor: { url: `/cms/rubrics/${rubricSlug}/products/product/${productId}/editor` },
                 variants: {
                   url: `/cms/rubrics/${rubricSlug}/products/product/${productId}/variants`,
                 },
@@ -983,6 +1010,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
             },
           },
         },
+        myTasks: { url: `/console/${companyId}/my-tasks` },
         orders: {
           url: `/console/${companyId}/orders`,
           order: {

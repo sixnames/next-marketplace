@@ -1,27 +1,19 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ConsoleRubricProductDetails from '../../../../../../../components/console/ConsoleRubricProductDetails';
-import { DEFAULT_COMPANY_SLUG } from '../../../../../../../config/common';
-import {
-  AppContentWrapperBreadCrumbs,
-  ProductSummaryInterface,
-} from '../../../../../../../db/uiInterfaces';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
-import { getCmsProduct } from '../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../lib/ssrUtils';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ProductDetailsInterface {
   product: ProductSummaryInterface;
-  companySlug: string;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlug }) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ product }) => {
   const links = getConsoleRubricLinks({
     productId: product._id,
     rubricSlug: product.rubricSlug,
@@ -46,7 +38,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlu
 
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <ConsoleRubricProductDetails product={product} companySlug={companySlug} />
+      <ConsoleRubricProductDetails product={product} />
     </CmsProductLayout>
   );
 };
@@ -73,10 +65,11 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getCmsProduct({
+  const payload = await getFullProductSummaryWithDraft({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
+    isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
   });
 
   if (!payload) {
@@ -88,7 +81,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      product: castDbData(payload.product),
+      product: castDbData(payload.summary),
       companySlug: DEFAULT_COMPANY_SLUG,
     },
   };

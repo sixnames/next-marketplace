@@ -1,26 +1,19 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ConsoleRubricProductConnections from '../../../../../../../components/console/ConsoleRubricProductConnections';
-import { DEFAULT_COMPANY_SLUG } from '../../../../../../../config/common';
-import {
-  AppContentWrapperBreadCrumbs,
-  ProductSummaryInterface,
-} from '../../../../../../../db/uiInterfaces';
+import ConsoleRubricProductVariants from 'components/console/ConsoleRubricProductVariants';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
-import { getCmsProduct } from '../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../lib/ssrUtils';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-interface ProductConnectionsPropsInterface {
+interface ProductVariantsPropsInterface {
   product: ProductSummaryInterface;
 }
 
-const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ product }) => {
+const ProductVariants: React.FC<ProductVariantsPropsInterface> = ({ product }) => {
   const links = getConsoleRubricLinks({
     productId: product._id,
     rubricSlug: product.rubricSlug,
@@ -49,19 +42,19 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ produc
 
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <ConsoleRubricProductConnections product={product} />
+      <ConsoleRubricProductVariants product={product} />
     </CmsProductLayout>
   );
 };
 
 interface ProductPageInterface
   extends GetAppInitialDataPropsInterface,
-    ProductConnectionsPropsInterface {}
+    ProductVariantsPropsInterface {}
 
 const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <ProductConnections {...props} />
+      <ProductVariants {...props} />
     </ConsoleLayout>
   );
 };
@@ -78,10 +71,11 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getCmsProduct({
+  const payload = await getFullProductSummaryWithDraft({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
+    isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
   });
 
   if (!payload) {
@@ -90,12 +84,12 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product } = payload;
+  const { summary } = payload;
 
   return {
     props: {
       ...props,
-      product: castDbData(product),
+      product: castDbData(summary),
     },
   };
 };

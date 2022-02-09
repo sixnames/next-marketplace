@@ -1,19 +1,15 @@
 import { ObjectId } from 'mongodb';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getFullName, getShortName } from '../../../lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
-import {
-  COL_PRODUCT_SUMMARIES,
-  COL_TASK_VARIANTS,
-  COL_TASKS,
-  COL_USERS,
-} from '../../collectionNames';
-import { getDatabase } from '../../mongodb';
-import { TaskInterface } from '../../uiInterfaces';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getFullName, getShortName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { COL_PRODUCT_SUMMARIES, COL_TASK_VARIANTS, COL_TASKS, COL_USERS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { TaskInterface } from 'db/uiInterfaces';
 
 export interface GetCompanyTaskSsr {
   taskId: string;
   locale: string;
+  noProduct?: boolean;
 }
 
 export function getTaskNestedFieldsPipeline(field: string) {
@@ -51,6 +47,7 @@ export function getTaskNestedFieldsPipeline(field: string) {
 export async function getCompanyTaskSsr({
   taskId,
   locale,
+  noProduct,
 }: GetCompanyTaskSsr): Promise<TaskInterface | null> {
   try {
     const { db } = await getDatabase();
@@ -159,7 +156,10 @@ export async function getCompanyTaskSsr({
         : null,
     };
 
-    return task;
+    return {
+      ...task,
+      product: noProduct ? null : task.product,
+    };
   } catch (e) {
     console.log('getCompanyTaskVariantsListSsr error', e);
     return null;

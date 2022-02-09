@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE } from 'config/common';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/getProjectLinks';
 
 describe('User roles', () => {
   const links = getProjectLinks();
@@ -44,7 +44,7 @@ describe('User roles', () => {
     const createdGroupName = 'createdGroupName';
 
     // Should display role nav
-    cy.getByCy(`Контент менеджер-update`).click();
+    cy.getByCy(`Контент менеджер B-update`).click();
     cy.wait(1500);
     cy.getByCy('role-nav').click();
     cy.wait(1500);
@@ -59,12 +59,7 @@ describe('User roles', () => {
     cy.wait(1500);
 
     // Auth as content manager
-    cy.getByCy(`header-sign-in-link`).click();
-    cy.wait(1500);
-    cy.getByCy(`sign-in-email`).clear().type('contentManager@gmail.com');
-    cy.getByCy(`sign-in-password`).clear().type('password');
-    cy.getByCy(`sign-in-submit`).click();
-    cy.wait(1500);
+    cy.testAuth('/', 'contentManagerB@gmail.com');
     cy.getByCy(`header-user-dropdown-trigger`).click();
     cy.getByCy(`header-user-dropdown-cms-link`).click();
     cy.wait(1500);
@@ -84,14 +79,8 @@ describe('User roles', () => {
     // Add permission for content manager to create attributes group
     cy.signOut();
     cy.wait(1500);
-    cy.getByCy(`header-sign-in-link`).click();
-    cy.wait(1500);
-    cy.getByCy(`sign-in-email`).clear().type('admin@gmail.com');
-    cy.getByCy(`sign-in-password`).clear().type('password');
-    cy.getByCy(`sign-in-submit`).click();
-    cy.wait(1500);
-    cy.visit(links.cms.roles.url);
-    cy.getByCy(`Контент менеджер-update`).click();
+    cy.testAuth(links.cms.roles.url);
+    cy.getByCy(`Контент менеджер B-update`).click();
     cy.wait(1500);
     cy.getByCy('role-rules').click();
     cy.wait(1500);
@@ -103,14 +92,7 @@ describe('User roles', () => {
     cy.wait(1500);
 
     // Auth as content manager
-    cy.getByCy(`header-sign-in-link`).click();
-    cy.wait(1500);
-    cy.getByCy(`sign-in-email`).clear().type('contentManager@gmail.com');
-    cy.getByCy(`sign-in-password`).clear().type('password');
-    cy.getByCy(`sign-in-submit`).click();
-    cy.wait(1500);
-    cy.visit(links.cms.url);
-    cy.wait(1500);
+    cy.testAuth(links.cms.url, 'contentManagerB@gmail.com');
     cy.getByCy(`app-nav-item-cms-attributes`).click();
     cy.wait(1500);
     cy.getByCy(`attribute-groups-list`).should('exist');

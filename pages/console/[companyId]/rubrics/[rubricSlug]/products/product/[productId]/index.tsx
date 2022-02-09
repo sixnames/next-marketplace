@@ -13,7 +13,7 @@ import {
 import CmsProductLayout from '../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
-import { getCmsProduct } from '../../../../../../../../lib/productUtils';
+import { getFullProductSummary } from '../../../../../../../../lib/productUtils';
 import {
   castDbData,
   getConsoleInitialData,
@@ -28,7 +28,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   product,
   routeBasePath,
   companySlug,
-  cardContent,
+  seoContentsList,
   pageCompany,
 }) => {
   const links = getConsoleCompanyLinks({
@@ -71,7 +71,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
         routeBasePath={routeBasePath}
         product={product}
         companySlug={companySlug}
-        cardContent={cardContent}
+        seoContentsList={seoContentsList}
       />
     </CmsProductLayout>
   );
@@ -113,7 +113,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getCmsProduct({
+  const payload = await getFullProductSummary({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: companyResult.slug,
@@ -132,8 +132,8 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      product: castDbData(payload.product),
-      cardContent: castDbData(payload.cardContent),
+      product: castDbData(payload.summary),
+      seoContentsList: castDbData(payload.seoContentsList),
       companySlug: companyResult.slug,
       pageCompany: castDbData(props.layoutProps.pageCompany),
       routeBasePath: links.parentLink,

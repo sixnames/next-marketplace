@@ -1,3 +1,4 @@
+import { RoleInterface } from 'db/uiInterfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import nookies from 'nookies';
@@ -14,16 +15,16 @@ import {
   ROLE_SLUG_ADMIN,
   ROLE_SLUG_GUEST,
   SECONDARY_LOCALE,
-} from '../config/common';
-import { COL_ROLE_RULES, COL_ROLES, COL_USERS } from '../db/collectionNames';
-import { RoleModel, RoleRuleModel, UserModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { NexusContext } from '../types/apiContextTypes';
-import { MessageSlug } from '../types/messageSlugTypes';
-import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
-import { getApiMessageValue, getValidationMessages } from '../db/dao/messages/apiMessageUtils';
+} from 'config/common';
+import { COL_ROLE_RULES, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { RoleModel, RoleRuleModel, UserModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { NexusContext } from 'types/apiContextTypes';
+import { MessageSlug } from 'types/messageSlugTypes';
+import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
+import { getApiMessageValue, getValidationMessages } from 'db/dao/messages/apiMessageUtils';
 import { getCityFieldData, getI18nLocaleValue } from './i18n';
-import { RoleRuleSlugType } from './roleUtils';
+import { RoleRuleSlugType } from './roleRuleUtils';
 
 export const getSessionUser = async (context: NexusContext): Promise<UserModel | null> => {
   // Get session user
@@ -41,7 +42,7 @@ export const getSessionUser = async (context: NexusContext): Promise<UserModel |
 };
 
 interface GetSessionRolePayloadInterface {
-  role: RoleModel;
+  role: RoleInterface;
   user?: UserModel | null;
 }
 
@@ -55,18 +56,23 @@ export const getSessionRole = async (
   const rolesCollection = db.collection<RoleModel>(COL_ROLES);
 
   // Get guest role if user is unauthenticated
-  if (!user) {
-    const guestRole = await rolesCollection.findOne({ slug: ROLE_SLUG_GUEST });
-    if (!guestRole) {
-      throw Error('Guest role not found in getSessionRole');
-    }
-    return {
-      role: guestRole,
-      user,
-    };
-  }
-
-  const userRole = await rolesCollection.findOne({ _id: user.roleId });
+  const roleMatch = user ? { _id: user.roleId } : { slug: ROLE_SLUG_GUEST };
+  const userRoleAggregation = await rolesCollection
+    .aggregate<RoleInterface>([
+      {
+        $match: roleMatch,
+      },
+      {
+        $lookup: {
+          from: COL_ROLE_RULES,
+          as: 'rules',
+          localField: '_id',
+          foreignField: 'roleId',
+        },
+      },
+    ])
+    .toArray();
+  const userRole = userRoleAggregation[0];
   if (!userRole) {
     throw Error('User role not found in getSessionRole');
   }
@@ -114,6 +120,7 @@ interface GetOperationPermissionPayloadInterface {
   allow: boolean;
   message: string;
   user?: UserModel | null;
+  role: RoleInterface;
 }
 
 export const getOperationPermission = async ({
@@ -129,6 +136,7 @@ export const getOperationPermission = async ({
       allow: false,
       message: '',
       user,
+      role,
     };
   }
 
@@ -137,6 +145,7 @@ export const getOperationPermission = async ({
       allow: true,
       message: '',
       user,
+      role,
     };
   }
 
@@ -154,6 +163,7 @@ export const getOperationPermission = async ({
         slug: 'permission.error',
         locale,
       }),
+      role,
     };
   }
 
@@ -161,6 +171,7 @@ export const getOperationPermission = async ({
     allow: rule.allow,
     message: '',
     user,
+    role,
   };
 };
 

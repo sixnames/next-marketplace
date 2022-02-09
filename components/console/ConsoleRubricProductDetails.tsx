@@ -1,10 +1,12 @@
 import { Form, Formik } from 'formik';
+import { alwaysString } from 'lib/arrayUtils';
+import { useRouter } from 'next/router';
 import * as React from 'react';
-import { ProductSummaryInterface } from '../../db/uiInterfaces';
-import { useUpdateProduct } from '../../hooks/mutations/useProductMutations';
+import { ProductSummaryInterface } from 'db/uiInterfaces';
+import { useUpdateProduct } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { updateProductSchema } from '../../validation/productSchema';
+import { updateProductSchema } from 'validation/productSchema';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import FormikMultiLineInput from '../FormElements/Input/FormikMultiLineInput';
@@ -14,12 +16,12 @@ import WpImage from '../WpImage';
 
 interface ConsoleRubricProductDetailsInterface {
   product: ProductSummaryInterface;
-  companySlug: string;
 }
 
 const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface> = ({
   product,
 }) => {
+  const router = useRouter();
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
   });
@@ -52,8 +54,8 @@ const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface
           showLoading();
           return updateProductMutation({
             ...values,
+            taskId: alwaysString(router.query.taskId),
             productId: `${product._id}`,
-            rubricId: `${product.rubricId}`,
             barcode: (values.barcode || []).filter((currentBarcode) => {
               return Boolean(currentBarcode);
             }),

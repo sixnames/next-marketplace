@@ -1,5 +1,5 @@
-import { ISO_LANGUAGES } from '../../../config/constantSelects';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
+import { ISO_LANGUAGES } from 'config/constantSelects';
+import { getProjectLinks } from 'lib/getProjectLinks';
 
 describe('Languages', () => {
   const links = getProjectLinks();
@@ -25,7 +25,7 @@ describe('Languages', () => {
     cy.getByCy('language-slug').select(mockNewLanguage.slug);
     cy.getByCy('language-submit').click();
     cy.getByCy('create-language-modal').should('not.exist');
-    cy.wait(1000);
+    cy.wait(1500);
     cy.getByCy(`${mockNewLanguage.name}-row`).should('exist');
 
     // Should update language
@@ -36,7 +36,7 @@ describe('Languages', () => {
     cy.getByCy('language-slug').select(mockUpdatedLanguage.slug);
     cy.getByCy('language-submit').click();
     cy.getByCy('update-language-modal').should('not.exist');
-    cy.wait(1000);
+    cy.wait(1500);
     cy.getByCy(`${mockUpdatedLanguage.name}-row`).should('exist');
 
     // Delete default language button should be disabled
@@ -47,7 +47,7 @@ describe('Languages', () => {
     cy.getByCy('delete-language-modal').should('exist');
     cy.getByCy('confirm').click();
     cy.getByCy('delete-language-modal').should('not.exist');
-    cy.wait(1000);
+    cy.wait(1500);
     cy.getByCy(`${mockUpdatedLanguage.name}-row`).should('not.exist');
   });
 });

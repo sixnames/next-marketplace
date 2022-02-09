@@ -1,34 +1,30 @@
 import { useRouter } from 'next/router';
-import { BarcodeIntersectsModalInterface } from '../../components/Modal/BarcodeIntersectsModal';
-import {
-  REQUEST_METHOD_DELETE,
-  REQUEST_METHOD_PATCH,
-  REQUEST_METHOD_POST,
-} from '../../config/common';
-import { BARCODE_INTERSECTS_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
-import { useNotificationsContext } from '../../context/notificationsContext';
-import { AddProductToVariantInputInterface } from '../../db/dao/product/addProductToVariant';
-import { CopyProductInputInterface } from '../../db/dao/product/copyProduct';
-import { CreateProductInputInterface } from '../../db/dao/product/createProduct';
-import { CreateProductVariantInputInterface } from '../../db/dao/product/createProductVariant';
-import { CreateProductWithSyncErrorInputInterface } from '../../db/dao/product/createProductWithSyncError';
-import { DeleteProductInputInterface } from '../../db/dao/product/deleteProduct';
-import { DeleteProductAssetInputInterface } from '../../db/dao/product/deleteProductAsset';
-import { DeleteProductFromVariantInputInterface } from '../../db/dao/product/deleteProductFromVariant';
-import { UpdateProductInputInterface } from '../../db/dao/product/updateProduct';
-import { UpdateProductAssetIndexInputInterface } from '../../db/dao/product/updateProductAssetIndex';
-import { UpdateProductBrandInputInterface } from '../../db/dao/product/updateProductBrand';
-import { UpdateProductBrandCollectionInputInterface } from '../../db/dao/product/updateProductBrandCollection';
-import { UpdateProductCardContentInputInterface } from '../../db/dao/product/updateProductCardContent';
-import { UpdateProductCategoryInputInterface } from '../../db/dao/product/updateProductCategory';
-import { UpdateProductManufacturerInputInterface } from '../../db/dao/product/updateProductManufacturer';
-import { UpdateProductNumberAttributeInputInterface } from '../../db/dao/product/updateProductNumberAttribute';
-import { UpdateProductSelectAttributeInputInterface } from '../../db/dao/product/updateProductSelectAttribute';
-import { UpdateProductTextAttributeInputInterface } from '../../db/dao/product/updateProductTextAttribute';
-import { UpdateProductWithSyncErrorInputInterface } from '../../db/dao/product/updateProductWithSyncError';
-import { ProductPayloadModel } from '../../db/dbModels';
-import { getConsoleRubricLinks } from '../../lib/linkUtils';
+import { BarcodeIntersectsModalInterface } from 'components/Modal/BarcodeIntersectsModal';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
+import { BARCODE_INTERSECTS_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
+import { useNotificationsContext } from 'context/notificationsContext';
+import { AddProductToVariantInputInterface } from 'db/dao/product/addProductToVariant';
+import { CopyProductInputInterface } from 'db/dao/product/copyProduct';
+import { CreateProductInputInterface } from 'db/dao/product/createProduct';
+import { CreateProductVariantInputInterface } from 'db/dao/product/createProductVariant';
+import { CreateProductWithSyncErrorInputInterface } from 'db/dao/product/createProductWithSyncError';
+import { DeleteProductInputInterface } from 'db/dao/product/deleteProduct';
+import { DeleteProductAssetInputInterface } from 'db/dao/product/deleteProductAsset';
+import { DeleteProductFromVariantInputInterface } from 'db/dao/product/deleteProductFromVariant';
+import { UpdateProductInputInterface } from 'db/dao/product/updateProduct';
+import { UpdateProductAssetIndexInputInterface } from 'db/dao/product/updateProductAssetIndex';
+import { UpdateProductBrandInputInterface } from 'db/dao/product/updateProductBrand';
+import { UpdateProductBrandCollectionInputInterface } from 'db/dao/product/updateProductBrandCollection';
+import { UpdateProductCardContentInputInterface } from 'db/dao/product/updateProductCardContent';
+import { UpdateProductCategoryInputInterface } from 'db/dao/product/updateProductCategory';
+import { UpdateProductManufacturerInputInterface } from 'db/dao/product/updateProductManufacturer';
+import { UpdateProductNumberAttributeInputInterface } from 'db/dao/product/updateProductNumberAttribute';
+import { UpdateProductSelectAttributeInputInterface } from 'db/dao/product/updateProductSelectAttribute';
+import { UpdateProductTextAttributeInputInterface } from 'db/dao/product/updateProductTextAttribute';
+import { UpdateProductWithSyncErrorInputInterface } from 'db/dao/product/updateProductWithSyncError';
+import { ProductPayloadModel } from 'db/dbModels';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { useReloadListener } from '../useReloadListener';
 import { useMutationHandler } from './useFetch';
 
@@ -268,7 +264,7 @@ export const useDeleteProductFromVariant = () => {
 // update asset index
 export const useUpdateProductAssetIndex = () => {
   return useMutationHandler<ProductPayloadModel, UpdateProductAssetIndexInputInterface>({
-    path: `${basePath}/asset-index`,
+    path: `${basePath}/assets`,
     method: REQUEST_METHOD_PATCH,
   });
 };
@@ -276,7 +272,7 @@ export const useUpdateProductAssetIndex = () => {
 // delete asset
 export const useDeleteProductAsset = () => {
   return useMutationHandler<ProductPayloadModel, DeleteProductAssetInputInterface>({
-    path: `${basePath}/delete-asset`,
+    path: `${basePath}/assets`,
     method: REQUEST_METHOD_DELETE,
   });
 };

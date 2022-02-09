@@ -1,11 +1,12 @@
+import { getNextItemId } from 'lib/itemIdUtils';
 import { ObjectId } from 'mongodb';
-import { TASK_STATE_PENDING } from '../../../config/common';
+import { TASK_STATE_PENDING } from 'config/common';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_TASKS } from '../../collectionNames';
-import { TaskModel, TaskPayloadModel, TranslationModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface, ProductSummaryInterface, UserInterface } from '../../uiInterfaces';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { COL_TASK_VARIANTS, COL_TASKS } from 'db/collectionNames';
+import { TaskModel, TaskPayloadModel, TaskVariantModel, TranslationModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface, ProductSummaryInterface, UserInterface } from 'db/uiInterfaces';
 
 export interface CreateTaskInputInterface {
   companySlug: string;
@@ -22,6 +23,7 @@ export async function createTask({
   try {
     const { db } = await getDatabase();
     const tasksCollection = db.collection<TaskModel>(COL_TASKS);
+    const taskVariantsCollection = db.collection<TaskVariantModel>(COL_TASK_VARIANTS);
     const { getApiMessage } = await getRequestParams(context);
 
     // check permission
@@ -44,13 +46,25 @@ export async function createTask({
       };
     }
 
+    // get task variant
+    const variantId = input.variantId ? new ObjectId(input.variantId) : undefined;
+    let variant: TaskVariantModel | null = null;
+    if (variantId) {
+      variant = await taskVariantsCollection.findOne({
+        _id: variantId,
+      });
+    }
+
     // create
+    const itemId = await getNextItemId(COL_TASKS);
     const createdTaskResult = await tasksCollection.insertOne({
+      itemId,
       nameI18n: input.nameI18n,
       companySlug: input.companySlug,
       stateEnum: TASK_STATE_PENDING,
       createdById: new ObjectId(user._id),
-      variantId: input.variantId ? new ObjectId(input.variantId) : undefined,
+      variantId,
+      variantSlug: variant?.slug,
       executorId: input.executor ? new ObjectId(input.executor._id) : undefined,
       productId: input.product ? new ObjectId(input.product._id) : undefined,
       log: [],

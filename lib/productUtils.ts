@@ -1,7 +1,8 @@
+import { findTask } from 'db/dao/tasks/taskUtils';
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
-import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
-import { COL_OPTIONS, COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from '../db/collectionNames';
+import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { COL_OPTIONS, COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
@@ -10,7 +11,7 @@ import {
   shopProductShopPipeline,
   shopProductSupplierProductsPipeline,
   summaryPipeline,
-} from '../db/dao/constantPipelines';
+} from 'db/dao/constantPipelines';
 import {
   ObjectIdModel,
   OptionModel,
@@ -18,8 +19,8 @@ import {
   ProductSummaryModel,
   ShopProductModel,
   TranslationModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import {
   AttributeInterface,
   BarcodeDoublesInterface,
@@ -33,29 +34,29 @@ import {
   ShopProductBarcodeDoublesInterface,
   ShopProductInterface,
   SupplierProductInterface,
-} from '../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import { getFieldStringLocale } from './i18n';
 import { noNaN } from './numbers';
 import { getSupplierPrice } from './priceUtils';
 import { getProductAllSeoContents } from './seoContentUtils';
 
-interface GetCmsProductInterface {
+interface GetFullProductSummaryInterface {
   productId: string;
   companySlug: string;
   locale: string;
 }
 
-interface GetCmsProductPayloadInterface {
-  product: ProductSummaryInterface;
+interface GetFullProductSummaryPayloadInterface {
+  summary: ProductSummaryInterface;
   categoriesList: CategoryInterface[];
-  cardContent: SeoContentCitiesInterface;
+  seoContentsList: SeoContentCitiesInterface;
 }
 
-export async function getCmsProduct({
+export async function getFullProductSummary({
   productId,
   locale,
   companySlug,
-}: GetCmsProductInterface): Promise<GetCmsProductPayloadInterface | null> {
+}: GetFullProductSummaryInterface): Promise<GetFullProductSummaryPayloadInterface | null> {
   const { db } = await getDatabase();
   const productSummariesCollection = db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
   const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
@@ -126,20 +127,25 @@ export async function getCmsProduct({
       });
 
       if (variantProductSummary && option) {
-        variantProducts.push({
+        const isCurrent = variantProductSummary._id.equals(initialProduct._id);
+        const castedVariantProducts: ProductVariantItemInterface = {
           ...variantProduct,
+          isCurrent,
           summary: {
             ...variantProductSummary,
             snippetTitle: getFieldStringLocale(variantProductSummary.snippetTitleI18n, locale),
             cardTitle: getFieldStringLocale(variantProductSummary.cardTitleI18n, locale),
           },
-          option: option
-            ? {
-                ...option,
-                name: getFieldStringLocale(option.nameI18n, locale),
-              }
-            : null,
-        });
+          option: {
+            ...option,
+            name: getFieldStringLocale(option.nameI18n, locale),
+          },
+        };
+        if (isCurrent) {
+          variantProducts.unshift(castedVariantProducts);
+        } else {
+          variantProducts.push(castedVariantProducts);
+        }
       }
     }
 
@@ -203,9 +209,57 @@ export async function getCmsProduct({
   }
 
   return {
-    product,
+    summary: product,
     categoriesList: initialProduct.categories || [],
-    cardContent,
+    seoContentsList: cardContent,
+  };
+}
+
+interface GetFullProductSummaryWithDraftPayloadInterface extends GetFullProductSummaryInterface {
+  taskId?: string | null;
+  isContentManager?: boolean;
+}
+
+export async function getFullProductSummaryWithDraft({
+  companySlug,
+  isContentManager,
+  locale,
+  productId,
+  taskId,
+}: GetFullProductSummaryWithDraftPayloadInterface): Promise<GetFullProductSummaryPayloadInterface | null> {
+  if (isContentManager && !taskId) {
+    return null;
+  }
+  const summaryPayload = await getFullProductSummary({
+    locale,
+    productId,
+    companySlug,
+  });
+  if (!summaryPayload) {
+    return null;
+  }
+  // react-page-cell-insert-new
+  // Text
+  const { categoriesList, seoContentsList } = summaryPayload;
+  let summary = summaryPayload.summary;
+
+  if (isContentManager) {
+    const task = await findTask({
+      taskId,
+    });
+    if (task) {
+      const lastLog = task.log[task.log.length - 1];
+      if (lastLog) {
+        const draft = lastLog.draft as ProductSummaryInterface | null;
+        summary = draft || summaryPayload.summary;
+      }
+    }
+  }
+
+  return {
+    seoContentsList,
+    categoriesList,
+    summary,
   };
 }
 
@@ -270,7 +324,7 @@ export async function getConsoleShopProduct({
     return null;
   }
 
-  const productPayload = await getCmsProduct({
+  const productPayload = await getFullProductSummary({
     companySlug,
     locale,
     productId: shopProductResult.productId.toHexString(),
@@ -278,7 +332,7 @@ export async function getConsoleShopProduct({
   if (!productPayload) {
     return null;
   }
-  const { cardContent, product } = productPayload;
+  const { seoContentsList, summary } = productPayload;
 
   const shopProduct: ShopProductInterface = {
     ...shopProductResult,
@@ -287,8 +341,8 @@ export async function getConsoleShopProduct({
       locale,
     }),
     summary: {
-      ...product,
-      cardContentCities: cardContent,
+      ...summary,
+      cardContentCities: seoContentsList,
     },
   };
 

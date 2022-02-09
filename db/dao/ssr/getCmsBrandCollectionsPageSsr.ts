@@ -1,27 +1,29 @@
+import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { CMS_BRANDS_LIMIT, DEFAULT_LOCALE, DEFAULT_PAGE, SORT_ASC, SORT_DESC } from 'config/common';
+import { ISO_LANGUAGES } from 'config/constantSelects';
+import { alwaysArray } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import { getFieldStringLocale } from 'lib/i18n';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import {
-  CMS_BRANDS_LIMIT,
-  DEFAULT_LOCALE,
-  DEFAULT_PAGE,
-  SORT_ASC,
-  SORT_DESC,
-} from '../../../config/common';
-import { ISO_LANGUAGES } from '../../../config/constantSelects';
-import { alwaysArray } from '../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../lib/castUrlFilters';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
-import {
-  CmsManufacturersListConsumerInterface,
-  CmsManufacturersListPageInterface,
-} from '../../../pages/cms/manufacturers/[...filters]';
-import { COL_MANUFACTURERS } from '../../collectionNames';
-import { getDatabase } from '../../mongodb';
-import { ManufacturerInterface } from '../../uiInterfaces';
+  BrandCollectionsAggregationInterface,
+  CmsBrandCollectionsPageInterface,
+} from 'pages/cms/brands/brand/[brandId]/collections/[...filters]';
+import { COL_BRAND_COLLECTIONS, COL_BRANDS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { BrandCollectionInterface, BrandInterface } from 'db/uiInterfaces';
 
-export const getCmsManufacturersListPageSsr = async (
+export const getCmsBrandCollectionsPageSsr = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CmsManufacturersListPageInterface>> => {
+): Promise<GetServerSidePropsResult<CmsBrandCollectionsPageInterface>> => {
+  const { query } = context;
+  const { search } = query;
+  const filters = alwaysArray(query.filters);
+  const { db } = await getDatabase();
+  const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
+  const brandCollectionsCollection = db.collection<BrandCollectionInterface>(COL_BRAND_COLLECTIONS);
+
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -29,9 +31,22 @@ export const getCmsManufacturersListPageSsr = async (
     };
   }
 
-  const { query } = context;
-  const { filters, search } = query;
   const locale = props.sessionLocale;
+
+  const initialBrand = await brandsCollection.findOne({
+    _id: new ObjectId(`${query.brandId}`),
+  });
+  if (!initialBrand) {
+    console.log('if (!initialBrand) {');
+    return {
+      notFound: true,
+    };
+  }
+
+  const brand: BrandInterface = {
+    ...initialBrand,
+    name: getFieldStringLocale(initialBrand.nameI18n, props.sessionLocale),
+  };
 
   // Cast filters
   const { page, skip, limit, clearSlug } = await castUrlFilters({
@@ -46,7 +61,6 @@ export const getCmsManufacturersListPageSsr = async (
     $options: 'i',
   };
 
-  // TODO algolia
   const nameSearch = search
     ? ISO_LANGUAGES.map(({ slug }) => {
         return {
@@ -62,9 +76,6 @@ export const getCmsManufacturersListPageSsr = async (
             $or: [
               ...nameSearch,
               {
-                url: regexSearch,
-              },
-              {
                 slug: regexSearch,
               },
               {
@@ -76,12 +87,14 @@ export const getCmsManufacturersListPageSsr = async (
       ]
     : [];
 
-  const { db } = await getDatabase();
-  const manufacturersCollection = db.collection<ManufacturerInterface>(COL_MANUFACTURERS);
-
-  const manufacturersAggregationResult = await manufacturersCollection
-    .aggregate<CmsManufacturersListConsumerInterface>(
+  const brandsAggregationResult = await brandCollectionsCollection
+    .aggregate<BrandCollectionsAggregationInterface>(
       [
+        {
+          $match: {
+            brandId: brand._id,
+          },
+        },
         ...searchStage,
         {
           $facet: {
@@ -147,34 +160,36 @@ export const getCmsManufacturersListPageSsr = async (
       { allowDiskUse: true },
     )
     .toArray();
-  const manufacturersResult = manufacturersAggregationResult[0];
-  if (!manufacturersResult) {
+  const brandsResult = brandsAggregationResult[0];
+  if (!brandsResult) {
+    console.log('if (!brandsResult) {');
     return {
       notFound: true,
     };
   }
 
-  const docs: ManufacturerInterface[] = [];
-  for await (const manufacturer of manufacturersResult.docs) {
+  const docs: BrandCollectionInterface[] = [];
+  for await (const brand of brandsResult.docs) {
     docs.push({
-      ...manufacturer,
-      name: getFieldStringLocale(manufacturer.nameI18n, locale),
+      ...brand,
+      name: getFieldStringLocale(brand.nameI18n, locale),
     });
   }
 
-  const payload: CmsManufacturersListConsumerInterface = {
+  const payload: BrandCollectionsAggregationInterface = {
     clearSlug,
-    totalDocs: manufacturersResult.totalDocs,
-    totalPages: manufacturersResult.totalPages,
+    totalDocs: brandsResult.totalDocs || 0,
+    totalPages: brandsResult.totalPages || 0,
     itemPath,
     page,
     docs,
   };
-  const castedPayload = castDbData(payload);
+
   return {
     props: {
       ...props,
-      ...castedPayload,
+      brand: castDbData(brand),
+      collections: castDbData(payload),
     },
   };
 };

@@ -1,7 +1,8 @@
-import { getUserInitialNotificationsConf } from '../../../lib/getUserNotificationsTemplate';
-import { UserModel } from '../../../db/dbModels';
+import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
+import { UserModel } from 'db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 
+// hashed 'password'
 const password = '$2b$10$u7zEl9.8vpdshO9tbBIHXeM5HrhLQBCEJ6mcQVSSP0B.WCb9rVE.K';
 
 const users: UserModel[] = [
@@ -153,6 +154,23 @@ const users: UserModel[] = [
     avatar: null,
     cartId: null,
     roleId: getObjectId('contentManagerRole'),
+    notifications: getUserInitialNotificationsConf(),
+    categoryIds: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    _id: getObjectId('content manager b'),
+    itemId: '000010',
+    name: 'Content B',
+    lastName: 'Manager B',
+    secondName: '',
+    email: 'contentManagerB@gmail.com',
+    phone: '+75556668812',
+    password,
+    avatar: null,
+    cartId: null,
+    roleId: getObjectId('contentManagerRoleB'),
     notifications: getUserInitialNotificationsConf(),
     categoryIds: [],
     createdAt: new Date(),

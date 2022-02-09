@@ -12,7 +12,7 @@ import Pager from '../../../../../../components/Pager';
 import WpTable, { WpTableColumn } from '../../../../../../components/WpTable';
 import WpTitle from '../../../../../../components/WpTitle';
 import { BRAND_COLLECTION_MODAL, CONFIRM_MODAL } from '../../../../../../config/modalVariants';
-import { getCmsBrandCollectionsPageSsr } from '../../../../../../db/dao/ssr/getCmsBrandCollectionsPageSsr';
+import { getCmsBrandCollectionsPageSsr } from 'db/dao/ssr/getCmsBrandCollectionsPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   AppPaginationInterface,

@@ -1,22 +1,24 @@
+import { alwaysString } from 'lib/arrayUtils';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import {
   BRAND_COLLECTION_OPTIONS_MODAL,
   BRAND_OPTIONS_MODAL,
   MANUFACTURER_OPTIONS_MODAL,
-} from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
-import { useNotificationsContext } from '../../context/notificationsContext';
+} from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
+import { useNotificationsContext } from 'context/notificationsContext';
 import {
   BrandCollectionInterface,
   BrandInterface,
   ManufacturerInterface,
   ProductFacetInterface,
-} from '../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import {
   useUpdateProductBrand,
   useUpdateProductBrandCollection,
   useUpdateProductManufacturer,
-} from '../../hooks/mutations/useProductMutations';
+} from 'hooks/mutations/useProductMutations';
 import FakeInput from '../FormElements/Input/FakeInput';
 import InputLine from '../FormElements/Input/InputLine';
 import Inner from '../Inner';
@@ -39,6 +41,7 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
   brandCollection,
   manufacturer,
 }) => {
+  const router = useRouter();
   const { showModal } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
 
@@ -57,6 +60,7 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
             product.brandSlug
               ? () => {
                   updateProductBrandMutation({
+                    taskId: alwaysString(router.query.taskId),
                     productId: `${product._id}`,
                     brandSlug: null,
                   }).catch(console.log);
@@ -83,6 +87,7 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
 
                   if (brand) {
                     updateProductBrandMutation({
+                      taskId: alwaysString(router.query.taskId),
                       productId: `${product._id}`,
                       brandSlug: brand.itemId,
                     }).catch(console.log);
@@ -106,6 +111,7 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
             product.brandCollectionSlug
               ? () => {
                   updateProductBrandCollectionMutation({
+                    taskId: alwaysString(router.query.taskId),
                     productId: `${product._id}`,
                     brandCollectionSlug: null,
                   }).catch(console.log);
@@ -133,6 +139,7 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
 
                   if (brandCollection) {
                     updateProductBrandCollectionMutation({
+                      taskId: alwaysString(router.query.taskId),
                       productId: `${product._id}`,
                       brandCollectionSlug: brandCollection.itemId,
                     }).catch(console.log);
@@ -155,6 +162,7 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
             product.manufacturerSlug
               ? () => {
                   updateProductManufacturerMutation({
+                    taskId: alwaysString(router.query.taskId),
                     productId: `${product._id}`,
                     manufacturerSlug: null,
                   }).catch(console.log);
@@ -179,6 +187,7 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
                 onSubmit: (selectedOptions) => {
                   const manufacturer = selectedOptions[0];
                   updateProductManufacturerMutation({
+                    taskId: alwaysString(router.query.taskId),
                     productId: `${product._id}`,
                     manufacturerSlug: manufacturer.itemId,
                   }).catch(console.log);

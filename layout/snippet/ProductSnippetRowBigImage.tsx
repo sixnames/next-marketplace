@@ -142,7 +142,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
           </div>
         ) : null}
 
-        {/*connections*/}
+        {/*variants*/}
         {(variants || []).length > 0 && showSnippetConnections ? (
           <div className='mt-2 mb-6 hidden md:block'>
             {(variants || []).map(({ _id, attribute, products }) => {

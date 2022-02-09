@@ -144,7 +144,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
             {/*price*/}
             {isShopless ? null : <ProductSnippetPrice shopsCount={shopsCount} value={minPrice} />}
 
-            {/*connections*/}
+            {/*variants*/}
             {(variants || []).length > 0 && showSnippetConnections ? (
               <div className='mt-2 mb-4 hidden md:block'>
                 {(variants || []).map(({ _id, attribute, products }) => {

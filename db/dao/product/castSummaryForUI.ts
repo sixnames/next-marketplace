@@ -1,6 +1,6 @@
-import { FILTER_SEPARATOR } from '../../../config/common';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getTreeFromList } from '../../../lib/treeUtils';
+import { FILTER_SEPARATOR } from 'config/common';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getTreeFromList } from 'lib/treeUtils';
 import {
   AttributeInterface,
   BrandInterface,
@@ -8,7 +8,7 @@ import {
   ProductAttributeInterface,
   ProductVariantInterface,
   ProductSummaryInterface,
-} from '../../uiInterfaces';
+} from 'db/uiInterfaces';
 import { castProductVariantForUI } from './castProductVariantForUI';
 
 interface CastProductForUI {
@@ -94,9 +94,9 @@ export function castSummaryForUI({
     : null;
 
   // variants
-  const variants = summary.variants.reduce((acc: ProductVariantInterface[], connection) => {
+  const variants = summary.variants.reduce((acc: ProductVariantInterface[], variant) => {
     const castedConnection = castProductVariantForUI({
-      variant: connection,
+      variant: variant,
       locale,
     });
 

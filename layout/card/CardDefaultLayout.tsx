@@ -172,7 +172,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   />
                 </div>
 
-                {/*connections*/}
+                {/*variants*/}
                 {variants.length > 0 ? (
                   <div className='mb-8'>
                     {variants.map(({ _id, attribute, products }) => {
@@ -188,7 +188,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                               return (
                                 <TagLink
                                   theme={'primary'}
-                                  data-cy={`card-connection`}
+                                  data-cy={`card-variant`}
                                   className={isCurrent ? `pointer-events-none` : ``}
                                   key={`${option?.name}`}
                                   isActive={isCurrent}

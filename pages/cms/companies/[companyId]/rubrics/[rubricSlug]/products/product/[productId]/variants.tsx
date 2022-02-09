@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ConsoleRubricProductConnections from '../../../../../../../../../components/console/ConsoleRubricProductConnections';
+import ConsoleRubricProductVariants from 'components/console/ConsoleRubricProductVariants';
 import { COL_COMPANIES } from '../../../../../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../../../../../db/mongodb';
 import {
@@ -12,7 +12,7 @@ import {
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
 import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
-import { getCmsProduct } from '../../../../../../../../../lib/productUtils';
+import { getFullProductSummary } from '../../../../../../../../../lib/productUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -72,7 +72,7 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({
       breadcrumbs={breadcrumbs}
       basePath={routeBasePath}
     >
-      <ConsoleRubricProductConnections product={product} />
+      <ConsoleRubricProductVariants product={product} />
     </CmsProductLayout>
   );
 };
@@ -121,7 +121,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getCmsProduct({
+  const payload = await getFullProductSummary({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: companyResult.slug,
@@ -133,7 +133,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product } = payload;
+  const { summary } = payload;
 
   const links = getCmsCompanyLinks({
     companyId: companyResult._id,
@@ -142,7 +142,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      product: castDbData(product),
+      product: castDbData(summary),
       pageCompany: castDbData(companyResult),
       routeBasePath: links.root,
     },

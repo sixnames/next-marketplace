@@ -1,5 +1,5 @@
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
-import { getConsoleRubricLinks } from '../../../lib/linkUtils';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
 
 describe('Product variants', () => {
   const links = getConsoleRubricLinks({
@@ -11,14 +11,18 @@ describe('Product variants', () => {
   });
 
   it('Should CRUD product variants', () => {
-    cy.getByCy('product-connections-list').should('exist');
-    cy.getByCy('create-connection').click();
-    cy.getByCy('create-connection-modal').should('exist');
+    cy.getByCy('product-variants-list').should('exist');
+
+    // create variant
+    cy.getByCy('create-variant').click();
+    cy.getByCy('create-variant-modal').should('exist');
     cy.selectOptionByTestId('attributeId', 'Объем');
-    cy.getByCy('create-connection-submit').click();
+    cy.getByCy('create-variant-submit').click();
     cy.wait(1500);
-    cy.getByCy('Объем-connection-product-create').click();
-    cy.getByCy('add-product-to-connection-modal').should('exist');
+
+    // add variant product
+    cy.getByCy('Объем-variant-product-create').click();
+    cy.getByCy('add-product-to-variant-modal').should('exist');
     cy.getByCy('product-search-list-0-row').then(($row: any) => {
       const button = $row.find('button');
       cy.wrap(button).click();
@@ -35,6 +39,6 @@ describe('Product variants', () => {
     cy.getByCy('confirm').click();
     cy.wait(1500);
 
-    cy.getByCy('Объем-connection-product-create').should('not.exist');
+    cy.getByCy('Объем-variant-product-create').should('not.exist');
   });
 });

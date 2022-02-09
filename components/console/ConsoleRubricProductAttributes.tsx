@@ -1,18 +1,20 @@
 import { Form, Formik } from 'formik';
+import { alwaysString } from 'lib/arrayUtils';
+import { useRouter } from 'next/router';
 import * as React from 'react';
-import { ATTRIBUTE_OPTIONS_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
+import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import {
   OptionInterface,
   ProductAttributeInterface,
   ProductSummaryInterface,
-} from '../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import {
   useUpdateProductNumberAttribute,
   useUpdateProductSelectAttribute,
   useUpdateProductTextAttribute,
-} from '../../hooks/mutations/useProductMutations';
-import { noNaN } from '../../lib/numbers';
+} from 'hooks/mutations/useProductMutations';
+import { noNaN } from 'lib/numbers';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import FakeInput from '../FormElements/Input/FakeInput';
@@ -40,6 +42,7 @@ interface ConsoleRubricProductAttributesInterface {
 const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInterface> = ({
   product,
 }) => {
+  const router = useRouter();
   const { showModal } = useAppContext();
   const { attributesGroups } = product;
 
@@ -51,6 +54,7 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
     (productAttribute: ProductAttributeInterface) => {
       if (productAttribute.attribute?.optionsGroupId) {
         updateProductSelectAttributeMutation({
+          taskId: alwaysString(router.query.taskId),
           productId: `${product._id}`,
           attributeId: `${productAttribute.attributeId}`,
           productAttributeId: `${productAttribute._id}`,
@@ -58,7 +62,7 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
         }).catch(console.log);
       }
     },
-    [product._id, updateProductSelectAttributeMutation],
+    [product._id, router.query.taskId, updateProductSelectAttributeMutation],
   );
 
   return (
@@ -116,6 +120,7 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                                 ),
                                 onSubmit: (value) => {
                                   updateProductSelectAttributeMutation({
+                                    taskId: alwaysString(router.query.taskId),
                                     productId: `${product._id}`,
                                     attributeId: `${attribute._id}`,
                                     productAttributeId: `${productAttribute._id}`,
@@ -166,6 +171,7 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                                 ),
                                 onSubmit: (value) => {
                                   updateProductSelectAttributeMutation({
+                                    taskId: alwaysString(router.query.taskId),
                                     productId: `${product._id}`,
                                     attributeId: `${productAttribute.attributeId}`,
                                     productAttributeId: `${productAttribute._id}`,
@@ -188,6 +194,7 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                 initialValues={{ attributes: numberAttributesAST }}
                 onSubmit={(values) => {
                   updateProductNumberAttributeMutation({
+                    taskId: alwaysString(router.query.taskId),
                     productId: `${product._id}`,
                     attributes: (values.attributes || []).map((attribute) => {
                       return {
@@ -225,8 +232,12 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                             })}
                           </div>
 
-                          <FixedButtons>
-                            <WpButton testId={'submit-number-attributes'} type={'submit'}>
+                          <FixedButtons lowTop>
+                            <WpButton
+                              testId={'submit-number-attributes'}
+                              size={'small'}
+                              type={'submit'}
+                            >
                               Сохранить
                             </WpButton>
                           </FixedButtons>
@@ -243,6 +254,7 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                 initialValues={{ attributes: stringAttributesAST }}
                 onSubmit={(values) => {
                   updateProductTextAttributeMutation({
+                    taskId: alwaysString(router.query.taskId),
                     productId: `${product._id}`,
                     attributes: (values.attributes || []).map((attribute) => {
                       return {
@@ -276,8 +288,12 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                             );
                           })}
 
-                          <FixedButtons>
-                            <WpButton testId={'submit-text-attributes'} type={'submit'}>
+                          <FixedButtons lowTop>
+                            <WpButton
+                              testId={'submit-text-attributes'}
+                              size={'small'}
+                              type={'submit'}
+                            >
                               Сохранить
                             </WpButton>
                           </FixedButtons>

@@ -1,22 +1,28 @@
+import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'config/common';
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
+import { getFullProductSummary, getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { deleteProductFromConnectionSchema } from '../../../validation/productSchema';
-import { COL_PRODUCT_SUMMARIES } from '../../collectionNames';
+} from 'lib/sessionHelpers';
+import { deleteProductFromConnectionSchema } from 'validation/productSchema';
+import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
 import {
   ObjectIdModel,
   ProductPayloadModel,
   ProductSummaryModel,
   ProductVariantItemModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+  SummaryDiffModel,
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface, ProductVariantInterface } from 'db/uiInterfaces';
 
 export interface DeleteProductFromVariantInputInterface {
+  taskId?: string | null;
   productId: string;
   deleteProductId: string;
   variantId: string;
@@ -26,7 +32,7 @@ export async function deleteProductFromVariant({
   context,
   input,
 }: DaoPropsInterface<DeleteProductFromVariantInputInterface>): Promise<ProductPayloadModel> {
-  const { getApiMessage } = await getRequestParams(context);
+  const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
 
@@ -34,15 +40,15 @@ export async function deleteProductFromVariant({
 
   let mutationPayload: ProductPayloadModel = {
     success: false,
-    message: await getApiMessage('products.connection.deleteError'),
+    message: await getApiMessage('products.variant.deleteError'),
   };
 
   try {
     await session.withTransaction(async () => {
       // permission
-      const { allow, message } = await getOperationPermission({
+      const { allow, message, user, role } = await getOperationPermission({
         context,
-        slug: 'updateProduct',
+        slug: 'updateProductVariants',
       });
       if (!allow) {
         mutationPayload = {
@@ -73,13 +79,42 @@ export async function deleteProductFromVariant({
       const minimumProductsCountForConnectionDelete = 2;
 
       // check all entities availability
-      const productId = new ObjectId(input.productId);
-      const deleteProductId = new ObjectId(input.deleteProductId);
       const variantId = new ObjectId(input.variantId);
-      const summary = await productSummariesCollection.findOne({ _id: productId });
-      const deleteSummary = await productSummariesCollection.findOne({
-        _id: deleteProductId,
+      const taskVariantSlug = getTaskVariantSlugByRule('updateProductVariants');
+      const summaryPayload = await getFullProductSummaryWithDraft({
+        locale,
+        taskId: input.taskId,
+        productId: input.productId,
+        companySlug: DEFAULT_COMPANY_SLUG,
+        isContentManager: role.isContentManager,
       });
+      if (!summaryPayload) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage(`products.update.notFound`),
+        };
+        await session.abortTransaction();
+        return;
+      }
+      const { summary } = summaryPayload;
+      const updatedSummary = { ...summary };
+      const diff: SummaryDiffModel = {};
+
+      const deleteSummaryPayload = await getFullProductSummary({
+        locale,
+        productId: input.deleteProductId,
+        companySlug: DEFAULT_COMPANY_SLUG,
+      });
+      if (!deleteSummaryPayload) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage(`products.update.notFound`),
+        };
+        await session.abortTransaction();
+        return;
+      }
+      const deleteSummary = deleteSummaryPayload.summary;
+
       const variant = summary?.variants.find((variant) => {
         return variant._id.equals(variantId);
       });
@@ -92,15 +127,15 @@ export async function deleteProductFromVariant({
         return;
       }
 
-      const errorMessage = await getApiMessage('products.connection.deleteError');
-      const successMessage = await getApiMessage('products.connection.deleteProductSuccess');
+      const errorMessage = await getApiMessage('products.variant.deleteError');
+      const successMessage = await getApiMessage('products.variant.deleteProductSuccess');
 
       const updateProductIds: ObjectIdModel[] = [];
       const allVariantProductIds: ObjectIdModel[] = [];
       const updatedVariantProducts = variant.products.reduce(
         (acc: ProductVariantItemModel[], variantProduct) => {
           allVariantProductIds.push(variantProduct.productId);
-          if (variantProduct.productId.equals(deleteProductId)) {
+          if (variantProduct.productId.equals(deleteSummary._id)) {
             return acc;
           }
 
@@ -110,8 +145,87 @@ export async function deleteProductFromVariant({
         [],
       );
 
-      // Delete connection if it has one item
+      // delete variant if it has one item or equals current summary
+      const isSameProduct = deleteSummary._id.equals(summary._id);
+      if (variant.products.length < minimumProductsCountForConnectionDelete || isSameProduct) {
+        updatedSummary.variants = updatedSummary.variants.filter(({ _id }) => {
+          return !_id.equals(variant._id);
+        });
+      } else {
+        // update variant
+        updatedSummary.variants = updatedSummary.variants.reduce(
+          (acc: ProductVariantInterface[], prevVariant) => {
+            if (prevVariant._id.equals(variant._id)) {
+              const products = prevVariant.products.filter(({ productId }) => {
+                return !productId.equals(deleteSummary._id);
+              });
+
+              return [
+                ...acc,
+                {
+                  ...prevVariant,
+                  products,
+                },
+              ];
+            }
+            return [...acc, prevVariant];
+          },
+          [],
+        );
+      }
+      diff.deleted = {
+        variantProducts: {
+          productId: deleteSummary._id,
+          variantId: variant._id,
+        },
+      };
+
+      // create task log for content manager
+      if (role.isContentManager && user) {
+        const task = await findOrCreateUserTask({
+          productId: summary._id,
+          variantSlug: taskVariantSlug,
+          executorId: user._id,
+          taskId: input.taskId,
+        });
+
+        if (!task) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('tasks.create.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        const newTaskLogResult = await addTaskLogItem({
+          taskId: task._id,
+          diff,
+          prevStateEnum: task.stateEnum,
+          nextStateEnum: TASK_STATE_IN_PROGRESS,
+          draft: updatedSummary,
+          createdById: user._id,
+        });
+        if (!newTaskLogResult) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('products.update.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        mutationPayload = {
+          success: true,
+          message: await getApiMessage('products.update.success'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // update documents
       if (variant.products.length < minimumProductsCountForConnectionDelete) {
+        // delete variant if it has one item
         const removedConnectionResult = await productSummariesCollection.updateMany(
           {
             _id: {
@@ -135,7 +249,7 @@ export async function deleteProductFromVariant({
           return;
         }
       } else {
-        // Update connection
+        // update variant
         const updatedVariantSummariesResult = await productSummariesCollection.updateMany(
           {
             _id: {
@@ -157,7 +271,7 @@ export async function deleteProductFromVariant({
         );
         const updatedOldSummaryResult = await productSummariesCollection.findOneAndUpdate(
           {
-            _id: deleteProductId,
+            _id: deleteSummary._id,
           },
           {
             $pull: {
@@ -180,7 +294,6 @@ export async function deleteProductFromVariant({
       mutationPayload = {
         success: true,
         message: successMessage,
-        payload: summary,
       };
     });
 

@@ -1,5 +1,5 @@
-import { NAV_GROUP_CONSOLE } from '../../../config/common';
-import { RoleModel } from '../../../db/dbModels';
+import { NAV_GROUP_CMS, NAV_GROUP_CONSOLE } from 'config/common';
+import { RoleModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import navItems from '../navItems/navItems';
 
@@ -30,6 +30,27 @@ const roles: RoleModel[] = [
       ru: 'Контент менеджер',
     },
     slug: 'contentManager',
+    isStaff: true,
+    isCompanyStaff: false,
+    isContentManager: true,
+    allowedAppNavigation: navItems.reduce((acc: string[], { path, navGroup }) => {
+      if (navGroup === NAV_GROUP_CMS) {
+        return [...acc, path];
+      }
+      return acc;
+    }, []),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    _id: getObjectId('contentManagerRoleB'),
+    nameI18n: {
+      ru: 'Контент менеджер B',
+    },
+    descriptionI18n: {
+      ru: 'Контент менеджер B',
+    },
+    slug: 'contentManagerB',
     isStaff: true,
     isCompanyStaff: false,
     isContentManager: true,

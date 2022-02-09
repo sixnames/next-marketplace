@@ -1,24 +1,18 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import {
-  CMS_BRANDS_LIMIT,
-  DEFAULT_LOCALE,
-  DEFAULT_PAGE,
-  SORT_ASC,
-  SORT_DESC,
-} from '../../../config/common';
-import { ISO_LANGUAGES } from '../../../config/constantSelects';
-import { alwaysArray } from '../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../lib/castUrlFilters';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
+import { CMS_BRANDS_LIMIT, DEFAULT_LOCALE, DEFAULT_PAGE, SORT_ASC, SORT_DESC } from 'config/common';
+import { ISO_LANGUAGES } from 'config/constantSelects';
+import { alwaysArray } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import {
   CmsBrandsListConsumerInterface,
   CmsBrandsListPageInterface,
-} from '../../../pages/cms/brands/[...filters]';
-import { COL_BRANDS } from '../../collectionNames';
-import { getDatabase } from '../../mongodb';
-import { BrandInterface } from '../../uiInterfaces';
+} from 'pages/cms/brands/[...filters]';
+import { COL_BRANDS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { BrandInterface } from 'db/uiInterfaces';
 
 export const getCmsBrandsListPageSsr = async (
   context: GetServerSidePropsContext,

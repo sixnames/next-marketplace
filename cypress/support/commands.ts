@@ -1,7 +1,9 @@
 import 'cypress-file-upload';
 import 'cypress-localstorage-commands';
+import { KEY_CODES } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { TaskModel } from 'db/dbModels';
+import { getProjectLinks } from 'lib/getProjectLinks';
 
 // ***********************************************
 // This example commands.js shows you how to
@@ -32,6 +34,18 @@ import { getProjectLinks } from '../../lib/getProjectLinks';
 Cypress.Commands.add('getByCy', (testId) => {
   cy.wait(600);
   return cy.get(`[data-cy="${testId}"]`) as any;
+});
+
+Cypress.Commands.add('dndReorder', ({ testId, moveKeyCode }) => {
+  cy.getByCy(testId)
+    .focus()
+    .trigger('keydown', { keyCode: KEY_CODES.space })
+    // need to re-query for a clone
+    .getByCy(testId)
+    .trigger('keydown', { keyCode: moveKeyCode, force: true })
+    // finishing before the movement time is fine - but this looks nice
+    .wait(500)
+    .trigger('keydown', { keyCode: KEY_CODES.space, force: true });
 });
 
 Cypress.Commands.add('visitBlank', (testId, additionalPath?: string) => {
@@ -134,6 +148,14 @@ Cypress.Commands.add('signOut', (redirect = '/') => {
   cy.visit('/api/auth/signout');
   cy.get('[type="submit"]').click();
   cy.visit(redirect);
+});
+
+Cypress.Commands.add('countTaskLogs', (taskItemId: string, length: number) => {
+  cy.wait(2000);
+  cy.task('getTaskFromDb', taskItemId).then((taskResult) => {
+    const task = taskResult as unknown as TaskModel | null;
+    assert((task?.log || []).length === length, `Task log should have length ${length}`);
+  });
 });
 
 Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOrderInterface) => {

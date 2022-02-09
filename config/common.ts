@@ -15,7 +15,7 @@ import {
   SessionLogEventVariantEnum,
   SortDirectionModel,
   SupplierPriceVariantModel,
-} from '../db/dbModels';
+} from 'db/dbModels';
 
 export type RequestMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH';
 export const REQUEST_METHOD_GET = 'GET' as RequestMethodType;
@@ -504,4 +504,19 @@ export const DEFAULT_DIFF = {
   added: {},
   deleted: {},
   updated: {},
+};
+
+export const KEY_CODES = {
+  tab: 9,
+  enter: 13,
+  escape: 27,
+  space: 32,
+  pageUp: 33,
+  pageDown: 34,
+  end: 35,
+  home: 36,
+  arrowLeft: 37,
+  arrowUp: 38,
+  arrowRight: 39,
+  arrowDown: 40,
 };

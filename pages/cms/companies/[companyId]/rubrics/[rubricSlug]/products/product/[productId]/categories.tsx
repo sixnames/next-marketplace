@@ -14,7 +14,7 @@ import {
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
 import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
-import { getCmsProduct } from '../../../../../../../../../lib/productUtils';
+import { getFullProductSummary } from '../../../../../../../../../lib/productUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -127,7 +127,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getCmsProduct({
+  const payload = await getFullProductSummary({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: companyResult.slug,
@@ -139,19 +139,19 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product } = payload;
+  const { summary } = payload;
 
   // Get rubric categories
   const initialCategories = await categoriesCollection
     .find({
-      rubricId: product.rubricId,
+      rubricId: summary.rubricId,
     })
     .toArray();
   const categories: ProductCategoryInterface[] = initialCategories.map((category) => {
     return {
       ...category,
       categories: [],
-      selected: product.filterSlugs.some((slug) => slug === category.slug),
+      selected: summary.filterSlugs.some((slug) => slug === category.slug),
     };
   });
 
@@ -167,7 +167,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      product: castDbData(product),
+      product: castDbData(summary),
       categoriesTree: castDbData(categoriesTree),
       pageCompany: castDbData(companyResult),
       routeBasePath: links.root,

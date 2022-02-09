@@ -1,10 +1,10 @@
 import Head from 'next/head';
 import * as React from 'react';
-import Inner from '../../components/Inner';
-import WpTitle from '../../components/WpTitle';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../db/uiInterfaces';
-import { getConsoleCompanyLinks } from '../../lib/linkUtils';
-import { ClientNavItemInterface } from '../../types/clientTypes';
+import Inner from 'components/Inner';
+import WpTitle from 'components/WpTitle';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { ClientNavItemInterface } from 'types/clientTypes';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
 

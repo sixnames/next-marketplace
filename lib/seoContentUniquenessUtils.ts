@@ -2,24 +2,24 @@ import { getTextContents, Value } from '@react-page/editor';
 import { ObjectId } from 'mongodb';
 import fetch from 'node-fetch';
 import qs from 'qs';
-import { reactPageCellPlugins } from '../components/PageEditor';
+import { reactPageCellPlugins } from 'components/PageEditor';
 import {
   DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   REQUEST_METHOD_POST,
-} from '../config/common';
-import { COL_COMPANIES, COL_CONFIGS, COL_LANGUAGES, COL_SEO_CONTENTS } from '../db/collectionNames';
-import { getCitiesList } from '../db/dao/cities/getCitiesList';
+} from 'config/common';
+import { COL_COMPANIES, COL_CONFIGS, COL_LANGUAGES, COL_SEO_CONTENTS } from 'db/collectionNames';
+import { getCitiesList } from 'db/dao/cities/getCitiesList';
 import {
   CompanyModel,
   ConfigModel,
   LanguageModel,
   ObjectIdModel,
   SeoContentModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { SeoContentCitiesInterface } from '../db/uiInterfaces';
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { castConfigs, getConfigStringValue } from './configsUtils';
 
 interface CheckSeoContentUniquenessInterface {

@@ -1,35 +1,23 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ConsoleRubricProductBrands from '../../../../../../../components/console/ConsoleRubricProductBrands';
-import { DEFAULT_COMPANY_SLUG } from '../../../../../../../config/common';
-import {
-  COL_BRAND_COLLECTIONS,
-  COL_BRANDS,
-  COL_MANUFACTURERS,
-} from '../../../../../../../db/collectionNames';
-import {
-  BrandCollectionModel,
-  BrandModel,
-  ManufacturerModel,
-} from '../../../../../../../db/dbModels';
-import { getDatabase } from '../../../../../../../db/mongodb';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_MANUFACTURERS } from 'db/collectionNames';
+import { BrandCollectionModel, BrandModel, ManufacturerModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   BrandCollectionInterface,
   BrandInterface,
   ManufacturerInterface,
   ProductSummaryInterface,
-} from '../../../../../../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from '../../../../../../../lib/i18n';
-import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
-import { getCmsProduct } from '../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../lib/ssrUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ProductBrandsInterface {
   product: ProductSummaryInterface;
@@ -108,10 +96,11 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getCmsProduct({
+  const payload = await getFullProductSummaryWithDraft({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
+    isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
   });
 
   if (!payload) {
@@ -119,12 +108,12 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
-  const { product } = payload;
+  const { summary } = payload;
 
-  const manufacturerEntity = product.manufacturerSlug
+  const manufacturerEntity = summary.manufacturerSlug
     ? await manufacturersCollection.findOne(
         {
-          itemId: product.manufacturerSlug,
+          itemId: summary.manufacturerSlug,
         },
         {
           projection: {
@@ -142,9 +131,9 @@ export const getServerSideProps = async (
       }
     : null;
 
-  const brandEntity = product.brandSlug
+  const brandEntity = summary.brandSlug
     ? await brandsCollection.findOne(
-        { itemId: product.brandSlug },
+        { itemId: summary.brandSlug },
         {
           projection: {
             _id: true,
@@ -161,10 +150,10 @@ export const getServerSideProps = async (
       }
     : null;
 
-  const brandCollectionEntity = product.brandCollectionSlug
+  const brandCollectionEntity = summary.brandCollectionSlug
     ? await brandCollectionsCollection.findOne(
         {
-          itemId: product.brandCollectionSlug,
+          itemId: summary.brandCollectionSlug,
         },
         {
           projection: {
@@ -185,7 +174,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      product: castDbData(product),
+      product: castDbData(summary),
       brand: castDbData(brand),
       brandCollection: castDbData(brandCollection),
       manufacturer: castDbData(manufacturer),

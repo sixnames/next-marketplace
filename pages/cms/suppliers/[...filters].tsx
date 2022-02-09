@@ -12,7 +12,7 @@ import Pager from '../../../components/Pager';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
 import { CONFIRM_MODAL, SUPPLIER_MODAL } from '../../../config/modalVariants';
-import { getCmsSuppliersListPageSsr } from '../../../db/dao/ssr/getCmsSuppliersListPageSsr';
+import { getCmsSuppliersListPageSsr } from 'db/dao/ssr/getCmsSuppliersListPageSsr';
 import { AppPaginationInterface, SupplierInterface } from '../../../db/uiInterfaces';
 import { useDeleteSupplierMutation } from '../../../generated/apolloComponents';
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';

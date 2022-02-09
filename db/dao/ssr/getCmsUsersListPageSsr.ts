@@ -1,19 +1,19 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_PAGE, SORT_DESC } from '../../../config/common';
-import { alwaysArray } from '../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../lib/castUrlFilters';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getFullName } from '../../../lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
-import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
+import { DEFAULT_PAGE, SORT_DESC } from 'config/common';
+import { alwaysArray } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getFullName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import {
   CmsUsersListConsumerInterface,
   CmsUsersListPageInterface,
-} from '../../../pages/cms/users/[...filters]';
-import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from '../../collectionNames';
-import { getDatabase } from '../../mongodb';
-import { RoleInterface, UserInterface } from '../../uiInterfaces';
+} from 'pages/cms/users/[...filters]';
+import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { RoleInterface, UserInterface } from 'db/uiInterfaces';
 
 interface UsersAggregationInterface {
   docs: UserInterface[];

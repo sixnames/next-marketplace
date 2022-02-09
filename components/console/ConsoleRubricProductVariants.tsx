@@ -1,23 +1,21 @@
+import { alwaysString } from 'lib/arrayUtils';
+import { useRouter } from 'next/router';
 import * as React from 'react';
-import { FILTER_SEPARATOR } from '../../config/common';
-import {
-  CONFIRM_MODAL,
-  CREATE_CONNECTION_MODAL,
-  PRODUCT_SEARCH_MODAL,
-} from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
-import { useNotificationsContext } from '../../context/notificationsContext';
+import { FILTER_SEPARATOR } from 'config/common';
+import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
+import { useNotificationsContext } from 'context/notificationsContext';
 import {
   ProductVariantInterface,
   ProductVariantItemInterface,
   ProductSummaryInterface,
-} from '../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import {
   useAddProductToVariant,
   useCreateProductVariant,
   useDeleteProductFromVariant,
-} from '../../hooks/mutations/useProductMutations';
-import { getCmsLinks } from '../../lib/linkUtils';
+} from 'hooks/mutations/useProductMutations';
+import { getCmsLinks } from 'lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -30,15 +28,16 @@ import TableRowImage from '../TableRowImage';
 import WpAccordion from '../WpAccordion';
 import WpTable, { WpTableColumn } from '../WpTable';
 
-interface ProductConnectionControlsInterface {
+interface ProductVariantControlsInterface {
   variant: ProductVariantInterface;
   product: ProductSummaryInterface;
 }
 
-const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = ({
+const ProductVariantControls: React.FC<ProductVariantControlsInterface> = ({
   variant,
   product,
 }) => {
+  const router = useRouter();
   const { showModal } = useAppContext();
   const [addProductToConnectionMutation] = useAddProductToVariant();
 
@@ -50,7 +49,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
 
   return (
     <ContentItemControls
-      testId={`${variant.attribute?.name}-connection-product`}
+      testId={`${variant.attribute?.name}-variant-product`}
       createTitle={'Добавить товар к связи'}
       createHandler={() => {
         showModal<ProductSearchModalInterface>({
@@ -58,12 +57,13 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
           props: {
             rubricSlug: product.rubricSlug,
             createTitle: 'Добавить товар в связь',
-            testId: 'add-product-to-connection-modal',
+            testId: 'add-product-to-variant-modal',
             excludedProductsIds,
             excludedOptionsSlugs,
             attributesIds: [`${variant.attributeId}`],
             createHandler: (addProduct) => {
               addProductToConnectionMutation({
+                taskId: alwaysString(router.query.taskId),
                 addProductId: `${addProduct._id}`,
                 variantId: `${variant._id}`,
                 productId: `${product._id}`,
@@ -76,17 +76,18 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
   );
 };
 
-export interface ProductConnectionsItemInterface {
+export interface ProductVariantsItemInterface {
   product: ProductSummaryInterface;
   variant: ProductVariantInterface;
-  connectionIndex: number;
+  variantIndex: number;
 }
 
-const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
+const ProductVariantsItem: React.FC<ProductVariantsItemInterface> = ({
   variant,
   product,
-  connectionIndex,
+  variantIndex,
 }) => {
+  const router = useRouter();
   const { showErrorNotification } = useNotificationsContext();
   const { showModal } = useAppContext();
   const [deleteProductFromConnectionMutation] = useDeleteProductFromVariant();
@@ -146,7 +147,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       render: ({ dataItem, rowIndex }) => {
         return (
           <ContentItemControls
-            testId={`${connectionIndex}-${rowIndex}`}
+            testId={`${variantIndex}-${rowIndex}`}
             justifyContent={'flex-end'}
             updateTitle={'Редактировать товар'}
             updateHandler={() => {
@@ -162,7 +163,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
                 variant: CONFIRM_MODAL,
                 props: {
                   message: `Вы уверенны, что хотите удалить ${dataItem.summary?.snippetTitle} из связи ${variant.attribute?.name}?`,
-                  testId: 'delete-product-from-connection-modal',
+                  testId: 'delete-product-from-variant-modal',
                   confirm: () => {
                     if (!dataItem.summary) {
                       showErrorNotification({
@@ -171,6 +172,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
                       return;
                     }
                     deleteProductFromConnectionMutation({
+                      taskId: alwaysString(router.query.taskId),
                       deleteProductId: `${dataItem.summary._id}`,
                       variantId: `${variant._id}`,
                       productId: `${product._id}`,
@@ -191,17 +193,17 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 
   return (
     <WpAccordion
-      testId={`${variant.attribute.name}-connection`}
+      testId={`${variant.attribute.name}-variant`}
       title={`${variant.attribute.name}`}
       isOpen
       className='mb-8'
-      titleRight={<ProductConnectionControls variant={variant} product={product} />}
+      titleRight={<ProductVariantControls variant={variant} product={product} />}
     >
       <div className='mt-4'>
         <WpTable<ProductVariantItemInterface>
           columns={columns}
           data={products}
-          tableTestId={`${variant.attribute.name}-connection-list`}
+          tableTestId={`${variant.attribute.name}-variant-list`}
           testIdKey={'product.name'}
           onRowDoubleClick={(dataItem) => {
             const links = getCmsLinks({
@@ -216,26 +218,27 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
   );
 };
 
-interface ConsoleRubricProductConnectionsInterface {
+interface ConsoleRubricProductVariantsInterface {
   product: ProductSummaryInterface;
 }
 
-const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsInterface> = ({
+const ConsoleRubricProductVariants: React.FC<ConsoleRubricProductVariantsInterface> = ({
   product,
 }) => {
+  const router = useRouter();
   const { showModal } = useAppContext();
   const [createProductConnectionMutation] = useCreateProductVariant();
 
   return (
-    <Inner testId={'product-connections-list'}>
+    <Inner testId={'product-variants-list'}>
       <div className='mb-8'>
-        {product.variants.map((connection, connectionIndex) => {
+        {product.variants.map((variant, variantIndex) => {
           return (
-            <ProductConnectionsItem
-              key={`${connection._id}`}
+            <ProductVariantsItem
+              key={`${variant._id}`}
               product={product}
-              variant={connection}
-              connectionIndex={connectionIndex}
+              variant={variant}
+              variantIndex={variantIndex}
             />
           );
         })}
@@ -244,14 +247,17 @@ const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsI
       <FixedButtons>
         <WpButton
           size={'small'}
-          testId={`create-connection`}
+          testId={`create-variant`}
           onClick={() =>
             showModal<CreateConnectionModalInterface>({
               variant: CREATE_CONNECTION_MODAL,
               props: {
                 product,
                 confirm: (input) => {
-                  createProductConnectionMutation(input).catch(console.log);
+                  createProductConnectionMutation({
+                    taskId: alwaysString(router.query.taskId),
+                    ...input,
+                  }).catch(console.log);
                 },
               },
             })
@@ -264,4 +270,4 @@ const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsI
   );
 };
 
-export default ConsoleRubricProductConnections;
+export default ConsoleRubricProductVariants;

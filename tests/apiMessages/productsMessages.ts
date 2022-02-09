@@ -31,66 +31,66 @@ export const productsMessages: MessageBaseInterface[] = [
     },
   },
   {
-    slug: 'products.connection.exist',
+    slug: 'products.variant.exist',
     messageI18n: {
       [DEFAULT_LOCALE]: `Связь уже существует.`,
       [SECONDARY_LOCALE]: `Connection already exist.`,
     },
   },
   {
-    slug: 'products.connection.createError',
+    slug: 'products.variant.createError',
     messageI18n: {
       [DEFAULT_LOCALE]: `Ошибка создания связи.`,
       [SECONDARY_LOCALE]: `Connection creation error.`,
     },
   },
   {
-    slug: 'products.connection.updateError',
+    slug: 'products.variant.updateError',
     messageI18n: {
       [DEFAULT_LOCALE]: `Ошибка обновления связи.`,
       [SECONDARY_LOCALE]: `Connection update error.`,
     },
   },
   {
-    slug: 'products.connection.deleteError',
+    slug: 'products.variant.deleteError',
     messageI18n: {
       [DEFAULT_LOCALE]: `Ошибка удаления связи.`,
       [SECONDARY_LOCALE]: `Connection delete error.`,
     },
   },
   {
-    slug: 'products.connection.noAttributeError',
+    slug: 'products.variant.noAttributeError',
     messageI18n: {
       [DEFAULT_LOCALE]: `У добавляемого товара отсутствует необходимый атрибут.`,
       [SECONDARY_LOCALE]: `Required attribute is not added to the chosen product.`,
     },
   },
   {
-    slug: 'products.connection.createSuccess',
+    slug: 'products.variant.createSuccess',
     messageI18n: {
       [DEFAULT_LOCALE]: `Связь создана.`,
       [SECONDARY_LOCALE]: `Connection created.`,
     },
   },
   {
-    slug: 'products.connection.addProductSuccess',
+    slug: 'products.variant.addProductSuccess',
     messageI18n: {
       [DEFAULT_LOCALE]: `Товар добавлен в связь.`,
       [SECONDARY_LOCALE]: `Connection product added.`,
     },
   },
   {
-    slug: 'products.connection.deleteProductSuccess',
+    slug: 'products.variant.deleteProductSuccess',
     messageI18n: {
       [DEFAULT_LOCALE]: `Товар удалён из связи.`,
       [SECONDARY_LOCALE]: `Connection product removed.`,
     },
   },
   {
-    slug: 'products.connection.intersect',
+    slug: 'products.variant.intersect',
     messageI18n: {
       [DEFAULT_LOCALE]: `Значение атрибута добавляемого товара пересекается со значениями в связи.`,
-      [SECONDARY_LOCALE]: `Chosen product attribute value intersects with connection values.`,
+      [SECONDARY_LOCALE]: `Chosen product attribute value intersects with variant values.`,
     },
   },
   {
@@ -125,7 +125,7 @@ export const productsMessages: MessageBaseInterface[] = [
     slug: 'products.update.allOptionsAreUsed',
     messageI18n: {
       [DEFAULT_LOCALE]: `В связи использованы все опции.`,
-      [SECONDARY_LOCALE]: `All options are used in this connection.`,
+      [SECONDARY_LOCALE]: `All options are used in this variant.`,
     },
   },
   {
@@ -167,7 +167,7 @@ export const productsMessages: MessageBaseInterface[] = [
     slug: 'validation.productConnections.id',
     messageI18n: {
       [DEFAULT_LOCALE]: `ID связи товара обязательно.`,
-      [SECONDARY_LOCALE]: `Product connection ID is required.`,
+      [SECONDARY_LOCALE]: `Product variant ID is required.`,
     },
   },
   {

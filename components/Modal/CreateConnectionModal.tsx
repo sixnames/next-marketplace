@@ -50,7 +50,7 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
 
   if (attributesOptions.length === 0) {
     return (
-      <ModalFrame testId={'create-connection-empty-modal'}>
+      <ModalFrame testId={'create-variant-empty-modal'}>
         <ModalTitle>Создание связи</ModalTitle>
         <ModalText warning>
           <p>У данного товара нет доступных атрибутов для новой связи</p>
@@ -60,7 +60,7 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
   }
 
   return (
-    <ModalFrame testId={'create-connection-modal'}>
+    <ModalFrame testId={'create-variant-modal'}>
       <ModalTitle>Создание связи</ModalTitle>
       <Formik
         validationSchema={validationSchema}
@@ -99,7 +99,7 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
                 isRequired
               />
 
-              <WpButton type={'submit'} testId={'create-connection-submit'}>
+              <WpButton type={'submit'} testId={'create-variant-submit'}>
                 Создать
               </WpButton>
             </Form>

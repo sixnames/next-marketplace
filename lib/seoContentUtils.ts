@@ -9,8 +9,8 @@ import {
   FILTER_SEPARATOR,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   SORT_DESC,
-} from '../config/common';
-import { getPriceAttribute } from '../config/constantAttributes';
+} from 'config/common';
+import { getPriceAttribute } from 'config/constantAttributes';
 import {
   COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,
@@ -21,8 +21,8 @@ import {
   COL_OPTIONS,
   COL_RUBRICS,
   COL_SEO_CONTENTS,
-} from '../db/collectionNames';
-import { getCitiesList } from '../db/dao/cities/getCitiesList';
+} from 'db/collectionNames';
+import { getCitiesList } from 'db/dao/cities/getCitiesList';
 import {
   AttributeModel,
   BrandCollectionModel,
@@ -34,14 +34,14 @@ import {
   ObjectIdModel,
   RubricModel,
   SeoContentModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import {
   AttributeInterface,
   CategoryInterface,
   SeoContentCitiesInterface,
   SeoContentInterface,
-} from '../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import { castUrlFilters } from './castUrlFilters';
 import { getProjectLinks } from './getProjectLinks';
 import { getFieldStringLocale } from './i18n';
@@ -332,7 +332,7 @@ export async function getCatalogueSeoContentSlug({
       seoContentSlug: `${companyId}${cityId}${rubricId}${categoryIds}${brandIds}${brandCollectionIds}${attributeIds}${priceIds}${pageId}`,
     };
   } catch (e) {
-    console.log(e);
+    console.log('getCatalogueSeoContentSlug error', e);
     return null;
   }
 }

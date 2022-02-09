@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { getConstantOptionName, TASK_STATE_OPTIONS } from '../../config/constantSelects';
-import { CONFIRM_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
-import { useLocaleContext } from '../../context/localeContext';
-import { TaskInterface } from '../../db/uiInterfaces';
-import { useDeleteTask } from '../../hooks/mutations/useTaskMutations';
-import { getConsoleTaskLinks } from '../../lib/linkUtils';
+import { getConstantOptionName, TASK_STATE_OPTIONS } from 'config/constantSelects';
+import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
+import { useLocaleContext } from 'context/localeContext';
+import { TaskInterface } from 'db/uiInterfaces';
+import { useDeleteTask } from 'hooks/mutations/useTaskMutations';
+import { getConsoleTaskLinks } from 'lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -77,11 +77,11 @@ const ConsoleTasksList: React.FC<ConsoleTasksListInterface> = ({ basePath, tasks
           <div className='flex justify-end'>
             <ContentItemControls
               testId={`${dataItem.name}`}
-              updateTitle={'Редактировать тип задачи'}
+              updateTitle={'Редактировать задачу'}
               updateHandler={() => {
                 router.push(links.root).catch(console.log);
               }}
-              deleteTitle={'Удалить тип задачи'}
+              deleteTitle={'Удалить задачу'}
               deleteHandler={() => {
                 showModal<ConfirmModalInterface>({
                   variant: CONFIRM_MODAL,

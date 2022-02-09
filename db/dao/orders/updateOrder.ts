@@ -2,20 +2,20 @@ import { detailedDiff } from 'deep-object-diff';
 import { ObjectId } from 'mongodb';
 import { get } from 'lodash';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { noNaN } from '../../../lib/numbers';
-import { countDiscountedPrice, getOrderDiscountedPrice } from '../../../lib/priceUtils';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { castDbData } from '../../../lib/ssrUtils';
-import { COL_ORDER_LOGS, COL_ORDER_PRODUCTS, COL_ORDERS } from '../../collectionNames';
+import { noNaN } from 'lib/numbers';
+import { countDiscountedPrice, getOrderDiscountedPrice } from 'lib/priceUtils';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { castDbData } from 'lib/ssrUtils';
+import { COL_ORDER_LOGS, COL_ORDER_PRODUCTS, COL_ORDERS } from 'db/collectionNames';
 import {
   ObjectIdModel,
   DiffModel,
   OrderLogModel,
   OrderModel,
   OrderProductModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface, OrderInterface, OrderInterfacePayloadModel } from '../../uiInterfaces';
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface, OrderInterface, OrderInterfacePayloadModel } from 'db/uiInterfaces';
 import { getConsoleOrder } from './getConsoleOrder';
 
 export interface UpdateOrderInterface {

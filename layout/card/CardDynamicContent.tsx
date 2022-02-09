@@ -31,7 +31,7 @@ const CardDynamicContent: React.FC<CardDynamicContentInterface> = ({
           size={'small'}
           onClick={() => {
             window.open(
-              `${sessionUser.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}/constructor`,
+              `${sessionUser.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}/editor`,
               '_blank',
             );
           }}
@@ -59,7 +59,7 @@ const CardDynamicContent: React.FC<CardDynamicContentInterface> = ({
             size={'small'}
             onClick={() => {
               window.open(
-                `${sessionUser.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}/constructor`,
+                `${sessionUser.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}/editor`,
                 '_blank',
               );
             }}

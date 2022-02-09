@@ -73,6 +73,7 @@ async function updateProds() {
               nameI18n: navItemTemplate.nameI18n,
               index: navItemTemplate.index,
               path: navItemTemplate.path,
+              icon: navItem.icon,
             },
           },
         );

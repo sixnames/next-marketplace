@@ -1,25 +1,21 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ConsoleRubricProductConstructor, {
-  ConsoleRubricProductConstructorInterface,
-} from '../../../../../../../components/console/ConsoleRubricProductConstructor';
-import { DEFAULT_COMPANY_SLUG } from '../../../../../../../config/common';
-import { AppContentWrapperBreadCrumbs } from '../../../../../../../db/uiInterfaces';
+import ConsoleRubricProductEditor, {
+  ConsoleRubricProductEditorInterface,
+} from 'components/console/ConsoleRubricProductEditor';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
-import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
-import { getCmsProduct } from '../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../lib/ssrUtils';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getFullProductSummary } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 
-interface ProductAttributesInterface extends ConsoleRubricProductConstructorInterface {}
+interface ProductAttributesInterface extends ConsoleRubricProductEditorInterface {}
 
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({
   product,
-  cardContent,
+  seoContentsList,
   companySlug,
 }) => {
   const links = getConsoleRubricLinks({
@@ -50,9 +46,9 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
 
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <ConsoleRubricProductConstructor
+      <ConsoleRubricProductEditor
         product={product}
-        cardContent={cardContent}
+        seoContentsList={seoContentsList}
         companySlug={companySlug}
       />
     </CmsProductLayout>
@@ -85,7 +81,7 @@ export const getServerSideProps = async (
 
   const companySlug = DEFAULT_COMPANY_SLUG;
 
-  const payload = await getCmsProduct({
+  const payload = await getFullProductSummary({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug,
@@ -97,13 +93,13 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product, cardContent } = payload;
+  const { summary, seoContentsList } = payload;
 
   return {
     props: {
       ...props,
-      product: castDbData(product),
-      cardContent: castDbData(cardContent),
+      product: castDbData(summary),
+      seoContentsList: castDbData(seoContentsList),
       companySlug,
     },
   };

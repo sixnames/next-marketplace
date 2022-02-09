@@ -1,9 +1,9 @@
-import { getCmsLinks } from '../../../lib/linkUtils';
+import { getProjectLinks } from 'lib/getProjectLinks';
 
 describe('Tasks', () => {
-  const links = getCmsLinks({});
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(links.tasks.parentLink);
+    cy.testAuth(links.cms.tasks.url);
   });
 
   it('Should CRUD task variants', () => {
@@ -63,7 +63,7 @@ describe('Tasks', () => {
     cy.getByCy('task-submit').click();
 
     // should delete
-    cy.testAuth(links.tasks.parentLink);
+    cy.visit(links.cms.tasks.url);
     cy.getByCy('tasks-list').should('exist');
     cy.getByCy(`${updatedTask}-delete`).click();
     cy.getByCy('confirm').click();

@@ -10,18 +10,18 @@ import {
   DEFAULT_LOCALE,
   FILTER_CATEGORY_KEY,
   FILTER_SEPARATOR,
-} from '../config/common';
-import { COL_COMPANIES, COL_CONFIGS, COL_RUBRICS, COL_SEO_CONTENTS } from '../db/collectionNames';
-import { CompanyModel, ConfigModel, RubricModel, SeoContentModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { getCatalogueData } from '../lib/catalogueUtils';
+} from 'config/common';
+import { COL_COMPANIES, COL_CONFIGS, COL_RUBRICS, COL_SEO_CONTENTS } from 'db/collectionNames';
+import { CompanyModel, ConfigModel, RubricModel, SeoContentModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { getCatalogueData } from 'lib/catalogueUtils';
 import {
   castConfigs,
   getConfigBooleanValue,
   getConfigListValue,
   getConfigNumberValue,
-} from '../lib/configsUtils';
-import { getProjectLinks } from '../lib/getProjectLinks';
+} from 'lib/configsUtils';
+import { getProjectLinks } from 'lib/getProjectLinks';
 
 const SitemapXml: React.FC = () => {
   return <div />;
@@ -59,7 +59,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
-  const host = `${context.req.headers.host}`;
+  const host = `${req.headers.host}`;
   const domain = getDomain(host, { validHosts: ['localhost'] });
   const locale = DEFAULT_LOCALE;
   const citySlug = DEFAULT_CITY;
@@ -70,7 +70,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     company = await companiesCollection.findOne({ domain });
   }
   const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
-  // const companySlug = '5';
 
   // get configs
   const projectConfigs = await configsCollection
@@ -158,6 +157,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           {
             projection: {
               url: true,
+              slug: true,
             },
           },
         )
@@ -165,8 +165,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
       seoContents.forEach(({ url }) => {
         const newUrl = url
-          .replace(`/${companySlug}/${DEFAULT_CITY}`, '')
-          .replace(`/${DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}`, '');
+          .replace(`/${companySlug}/${DEFAULT_CITY}`, '/')
+          .replace(`/${DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}`, '/');
         if (!initialSlugs.includes(newUrl)) {
           initialSlugs.push(newUrl);
         }
@@ -198,7 +198,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   res.setHeader('Content-Type', 'text/xml');
   res.write(
     createSitemap({
-      host: `${req.headers.host}`,
+      host,
       slugs: initialSlugs,
     }),
   );

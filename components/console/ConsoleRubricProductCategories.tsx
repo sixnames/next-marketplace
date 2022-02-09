@@ -1,9 +1,11 @@
+import { alwaysString } from 'lib/arrayUtils';
+import { useRouter } from 'next/router';
 import * as React from 'react';
-import { ProductCategoryInterface, ProductSummaryInterface } from '../../db/uiInterfaces';
+import { ProductCategoryInterface, ProductSummaryInterface } from 'db/uiInterfaces';
 import {
   useUpdateProductCategory,
   useUpdateProductCategoryVisibility,
-} from '../../hooks/mutations/useProductMutations';
+} from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import WpCheckbox from '../FormElements/Checkbox/WpCheckbox';
 import Inner from '../Inner';
@@ -19,6 +21,7 @@ const ConsoleRubricProductCategories: React.FC<ConsoleRubricProductCategoriesInt
   product,
   categoriesTree,
 }) => {
+  const router = useRouter();
   const { showLoading } = useMutationCallbacks({
     reload: true,
   });
@@ -44,6 +47,7 @@ const ConsoleRubricProductCategories: React.FC<ConsoleRubricProductCategoriesInt
                 onChange={() => {
                   showLoading();
                   updateProductCategoryMutation({
+                    taskId: alwaysString(router.query.taskId),
                     productId: `${product._id}`,
                     categoryId: `${category._id}`,
                   }).catch(console.log);
@@ -66,6 +70,7 @@ const ConsoleRubricProductCategories: React.FC<ConsoleRubricProductCategoriesInt
                   onChange={() => {
                     showLoading();
                     updateProductCategoryVisibilityMutation({
+                      taskId: alwaysString(router.query.taskId),
                       productId: `${product._id}`,
                       categoryId: `${category._id}`,
                     }).catch(console.log);
@@ -89,6 +94,7 @@ const ConsoleRubricProductCategories: React.FC<ConsoleRubricProductCategoriesInt
     [
       product._id,
       product.titleCategorySlugs,
+      router.query.taskId,
       showLoading,
       updateProductCategoryMutation,
       updateProductCategoryVisibilityMutation,

@@ -58,6 +58,6 @@ module.exports = {
     'cypress/no-assigning-return-values': 'error',
     'cypress/no-unnecessary-waiting': 'off',
     'cypress/assertion-before-screenshot': 'warn',
-    'cypress/no-force': 'warn',
+    'cypress/no-force': 'off',
   },
 };

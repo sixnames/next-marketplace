@@ -82,7 +82,7 @@ const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
   }
 
   // Return all languages inputs in accordion
-  // if site has more then one language
+  // if site has more languages than one
   return (
     <InputLine
       name={inputName}
@@ -121,13 +121,13 @@ const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
                 </WpTooltip>
               }
             >
-              <div className='mt-3 mb-6'>
+              <div className='mt-3'>
                 {additionalUi ? additionalUi(localeSlug) : null}
 
                 {variant === 'textarea' ? (
-                  <FormikTextarea {...props} name={name} testId={`${testId}-${localeSlug}`} low />
+                  <FormikTextarea {...props} low name={name} testId={`${testId}-${localeSlug}`} />
                 ) : (
-                  <FormikInput {...props} name={name} testId={`${testId}-${localeSlug}`} low />
+                  <FormikInput {...props} low name={name} testId={`${testId}-${localeSlug}`} />
                 )}
               </div>
             </WpAccordion>

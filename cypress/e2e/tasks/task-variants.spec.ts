@@ -6,13 +6,13 @@ import {
   TASK_PRICE_TARGET_FIELD,
   TASK_PRICE_TARGET_SYMBOL,
   TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
-} from '../../../config/constantSelects';
-import { getCmsLinks } from '../../../lib/linkUtils';
+} from 'config/constantSelects';
+import { getProjectLinks } from 'lib/getProjectLinks';
 
 describe('Task variants', () => {
-  const links = getCmsLinks({});
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(links.taskVariants.parentLink);
+    cy.testAuth(links.cms.taskVariants.url);
   });
 
   it('Should CRUD task variants', () => {
@@ -66,7 +66,7 @@ describe('Task variants', () => {
     cy.getByCy('task-variant-price-1-delete').should('not.exist');
 
     // should delete
-    cy.visit(links.taskVariants.parentLink);
+    cy.visit(links.cms.taskVariants.url);
     cy.getByCy('task-variants-list').should('exist');
     cy.getByCy(createdTaskVariant).should('not.exist');
     cy.getByCy(updatedTaskVariant).should('exist');

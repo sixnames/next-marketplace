@@ -1,15 +1,12 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ConsoleRubricProductAttributes from '../../../../../../../components/console/ConsoleRubricProductAttributes';
-import { getCmsProductAttributesPageSsr } from '../../../../../../../db/dao/ssr/getCmsProductAttributesPageSsr';
-import {
-  AppContentWrapperBreadCrumbs,
-  ProductSummaryInterface,
-} from '../../../../../../../db/uiInterfaces';
+import { getCmsProductAttributesPageSsr } from 'db/dao/ssr/getCmsProductAttributesPageSsr';
+import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
-import { GetAppInitialDataPropsInterface } from '../../../../../../../lib/ssrUtils';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CmsProductAttributesPageConsumerInterface {
   product: ProductSummaryInterface;

@@ -1,7 +1,8 @@
+import { CreateProductInputInterface } from 'db/dao/product/createProduct';
 import { ObjectId } from 'mongodb';
-import { GEO_POINT_TYPE } from '../config/common';
-import { IpInfoInterface } from '../types/clientTypes';
-import { IconType } from '../types/iconTypes';
+import { GEO_POINT_TYPE } from 'config/common';
+import { IpInfoInterface } from 'types/clientTypes';
+import { IconType } from 'types/iconTypes';
 import {
   BarcodeDoublesInterface,
   RubricInterface,
@@ -196,6 +197,7 @@ export interface CountersModel {
   views: CountersItemModel;
   priorities?: CountersItemModel;
 }
+
 export interface AttributeCountersItemModel {
   [key: string]: any;
 }
@@ -495,6 +497,33 @@ export interface DiffModel {
   added: Record<string, any>;
   deleted: Record<string, any>;
   updated: Record<string, any>;
+}
+
+export interface SummaryDiffVariantModel {
+  variantId: ObjectIdModel;
+  productId: ObjectIdModel;
+}
+
+export interface SummaryDiffActionFieldsModel {
+  selectAttributes?: ObjectIdModel[] | null;
+  numberAttributes?: ObjectIdModel[] | null;
+  textAttributes?: ObjectIdModel[] | null;
+  assets?: string[] | null;
+  categories?: string[] | null;
+  titleCategorySlugs?: string | null;
+  variants?: ObjectIdModel | null;
+  variantProducts?: SummaryDiffVariantModel | null;
+  brand?: string | null;
+  brandCollection?: string | null;
+  manufacturer?: string | null;
+  details?: Partial<CreateProductInputInterface> | null;
+  seoContent?: number | null;
+}
+
+export interface SummaryDiffModel {
+  added?: SummaryDiffActionFieldsModel;
+  deleted?: SummaryDiffActionFieldsModel;
+  updated?: SummaryDiffActionFieldsModel;
 }
 
 export interface OrderLogUserModel {
@@ -1131,7 +1160,7 @@ export interface TaskLogModel {
   _id: ObjectIdModel;
   prevStateEnum: TaskStateModel;
   nextStateEnum: TaskStateModel;
-  diff?: DiffModel | null;
+  diff?: SummaryDiffModel | null;
   draft?: JSONObjectModel | null;
   createdById: ObjectIdModel;
   comment?: string;
@@ -1140,11 +1169,13 @@ export interface TaskLogModel {
 
 export interface TaskModel extends TimestampModel {
   _id: ObjectIdModel;
+  itemId: string;
   companySlug: string;
   stateEnum: TaskStateModel; // TASK_STATE_OPTIONS
   nameI18n?: TranslationModel | null;
   createdById: ObjectIdModel;
   variantId?: ObjectIdModel | null;
+  variantSlug?: string;
   executorId?: ObjectIdModel | null;
   productId?: ObjectIdModel | null;
   log: TaskLogModel[];
@@ -1156,6 +1187,7 @@ export interface TaskModel extends TimestampModel {
 export interface ConstructorAssetPayloadModel extends PayloadType<string> {
   payload: string;
 }
+
 export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;
 export type AttributePayloadModel = PayloadType<AttributeModel>;
 export type BlogAttributePayloadModel = PayloadType<BlogAttributeModel>;

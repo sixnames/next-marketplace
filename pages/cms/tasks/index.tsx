@@ -5,16 +5,12 @@ import ConsoleTasksList, {
 } from '../../../components/console/ConsoleTasksList';
 import Inner from '../../../components/Inner';
 import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_COMPANY_SLUG } from '../../../config/common';
-import { getCompanyTasksListSsr } from '../../../db/dao/ssr/getCompanyTasksListSsr';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { getCompanyTasksListSsr } from 'db/dao/ssr/getCompanyTasksListSsr';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
-import { getCmsLinks } from '../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../lib/ssrUtils';
+import { getCmsLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Задачи';
 interface TasksListConsumerInterface extends ConsoleTasksListInterface {}

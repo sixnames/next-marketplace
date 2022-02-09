@@ -1,4 +1,4 @@
-import { getProjectLinks } from '../../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/getProjectLinks';
 
 describe('Rubric products', () => {
   const links = getProjectLinks();

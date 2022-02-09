@@ -1,13 +1,22 @@
-import { ObjectId } from 'mongodb';
-import { getMainImage, reorderAssets } from '../../../lib/assetUtils/assetUtils';
+import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'config/common';
+import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
+import { getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from '../../collectionNames';
-import { ProductPayloadModel, ProductSummaryModel, ShopProductModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import {
+  ProductPayloadModel,
+  ProductSummaryModel,
+  ShopProductModel,
+  SummaryDiffModel,
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductAssetIndexInputInterface {
+  taskId?: string | null;
   productId: string;
   assetUrl: string;
   assetNewIndex: number;
@@ -17,9 +26,9 @@ export async function updateProductAssetIndex({
   context,
   input,
 }: DaoPropsInterface<UpdateProductAssetIndexInputInterface>): Promise<ProductPayloadModel> {
-  const { getApiMessage } = await getRequestParams(context);
+  const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productsCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
   const session = client.startSession();
@@ -38,9 +47,9 @@ export async function updateProductAssetIndex({
       }
 
       // permission
-      const { allow, message } = await getOperationPermission({
+      const { allow, message, user, role } = await getOperationPermission({
         context,
-        slug: 'updateProduct',
+        slug: 'updateProductAssets',
       });
       if (!allow) {
         mutationPayload = {
@@ -50,28 +59,36 @@ export async function updateProductAssetIndex({
         await session.abortTransaction();
         return;
       }
-      const { productId, assetNewIndex, assetUrl } = input;
+      const { assetNewIndex, assetUrl, taskId } = input;
 
-      // check product availability
-      const productObjectId = new ObjectId(productId);
-      const product = await productsCollection.findOne({ _id: productObjectId });
-      if (!product) {
+      // get summary or summary draft
+      const taskVariantSlug = getTaskVariantSlugByRule('updateProductAssets');
+      const summaryPayload = await getFullProductSummaryWithDraft({
+        taskId,
+        locale,
+        productId: input.productId,
+        companySlug: DEFAULT_COMPANY_SLUG,
+        isContentManager: role.isContentManager,
+      });
+      if (!summaryPayload) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.notFound`),
+          message: await getApiMessage('products.update.error'),
         };
         await session.abortTransaction();
         return;
       }
-      const initialAssets = product.assets;
+      const { summary } = summaryPayload;
+      const updatedSummary = { ...summary };
 
       // reorder assets
-      const reorderedAssetsWithUpdatedIndexes = reorderAssets({
+      const initialAssets = updatedSummary.assets;
+      const reorderedAssets = reorderAssets({
         assetUrl,
         assetNewIndex,
         initialAssets,
       });
-      if (!reorderedAssetsWithUpdatedIndexes) {
+      if (!reorderedAssets) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.update.error`),
@@ -79,64 +96,98 @@ export async function updateProductAssetIndex({
         await session.abortTransaction();
         return;
       }
+      updatedSummary.assets = reorderedAssets;
+      updatedSummary.mainImage = getMainImage(reorderedAssets);
+      const diff: SummaryDiffModel = {
+        updated: {
+          assets: reorderedAssets,
+        },
+      };
 
-      // Update product
-      const mainImage = getMainImage(reorderedAssetsWithUpdatedIndexes);
-      const updatedProductResult = await productsCollection.findOneAndUpdate(
+      // create task log for content manager
+      if (role.isContentManager && user) {
+        const task = await findOrCreateUserTask({
+          productId: summary._id,
+          variantSlug: taskVariantSlug,
+          executorId: user._id,
+          taskId,
+        });
+
+        if (!task) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('tasks.create.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        const newTaskLogResult = await addTaskLogItem({
+          taskId: task._id,
+          diff,
+          prevStateEnum: task.stateEnum,
+          nextStateEnum: TASK_STATE_IN_PROGRESS,
+          draft: updatedSummary,
+          createdById: user._id,
+        });
+
+        if (!newTaskLogResult) {
+          mutationPayload = {
+            success: false,
+            message: await getApiMessage('products.update.error'),
+          };
+          await session.abortTransaction();
+          return;
+        }
+
+        mutationPayload = {
+          success: true,
+          message: await getApiMessage('products.update.success'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // update documents
+      const updatedProductAssetsResult = await productSummariesCollection.findOneAndUpdate(
         {
-          _id: product._id,
+          _id: summary._id,
         },
         {
           $set: {
-            mainImage,
-            assets: reorderedAssetsWithUpdatedIndexes,
-            updatedAt: new Date(),
+            assets: updatedSummary.assets,
+            mainImage: updatedSummary.mainImage,
           },
         },
-        {
-          returnDocument: 'after',
-        },
       );
-
-      const updatedProduct = updatedProductResult.value;
-      if (!updatedProductResult.ok || !updatedProduct) {
+      if (!updatedProductAssetsResult.ok) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.error`),
+          message: await getApiMessage('products.update.error'),
         };
         await session.abortTransaction();
         return;
       }
-
-      const updatedShopProductsResult = await shopProductsCollection.updateMany(
+      await shopProductsCollection.updateMany(
         {
-          productId: product._id,
+          productId: summary._id,
         },
         {
           $set: {
-            mainImage,
-            updatedAt: new Date(),
+            mainImage: updatedSummary.mainImage,
           },
         },
       );
-      if (!updatedShopProductsResult.acknowledged) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.update.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
 
       mutationPayload = {
         success: true,
         message: await getApiMessage('products.update.success'),
-        payload: updatedProduct,
       };
     });
 
     return mutationPayload;
   } catch (e) {
+    console.log('updateProductAssetIndex error', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

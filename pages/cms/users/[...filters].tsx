@@ -15,7 +15,7 @@ import Pager from '../../../components/Pager';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
 import { CONFIRM_MODAL, CREATE_USER_MODAL } from '../../../config/modalVariants';
-import { getCmsUsersListPageSsr } from '../../../db/dao/ssr/getCmsUsersListPageSsr';
+import { getCmsUsersListPageSsr } from 'db/dao/ssr/getCmsUsersListPageSsr';
 import {
   AppPaginationInterface,
   RoleInterface,

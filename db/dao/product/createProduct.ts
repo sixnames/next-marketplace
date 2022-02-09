@@ -1,16 +1,16 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_LOCALE, IMAGE_FALLBACK } from '../../../config/common';
+import { DEFAULT_LOCALE, IMAGE_FALLBACK } from 'config/common';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getNextItemId } from '../../../lib/itemIdUtils';
-import { checkBarcodeIntersects, trimProductName } from '../../../lib/productUtils';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
+import { getNextItemId } from 'lib/itemIdUtils';
+import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import {
   COL_PRODUCT_FACETS,
   COL_PRODUCT_SUMMARIES,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
-} from '../../collectionNames';
+} from 'db/collectionNames';
 import {
   GenderModel,
   ProductFacetModel,
@@ -19,9 +19,9 @@ import {
   RubricModel,
   RubricVariantModel,
   TranslationModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface CreateProductInputInterface {
   active: boolean;

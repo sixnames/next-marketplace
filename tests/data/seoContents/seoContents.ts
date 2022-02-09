@@ -4,9 +4,9 @@ import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
-} from '../../../config/common';
-import { SeoContentModel, TextUniquenessApiParsedResponseModel } from '../../../db/dbModels';
-import { getConstructorContentFromText } from '../../../lib/stringUtils';
+} from 'config/common';
+import { SeoContentModel, TextUniquenessApiParsedResponseModel } from 'db/dbModels';
+import { getConstructorContentFromText } from 'lib/stringUtils';
 
 const seoLocales: TextUniquenessApiParsedResponseModel[] = [
   {
@@ -48,7 +48,7 @@ const seoContents: SeoContentModel[] = [
   {
     _id: getObjectId('seo 1'),
     slug: `0d23dbe34c76d2f658a4c05fdd90394a05243ac71290513ee${CATALOGUE_SEO_TEXT_POSITION_TOP}`,
-    url: '/0/msk/catalogue/viski',
+    url: '/catalogue/viski',
     seoLocales,
     titleI18n: {
       [DEFAULT_LOCALE]: 'Кастомный заголовок Виски',
@@ -68,7 +68,7 @@ const seoContents: SeoContentModel[] = [
   {
     _id: getObjectId('seo 2'),
     slug: `0d23dbe34c76d2f658a4c05fdd90394a05243ac71290513ee${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}`,
-    url: '/0/msk/catalogue/viski',
+    url: '/catalogue/viski',
     seoLocales,
     companySlug: DEFAULT_COMPANY_SLUG,
     rubricSlug: 'viski',
@@ -81,7 +81,7 @@ const seoContents: SeoContentModel[] = [
   {
     _id: getObjectId('seo 3'),
     slug: `0d23dbe34c76d2f658a4c05fdd90394a05243ac71290513ee44ea02e9ae9b07f3212cbaef${CATALOGUE_SEO_TEXT_POSITION_TOP}`,
-    url: '/0/msk/catalogue/viski/category-cat_1',
+    url: '/catalogue/viski/category-cat_1',
     seoLocales,
     companySlug: DEFAULT_COMPANY_SLUG,
     rubricSlug: 'viski',
@@ -92,7 +92,7 @@ const seoContents: SeoContentModel[] = [
   {
     _id: getObjectId('seo 4'),
     slug: `0d23dbe34c76d2f658a4c05fdd90394a05243ac71290513ee44ea02e9ae9b07f3212cbaef${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}`,
-    url: '/0/msk/catalogue/viski/category-cat_1',
+    url: '/catalogue/viski/category-cat_1',
     seoLocales,
     companySlug: DEFAULT_COMPANY_SLUG,
     rubricSlug: 'viski',
@@ -104,7 +104,7 @@ const seoContents: SeoContentModel[] = [
   // products
   {
     _id: getObjectId('seo 5'),
-    url: '/0/msk/000081',
+    url: '/000081',
     slug: '0d23dbe34c76d2f658a4c05fdb977fadafdb3044026f6bf72',
     content: getConstructorContentFromText(
       'Card content Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias, doloribus laborum maxime non nulla pariatur repellendus tenetur vel. Alias doloremque dolores earum ipsa magnam maxime nemo quos repellendus suscipit veritatis.',

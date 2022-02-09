@@ -136,7 +136,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const { summary, cardContent } = payload;
+  const { summary, seoContentsList } = payload;
 
   const links = getCmsCompanyLinks({
     companyId: companyResult._id,
@@ -146,7 +146,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(summary),
-      cardContent: castDbData(cardContent),
+      cardContent: castDbData(seoContentsList),
       pageCompany: castDbData(companyResult),
       routeBasePath: links.root,
     },

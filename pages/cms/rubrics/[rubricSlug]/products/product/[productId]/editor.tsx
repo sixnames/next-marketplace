@@ -93,13 +93,13 @@ export const getServerSideProps = async (
     };
   }
 
-  const { summary, cardContent } = payload;
+  const { summary, seoContentsList } = payload;
 
   return {
     props: {
       ...props,
       product: castDbData(summary),
-      seoContentsList: castDbData(cardContent),
+      seoContentsList: castDbData(seoContentsList),
       companySlug,
     },
   };

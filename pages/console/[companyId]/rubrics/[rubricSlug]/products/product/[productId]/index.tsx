@@ -133,7 +133,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(payload.summary),
-      seoContentsList: castDbData(payload.cardContent),
+      seoContentsList: castDbData(payload.seoContentsList),
       companySlug: companyResult.slug,
       pageCompany: castDbData(props.layoutProps.pageCompany),
       routeBasePath: links.parentLink,

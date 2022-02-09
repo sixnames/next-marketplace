@@ -227,4 +227,24 @@ describe('Tasks', () => {
     cy.getByCy(`${updatedProductName}-product-title`).should('exist');
     cy.countTaskLogs(taskItemId, 1);
   });
+
+  it('Should display user tasks and update product details', () => {
+    const taskItemId = '000003';
+    cy.getByCy('tasks-list').should('exist');
+
+    // visit task product
+    cy.visitLinkHref(`${taskItemId}-product-link`);
+    cy.wait(1500);
+    cy.getByCy('product-card-editor').should('exist');
+
+    // update seo content
+    // task log 1
+    cy.get('.react-page-cell-insert-new').click();
+    cy.contains('Text').click();
+    cy.get('[data-slate-node="element"]').click().type('lorem');
+    cy.getByCy('card-content-submit').click();
+    cy.wait(1500);
+    cy.contains('lorem').should('exist');
+    cy.countTaskLogs(taskItemId, 1);
+  });
 });

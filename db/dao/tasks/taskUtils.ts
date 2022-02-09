@@ -70,6 +70,7 @@ export interface FindOrCreateUserTaskInterface extends FindTaskInterface {
   productId?: ObjectIdModel | string;
   executorId: ObjectIdModel | string;
   variantSlug: string;
+  companySlug?: string;
 }
 
 export async function findOrCreateUserTask({
@@ -77,6 +78,7 @@ export async function findOrCreateUserTask({
   executorId,
   productId,
   variantSlug,
+  companySlug,
 }: FindOrCreateUserTaskInterface): Promise<TaskModel | null> {
   try {
     const { db } = await getDatabase();
@@ -95,7 +97,7 @@ export async function findOrCreateUserTask({
         createdById: new ObjectId(executorId),
         stateEnum: TASK_STATE_PENDING,
         log: [],
-        companySlug: DEFAULT_COMPANY_SLUG,
+        companySlug: companySlug || DEFAULT_COMPANY_SLUG,
         createdAt: new Date(),
         updatedAt: new Date(),
       });

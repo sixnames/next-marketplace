@@ -83,7 +83,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const companySlug = DEFAULT_COMPANY_SLUG;
+  const companySlug = task.companySlug || DEFAULT_COMPANY_SLUG;
   const payload = await getFullProductSummary({
     locale: props.sessionLocale,
     productId: `${productId}`,
@@ -96,13 +96,15 @@ export const getServerSideProps = async (
     };
   }
 
-  const { summary, cardContent } = payload;
+  const { summary } = payload;
+  const lastLog = task.log[task.log.length - 1];
+  const seoContentsList = lastLog?.draft || payload.seoContentsList;
 
   return {
     props: {
       ...props,
       product: castDbData(summary),
-      seoContentsList: castDbData(cardContent),
+      seoContentsList: castDbData(seoContentsList),
       task: castDbData(task),
       companySlug,
     },

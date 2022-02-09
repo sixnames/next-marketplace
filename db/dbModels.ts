@@ -517,6 +517,7 @@ export interface SummaryDiffActionFieldsModel {
   brandCollection?: string | null;
   manufacturer?: string | null;
   details?: Partial<CreateProductInputInterface> | null;
+  seoContent?: number | null;
 }
 
 export interface SummaryDiffModel {

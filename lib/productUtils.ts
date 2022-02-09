@@ -49,7 +49,7 @@ interface GetFullProductSummaryInterface {
 interface GetFullProductSummaryPayloadInterface {
   summary: ProductSummaryInterface;
   categoriesList: CategoryInterface[];
-  cardContent: SeoContentCitiesInterface;
+  seoContentsList: SeoContentCitiesInterface;
 }
 
 export async function getFullProductSummary({
@@ -211,7 +211,7 @@ export async function getFullProductSummary({
   return {
     summary: product,
     categoriesList: initialProduct.categories || [],
-    cardContent,
+    seoContentsList: cardContent,
   };
 }
 
@@ -238,8 +238,9 @@ export async function getFullProductSummaryWithDraft({
   if (!summaryPayload) {
     return null;
   }
-
-  const { categoriesList, cardContent } = summaryPayload;
+  // react-page-cell-insert-new
+  // Text
+  const { categoriesList, seoContentsList } = summaryPayload;
   let summary = summaryPayload.summary;
 
   if (isContentManager) {
@@ -256,7 +257,7 @@ export async function getFullProductSummaryWithDraft({
   }
 
   return {
-    cardContent,
+    seoContentsList,
     categoriesList,
     summary,
   };
@@ -331,7 +332,7 @@ export async function getConsoleShopProduct({
   if (!productPayload) {
     return null;
   }
-  const { cardContent, summary } = productPayload;
+  const { seoContentsList, summary } = productPayload;
 
   const shopProduct: ShopProductInterface = {
     ...shopProductResult,
@@ -341,7 +342,7 @@ export async function getConsoleShopProduct({
     }),
     summary: {
       ...summary,
-      cardContentCities: cardContent,
+      cardContentCities: seoContentsList,
     },
   };
 

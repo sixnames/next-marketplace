@@ -18,6 +18,7 @@ export interface ConsoleRubricProductEditorInterface {
 const ConsoleRubricProductEditor: React.FC<ConsoleRubricProductEditorInterface> = ({
   seoContentsList,
   companySlug,
+  product,
 }) => {
   const router = useRouter();
   const [updateProductCardContentMutation] = useUpdateProductCardContent();
@@ -28,6 +29,7 @@ const ConsoleRubricProductEditor: React.FC<ConsoleRubricProductEditorInterface> 
         initialValues={{
           seoContentsList,
           companySlug,
+          productId: `${product._id}`,
         }}
         onSubmit={(values) => {
           updateProductCardContentMutation({

@@ -1,8 +1,8 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { useConfigContext } from '../../context/configContext';
-import { SeoContentModel } from '../../db/dbModels';
-import { useUpdateSeoContent } from '../../hooks/mutations/useSeoContentMutations';
+import { useConfigContext } from 'context/configContext';
+import { SeoContentModel } from 'db/dbModels';
+import { useUpdateSeoContent } from 'hooks/mutations/useSeoContentMutations';
 import WpButton from '../button/WpButton';
 import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
@@ -31,7 +31,7 @@ const ConsoleSeoContentDetails: React.FC<ConsoleSeoContentDetailsInterface> = ({
             _id: `${seoContent._id}`,
             slug: seoContent.slug,
             rubricSlug: seoContent.rubricSlug,
-            url: seoContent.rubricSlug,
+            url: seoContent.url,
             companySlug,
             content: values.content,
             showForIndex: values.showForIndex,

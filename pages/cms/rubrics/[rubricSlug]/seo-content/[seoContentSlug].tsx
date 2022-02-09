@@ -4,22 +4,15 @@ import ConsoleSeoContentDetails, {
   ConsoleSeoContentDetailsInterface,
 } from '../../../../../components/console/ConsoleSeoContentDetails';
 import Inner from '../../../../../components/Inner';
-import {
-  CATALOGUE_SEO_TEXT_POSITION_TOP,
-  DEFAULT_COMPANY_SLUG,
-} from '../../../../../config/common';
-import { getConsoleRubricDetails } from '../../../../../db/dao/rubrics/getConsoleRubricDetails';
-import { AppContentWrapperBreadCrumbs, RubricInterface } from '../../../../../db/uiInterfaces';
+import { CATALOGUE_SEO_TEXT_POSITION_TOP, DEFAULT_COMPANY_SLUG } from 'config/common';
+import { getConsoleRubricDetails } from 'db/dao/rubrics/getConsoleRubricDetails';
+import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import CmsRubricLayout from '../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { alwaysString } from '../../../../../lib/arrayUtils';
-import { getConsoleRubricLinks } from '../../../../../lib/linkUtils';
-import { getSeoContentBySlug } from '../../../../../lib/seoContentUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+import { alwaysString } from 'lib/arrayUtils';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getSeoContentBySlug } from 'lib/seoContentUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface RubricDetailsInterface extends ConsoleSeoContentDetailsInterface {
   rubric: RubricInterface;

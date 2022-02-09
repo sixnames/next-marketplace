@@ -43,6 +43,22 @@ const roles: RoleModel[] = [
     updatedAt: new Date(),
   },
   {
+    _id: getObjectId('contentManagerRoleB'),
+    nameI18n: {
+      ru: 'Контент менеджер B',
+    },
+    descriptionI18n: {
+      ru: 'Контент менеджер B',
+    },
+    slug: 'contentManagerB',
+    isStaff: true,
+    isCompanyStaff: false,
+    isContentManager: true,
+    allowedAppNavigation: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
     _id: getObjectId('guestRole'),
     nameI18n: {
       ru: 'Гость',

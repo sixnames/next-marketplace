@@ -7,7 +7,7 @@ import { getAlphabetList } from 'lib/optionUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
 
 export interface GetBrandAlphabetListsInputInterface {
-  slugs: string[];
+  slugs?: string[];
 }
 
 export type BrandAlphabetListsPayloadModel = PayloadType<AlphabetListModelType<BrandInterface>[]>;
@@ -21,19 +21,11 @@ export async function getBrandAlphabetLists({
     const { db } = await getDatabase();
     const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
 
-    // check input
-    if (!input) {
-      return {
-        success: false,
-        message: 'no input',
-      };
-    }
-
     let query: Record<string, any> = {};
-    if (input.slugs.length > 0) {
+    if ((input?.slugs || []).length > 0) {
       query = {
         slug: {
-          $in: input.slugs,
+          $in: input?.slugs,
         },
       };
     }

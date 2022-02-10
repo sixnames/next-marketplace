@@ -12,17 +12,6 @@ input AddCityToCountryInput {
   slug: String!
 }
 
-input AddCollectionToBrandInput {
-  brandId: ObjectId!
-  descriptionI18n: JSONObject
-  nameI18n: JSONObject!
-  showAsBreadcrumb: Boolean
-  showAsCatalogueBreadcrumb: Boolean
-  showInCardTitle: Boolean
-  showInCatalogueTitle: Boolean
-  showInSnippetTitle: Boolean
-}
-
 input AddOptionToGroupInput {
   color: String
   gender: Gender
@@ -143,79 +132,6 @@ type AttributesGroupPayload implements Payload {
 interface Base {
   _id: ObjectId!
   itemId: String!
-}
-
-type Brand implements Base & Timestamp {
-  _id: ObjectId!
-  createdAt: Date!
-  descriptionI18n: JSONObject
-  itemId: String!
-  name: String!
-  nameI18n: String!
-  updatedAt: Date!
-  url: [URL!]
-}
-
-input BrandAlphabetInput {
-  slugs: [String!]
-}
-
-type BrandCollection implements Base & Timestamp {
-  _id: ObjectId!
-  createdAt: Date!
-  descriptionI18n: JSONObject
-  itemId: String!
-  name: String!
-  nameI18n: JSONObject!
-  updatedAt: Date!
-}
-
-input BrandCollectionAlphabetInput {
-  brandId: ObjectId
-  brandSlug: String
-  slugs: [String!]
-}
-
-type BrandCollectionsAlphabetList implements AlphabetList {
-  docs: [BrandCollection!]!
-  letter: String!
-}
-
-type BrandCollectionsPaginationPayload implements PaginationPayload {
-  docs: [BrandCollection!]!
-  hasNextPage: Boolean!
-  hasPrevPage: Boolean!
-  limit: Int!
-  page: Int!
-  sortBy: String!
-  sortDir: SortDirection!
-  totalActiveDocs: Int!
-  totalDocs: Int!
-  totalPages: Int!
-}
-
-type BrandPayload implements Payload {
-  message: String!
-  payload: Brand
-  success: Boolean!
-}
-
-type BrandsAlphabetList implements AlphabetList {
-  docs: [Brand!]!
-  letter: String!
-}
-
-type BrandsPaginationPayload implements PaginationPayload {
-  docs: [Brand!]!
-  hasNextPage: Boolean!
-  hasPrevPage: Boolean!
-  limit: Int!
-  page: Int!
-  sortBy: String!
-  sortDir: SortDirection!
-  totalActiveDocs: Int!
-  totalDocs: Int!
-  totalPages: Int!
 }
 
 input CatalogueAdditionalOptionsInput {
@@ -416,17 +332,6 @@ input CreateAttributesGroupInput {
   nameI18n: JSONObject!
 }
 
-input CreateBrandInput {
-  descriptionI18n: JSONObject
-  nameI18n: JSONObject!
-  showAsBreadcrumb: Boolean
-  showAsCatalogueBreadcrumb: Boolean
-  showInCardTitle: Boolean
-  showInCatalogueTitle: Boolean
-  showInSnippetTitle: Boolean
-  url: [URL!]
-}
-
 input CreateCategoryInput {
   gender: Gender
   nameI18n: JSONObject!
@@ -558,11 +463,6 @@ input DeleteAttributesGroupFromRubricInput {
 input DeleteCityFromCountryInput {
   cityId: ObjectId!
   countryId: ObjectId!
-}
-
-input DeleteCollectionFromBrandInput {
-  brandCollectionId: ObjectId!
-  brandId: ObjectId!
 }
 
 input DeleteOptionFromGroupInput {
@@ -725,11 +625,6 @@ type Mutation {
   addCityToCountry(input: AddCityToCountryInput!): CountryPayload!
 
   """
-  Should add brand collection to the brand
-  """
-  addCollectionToBrand(input: AddCollectionToBrandInput!): BrandPayload!
-
-  """
   Should add many products to the shop
   """
   addManyProductsToShop(input: [AddProductToShopInput!]!): ShopPayload!
@@ -753,11 +648,6 @@ type Mutation {
   Should create attributes group
   """
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayload!
-
-  """
-  Should create brand
-  """
-  createBrand(input: CreateBrandInput!): BrandPayload!
 
   """
   Should create category
@@ -840,11 +730,6 @@ type Mutation {
   deleteAttributesGroupFromRubric(input: DeleteAttributesGroupFromRubricInput!): RubricPayload!
 
   """
-  Should delete brand
-  """
-  deleteBrand(_id: ObjectId!): BrandPayload!
-
-  """
   Should delete category
   """
   deleteCategory(_id: ObjectId!): CategoryPayload!
@@ -853,11 +738,6 @@ type Mutation {
   Should delete city
   """
   deleteCityFromCountry(input: DeleteCityFromCountryInput!): CountryPayload!
-
-  """
-  Should delete brand collection from brand
-  """
-  deleteCollectionFromBrand(input: DeleteCollectionFromBrandInput!): BrandPayload!
 
   """
   Should delete company
@@ -980,11 +860,6 @@ type Mutation {
   updateAttributesGroup(input: UpdateAttributesGroupInput!): AttributesGroupPayload!
 
   """
-  Should update brand
-  """
-  updateBrand(input: UpdateBrandInput!): BrandPayload!
-
-  """
   Should update catalogue counters
   """
   updateCatalogueCounters(input: CatalogueDataInput!): Boolean!
@@ -998,11 +873,6 @@ type Mutation {
   Should update city
   """
   updateCityInCountry(input: UpdateCityInCountryInput!): CountryPayload!
-
-  """
-  Should update brand collection in the brand
-  """
-  updateCollectionInBrand(input: UpdateCollectionInBrandInput!): BrandPayload!
 
   """
   Should update company
@@ -1336,18 +1206,6 @@ type Query {
   Should return paginated suppliers
   """
   getAllSuppliers(input: PaginationInput): SuppliersPaginationPayload!
-
-  """
-  Should return brands grouped by alphabet
-  """
-  getBrandAlphabetLists(input: BrandAlphabetInput): [BrandsAlphabetList!]!
-
-  """
-  Should return brand collections grouped by alphabet
-  """
-  getBrandCollectionAlphabetLists(
-    input: BrandCollectionAlphabetInput
-  ): [BrandCollectionsAlphabetList!]!
 
   """
   Should return categories grouped by alphabet
@@ -1740,18 +1598,6 @@ input UpdateAttributesGroupInput {
   nameI18n: JSONObject!
 }
 
-input UpdateBrandInput {
-  brandId: ObjectId!
-  descriptionI18n: JSONObject
-  nameI18n: JSONObject!
-  showAsBreadcrumb: Boolean
-  showAsCatalogueBreadcrumb: Boolean
-  showInCardTitle: Boolean
-  showInCatalogueTitle: Boolean
-  showInSnippetTitle: Boolean
-  url: [URL!]
-}
-
 input UpdateCategoryInput {
   categoryId: ObjectId!
   companySlug: String!
@@ -1769,18 +1615,6 @@ input UpdateCityInCountryInput {
   countryId: ObjectId!
   nameI18n: JSONObject!
   slug: String!
-}
-
-input UpdateCollectionInBrandInput {
-  brandCollectionId: ObjectId!
-  brandId: ObjectId!
-  descriptionI18n: JSONObject
-  nameI18n: JSONObject!
-  showAsBreadcrumb: Boolean
-  showAsCatalogueBreadcrumb: Boolean
-  showInCardTitle: Boolean
-  showInCatalogueTitle: Boolean
-  showInSnippetTitle: Boolean
 }
 
 input UpdateCompanyInput {

@@ -10,7 +10,7 @@ import { ObjectId } from 'mongodb';
 export interface GetBrandCollectionAlphabetListsInputInterface {
   brandId?: string | null;
   brandSlug?: string | null;
-  slugs: string[];
+  slugs?: string[];
 }
 
 export type BrandCollectionAlphabetListsPayloadModel = PayloadType<

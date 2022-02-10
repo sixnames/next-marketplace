@@ -1,3 +1,5 @@
+import { useAppContext } from 'context/appContext';
+import { useDeleteBrandCollection } from 'hooks/mutations/useBrandMutations';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
@@ -6,31 +8,26 @@ import FixedButtons from '../../../../../../components/button/FixedButtons';
 import WpButton from '../../../../../../components/button/WpButton';
 import FormikRouterSearch from '../../../../../../components/FormElements/Search/FormikRouterSearch';
 import Inner from '../../../../../../components/Inner';
-import { BrandCollectionModalInterface } from '../../../../../../components/Modal/BrandCollectionModal';
-import { ConfirmModalInterface } from '../../../../../../components/Modal/ConfirmModal';
+import { BrandCollectionModalInterface } from 'components/Modal/BrandCollectionModal';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager from '../../../../../../components/Pager';
 import WpTable, { WpTableColumn } from '../../../../../../components/WpTable';
 import WpTitle from '../../../../../../components/WpTitle';
-import { BRAND_COLLECTION_MODAL, CONFIRM_MODAL } from '../../../../../../config/modalVariants';
+import { BRAND_COLLECTION_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { getCmsBrandCollectionsPageSsr } from 'db/dao/ssr/getCmsBrandCollectionsPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   AppPaginationInterface,
   BrandCollectionInterface,
   BrandInterface,
-} from '../../../../../../db/uiInterfaces';
-import { useDeleteCollectionFromBrandMutation } from '../../../../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../../../../hooks/useMutationCallbacks';
+} from 'db/uiInterfaces';
 import useValidationSchema from '../../../../../../hooks/useValidationSchema';
 import AppContentWrapper from '../../../../../../layout/AppContentWrapper';
 import AppSubNav from '../../../../../../layout/AppSubNav';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
-import { getProjectLinks } from '../../../../../../lib/getProjectLinks';
-import { GetAppInitialDataPropsInterface } from '../../../../../../lib/ssrUtils';
-import {
-  createBrandCollectionSchema,
-  updateCollectionInBrandSchema,
-} from '../../../../../../validation/brandSchema';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { createBrandCollectionSchema, updateCollectionInBrandSchema } from 'validation/brandSchema';
 
 export type BrandCollectionsAggregationInterface = AppPaginationInterface<BrandCollectionInterface>;
 
@@ -43,13 +40,8 @@ const CmsBrandCollectionsConsumer: React.FC<CmsBrandCollectionsConsumerInterface
   brand,
   collections,
 }) => {
-  const { onErrorCallback, onCompleteCallback, showLoading, showModal } = useMutationCallbacks({
-    reload: true,
-  });
-  const [deleteCollectionFromBrandMutation] = useDeleteCollectionFromBrandMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.deleteCollectionFromBrand),
-  });
+  const { showModal } = useAppContext();
+  const [deleteBrandCollectionMutation] = useDeleteBrandCollection();
   const createValidationSchema = useValidationSchema({
     schema: createBrandCollectionSchema,
   });
@@ -143,14 +135,8 @@ const CmsBrandCollectionsConsumer: React.FC<CmsBrandCollectionsConsumerInterface
                     testId: 'delete-brand-collection-modal',
                     message: `Вы уверены, что хотите удалить коллекцию бренда ${dataItem.name}?`,
                     confirm: () => {
-                      showLoading();
-                      deleteCollectionFromBrandMutation({
-                        variables: {
-                          input: {
-                            brandCollectionId: `${dataItem._id}`,
-                            brandId: `${brand._id}`,
-                          },
-                        },
+                      deleteBrandCollectionMutation({
+                        _id: `${dataItem._id}`,
                       }).catch(console.log);
                     },
                   },

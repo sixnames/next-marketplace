@@ -1,5 +1,5 @@
+import { useGetBrandCollectionAlphabet } from 'hooks/mutations/useBrandMutations';
 import * as React from 'react';
-import { useGetBrandCollectionAlphabetListsQuery } from '../../generated/apolloComponents';
 import OptionsModal, { OptionsModalCommonPropsInterface } from './OptionsModal';
 
 export interface BrandCollectionOptionsModalInterface extends OptionsModalCommonPropsInterface {
@@ -15,22 +15,17 @@ const BrandCollectionOptionsModal: React.FC<BrandCollectionOptionsModalInterface
   brandId,
   ...props
 }) => {
-  const { data, loading, error } = useGetBrandCollectionAlphabetListsQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      input: {
-        slugs,
-        brandSlug,
-        brandId,
-      },
-    },
+  const payload = useGetBrandCollectionAlphabet({
+    slugs,
+    brandSlug,
+    brandId,
   });
 
   return (
     <OptionsModal
-      alphabet={data?.getBrandCollectionAlphabetLists}
-      loading={loading}
-      error={error}
+      alphabet={payload.data?.payload}
+      loading={payload.loading}
+      error={payload.error}
       title={title}
       initialEmptyListMessage={'У выбранного бренда нет коллекций'}
       notShowAsAlphabet

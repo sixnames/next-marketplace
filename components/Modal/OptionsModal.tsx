@@ -13,7 +13,7 @@ export interface OptionsModalOptionInterface extends Record<string, any> {
   _id: any;
   slug?: string;
   itemId?: string;
-  name: string;
+  name?: string | null;
   options?: OptionsModalOptionInterface[] | null;
 }
 
@@ -177,6 +177,9 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
         return {
           letter,
           docs: docs.filter(({ name }) => {
+            if (!name) {
+              return false;
+            }
             const cyrillicIndex = name.toLowerCase().indexOf(searchOnCyrillic);
             const latinIndex = name.toLowerCase().indexOf(searchOnLatin);
             return cyrillicIndex > -1 || latinIndex > -1;

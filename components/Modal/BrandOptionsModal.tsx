@@ -1,5 +1,5 @@
+import { useGetBrandAlphabet } from 'hooks/mutations/useBrandMutations';
 import * as React from 'react';
-import { useGetBrandAlphabetListsQuery } from '../../generated/apolloComponents';
 import OptionsModal, { OptionsModalCommonPropsInterface } from './OptionsModal';
 
 export interface BrandOptionsModalInterface extends OptionsModalCommonPropsInterface {
@@ -11,20 +11,15 @@ const BrandOptionsModal: React.FC<BrandOptionsModalInterface> = ({
   slugs,
   ...props
 }) => {
-  const { data, loading, error } = useGetBrandAlphabetListsQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      input: {
-        slugs,
-      },
-    },
+  const payload = useGetBrandAlphabet({
+    slugs,
   });
 
   return (
     <OptionsModal
-      alphabet={data?.getBrandAlphabetLists}
-      loading={loading}
-      error={error}
+      alphabet={payload.data?.payload}
+      loading={payload.loading}
+      error={payload.error}
       title={title}
       notShowAsAlphabet
       {...props}

@@ -1,13 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import {
-  CATALOGUE_PRODUCTS_LIMIT,
-  CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
-} from '../../../config/common';
-import { alwaysArray } from '../../../lib/arrayUtils';
-import { getCatalogueData } from '../../../lib/catalogueUtils';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
-import { noNaN } from '../../../lib/numbers';
-import { getRequestParams } from '../../../lib/sessionHelpers';
+import { CATALOGUE_PRODUCTS_LIMIT, CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES } from 'config/common';
+import { alwaysArray } from 'lib/arrayUtils';
+import { getCatalogueData } from 'lib/catalogueUtils';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { noNaN } from 'lib/numbers';
+import { getRequestParams } from 'lib/sessionHelpers';
 
 export interface CatalogueApiInputInterface {
   companySlug?: string;

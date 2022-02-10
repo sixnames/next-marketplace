@@ -3,10 +3,10 @@ import path from 'path';
 import fs from 'fs';
 import * as React from 'react';
 import { AvailableFormatInfo, FormatEnum } from 'sharp';
-import { ASSETS_DIST, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK, ONE_WEEK } from '../../config/common';
-import { alwaysArray, alwaysString } from '../../lib/arrayUtils';
-import { checkIfWatermarkNeeded, getSharpImage } from '../../lib/assetUtils/assetUtils';
-import { noNaN } from '../../lib/numbers';
+import { ASSETS_DIST, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK, ONE_WEEK } from 'config/common';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { checkIfWatermarkNeeded, getSharpImage } from 'lib/assetUtils/assetUtils';
+import { noNaN } from 'lib/numbers';
 import qs from 'qs';
 
 const SitemapXml: React.FC = () => {

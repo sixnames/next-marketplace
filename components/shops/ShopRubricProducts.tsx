@@ -1,24 +1,25 @@
+import { ROLE_SLUG_ADMIN } from 'config/common';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { CONFIRM_MODAL } from '../../config/modalVariants';
-import { useUserContext } from '../../context/userContext';
-import { ShopProductModel } from '../../db/dbModels';
+import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useUserContext } from 'context/userContext';
+import { ShopProductModel } from 'db/dbModels';
 import {
   ShopProductInterface,
   ShopRubricProductsInterface,
   SupplierProductInterface,
-} from '../../db/uiInterfaces';
-import { useDeleteProductFromShopMutation } from '../../generated/apolloComponents';
-import { useUpdateManyShopProducts } from '../../hooks/mutations/useShopProductMutations';
+} from 'db/uiInterfaces';
+import { useDeleteProductFromShopMutation } from 'generated/apolloComponents';
+import { useUpdateManyShopProducts } from 'hooks/mutations/useShopProductMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
-import { alwaysArray } from '../../lib/arrayUtils';
-import { getNumWord } from '../../lib/i18n';
-import { getCmsCompanyLinks, getConsoleShopLinks } from '../../lib/linkUtils';
-import { noNaN } from '../../lib/numbers';
-import { updateManyShopProductsSchema } from '../../validation/shopSchema';
+import { alwaysArray } from 'lib/arrayUtils';
+import { getNumWord } from 'lib/i18n';
+import { getCmsCompanyLinks, getConsoleShopLinks } from 'lib/linkUtils';
+import { noNaN } from 'lib/numbers';
+import { updateManyShopProductsSchema } from 'validation/shopSchema';
 import AppContentFilter from '../AppContentFilter';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
@@ -254,6 +255,23 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       <Inner testId={`shop-rubric-products-list`}>
         <div className={`mb-2 text-3xl font-medium`}>{rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
+        {sessionUser?.role?.slug === ROLE_SLUG_ADMIN ? (
+          <div className={`mb-6`}>
+            <WpButton
+              theme={'secondary'}
+              size={'small'}
+              onClick={() => {
+                const filters = alwaysArray(router.query.filters).join('/');
+                window.open(
+                  `/api/xlsx/shop-products/${shop._id}/${router.query.rubricSlug}/${filters}`,
+                  '_blank',
+                );
+              }}
+            >
+              Выгрузить в XLS
+            </WpButton>
+          </div>
+        ) : null}
 
         <FormikRouterSearch testId={'products'} />
 

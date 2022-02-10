@@ -1,8 +1,8 @@
 import { createBrand } from 'db/dao/brands/createBrand';
+import { updateBrand } from 'db/dao/brands/updateBrand';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
 import { deleteCartProduct } from 'db/dao/cart/deleteCartProduct';
-import { updateCartProduct } from 'db/dao/cart/updateCartProduct';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -21,7 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // update
   if (req.method === REQUEST_METHOD_PATCH) {
-    const payload = await updateCartProduct({
+    const payload = await updateBrand({
       context: { req, res },
       input: JSON.parse(req.body),
     });

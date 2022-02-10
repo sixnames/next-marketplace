@@ -3,7 +3,7 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANTS_ENUMS,
   ATTRIBUTE_VIEW_VARIANTS_ENUMS,
-} from '../config/common';
+} from 'config/common';
 
 export const AttributeVariant = enumType({
   name: 'AttributeVariant',

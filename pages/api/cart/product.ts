@@ -1,13 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import {
-  REQUEST_METHOD_DELETE,
-  REQUEST_METHOD_PATCH,
-  REQUEST_METHOD_POST,
-} from '../../../config/common';
-import { addCartProduct } from '../../../db/dao/cart/addCartProduct';
-import { deleteCartProduct } from '../../../db/dao/cart/deleteCartProduct';
-import { updateCartProduct } from '../../../db/dao/cart/updateCartProduct';
-import { sendApiRouteResponse } from '../../../lib/sessionHelpers';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
+import { addCartProduct } from 'db/dao/cart/addCartProduct';
+import { deleteCartProduct } from 'db/dao/cart/deleteCartProduct';
+import { updateCartProduct } from 'db/dao/cart/updateCartProduct';
+import { sendApiRouteResponse } from 'lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // add

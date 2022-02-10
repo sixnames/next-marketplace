@@ -1,13 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const selectOptionFragment = gql`
-  fragment SelectOption on SelectOption {
-    _id
-    name
-    icon
-  }
-`;
-
 export const BRAND_ALPHABET_OPTIONS_QUERY = gql`
   query GetBrandAlphabetLists($input: BrandAlphabetInput) {
     getBrandAlphabetLists(input: $input) {

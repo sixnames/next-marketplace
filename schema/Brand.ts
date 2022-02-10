@@ -1,42 +1,30 @@
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
-import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_PRODUCT_FACETS } from '../db/collectionNames';
-import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_PRODUCT_FACETS } from 'db/collectionNames';
+import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import {
   BrandCollectionModel,
   BrandModel,
   BrandPayloadModel,
-  BrandsAlphabetListModel,
   ProductFacetModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { getNextNumberItemId } from '../lib/itemIdUtils';
-import { getAlphabetList } from '../lib/optionUtils';
+import { getNextNumberItemId } from 'lib/itemIdUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
-import { execUpdateProductTitles } from '../lib/updateProductTitles';
+} from 'lib/sessionHelpers';
+import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import {
   addCollectionToBrandSchema,
   createBrandSchema,
   deleteCollectionFromBrandSchema,
   updateBrandSchema,
   updateCollectionInBrandSchema,
-} from '../validation/brandSchema';
-
-export const BrandCollectionsPaginationPayload = objectType({
-  name: 'BrandCollectionsPaginationPayload',
-  definition(t) {
-    t.implements('PaginationPayload');
-    t.nonNull.list.nonNull.field('docs', {
-      type: 'BrandCollection',
-    });
-  },
-});
+} from 'validation/brandSchema';
 
 export const Brand = objectType({
   name: 'Brand',
@@ -47,99 +35,6 @@ export const Brand = objectType({
     t.nonNull.string('nameI18n');
     t.nonNull.string('itemId');
     t.json('descriptionI18n');
-
-    // Brand name translation field resolver
-    t.nonNull.field('name', {
-      type: 'String',
-      resolve: async (source, _args, context) => {
-        const { getI18nLocale } = await getRequestParams(context);
-        return getI18nLocale(source.nameI18n);
-      },
-    });
-  },
-});
-
-export const BrandsPaginationPayload = objectType({
-  name: 'BrandsPaginationPayload',
-  definition(t) {
-    t.implements('PaginationPayload');
-    t.nonNull.list.nonNull.field('docs', {
-      type: 'Brand',
-    });
-  },
-});
-
-export const BrandAlphabetInput = inputObjectType({
-  name: 'BrandAlphabetInput',
-  definition(t) {
-    t.list.nonNull.string('slugs');
-  },
-});
-
-export const BrandsAlphabetList = objectType({
-  name: 'BrandsAlphabetList',
-  definition(t) {
-    t.implements('AlphabetList');
-    t.nonNull.list.nonNull.field('docs', {
-      type: 'Brand',
-    });
-  },
-});
-
-// Brand queries
-export const BrandQueries = extendType({
-  type: 'Query',
-  definition(t) {
-    // Should return brands grouped by alphabet
-    t.nonNull.list.nonNull.field('getBrandAlphabetLists', {
-      type: 'BrandsAlphabetList',
-      description: 'Should return brands grouped by alphabet',
-      args: {
-        input: arg({
-          type: 'BrandAlphabetInput',
-        }),
-      },
-      resolve: async (_root, args, context): Promise<BrandsAlphabetListModel[]> => {
-        const { locale } = await getRequestParams(context);
-        const { db } = await getDatabase();
-        const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-        const { input } = args;
-        let query: Record<string, any> = {};
-        if (input) {
-          if (input.slugs) {
-            query = {
-              slug: {
-                $in: input.slugs,
-              },
-            };
-          }
-        }
-
-        const brands = await brandsCollection
-          .find(query, {
-            projection: {
-              _id: true,
-              itemId: true,
-              nameI18n: true,
-            },
-          })
-          .toArray();
-        return getAlphabetList<BrandModel>({
-          entityList: brands,
-          locale,
-        });
-      },
-    });
-  },
-});
-
-export const BrandPayload = objectType({
-  name: 'BrandPayload',
-  definition(t) {
-    t.implements('Payload');
-    t.field('payload', {
-      type: 'Brand',
-    });
   },
 });
 

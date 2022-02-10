@@ -1,4 +1,4 @@
-import { ISR_ONE_WEEK, ISR_SIX_MONTHS } from '../../config/common';
+import { ISR_ONE_WEEK, ISR_SIX_MONTHS } from 'config/common';
 import {
   AttributeModel,
   BlogAttributeModel,
@@ -36,7 +36,7 @@ import {
   SessionLogModel,
   TaskModel,
   TaskVariantModel,
-} from '../../db/dbModels';
+} from 'db/dbModels';
 import {
   COL_ATTRIBUTES,
   COL_BLACKLIST_PRODUCTS,
@@ -75,7 +75,7 @@ import {
   COL_SESSION_LOGS,
   COL_TASKS,
   COL_TASK_VARIANTS,
-} from '../../db/collectionNames';
+} from 'db/collectionNames';
 import { Db, MongoClient } from 'mongodb';
 import path from 'path';
 require('dotenv').config();

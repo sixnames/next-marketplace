@@ -25,7 +25,12 @@ const ProductMainFields: React.FC = () => {
 
   return (
     <React.Fragment>
-      <FormikInput label={'Оригинальное название'} name={'originalName'} testId={'originalName'} />
+      <FormikInput
+        label={'Оригинальное название'}
+        labelPostfix={'*Как на этикетке'}
+        name={'originalName'}
+        testId={'originalName'}
+      />
       <FormikTranslationsInput label={'Название'} name={'nameI18n'} testId={'nameI18n'} />
 
       <FormikSelect

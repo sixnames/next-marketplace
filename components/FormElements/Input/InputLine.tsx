@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IconType } from '../../../types/iconTypes';
+import { IconType } from 'types/iconTypes';
 import WpIcon from '../../WpIcon';
 import WpTooltip from '../../WpTooltip';
 import FieldErrorMessage from '../FieldErrorMessage/FieldErrorMessage';
@@ -62,7 +62,7 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
       {label ? (
         <TagName
           {...labelTagProps}
-          className={`mb-2 flex min-h-[1.3rem] items-start font-medium text-secondary-text ${
+          className={`mb-2 flex min-h-[1.3rem] items-baseline font-medium text-secondary-text ${
             isHorizontal ? 'flex-shrink-0 pt-1 md:w-[220px]' : 'truncate'
           } ${labelClass ? labelClass : ''}`}
         >

@@ -1,18 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const BRAND_ALPHABET_OPTIONS_QUERY = gql`
-  query GetBrandAlphabetLists($input: BrandAlphabetInput) {
-    getBrandAlphabetLists(input: $input) {
-      letter
-      docs {
-        _id
-        itemId
-        name
-      }
-    }
-  }
-`;
-
 export const BRAND_COLLECTION_ALPHABET_OPTIONS_QUERY = gql`
   query GetBrandCollectionAlphabetLists($input: BrandCollectionAlphabetInput) {
     getBrandCollectionAlphabetLists(input: $input) {

@@ -52,7 +52,7 @@ export const updateBrandSchema = (args: ValidationSchemaArgsInterface) => {
   });
 };
 
-export const addCollectionToBrandSchema = (args: ValidationSchemaArgsInterface) => {
+export const createBrandCollectionSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     brandId: brandIdSchema(args),
     ...brandCollectionCommonFieldsSchema(args),
@@ -61,8 +61,7 @@ export const addCollectionToBrandSchema = (args: ValidationSchemaArgsInterface) 
 
 export const updateCollectionInBrandSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
-    brandId: brandIdSchema(args),
-    brandCollectionId: brandCollectionIdSchema(args),
+    _id: brandCollectionIdSchema(args),
     ...brandCollectionCommonFieldsSchema(args),
   });
 };

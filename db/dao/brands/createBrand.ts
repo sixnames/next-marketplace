@@ -85,6 +85,7 @@ export async function createBrand({
       itemId,
       ...DEFAULT_COUNTERS_OBJECT,
       _id: new ObjectId(),
+      collectionIds: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     });

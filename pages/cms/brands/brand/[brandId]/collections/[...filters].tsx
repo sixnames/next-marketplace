@@ -28,7 +28,7 @@ import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
 import { getProjectLinks } from '../../../../../../lib/getProjectLinks';
 import { GetAppInitialDataPropsInterface } from '../../../../../../lib/ssrUtils';
 import {
-  addCollectionToBrandSchema,
+  createBrandCollectionSchema,
   updateCollectionInBrandSchema,
 } from '../../../../../../validation/brandSchema';
 
@@ -51,7 +51,7 @@ const CmsBrandCollectionsConsumer: React.FC<CmsBrandCollectionsConsumerInterface
     onCompleted: (data) => onCompleteCallback(data.deleteCollectionFromBrand),
   });
   const createValidationSchema = useValidationSchema({
-    schema: addCollectionToBrandSchema,
+    schema: createBrandCollectionSchema,
   });
   const updateValidationSchema = useValidationSchema({
     schema: updateCollectionInBrandSchema,

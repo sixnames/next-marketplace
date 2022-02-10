@@ -1,6 +1,5 @@
 export * from './Attribute';
 export * from './AttributesGroup';
-export * from './BrandCollection';
 export * from './CatalogueData';
 export * from './Category';
 export * from './CategoryMutations';

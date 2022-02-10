@@ -1,7 +1,7 @@
-import { COL_ID_COUNTERS, COL_ORDERS } from '../db/collectionNames';
-import { IdCounterModel } from '../db/dbModels';
-import { ID_COUNTER_STEP, ID_COUNTER_DIGITS, ID_COUNTER_ORDER_DIGITS } from '../config/common';
-import { getDatabase } from '../db/mongodb';
+import { COL_ID_COUNTERS, COL_ORDERS } from 'db/collectionNames';
+import { IdCounterModel } from 'db/dbModels';
+import { ID_COUNTER_STEP, ID_COUNTER_DIGITS, ID_COUNTER_ORDER_DIGITS } from 'config/common';
+import { getDatabase } from 'db/mongodb';
 import addZero from 'add-zero';
 
 export async function getNextItemId(

@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { CatalogueInterface } from '../components/Catalogue';
+import { CatalogueInterface } from 'components/Catalogue';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   CATALOGUE_FILTER_LIMIT,
@@ -17,19 +17,19 @@ import {
   SORT_BY_KEY,
   SORT_DIR_KEY,
   ZERO_PAGE_FILTER,
-} from '../config/common';
+} from 'config/common';
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
   getPriceAttribute,
   getRubricFilterAttribute,
-} from '../config/constantAttributes';
+} from 'config/constantAttributes';
 import {
   DEFAULT_LAYOUT,
   GRID_SNIPPET_LAYOUT_BIG_IMAGE,
   ROW_SNIPPET_LAYOUT_BIG_IMAGE,
-} from '../config/constantSelects';
-import { COL_RUBRIC_VARIANTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from '../db/collectionNames';
+} from 'config/constantSelects';
+import { COL_RUBRIC_VARIANTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   ignoreNoImageStage,
   paginatedAggregationFinalPipeline,
@@ -37,10 +37,10 @@ import {
   ProductsPaginatedAggregationInterface,
   shopProductDocsFacetPipeline,
   shopProductsGroupPipeline,
-} from '../db/dao/constantPipelines';
-import { castSummaryForUI } from '../db/dao/product/castSummaryForUI';
-import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+} from 'db/dao/constantPipelines';
+import { castSummaryForUI } from 'db/dao/product/castSummaryForUI';
+import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import {
   AttributeInterface,
   BrandInterface,
@@ -54,11 +54,11 @@ import {
   RubricInterface,
   SeoContentInterface,
   ShopProductInterface,
-} from '../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import {
   SeoSchemaBreadcrumbItemInterface,
   SeoSchemaCatalogueInterface,
-} from '../types/seoSchemaTypes';
+} from 'types/seoSchemaTypes';
 import { alwaysArray, alwaysString, sortObjectsByField } from './arrayUtils';
 import { castUrlFilters } from './castUrlFilters';
 import { getProjectLinks } from './getProjectLinks';
@@ -671,6 +671,14 @@ export const getCatalogueData = async ({
       page,
     };
 
+    // if no search results
+    if (noSearchResults) {
+      return {
+        ...fallbackPayload,
+        isSearch: true,
+      };
+    }
+
     // rubric stage
     let rubricStage: Record<any, any> = rubricSlug
       ? {
@@ -682,13 +690,6 @@ export const getCatalogueData = async ({
         rubricSlug: {
           $in: rubricFilters,
         },
-      };
-    }
-
-    if (noSearchResults) {
-      return {
-        ...fallbackPayload,
-        isSearch: true,
       };
     }
 

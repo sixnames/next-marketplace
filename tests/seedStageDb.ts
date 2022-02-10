@@ -27,12 +27,9 @@ const config = {
 (async function seedStageDb() {
   const seeder = new Seeder(config);
 
-  const collections = seeder.readCollectionsFromPath(
-    path.resolve(process.cwd(), 'cypress/fixtures/data'),
-    {
-      extensions: ['json', 'ts'],
-    },
-  );
+  const collections = seeder.readCollectionsFromPath(path.resolve(process.cwd(), 'tests/data'), {
+    extensions: ['json', 'ts'],
+  });
 
   try {
     await seeder.import(collections);

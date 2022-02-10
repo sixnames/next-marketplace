@@ -18,25 +18,7 @@ import {
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
-import {
-  addCollectionToBrandSchema,
-  deleteCollectionFromBrandSchema,
-  updateCollectionInBrandSchema,
-} from 'validation/brandSchema';
-
-export const AddCollectionToBrandInput = inputObjectType({
-  name: 'AddCollectionToBrandInput',
-  definition(t) {
-    t.nonNull.objectId('brandId');
-    t.nonNull.json('nameI18n');
-    t.json('descriptionI18n');
-    t.boolean('showAsBreadcrumb');
-    t.boolean('showAsCatalogueBreadcrumb');
-    t.boolean('showInCardTitle');
-    t.boolean('showInSnippetTitle');
-    t.boolean('showInCatalogueTitle');
-  },
-});
+import { addCollectionToBrandSchema, updateCollectionInBrandSchema } from 'validation/brandSchema';
 
 export const UpdateCollectionInBrandInput = inputObjectType({
   name: 'UpdateCollectionInBrandInput',
@@ -50,14 +32,6 @@ export const UpdateCollectionInBrandInput = inputObjectType({
     t.boolean('showInCardTitle');
     t.boolean('showInSnippetTitle');
     t.boolean('showInCatalogueTitle');
-  },
-});
-
-export const DeleteCollectionFromBrandInput = inputObjectType({
-  name: 'DeleteCollectionFromBrandInput',
-  definition(t) {
-    t.nonNull.objectId('brandId');
-    t.nonNull.objectId('brandCollectionId');
   },
 });
 
@@ -412,13 +386,6 @@ export const BrandMutations = extendType({
               await session.abortTransaction();
               return;
             }
-
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: deleteCollectionFromBrandSchema,
-            });
-            await validationSchema.validate(args.input);
 
             const { input } = args;
             const { brandId, brandCollectionId } = input;

@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
-import { DEFAULT_LOCALE } from '../config/common';
-import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
+import { DEFAULT_LOCALE } from 'config/common';
+import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import {
   notRequiredUrlSchema,
   objectIdSchema,
@@ -64,12 +64,5 @@ export const updateCollectionInBrandSchema = (args: ValidationSchemaArgsInterfac
     brandId: brandIdSchema(args),
     brandCollectionId: brandCollectionIdSchema(args),
     ...brandCollectionCommonFieldsSchema(args),
-  });
-};
-
-export const deleteCollectionFromBrandSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    brandId: brandIdSchema(args),
-    brandCollectionId: brandCollectionIdSchema(args),
   });
 };

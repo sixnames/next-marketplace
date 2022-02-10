@@ -54,7 +54,6 @@ export const updateBrandSchema = (args: ValidationSchemaArgsInterface) => {
 
 export const createBrandCollectionSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
-    brandId: brandIdSchema(args),
     ...brandCollectionCommonFieldsSchema(args),
   });
 };

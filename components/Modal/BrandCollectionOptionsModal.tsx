@@ -1,4 +1,8 @@
-import { useGetBrandCollectionAlphabet } from 'hooks/mutations/useBrandMutations';
+import { REQUEST_METHOD_POST } from 'config/common';
+import {
+  BrandCollectionAlphabetListsPayloadModel,
+  BrandCollectionAlphabetModel,
+} from 'db/dao/brands/getBrandCollectionAlphabetLists';
 import * as React from 'react';
 import OptionsModal, { OptionsModalCommonPropsInterface } from './OptionsModal';
 
@@ -15,17 +19,37 @@ const BrandCollectionOptionsModal: React.FC<BrandCollectionOptionsModalInterface
   brandId,
   ...props
 }) => {
-  const payload = useGetBrandCollectionAlphabet({
-    slugs,
-    brandSlug,
-    brandId,
-  });
+  const [state, setState] = React.useState<BrandCollectionAlphabetModel[] | null>(null);
+  const [error, setError] = React.useState<boolean>(false);
+  React.useEffect(() => {
+    if (!state) {
+      fetch('/api/brand-collections/alphabet', {
+        method: REQUEST_METHOD_POST,
+        body: JSON.stringify({
+          slugs,
+          brandSlug,
+          brandId,
+        }),
+      })
+        .then<BrandCollectionAlphabetListsPayloadModel>((res) => res.json())
+        .then((payload) => {
+          if (!payload.success || !payload.payload) {
+            setError(true);
+            return;
+          }
+          setState(payload.payload);
+        })
+        .catch(() => {
+          setError(true);
+        });
+    }
+  }, [brandId, brandSlug, slugs, state]);
 
   return (
     <OptionsModal
-      alphabet={payload.data?.payload}
-      loading={payload.loading}
-      error={payload.error}
+      alphabet={state}
+      loading={!state}
+      error={error}
       title={title}
       initialEmptyListMessage={'У выбранного бренда нет коллекций'}
       notShowAsAlphabet

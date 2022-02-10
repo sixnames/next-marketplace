@@ -13,9 +13,8 @@ export interface GetBrandCollectionAlphabetListsInputInterface {
   slugs?: string[];
 }
 
-export type BrandCollectionAlphabetListsPayloadModel = PayloadType<
-  AlphabetListModelType<BrandCollectionInterface>[]
->;
+export type BrandCollectionAlphabetModel = AlphabetListModelType<BrandCollectionInterface>;
+export type BrandCollectionAlphabetListsPayloadModel = PayloadType<BrandCollectionAlphabetModel[]>;
 
 export async function getBrandCollectionAlphabetLists({
   context,

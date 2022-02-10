@@ -28,6 +28,7 @@ const BrandCollectionModal: React.FC<BrandCollectionModalInterface> = ({
   const [updateBrandCollectionMutation] = useUpdateBrandCollection();
 
   const initialValues = {
+    _id: brandCollection?._id,
     nameI18n: brandCollection?.nameI18n || {},
     descriptionI18n: brandCollection?.descriptionI18n || {},
     brandCollectionId: brandCollection?._id,

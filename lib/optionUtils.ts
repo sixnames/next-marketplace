@@ -125,7 +125,12 @@ export function getAlphabetList<TModel extends Record<string, any>>({
     if (docs.length > 0) {
       payload.push({
         letter: letter.toLocaleUpperCase(),
-        docs: sortedDocs,
+        docs: sortedDocs.map((option) => {
+          return {
+            ...option,
+            name: getFieldStringLocale(option.nameI18n, locale),
+          };
+        }),
       });
     }
   });

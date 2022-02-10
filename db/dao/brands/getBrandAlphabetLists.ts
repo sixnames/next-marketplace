@@ -10,7 +10,8 @@ export interface GetBrandAlphabetListsInputInterface {
   slugs?: string[];
 }
 
-export type BrandAlphabetListsPayloadModel = PayloadType<AlphabetListModelType<BrandInterface>[]>;
+export type BrandAlphabetModel = AlphabetListModelType<BrandInterface>;
+export type BrandAlphabetListsPayloadModel = PayloadType<BrandAlphabetModel[]>;
 
 export async function getBrandAlphabetLists({
   context,

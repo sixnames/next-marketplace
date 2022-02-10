@@ -1,5 +1,5 @@
 import { createBrandCollection } from 'db/dao/brands/createBrandCollection';
-import { deleteBrand } from 'db/dao/brands/deleteBrand';
+import { deleteBrandCollection } from 'db/dao/brands/deleteBrandCollection';
 import { updateBrandCollection } from 'db/dao/brands/updateBrandCollection';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
@@ -34,7 +34,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // delete
   if (req.method === REQUEST_METHOD_DELETE) {
-    const payload = await deleteBrand({
+    const payload = await deleteBrandCollection({
       context: { req, res },
       input: JSON.parse(req.body),
     });

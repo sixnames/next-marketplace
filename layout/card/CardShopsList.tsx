@@ -3,17 +3,17 @@ import ArrowTrigger from '../../components/ArrowTrigger';
 import WpButton from '../../components/button/WpButton';
 import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
 import LinkPhone from '../../components/Link/LinkPhone';
-import { MapModalInterface } from '../../components/Modal/MapModal';
+import { MapModalInterface } from 'components/Modal/MapModal';
 import ProductShopPrices from '../../components/ProductShopPrices';
 import RatingStars from '../../components/RatingStars';
 import ShopsMap from '../../components/ShopsMap';
 import WpImage from '../../components/WpImage';
-import { MAP_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
-import { useConfigContext } from '../../context/configContext';
-import { useSiteContext } from '../../context/siteContext';
-import { ShopInterface } from '../../db/uiInterfaces';
-import { noNaN } from '../../lib/numbers';
+import { MAP_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
+import { useConfigContext } from 'context/configContext';
+import { useSiteContext } from 'context/siteContext';
+import { ShopInterface } from 'db/uiInterfaces';
+import { noNaN } from 'lib/numbers';
 import LayoutCard from '../LayoutCard';
 
 interface CardShopInterface {
@@ -52,120 +52,122 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
   const disabled = amount + noNaN(inCartCount) > available;
 
   return (
-    <LayoutCard className='gap-4 overflow-hidden md:grid md:grid-cols-12'>
-      <div className='relative h-[120px] w-full md:col-span-4 md:h-full lg:col-span-3'>
-        <WpImage
-          url={mainImage}
-          alt={name}
-          title={name}
-          width={240}
-          className='absolute inset-0 h-full w-full object-cover'
-        />
-      </div>
-
-      <div className='grid gap-4 px-4 py-6 md:col-span-8 lg:col-span-9 lg:grid-cols-5'>
-        <div className='lg:col-span-3'>
-          <div className='mb-2 text-xl font-medium'>{name}</div>
-          <div className='mb-3'>
-            <RatingStars rating={4.5} showRatingNumber={false} smallStars={true} className='' />
-          </div>
-
-          <div
-            className='cursor-pointer hover:text-theme'
-            onClick={() => {
-              showModal<MapModalInterface>({
-                variant: MAP_MODAL,
-                props: {
-                  title: name,
-                  testId: `shop-map-modal`,
-                  markers: [
-                    {
-                      _id: shop._id,
-                      icon: logo,
-                      name,
-                      address,
-                    },
-                  ],
-                },
-              });
-            }}
-          >
-            {address.readableAddress}
-          </div>
-
-          {(formattedPhones || []).map((phone, index) => {
-            return <LinkPhone key={index} value={phone} />;
-          })}
-
-          {license ? (
-            <div className='mt-3 text-sm text-secondary-text'>
-              Лицензия:
-              {` ${license}`}
-            </div>
-          ) : null}
+    <noindex>
+      <LayoutCard className='gap-4 overflow-hidden md:grid md:grid-cols-12'>
+        <div className='relative h-[120px] w-full md:col-span-4 md:h-full lg:col-span-3'>
+          <WpImage
+            url={mainImage}
+            alt={name}
+            title={name}
+            width={240}
+            className='absolute inset-0 h-full w-full object-cover'
+          />
         </div>
 
-        <div className='lg:col-span-2'>
-          <div className='mb-4'>
-            <ProductShopPrices
-              className=''
-              price={price}
-              discountedPercent={discountedPercent}
-              oldPrice={oldPrice}
-            />
-            {configs.showShopProductAvailability ? (
-              <React.Fragment>
-                {disabled ? (
-                  <div className='col-span-5 text-theme'>Нет в наличии</div>
-                ) : (
-                  <div className=''>В наличии {` ${available} `}шт.</div>
-                )}
-              </React.Fragment>
+        <div className='grid gap-4 px-4 py-6 md:col-span-8 lg:col-span-9 lg:grid-cols-5'>
+          <div className='lg:col-span-3'>
+            <div className='mb-2 text-xl font-medium'>{name}</div>
+            <div className='mb-3'>
+              <RatingStars rating={4.5} showRatingNumber={false} smallStars={true} className='' />
+            </div>
+
+            <div
+              className='cursor-pointer hover:text-theme'
+              onClick={() => {
+                showModal<MapModalInterface>({
+                  variant: MAP_MODAL,
+                  props: {
+                    title: name,
+                    testId: `shop-map-modal`,
+                    markers: [
+                      {
+                        _id: shop._id,
+                        icon: logo,
+                        name,
+                        address,
+                      },
+                    ],
+                  },
+                });
+              }}
+            >
+              {address.readableAddress}
+            </div>
+
+            {(formattedPhones || []).map((phone, index) => {
+              return <LinkPhone key={index} value={phone} />;
+            })}
+
+            {license ? (
+              <div className='mt-3 text-sm text-secondary-text'>
+                Лицензия:
+                {` ${license}`}
+              </div>
             ) : null}
           </div>
 
-          <div className='grid max-w-[340px] grid-cols-6 gap-3'>
-            {disabled ? null : (
-              <React.Fragment>
-                <div className='col-span-3'>
-                  <SpinnerInput
-                    size={'small'}
-                    plusTestId={`card-shops-${slug}-plus`}
-                    minusTestId={`card-shops-${slug}-minus`}
-                    testId={`card-shops-${slug}-input`}
-                    onChange={(e) => {
-                      setAmount(noNaN(e.target.value));
-                    }}
-                    min={1}
-                    max={available}
-                    name={'amount'}
-                    value={amount}
-                  />
-                </div>
-                <div className='col-span-3'>
-                  <WpButton
-                    short
-                    size={'small'}
-                    className='w-full'
-                    disabled={disabled}
-                    testId={`card-shops-${slug}-add-to-cart`}
-                    onClick={() => {
-                      addCartProduct({
-                        amount,
-                        productId: `${productId}`,
-                        shopProductId: `${cardShopProduct._id}`,
-                      });
-                    }}
-                  >
-                    {noNaN(inCartCount) > 0 ? `В корзине ${inCartCount} ед.` : 'В корзину'}
-                  </WpButton>
-                </div>
-              </React.Fragment>
-            )}
+          <div className='lg:col-span-2'>
+            <div className='mb-4'>
+              <ProductShopPrices
+                className=''
+                price={price}
+                discountedPercent={discountedPercent}
+                oldPrice={oldPrice}
+              />
+              {configs.showShopProductAvailability ? (
+                <React.Fragment>
+                  {disabled ? (
+                    <div className='col-span-5 text-theme'>Нет в наличии</div>
+                  ) : (
+                    <div className=''>В наличии {` ${available} `}шт.</div>
+                  )}
+                </React.Fragment>
+              ) : null}
+            </div>
+
+            <div className='grid max-w-[340px] grid-cols-6 gap-3'>
+              {disabled ? null : (
+                <React.Fragment>
+                  <div className='col-span-3'>
+                    <SpinnerInput
+                      size={'small'}
+                      plusTestId={`card-shops-${slug}-plus`}
+                      minusTestId={`card-shops-${slug}-minus`}
+                      testId={`card-shops-${slug}-input`}
+                      onChange={(e) => {
+                        setAmount(noNaN(e.target.value));
+                      }}
+                      min={1}
+                      max={available}
+                      name={'amount'}
+                      value={amount}
+                    />
+                  </div>
+                  <div className='col-span-3'>
+                    <WpButton
+                      short
+                      size={'small'}
+                      className='w-full'
+                      disabled={disabled}
+                      testId={`card-shops-${slug}-add-to-cart`}
+                      onClick={() => {
+                        addCartProduct({
+                          amount,
+                          productId: `${productId}`,
+                          shopProductId: `${cardShopProduct._id}`,
+                        });
+                      }}
+                    >
+                      {noNaN(inCartCount) > 0 ? `В корзине ${inCartCount} ед.` : 'В корзину'}
+                    </WpButton>
+                  </div>
+                </React.Fragment>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </LayoutCard>
+      </LayoutCard>
+    </noindex>
   );
 };
 

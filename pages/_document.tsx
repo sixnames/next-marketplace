@@ -7,13 +7,12 @@ function setInitialColorMode() {
 
   function getInitialColorMode() {
     const preference = window.localStorage.getItem('theme');
-    let hasPreference = typeof preference === 'string';
     /**
      * If the user has explicitly chosen light or dark,
      * use it. Otherwise, this value will be null.
      */
 
-    if (hasPreference && preference) {
+    if (preference) {
       return preference;
     }
 
@@ -52,7 +51,6 @@ const blockingSetInitialColorMode = `(function() {
 })()
 `;
 
-// noinspection CheckTagEmptyBody
 export default class MyDocument extends Document {
   render() {
     return (
@@ -63,7 +61,7 @@ export default class MyDocument extends Document {
             dangerouslySetInnerHTML={{
               __html: blockingSetInitialColorMode,
             }}
-          ></script>
+          />
           <Main />
           <NextScript />
         </body>

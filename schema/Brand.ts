@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { arg, extendType, inputObjectType, nonNull } from 'nexus';
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_PRODUCT_FACETS } from 'db/collectionNames';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
@@ -25,32 +25,6 @@ import {
   updateBrandSchema,
   updateCollectionInBrandSchema,
 } from 'validation/brandSchema';
-
-export const Brand = objectType({
-  name: 'Brand',
-  definition(t) {
-    t.implements('Base');
-    t.implements('Timestamp');
-    t.list.nonNull.url('url');
-    t.nonNull.string('nameI18n');
-    t.nonNull.string('itemId');
-    t.json('descriptionI18n');
-  },
-});
-
-export const CreateBrandInput = inputObjectType({
-  name: 'CreateBrandInput',
-  definition(t) {
-    t.list.nonNull.url('url');
-    t.nonNull.json('nameI18n');
-    t.json('descriptionI18n');
-    t.boolean('showAsBreadcrumb');
-    t.boolean('showAsCatalogueBreadcrumb');
-    t.boolean('showInCardTitle');
-    t.boolean('showInSnippetTitle');
-    t.boolean('showInCatalogueTitle');
-  },
-});
 
 export const UpdateBrandInput = inputObjectType({
   name: 'UpdateBrandInput',

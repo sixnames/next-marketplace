@@ -1,4 +1,8 @@
+import { useAppContext } from 'context/appContext';
+import { useNotificationsContext } from 'context/notificationsContext';
+import { UpdateBrandInputInterface } from 'db/dao/brands/updateBrand';
 import { Form, Formik } from 'formik';
+import { useUpdateBrand } from 'hooks/mutations/useBrandMutations';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -10,26 +14,17 @@ import WpImageUpload from '../../../../../components/FormElements/Upload/WpImage
 import BrandMainFields from '../../../../../components/FormTemplates/BrandMainFields';
 import Inner from '../../../../../components/Inner';
 import WpTitle from '../../../../../components/WpTitle';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from '../../../../../config/common';
-import { COL_BRANDS } from '../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, BrandInterface } from '../../../../../db/uiInterfaces';
-import {
-  UpdateBrandInput,
-  useUpdateBrandMutation,
-} from '../../../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from 'config/common';
+import { COL_BRANDS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, BrandInterface } from 'db/uiInterfaces';
 import useValidationSchema from '../../../../../hooks/useValidationSchema';
 import AppContentWrapper from '../../../../../layout/AppContentWrapper';
 import AppSubNav from '../../../../../layout/AppSubNav';
-import { getProjectLinks } from '../../../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../../../lib/i18n';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
-import { updateBrandSchema } from '../../../../../validation/brandSchema';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { updateBrandSchema } from 'validation/brandSchema';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 
 interface BrandDetailsConsumerInterface {
@@ -37,21 +32,16 @@ interface BrandDetailsConsumerInterface {
 }
 
 const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }) => {
+  const { showLoading, hideLoading } = useAppContext();
+  const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
   const validationSchema = useValidationSchema({
     schema: updateBrandSchema,
   });
-  const { onErrorCallback, onCompleteCallback, showLoading, hideLoading, showErrorNotification } =
-    useMutationCallbacks({
-      reload: true,
-    });
-  const [updateBrandMutation] = useUpdateBrandMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateBrand),
-  });
+  const [updateBrandMutation] = useUpdateBrand();
 
-  const initialValues: UpdateBrandInput = {
-    brandId: brand._id,
+  const initialValues: UpdateBrandInputInterface = {
+    _id: `${brand._id}`,
     nameI18n: brand.nameI18n,
     descriptionI18n: brand.descriptionI18n,
     url: !brand.url || brand.url.length < 1 ? [''] : brand.url,
@@ -108,10 +98,9 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
           height={'10rem'}
           previewUrl={brand.logo}
           removeImageHandler={() => {
-            showLoading();
             const formData = new FormData();
             formData.append('brandId', `${brand._id}`);
-
+            showLoading();
             fetch('/api/brand/logo', {
               method: REQUEST_METHOD_DELETE,
               body: formData,
@@ -168,17 +157,13 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
           onSubmit={(values) => {
             showLoading();
             updateBrandMutation({
-              variables: {
-                input: {
-                  ...values,
-                  url: (values.url || []).reduce((acc: string[], url) => {
-                    if (!url) {
-                      return acc;
-                    }
-                    return [...acc, url];
-                  }, []),
-                },
-              },
+              ...values,
+              url: (values.url || []).reduce((acc: string[], url) => {
+                if (!url) {
+                  return acc;
+                }
+                return [...acc, url];
+              }, []),
             }).catch(console.log);
           }}
         >

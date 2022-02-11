@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
-import { DEFAULT_LOCALE } from '../config/common';
-import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
+import { DEFAULT_LOCALE } from 'config/common';
+import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import {
   notRequiredUrlSchema,
   objectIdSchema,
@@ -47,29 +47,20 @@ export const createBrandSchema = (args: ValidationSchemaArgsInterface) => {
 
 export const updateBrandSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
-    brandId: brandIdSchema(args),
+    _id: brandIdSchema(args),
     ...brandCommonFieldsSchema(args),
   });
 };
 
-export const addCollectionToBrandSchema = (args: ValidationSchemaArgsInterface) => {
+export const createBrandCollectionSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
-    brandId: brandIdSchema(args),
     ...brandCollectionCommonFieldsSchema(args),
   });
 };
 
 export const updateCollectionInBrandSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
-    brandId: brandIdSchema(args),
-    brandCollectionId: brandCollectionIdSchema(args),
+    _id: brandCollectionIdSchema(args),
     ...brandCollectionCommonFieldsSchema(args),
-  });
-};
-
-export const deleteCollectionFromBrandSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    brandId: brandIdSchema(args),
-    brandCollectionId: brandCollectionIdSchema(args),
   });
 };

@@ -1,3 +1,5 @@
+import { useAppContext } from 'context/appContext';
+import { useDeleteBrand } from 'hooks/mutations/useBrandMutations';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -8,18 +10,16 @@ import WpButton from '../../../components/button/WpButton';
 import FormikRouterSearch from '../../../components/FormElements/Search/FormikRouterSearch';
 import Inner from '../../../components/Inner';
 import WpLink from '../../../components/Link/WpLink';
-import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager from '../../../components/Pager';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
-import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from '../../../config/modalVariants';
+import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'config/modalVariants';
 import { getCmsBrandsListPageSsr } from 'db/dao/ssr/getCmsBrandsListPageSsr';
-import { AppPaginationInterface, BrandInterface } from '../../../db/uiInterfaces';
-import { useDeleteBrandMutation } from '../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
+import { AppPaginationInterface, BrandInterface } from 'db/uiInterfaces';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
-import { GetAppInitialDataPropsInterface } from '../../../lib/ssrUtils';
+import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 export type CmsBrandsListConsumerInterface = AppPaginationInterface<BrandInterface>;
 
@@ -32,14 +32,9 @@ const CmsBrandsListConsumer: React.FC<CmsBrandsListConsumerInterface> = ({
   itemPath,
 }) => {
   const router = useRouter();
-  const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
-    reload: true,
-  });
+  const { showModal } = useAppContext();
 
-  const [deleteBrandMutation] = useDeleteBrandMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteBrand),
-    onError: onErrorCallback,
-  });
+  const [deleteBrandMutation] = useDeleteBrand();
 
   const columns: WpTableColumn<BrandInterface>[] = [
     {
@@ -72,11 +67,8 @@ const CmsBrandsListConsumer: React.FC<CmsBrandsListConsumerInterface> = ({
                     testId: 'delete-brand-modal',
                     message: `Вы уверены, что хотите удалить бренд ${dataItem.name}?`,
                     confirm: () => {
-                      showLoading();
                       deleteBrandMutation({
-                        variables: {
-                          _id: dataItem._id,
-                        },
+                        _id: `${dataItem._id}`,
                       }).catch(console.log);
                     },
                   },

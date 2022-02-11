@@ -1,14 +1,14 @@
+import { createBrand } from 'db/dao/brands/createBrand';
+import { deleteBrand } from 'db/dao/brands/deleteBrand';
+import { updateBrand } from 'db/dao/brands/updateBrand';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
-import { addCartProduct } from 'db/dao/cart/addCartProduct';
-import { deleteCartProduct } from 'db/dao/cart/deleteCartProduct';
-import { updateCartProduct } from 'db/dao/cart/updateCartProduct';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  // add
+  // create
   if (req.method === REQUEST_METHOD_POST) {
-    const payload = await addCartProduct({
+    const payload = await createBrand({
       context: { req, res },
       input: JSON.parse(req.body),
     });
@@ -21,7 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // update
   if (req.method === REQUEST_METHOD_PATCH) {
-    const payload = await updateCartProduct({
+    const payload = await updateBrand({
       context: { req, res },
       input: JSON.parse(req.body),
     });
@@ -34,7 +34,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // delete
   if (req.method === REQUEST_METHOD_DELETE) {
-    const payload = await deleteCartProduct({
+    const payload = await deleteBrand({
       context: { req, res },
       input: JSON.parse(req.body),
     });

@@ -1,39 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const selectOptionFragment = gql`
-  fragment SelectOption on SelectOption {
-    _id
-    name
-    icon
-  }
-`;
-
-export const BRAND_ALPHABET_OPTIONS_QUERY = gql`
-  query GetBrandAlphabetLists($input: BrandAlphabetInput) {
-    getBrandAlphabetLists(input: $input) {
-      letter
-      docs {
-        _id
-        itemId
-        name
-      }
-    }
-  }
-`;
-
-export const BRAND_COLLECTION_ALPHABET_OPTIONS_QUERY = gql`
-  query GetBrandCollectionAlphabetLists($input: BrandCollectionAlphabetInput) {
-    getBrandCollectionAlphabetLists(input: $input) {
-      letter
-      docs {
-        _id
-        itemId
-        name
-      }
-    }
-  }
-`;
-
 export const CATEGORY_ALPHABET_OPTIONS_QUERY = gql`
   query GetCategoriesAlphabetLists($input: CategoryAlphabetInput) {
     getCategoriesAlphabetLists(input: $input) {

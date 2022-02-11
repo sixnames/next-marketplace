@@ -281,9 +281,9 @@ export interface BrandCollectionModel
     CountersModel,
     BrandBaseModel {
   nameI18n: TranslationModel;
+  descriptionI18n?: TranslationModel | null;
   brandSlug: string;
   brandId: ObjectIdModel;
-  descriptionI18n?: TranslationModel | null;
 }
 
 export interface ManufacturerModel extends BaseModel, TimestampModel, CountersModel {
@@ -1193,6 +1193,7 @@ export type AttributePayloadModel = PayloadType<AttributeModel>;
 export type BlogAttributePayloadModel = PayloadType<BlogAttributeModel>;
 export type BlogPostPayloadModel = PayloadType<BlogPostModel>;
 export type BrandPayloadModel = PayloadType<BrandModel>;
+export type BrandCollectionPayloadModel = PayloadType<BrandCollectionModel>;
 export type CategoryPayloadModel = PayloadType<CategoryModel>;
 export type CompanyPayloadModel = PayloadType<CompanyModel>;
 export type ConfigPayloadModel = PayloadType<ConfigModel>;

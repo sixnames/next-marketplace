@@ -1,19 +1,19 @@
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from '../db/collectionNames';
-import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
-import { AttributeModel, AttributesGroupModel, AttributesGroupPayloadModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
+import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
+import { AttributeModel, AttributesGroupModel, AttributesGroupPayloadModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
+} from 'lib/sessionHelpers';
 import {
   createAttributesGroupSchema,
   updateAttributesGroupSchema,
-} from '../validation/attributesGroupSchema';
+} from 'validation/attributesGroupSchema';
 
 export const AttributesGroup = objectType({
   name: 'AttributesGroup',

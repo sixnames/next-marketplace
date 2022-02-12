@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_POST } from '../../../config/common';
+import { REQUEST_METHOD_POST } from 'config/common';
 import {
   COL_BLACKLIST_PRODUCTS,
   COL_NOT_SYNCED_PRODUCTS,
@@ -9,7 +9,7 @@ import {
   COL_SHOPS,
   COL_SYNC_INTERSECT,
   COL_SYNC_LOGS,
-} from '../../../db/collectionNames';
+} from 'db/collectionNames';
 import {
   BlackListProductModel,
   NotSyncedProductModel,
@@ -19,15 +19,15 @@ import {
   ShopProductModel,
   SyncIntersectModel,
   SyncLogModel,
-} from '../../../db/dbModels';
-import { getDatabase } from '../../../db/mongodb';
-import { SyncParamsInterface, SyncProductInterface } from '../../../db/syncInterfaces';
-import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { SyncParamsInterface, SyncProductInterface } from 'db/syncInterfaces';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getNextItemId } from '../../../lib/itemIdUtils';
-import { noNaN } from '../../../lib/numbers';
-import { castSummaryToShopProduct } from '../../../lib/productUtils';
-import { getUpdatedShopProductPrices } from '../../../lib/shopUtils';
+import { getNextItemId } from 'lib/itemIdUtils';
+import { noNaN } from 'lib/numbers';
+import { castSummaryToShopProduct } from 'lib/productUtils';
+import { getUpdatedShopProductPrices } from 'lib/shopUtils';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { db } = await getDatabase();

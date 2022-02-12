@@ -54,7 +54,7 @@ const ConsoleShopLayout: React.FC<ConsoleShopLayoutInterface> = ({
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
       <Head>
-        <title>{`Магазин ${shop.name}`}</title>
+        <title>{`${shop.name}`}</title>
       </Head>
 
       <Inner lowBottom>

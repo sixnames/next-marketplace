@@ -1,12 +1,12 @@
 import * as React from 'react';
 import ImageGallery, { ReactImageGalleryItem } from 'react-image-gallery';
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from '../config/common';
-import { useConfigContext } from '../context/configContext';
-import { useSiteContext } from '../context/siteContext';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'config/common';
+import { useConfigContext } from 'context/configContext';
+import { useSiteContext } from 'context/siteContext';
 import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
 import ProductSnippetGridBigImage from '../layout/snippet/ProductSnippetGridBigImage';
-import { getProjectLinks } from '../lib/getProjectLinks';
-import { MainPageInterface } from '../lib/mainPageUtils';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { MainPageInterface } from 'lib/mainPageUtils';
 import HorizontalScroll from './HorizontalScroll';
 import Inner from './Inner';
 import TagLink from './Link/TagLink';
@@ -168,7 +168,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
         {topProducts.length > 0 ? (
           <section className={sectionClassName}>
             <div className='mb-4 text-2xl font-medium'>
-              <h2>Популярные товары</h2>
+              <h2>Популярное</h2>
             </div>
             <HorizontalScroll>
               {topProducts.map((product) => {
@@ -327,14 +327,20 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
 
         {/*top shops*/}
         {topShops.length > 0 ? (
-          <section className={`${sectionClassName} relative`}>
+          <div className={`${sectionClassName} relative`}>
             <div className='absolute top-[-50px] left-0 h-[1px] w-full' id={'top-shops'} />
             <div className='mb-4 flex items-baseline text-2xl font-medium'>
-              <h2>Магазины{domainCompany ? ` ${domainCompany.name}` : ''}</h2>
-              <span className='ml-3 text-xl text-theme'>({topShops.length})</span>
+              {domainCompany ? (
+                <React.Fragment>
+                  <h2>{domainCompany.name}</h2>
+                  <span className='ml-3 text-xl text-theme'>({topShops.length})</span>
+                </React.Fragment>
+              ) : (
+                ''
+              )}
             </div>
             <ShopsMap shops={topShops} />
-          </section>
+          </div>
         ) : null}
 
         {/*seo top*/}

@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
-import { FILTER_SEPARATOR } from '../../../config/common';
-import { updateProductTitles } from '../../../lib/updateProductTitles';
-import { getCliParam } from '../../../tests/testUtils/testDbUtils';
+import { FILTER_SEPARATOR } from 'config/common';
+import { updateProductTitles } from 'lib/updateProductTitles';
+import { getCliParam } from 'tests/testUtils/testDbUtils';
 require('dotenv').config();
 
 const UNDEFINED_PARAM = 'undefined';

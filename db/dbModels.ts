@@ -356,6 +356,7 @@ export enum ConfigVariantModel {
   password = 'password',
   categoriesTree = 'categoriesTree',
   rubrics = 'rubrics',
+  visibleRubrics = 'visibleRubrics',
 }
 
 // I18n model. Each key is locale with value for current locale

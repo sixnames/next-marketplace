@@ -11,8 +11,8 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
-} from '../config/common';
-import { CityInterface, CompanyInterface, SsrConfigsInterface } from '../db/uiInterfaces';
+} from 'config/common';
+import { CityInterface, CompanyInterface, SsrConfigsInterface } from 'db/uiInterfaces';
 
 interface ConfigContextInterface {
   configs: SsrConfigsInterface;
@@ -118,6 +118,7 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     contactsMetaDescription: '',
     contactsTitle: '',
     ipRegistryApiKey: '',
+    visibleRubrics: [],
   },
 });
 

@@ -3,8 +3,8 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_COUNTERS_OBJECT,
   GENDER_IT,
-} from '../../../config/common';
-import { GenderModel, ObjectIdModel, RubricModel } from '../../../db/dbModels';
+} from 'config/common';
+import { GenderModel, ObjectIdModel, RubricModel } from 'db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 import attributes from '../attributes/attributes';
 

@@ -1,14 +1,14 @@
 import { exec } from 'child_process';
-import { COL_LANGUAGES, COL_PRODUCT_SUMMARIES } from '../db/collectionNames';
+import { COL_LANGUAGES, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
-} from '../db/dao/constantPipelines';
-import { LanguageModel, ProductSummaryModel, TranslationModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { ProductSummaryInterface } from '../db/uiInterfaces';
+} from 'db/dao/constantPipelines';
+import { LanguageModel, ProductSummaryModel, TranslationModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { ProductSummaryInterface } from 'db/uiInterfaces';
 import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from './i18n';
 import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
@@ -45,11 +45,24 @@ export async function updateProductTitles(match?: Record<any, any>) {
 
         // get product categories
         ...productCategoriesPipeline(),
+        {
+          $project: {
+            _id: true,
+            rubric: true,
+            attributes: true,
+            categories: true,
+            titleCategorySlugs: true,
+            originalName: true,
+            gender: true,
+            brand: true,
+          },
+        },
       ])
       .toArray();
 
     for await (const initialProduct of products) {
-      const { rubric, ...restProduct } = initialProduct;
+      const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
+        initialProduct;
       if (!rubric) {
         return false;
       }
@@ -58,23 +71,23 @@ export async function updateProductTitles(match?: Record<any, any>) {
       const cardTitleI18n: TranslationModel = {};
       const snippetTitleI18n: TranslationModel = {};
       for await (const locale of locales) {
-        const categories = getTreeFromList({
-          list: initialProduct.categories,
+        const categoriesTree = getTreeFromList({
+          list: categories,
           childrenFieldName: 'categories',
           locale,
         });
 
         const titleProps: GenerateCardTitleInterface = {
           locale,
-          brand: initialProduct.brand,
+          attributes,
+          titleCategorySlugs,
+          originalName,
+          brand,
+          defaultGender: gender,
+          categories: categoriesTree,
           rubricName: getFieldStringLocale(rubric.nameI18n, locale),
           showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
           showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-          attributes: initialProduct.attributes,
-          titleCategorySlugs: restProduct.titleCategorySlugs,
-          originalName: restProduct.originalName,
-          defaultGender: restProduct.gender,
-          categories,
         };
         const cardTitle = generateCardTitle(titleProps);
         cardTitleI18n[locale] = cardTitle;

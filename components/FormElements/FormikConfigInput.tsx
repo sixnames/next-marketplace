@@ -9,6 +9,7 @@ import {
   CONFIG_VARIANT_NUMBER,
   CONFIG_VARIANT_RUBRICS,
   CONFIG_VARIANT_STRING,
+  CONFIG_VARIANT_VISIBLE_RUBRICS,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
   FILTER_SEPARATOR,
@@ -24,6 +25,7 @@ import {
   useUpdateConfigMutation,
   useUpdateRubricNavItemConfigMutation,
   useUpdateVisibleCategoriesInNavDropdownMutation,
+  useUpdateVisibleNavRubricConfigMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
@@ -245,6 +247,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
   const isNumber = variant === CONFIG_VARIANT_NUMBER;
   const isCategoriesTree = variant === CONFIG_VARIANT_CATEGORIES_TREE;
   const isRubrics = variant === CONFIG_VARIANT_RUBRICS;
+  const isVisibleRubrics = variant === CONFIG_VARIANT_VISIBLE_RUBRICS;
 
   const initialCities = Object.keys(configCities).reduce((acc: JSONObjectModel, cityKey) => {
     const cityLocales = configCities[cityKey] as JSONObjectModel | undefined;
@@ -411,6 +414,11 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
     onError: onErrorCallback,
   });
 
+  const [updateVisibleNavRubricConfigMutation] = useUpdateVisibleNavRubricConfigMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateVisibleNavRubricConfig),
+    onError: onErrorCallback,
+  });
+
   const renderCategories = React.useCallback(
     ({ category, rubricId, citySlug, isParentSelected }: RenderCategoriesInterface) => {
       const { name, categories } = category;
@@ -548,6 +556,84 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                                   cities: config.cities,
                                   citySlug: slug,
                                   rubricId: rubric._id,
+                                },
+                              },
+                            }).catch(console.log);
+                          }}
+                        />
+                      </div>
+                      <div className='font-medium' data-cy={`rubric-${rubric.name}`}>
+                        {rubric.name}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </WpAccordion>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (isVisibleRubrics) {
+    return (
+      <div className='mb-24' data-cy={`${configSlug}-config`} key={configSlug}>
+        <div
+          className='mb-3 flex min-h-[1.3rem] items-start overflow-ellipsis whitespace-nowrap font-medium text-secondary-text'
+          data-cy={`${configSlug}-config-name`}
+        >
+          <span>{name}</span>
+          {description ? (
+            <React.Fragment>
+              {' '}
+              <WpTooltip title={description}>
+                <div className='ml-3 inline-block cursor-pointer'>
+                  <WpIcon className='h-5 w-5' name={'question-circle'} />
+                </div>
+              </WpTooltip>
+            </React.Fragment>
+          ) : null}
+        </div>
+        {cities.map(({ name, slug }) => {
+          const cityTestId = `${configSlug}-${slug}`;
+          return (
+            <WpAccordion
+              isOpen={slug === DEFAULT_CITY}
+              testId={cityTestId}
+              title={`${name}`}
+              key={slug}
+            >
+              <div className='ml-8 grid gap-4 py-[var(--lineGap-200)]'>
+                {(rubrics || []).map((rubric) => {
+                  const configValue = alwaysArray(get(config.cities, `${slug}.${DEFAULT_LOCALE}`));
+                  const isSelected = configValue.includes(rubric.slug);
+
+                  return (
+                    <div className='cms-option flex items-center gap-4' key={`${rubric._id}`}>
+                      <div>
+                        <WpCheckbox
+                          testId={`${rubric.name}`}
+                          checked={isSelected}
+                          value={rubric._id}
+                          name={`${rubric._id}`}
+                          onChange={() => {
+                            showLoading();
+                            updateVisibleNavRubricConfigMutation({
+                              variables: {
+                                input: {
+                                  _id: config._id,
+                                  slug: config.slug,
+                                  companySlug: config.companySlug,
+                                  description: config.description,
+                                  variant: config.variant as any,
+                                  acceptedFormats: config.acceptedFormats,
+                                  group: config.group,
+                                  multi: config.multi,
+                                  name: config.name,
+                                  cities: config.cities,
+                                  citySlug: slug,
+                                  rubricSlug: rubric.slug,
                                 },
                               },
                             }).catch(console.log);

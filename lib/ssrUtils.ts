@@ -469,6 +469,7 @@ export async function getSiteInitialData({
     stickyNavVisibleAttributesCount: initialData.configs.stickyNavVisibleAttributesCount,
     stickyNavVisibleOptionsCount: initialData.configs.stickyNavVisibleOptionsCount,
     visibleCategoriesInNavDropdown: initialData.configs.visibleCategoriesInNavDropdown,
+    visibleRubrics: initialData.configs.visibleRubrics,
   });
   const navRubrics = castDbData(rawNavRubrics);
   const catalogueCreatedPages = await getCatalogueCreatedPages({

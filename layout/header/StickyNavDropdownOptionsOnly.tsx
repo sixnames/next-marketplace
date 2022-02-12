@@ -1,6 +1,6 @@
 import * as React from 'react';
 import WpLink from '../../components/Link/WpLink';
-import { FILTER_SEPARATOR } from '../../config/common';
+import { FILTER_SEPARATOR } from 'config/common';
 import { StickyNavAttributeInterface, StickyNavDropdownInterface } from './StickyNav';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({

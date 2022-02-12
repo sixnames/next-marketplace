@@ -12,12 +12,13 @@ import {
   CONFIG_VARIANT_PHONE,
   CONFIG_VARIANT_RUBRICS,
   CONFIG_VARIANT_STRING,
+  CONFIG_VARIANT_VISIBLE_RUBRICS,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
   MAIN_BANNER_AUTOPLAY_SPEED,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
-} from '../config/common';
-import { ConfigModel } from '../db/dbModels';
+} from 'config/common';
+import { ConfigModel } from 'db/dbModels';
 import { ObjectId } from 'mongodb';
 
 export interface GetConfigTemplatesInterface {
@@ -26,6 +27,7 @@ export interface GetConfigTemplatesInterface {
   phone?: string[];
   email?: string[];
   visibleCategoriesInNavDropdown?: string[];
+  visibleRubrics?: string[];
   companySlug: string;
   foundationYear?: string;
   address?: string;
@@ -40,6 +42,7 @@ export function getConfigTemplates({
   foundationYear = `${new Date().getFullYear()}`,
   address,
   visibleCategoriesInNavDropdown,
+  visibleRubrics,
 }: GetConfigTemplatesInterface): ConfigModel[] {
   return [
     // Site globals
@@ -619,6 +622,21 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: ['false'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: CONFIG_VARIANT_VISIBLE_RUBRICS,
+      slug: 'visibleRubrics',
+      name: 'Рубрики которые нужно показывать в меню шапки каталога',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: visibleRubrics || [],
         },
       },
     },

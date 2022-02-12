@@ -6,16 +6,16 @@ import {
   DEFAULT_LOCALE,
   FILTER_SEPARATOR,
   SORT_ASC,
-} from '../config/common';
-import { COL_CATEGORIES, COL_CONFIGS } from '../db/collectionNames';
-import { CategoryModel, ConfigModel, ConfigPayloadModel, ObjectIdModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { CategoryInterface } from '../db/uiInterfaces';
-import { alwaysArray } from '../lib/arrayUtils';
+} from 'config/common';
+import { COL_CATEGORIES, COL_CONFIGS } from 'db/collectionNames';
+import { CategoryModel, ConfigModel, ConfigPayloadModel, ObjectIdModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { CategoryInterface } from 'db/uiInterfaces';
+import { alwaysArray } from 'lib/arrayUtils';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { phoneToRaw } from '../lib/phoneUtils';
-import { getOperationPermission, getRequestParams } from '../lib/sessionHelpers';
-import { getTreeFromList } from '../lib/treeUtils';
+import { phoneToRaw } from 'lib/phoneUtils';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { getTreeFromList } from 'lib/treeUtils';
 
 export const ConfigVariant = enumType({
   name: 'ConfigVariant',
@@ -151,6 +151,26 @@ export const UpdateRubricNavItemConfigInput = inputObjectType({
       type: 'ConfigVariant',
     });
     t.nonNull.objectId('rubricId');
+    t.nonNull.string('citySlug');
+  },
+});
+
+export const UpdateVisibleNavRubricConfigInput = inputObjectType({
+  name: 'UpdateVisibleNavRubricConfigInput',
+  definition(t) {
+    t.nonNull.objectId('_id');
+    t.nonNull.boolean('multi');
+    t.nonNull.list.nonNull.string('acceptedFormats');
+    t.nonNull.string('slug');
+    t.nonNull.string('companySlug');
+    t.nonNull.string('group');
+    t.nonNull.string('name');
+    t.string('description');
+    t.nonNull.json('cities');
+    t.nonNull.field('variant', {
+      type: 'ConfigVariant',
+    });
+    t.nonNull.string('rubricSlug');
     t.nonNull.string('citySlug');
   },
 });
@@ -441,6 +461,95 @@ export const ConfigMutations = extendType({
               upsert: true,
             },
           );
+          const updatedConfig = updatedConfigResult.value;
+          if (!updatedConfigResult.ok || !updatedConfig) {
+            return {
+              success: false,
+              message: await getApiMessage('configs.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('configs.update.success'),
+            payload: updatedConfig,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: await getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update rubric nav item config
+    t.nonNull.field('updateVisibleNavRubricConfig', {
+      type: 'ConfigPayload',
+      description: 'Should update rubric nav item config',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateVisibleNavRubricConfigInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ConfigPayloadModel> => {
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug:
+              args.input.companySlug === DEFAULT_COMPANY_SLUG
+                ? 'updateConfig'
+                : 'updateCompanyConfig',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+          const { input } = args;
+          const { _id, rubricSlug, citySlug, cities, ...values } = input;
+
+          let prevCityValue = alwaysArray(get(cities, `${citySlug}.${DEFAULT_LOCALE}`));
+
+          const exist = prevCityValue.includes(rubricSlug);
+          if (exist) {
+            prevCityValue = prevCityValue.filter((prevValue) => {
+              return prevValue !== rubricSlug;
+            });
+          } else {
+            prevCityValue.push(rubricSlug);
+          }
+
+          // Update config
+          const updatedConfigResult = await configsCollection.findOneAndUpdate(
+            {
+              _id,
+            },
+            {
+              $set: {
+                ...values,
+                cities: {
+                  ...cities,
+                  [citySlug]: {
+                    [DEFAULT_LOCALE]: prevCityValue.filter((slug) => slug),
+                  },
+                },
+              },
+            },
+            {
+              returnDocument: 'after',
+              upsert: true,
+            },
+          );
+
           const updatedConfig = updatedConfigResult.value;
           if (!updatedConfigResult.ok || !updatedConfig) {
             return {

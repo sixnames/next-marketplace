@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import WpLink from '../../components/Link/WpLink';
-import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from '../../config/common';
-import { useConfigContext } from '../../context/configContext';
-import { noNaN } from '../../lib/numbers';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from 'config/common';
+import { useConfigContext } from 'context/configContext';
+import { noNaN } from 'lib/numbers';
 import {
   StickyNavAttributeInterface,
   StickyNavCategoryInterface,

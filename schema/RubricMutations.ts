@@ -1,5 +1,5 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
+import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
@@ -9,8 +9,8 @@ import {
   COL_PRODUCT_SUMMARIES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
-} from '../db/collectionNames';
-import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+} from 'db/collectionNames';
+import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import {
   AttributeModel,
   AttributesGroupModel,
@@ -21,23 +21,23 @@ import {
   RubricModel,
   RubricPayloadModel,
   ShopProductModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { updateCitiesSeoContent } from '../lib/seoContentUniquenessUtils';
+import { updateCitiesSeoContent } from 'lib/seoContentUniquenessUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
-import { generateDefaultLangSlug } from '../lib/slugUtils';
-import { execUpdateProductTitles } from '../lib/updateProductTitles';
+} from 'lib/sessionHelpers';
+import { generateDefaultLangSlug } from 'lib/slugUtils';
+import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import {
   addAttributesGroupToRubricSchema,
   createRubricSchema,
   deleteAttributesGroupFromRubricSchema,
   updateRubricSchema,
-} from '../validation/rubricSchema';
+} from 'validation/rubricSchema';
 
 export const RubricPayload = objectType({
   name: 'RubricPayload',

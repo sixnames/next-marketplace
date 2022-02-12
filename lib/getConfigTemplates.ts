@@ -27,6 +27,7 @@ export interface GetConfigTemplatesInterface {
   phone?: string[];
   email?: string[];
   visibleCategoriesInNavDropdown?: string[];
+  visibleRubrics?: string[];
   companySlug: string;
   foundationYear?: string;
   address?: string;
@@ -41,6 +42,7 @@ export function getConfigTemplates({
   foundationYear = `${new Date().getFullYear()}`,
   address,
   visibleCategoriesInNavDropdown,
+  visibleRubrics,
 }: GetConfigTemplatesInterface): ConfigModel[] {
   return [
     // Site globals
@@ -634,7 +636,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [],
+          [DEFAULT_LOCALE]: visibleRubrics || [],
         },
       },
     },

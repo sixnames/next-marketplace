@@ -106,6 +106,7 @@ export const CONFIG_VARIANT_ADDRESS = 'address' as ConfigVariantModel;
 export const CONFIG_VARIANT_PASSWORD = 'password' as ConfigVariantModel;
 export const CONFIG_VARIANT_CATEGORIES_TREE = 'categoriesTree' as ConfigVariantModel;
 export const CONFIG_VARIANT_RUBRICS = 'rubrics' as ConfigVariantModel;
+export const CONFIG_VARIANT_VISIBLE_RUBRICS = 'visibleRubrics' as ConfigVariantModel;
 
 export const CONFIG_VARIANTS_ENUMS = [
   CONFIG_VARIANT_STRING,
@@ -120,6 +121,7 @@ export const CONFIG_VARIANTS_ENUMS = [
   CONFIG_VARIANT_PASSWORD,
   CONFIG_VARIANT_CATEGORIES_TREE,
   CONFIG_VARIANT_RUBRICS,
+  CONFIG_VARIANT_VISIBLE_RUBRICS,
 ];
 
 export const CONFIG_GROUP_GLOBALS = 'globals';

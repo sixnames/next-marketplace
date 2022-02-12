@@ -2,17 +2,17 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ShopAssets, { ShopAssetsInterface } from '../../../../../../components/shops/ShopAssets';
-import { COL_SHOPS } from '../../../../../../db/collectionNames';
-import { ShopModel } from '../../../../../../db/dbModels';
-import { getDatabase } from '../../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs } from '../../../../../../db/uiInterfaces';
+import { COL_SHOPS } from 'db/collectionNames';
+import { ShopModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from '../../../../../../lib/ssrUtils';
+} from 'lib/ssrUtils';
 
 interface CompanyShopAssetsInterface
   extends GetConsoleInitialDataPropsInterface,

@@ -630,6 +630,21 @@ export interface NexusGenInputs {
     slug: string; // String!
     variant: NexusGenEnums['ConfigVariant']; // ConfigVariant!
   };
+  UpdateVisibleNavRubricConfigInput: {
+    // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    acceptedFormats: string[]; // [String!]!
+    cities: NexusGenScalars['JSONObject']; // JSONObject!
+    citySlug: string; // String!
+    companySlug: string; // String!
+    description?: string | null; // String
+    group: string; // String!
+    multi: boolean; // Boolean!
+    name: string; // String!
+    rubricSlug: string; // String!
+    slug: string; // String!
+    variant: NexusGenEnums['ConfigVariant']; // ConfigVariant!
+  };
 }
 
 export interface NexusGenEnums {
@@ -1113,6 +1128,7 @@ export interface NexusGenFieldTypes {
     updateShopProductSupplier: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     updateSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     updateVisibleCategoriesInNavDropdown: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
+    updateVisibleNavRubricConfig: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
   };
   NavItem: {
     // field return type
@@ -1896,6 +1912,7 @@ export interface NexusGenFieldTypeNames {
     updateShopProductSupplier: 'ShopProductPayload';
     updateSupplier: 'SupplierPayload';
     updateVisibleCategoriesInNavDropdown: 'ConfigPayload';
+    updateVisibleNavRubricConfig: 'ConfigPayload';
   };
   NavItem: {
     // field return type name
@@ -2647,6 +2664,10 @@ export interface NexusGenArgTypes {
     updateVisibleCategoriesInNavDropdown: {
       // args
       input: NexusGenInputs['UpdateVisibleCategoriesInNavDropdownInput']; // UpdateVisibleCategoriesInNavDropdownInput!
+    };
+    updateVisibleNavRubricConfig: {
+      // args
+      input: NexusGenInputs['UpdateVisibleNavRubricConfigInput']; // UpdateVisibleNavRubricConfigInput!
     };
   };
   Query: {

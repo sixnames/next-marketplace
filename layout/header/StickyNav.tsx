@@ -3,17 +3,17 @@ import * as React from 'react';
 import { useRouter } from 'next/router';
 import Inner from '../../components/Inner';
 import WpLink from '../../components/Link/WpLink';
-import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from '../../config/common';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from 'config/common';
 import {
   NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY,
   NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
   NAV_DROPDOWN_LAYOUT_WITHOUT_SUBCATEGORIES,
-} from '../../config/constantSelects';
-import { useConfigContext } from '../../context/configContext';
-import { useSiteContext } from '../../context/siteContext';
-import { useThemeContext } from '../../context/themeContext';
-import { AttributeInterface, CategoryInterface, RubricInterface } from '../../db/uiInterfaces';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+} from 'config/constantSelects';
+import { useConfigContext } from 'context/configContext';
+import { useSiteContext } from 'context/siteContext';
+import { useThemeContext } from 'context/themeContext';
+import { AttributeInterface, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
+import { getProjectLinks } from 'lib/getProjectLinks';
 
 interface AttributeStylesInterface {
   attributeLinkStyle: React.CSSProperties;
@@ -63,14 +63,26 @@ const StickyNavDropdown: React.FC<StickyNavDropdownGlobalInterface> = ({
   ...props
 }) => {
   let dropDownLayout = <StickyNavDropdownDefault {...props} />;
-  if (catalogueNavLayout === NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY) {
+  const optionsOnly = catalogueNavLayout === NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY;
+  const withCategories = catalogueNavLayout === NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES;
+  const withSubCategories = catalogueNavLayout === NAV_DROPDOWN_LAYOUT_WITHOUT_SUBCATEGORIES;
+  const isCategories = withSubCategories || withCategories;
+  const showForCategories = isCategories ? (props.categories || []).length > 0 : true;
+  const showForAttributes = (props.attributes || []).length > 0;
+
+  if (!showForAttributes && !showForCategories) {
+    return null;
+  }
+
+  if (optionsOnly) {
     dropDownLayout = <StickyNavDropdownOptionsOnly {...props} />;
   }
 
-  if (catalogueNavLayout === NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES) {
+  if (withCategories) {
     dropDownLayout = <StickyNavDropdownWithCategories {...props} />;
   }
-  if (catalogueNavLayout === NAV_DROPDOWN_LAYOUT_WITHOUT_SUBCATEGORIES) {
+
+  if (withSubCategories) {
     dropDownLayout = <StickyNavDropdownWithoutSubCategories {...props} />;
   }
 
@@ -142,9 +154,11 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
                 className='relative flex h-[2.5rem] items-center pt-[2px] font-medium uppercase text-primary-text hover:text-theme hover:no-underline'
               >
                 {name}
-                {isCurrent ? (
-                  <span className='absolute inset-x-0 bottom-0 h-[2px] w-full bg-theme' />
-                ) : null}
+                <span
+                  className={`absolute inset-x-0 bottom-0 block w-full bg-theme group-hover:h-[2px] ${
+                    isCurrent ? 'h-[2px]' : ''
+                  }`}
+                />
               </WpLink>
 
               {isDropdownVisible ? (
@@ -181,9 +195,11 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
         className='relative flex h-[2.5rem] items-center pt-[2px] font-medium uppercase text-primary-text hover:text-theme hover:no-underline'
       >
         {name}
-        {isCurrent ? (
-          <span className='absolute inset-x-0 bottom-0 h-[2px] w-full bg-theme' />
-        ) : null}
+        <span
+          className={`absolute inset-x-0 bottom-0 block w-full bg-theme group-hover:h-[2px] ${
+            isCurrent ? 'h-[2px]' : ''
+          }`}
+        />
       </WpLink>
 
       {isDropdownVisible ? (

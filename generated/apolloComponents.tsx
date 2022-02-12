@@ -668,6 +668,8 @@ export type Mutation = {
   updateVisibleCategoriesInNavDropdown: ConfigPayload;
   /** Should update rubric nav item config */
   updateRubricNavItemConfig: ConfigPayload;
+  /** Should update rubric nav item config */
+  updateVisibleNavRubricConfig: ConfigPayload;
   /** Should create country */
   createCountry: CountryPayload;
   /** Should update country */
@@ -864,6 +866,11 @@ export type MutationUpdateVisibleCategoriesInNavDropdownArgs = {
 
 export type MutationUpdateRubricNavItemConfigArgs = {
   input: UpdateRubricNavItemConfigInput;
+};
+
+
+export type MutationUpdateVisibleNavRubricConfigArgs = {
+  input: UpdateVisibleNavRubricConfigInput;
 };
 
 
@@ -2034,6 +2041,21 @@ export type UpdateVisibleCategoriesInNavDropdownInput = {
   citySlug: Scalars['String'];
 };
 
+export type UpdateVisibleNavRubricConfigInput = {
+  _id: Scalars['ObjectId'];
+  multi: Scalars['Boolean'];
+  acceptedFormats: Array<Scalars['String']>;
+  slug: Scalars['String'];
+  companySlug: Scalars['String'];
+  group: Scalars['String'];
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  cities: Scalars['JSONObject'];
+  variant: ConfigVariant;
+  rubricSlug: Scalars['String'];
+  citySlug: Scalars['String'];
+};
+
 export type User = Base & Timestamp & {
   __typename?: 'User';
   _id: Scalars['ObjectId'];
@@ -2281,6 +2303,19 @@ export type UpdateRubricNavItemConfigMutationVariables = Exact<{
 export type UpdateRubricNavItemConfigMutation = (
   { __typename?: 'Mutation' }
   & { updateRubricNavItemConfig: (
+    { __typename?: 'ConfigPayload' }
+    & Pick<ConfigPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateVisibleNavRubricConfigMutationVariables = Exact<{
+  input: UpdateVisibleNavRubricConfigInput;
+}>;
+
+
+export type UpdateVisibleNavRubricConfigMutation = (
+  { __typename?: 'Mutation' }
+  & { updateVisibleNavRubricConfig: (
     { __typename?: 'ConfigPayload' }
     & Pick<ConfigPayload, 'success' | 'message'>
   ) }
@@ -3611,6 +3646,40 @@ export function useUpdateRubricNavItemConfigMutation(baseOptions?: Apollo.Mutati
 export type UpdateRubricNavItemConfigMutationHookResult = ReturnType<typeof useUpdateRubricNavItemConfigMutation>;
 export type UpdateRubricNavItemConfigMutationResult = Apollo.MutationResult<UpdateRubricNavItemConfigMutation>;
 export type UpdateRubricNavItemConfigMutationOptions = Apollo.BaseMutationOptions<UpdateRubricNavItemConfigMutation, UpdateRubricNavItemConfigMutationVariables>;
+export const UpdateVisibleNavRubricConfigDocument = gql`
+    mutation UpdateVisibleNavRubricConfig($input: UpdateVisibleNavRubricConfigInput!) {
+  updateVisibleNavRubricConfig(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateVisibleNavRubricConfigMutationFn = Apollo.MutationFunction<UpdateVisibleNavRubricConfigMutation, UpdateVisibleNavRubricConfigMutationVariables>;
+
+/**
+ * __useUpdateVisibleNavRubricConfigMutation__
+ *
+ * To run a mutation, you first call `useUpdateVisibleNavRubricConfigMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVisibleNavRubricConfigMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateVisibleNavRubricConfigMutation, { data, loading, error }] = useUpdateVisibleNavRubricConfigMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateVisibleNavRubricConfigMutation(baseOptions?: Apollo.MutationHookOptions<UpdateVisibleNavRubricConfigMutation, UpdateVisibleNavRubricConfigMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateVisibleNavRubricConfigMutation, UpdateVisibleNavRubricConfigMutationVariables>(UpdateVisibleNavRubricConfigDocument, options);
+      }
+export type UpdateVisibleNavRubricConfigMutationHookResult = ReturnType<typeof useUpdateVisibleNavRubricConfigMutation>;
+export type UpdateVisibleNavRubricConfigMutationResult = Apollo.MutationResult<UpdateVisibleNavRubricConfigMutation>;
+export type UpdateVisibleNavRubricConfigMutationOptions = Apollo.BaseMutationOptions<UpdateVisibleNavRubricConfigMutation, UpdateVisibleNavRubricConfigMutationVariables>;
 export const UpdateCatalogueCountersDocument = gql`
     mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
   updateCatalogueCounters(input: $input)

@@ -131,42 +131,50 @@ export async function updateCitiesSeoContent({
   seoContentsList,
   companySlug,
 }: UpdateCitiesSeoContentInterface) {
-  const { db } = await getDatabase();
-  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  try {
+    const { db } = await getDatabase();
+    const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
 
-  const cities = await getCitiesList();
-  for await (const city of cities) {
-    const seoContent = seoContentsList[city.slug];
+    const cities = await getCitiesList();
+    for await (const city of cities) {
+      const seoContent = seoContentsList[city.slug];
 
-    if (seoContent) {
-      const oldSeoContent = await seoContentsCollection.findOne({
-        _id: new ObjectId(seoContent._id),
-      });
+      if (seoContent) {
+        const oldSeoContent = await seoContentsCollection.findOne({
+          $or: [
+            {
+              _id: new ObjectId(seoContent._id),
+            },
+            {
+              slug: seoContent.slug,
+            },
+          ],
+        });
 
-      // check uniqueness
-      await checkSeoContentUniqueness({
-        companySlug,
-        seoContentId: new ObjectId(seoContent._id),
-        text: seoContent.content,
-        oldText: oldSeoContent?.content,
-      });
+        // check uniqueness
+        await checkSeoContentUniqueness({
+          companySlug,
+          seoContentId: new ObjectId(seoContent._id),
+          text: seoContent.content,
+          oldText: oldSeoContent?.content,
+        });
 
-      // create if not exist
-      if (!oldSeoContent) {
-        await seoContentsCollection.insertOne(seoContent);
-        continue;
+        // update existing
+        const { _id, ...values } = seoContent;
+        await seoContentsCollection.findOneAndUpdate(
+          {
+            _id: new ObjectId(_id),
+          },
+          {
+            $set: values,
+          },
+          {
+            upsert: true,
+          },
+        );
       }
-
-      // update existing
-      const { _id, ...values } = seoContent;
-      await seoContentsCollection.findOneAndUpdate(
-        {
-          _id: new ObjectId(_id),
-        },
-        {
-          $set: values,
-        },
-      );
     }
+  } catch (e) {
+    console.log('updateCitiesSeoContent error', e);
   }
 }

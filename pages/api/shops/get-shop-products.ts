@@ -1,13 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { DEFAULT_LOCALE } from '../../../config/common';
-import { COL_SHOP_PRODUCTS, COL_SHOPS } from '../../../db/collectionNames';
-import { summaryPipeline } from '../../../db/dao/constantPipelines';
-import { ObjectIdModel, ProductSummaryModel, ShopModel } from '../../../db/dbModels';
-import { getDatabase } from '../../../db/mongodb';
-import { SyncParamsInterface, SyncProductInterface } from '../../../db/syncInterfaces';
-import { ShopProductInterface } from '../../../db/uiInterfaces';
-import { alwaysString } from '../../../lib/arrayUtils';
-import { getFieldStringLocale } from '../../../lib/i18n';
+import { DEFAULT_LOCALE } from 'config/common';
+import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { summaryPipeline } from 'db/dao/constantPipelines';
+import { ObjectIdModel, ProductSummaryModel, ShopModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { SyncParamsInterface, SyncProductInterface } from 'db/syncInterfaces';
+import { ShopProductInterface } from 'db/uiInterfaces';
+import { alwaysString } from 'lib/arrayUtils';
+import { getFieldStringLocale } from 'lib/i18n';
 
 interface SyncProductAggregationInterface extends Omit<SyncProductInterface, '_id'> {
   _id: ObjectIdModel;

@@ -770,6 +770,7 @@ export interface SsrConfigsInterface {
   showBlog: boolean;
   showBlogPostViews: boolean;
   categoriesAsNavItems: string[];
+  visibleRubrics: string[];
   visibleCategoriesInNavDropdown: string[];
   showShopProductAvailability: boolean;
 

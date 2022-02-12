@@ -2,11 +2,11 @@ import {
   CATALOGUE_PRODUCTS_LIMIT,
   CONFIG_GROUP_PROJECT,
   DEFAULT_COMPANY_SLUG,
-} from '../config/common';
-import { COL_CONFIGS, COL_SHOPS } from '../db/collectionNames';
-import { ConfigModel, ShopModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { SsrConfigsInterface } from '../db/uiInterfaces';
+} from 'config/common';
+import { COL_CONFIGS, COL_SHOPS } from 'db/collectionNames';
+import { ConfigModel, ShopModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { SsrConfigsInterface } from 'db/uiInterfaces';
 import {
   castConfigs,
   getConfigBooleanValue,
@@ -437,8 +437,13 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'ipRegistryApiKey',
   });
+  const visibleRubrics = getConfigListValue({
+    configs,
+    slug: 'visibleRubrics',
+  });
 
   return {
+    visibleRubrics,
     ipRegistryApiKey,
     contactsTitle,
     contactsMetaTitle,

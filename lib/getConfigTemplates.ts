@@ -12,12 +12,13 @@ import {
   CONFIG_VARIANT_PHONE,
   CONFIG_VARIANT_RUBRICS,
   CONFIG_VARIANT_STRING,
+  CONFIG_VARIANT_VISIBLE_RUBRICS,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
   MAIN_BANNER_AUTOPLAY_SPEED,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
-} from '../config/common';
-import { ConfigModel } from '../db/dbModels';
+} from 'config/common';
+import { ConfigModel } from 'db/dbModels';
 import { ObjectId } from 'mongodb';
 
 export interface GetConfigTemplatesInterface {
@@ -629,6 +630,21 @@ export function getConfigTemplates({
       variant: CONFIG_VARIANT_RUBRICS,
       slug: 'categoriesAsNavItems',
       name: 'Рубрики категории которых нужно показывать в меню шапки каталога',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: CONFIG_VARIANT_VISIBLE_RUBRICS,
+      slug: 'visibleRubrics',
+      name: 'Рубрики которые нужно показывать в меню шапки каталога',
       multi: false,
       acceptedFormats: [],
       cities: {

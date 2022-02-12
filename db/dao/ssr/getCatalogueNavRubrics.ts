@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, ONE_DAY, SORT_DESC } from '../../../config/common';
-import { getTreeFromList } from '../../../lib/treeUtils';
+import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, ONE_HOUR, SORT_DESC } from 'config/common';
+import { getTreeFromList } from 'lib/treeUtils';
 import {
   COL_ATTRIBUTES,
   COL_CATALOGUE_NAV,
@@ -9,16 +9,16 @@ import {
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
-} from '../../collectionNames';
+} from 'db/collectionNames';
 import {
   AttributeModel,
   CatalogueNavModel,
   CategoryModel,
   ObjectIdModel,
   ShopProductModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { RubricInterface } from '../../uiInterfaces';
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { RubricInterface } from 'db/uiInterfaces';
 import { ignoreNoImageStage } from '../constantPipelines';
 import { castRubricForUI } from '../rubrics/castRubricForUI';
 
@@ -56,6 +56,7 @@ interface GetCatalogueNavRubricsInterface {
   stickyNavVisibleOptionsCount: number;
   visibleCategoriesInNavDropdown: string[];
   locale: string;
+  visibleRubrics: string[];
 }
 
 export const createCatalogueNavRubrics = async ({
@@ -65,6 +66,7 @@ export const createCatalogueNavRubrics = async ({
   stickyNavVisibleAttributesCount,
   stickyNavVisibleOptionsCount,
   visibleCategoriesInNavDropdown,
+  visibleRubrics,
 }: GetCatalogueNavRubricsInterface): Promise<RubricInterface[]> => {
   // console.log(' ');
   // console.log('=================== createCatalogueNavRubrics =======================');
@@ -123,6 +125,9 @@ export const createCatalogueNavRubrics = async ({
       {
         $match: {
           ...companyMatch,
+          rubricSlug: {
+            $in: visibleRubrics,
+          },
           citySlug,
           ...ignoreNoImageStage,
         },
@@ -546,7 +551,8 @@ export const getCatalogueNavRubrics = async ({
   // update nav every day
   const createdAtTime = new Date(catalogueNav.createdAt).getTime();
   const ttlDiff = new Date().getTime() - createdAtTime;
-  if (ttlDiff > ONE_DAY) {
+  // if (ttlDiff > ONE_DAY) {
+  if (ttlDiff > ONE_HOUR) {
     const newCatalogueNav = await updateCatalogueNavRubrics({
       citySlug,
       locale,

@@ -98,6 +98,8 @@ export async function updateProductTitles(match?: Record<any, any>) {
     ])
     .toArray();
 
+  console.log(`\n\nTotal products count ${products.length}\n`);
+  console.log(`Match \n${JSON.stringify(match, null, 2)}\n`);
   logger(`\n\nTotal products count ${products.length}\n`);
   logger(`Match \n${JSON.stringify(match, null, 2)}\n`);
 
@@ -106,6 +108,8 @@ export async function updateProductTitles(match?: Record<any, any>) {
       initialProduct;*/
     const { rubric, originalName } = initialProduct;
     if (!rubric) {
+      console.log(`No rubric ${originalName}`);
+      console.log(JSON.stringify(initialProduct, null, 2));
       logger(`No rubric ${originalName}`);
       logger(JSON.stringify(initialProduct, null, 2));
       return false;
@@ -168,6 +172,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
 
     const counter = index + 1;
     if (counter % 10 === 0) {
+      console.log(counter);
       logger(`${counter}`);
     }
   }
@@ -183,15 +188,18 @@ export function execUpdateProductTitles(param: string) {
       `node -r esbuild-register db/dao/childProcess/updateProductTitlesInChildProcess.ts ${param}`,
       (error, stdout, stderr) => {
         if (error) {
+          console.log(`error: ${error.message}`);
           logger(`error: ${error.message}`);
           return;
         }
 
         if (stderr) {
+          console.log(`stderr: ${stderr}`);
           logger(`stderr: ${stderr}`);
           return;
         }
 
+        console.log(`stdout:\n${stdout}`);
         logger(`stdout:\n${stdout}`);
       },
     );

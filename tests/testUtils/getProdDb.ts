@@ -83,19 +83,31 @@ require('dotenv').config();
 export interface GetProdDd {
   uri: string;
   dbName: string;
-  algoliaProductsIndexName: string;
+  algoliaProductsIndexName?: string;
 }
 
 export async function getProdDb({ uri, dbName }: GetProdDd) {
   const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
 
+  const sslOptions = process.env.DEV_ENV
+    ? {}
+    : {
+        tls: true,
+        tlsCAFile,
+        replicaSet: process.env.MONGO_DB_RS,
+      };
+
   const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     authSource: dbName,
-    tls: true,
-    tlsCAFile,
-    replicaSet: process.env.MONGO_DB_RS,
+    ...sslOptions,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
+    // authSource: dbName,
+    // tls: true,
+    // tlsCAFile,
+    // replicaSet: process.env.MONGO_DB_RS,
   };
 
   // Create connection

@@ -77,11 +77,11 @@ async function updateProductTitlesInChildProcess() {
 
 (() => {
   updateProductTitlesInChildProcess()
-    .then(() => {
+    /*.then(() => {
       process.exit();
-    })
+    })*/
     .catch((e) => {
       console.log(e);
-      process.exit();
+      // process.exit();
     });
 })();

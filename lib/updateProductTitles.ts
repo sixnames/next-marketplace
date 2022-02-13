@@ -1,19 +1,19 @@
 import addZero from 'add-zero';
 import { exec } from 'child_process';
-import { COL_LANGUAGES, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
+import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
 } from 'db/dao/constantPipelines';
-import { LanguageModel, ProductSummaryModel, TranslationModel } from 'db/dbModels';
+import { ProductSummaryModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductSummaryInterface } from 'db/uiInterfaces';
-import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
-import { getFieldStringLocale } from './i18n';
-import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
-import { getTreeFromList } from './treeUtils';
+// import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
+// import { getFieldStringLocale } from './i18n';
+// import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
+// import { getTreeFromList } from './treeUtils';
 import fs from 'fs';
 import path from 'path';
 import mkdirp from 'mkdirp';
@@ -54,9 +54,9 @@ function getLogFileDateName() {
 export async function updateProductTitles(match?: Record<any, any>) {
   const { db, client } = await getDatabase();
   const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-  const languages = await languagesCollection.find({}).toArray();
-  const locales = languages.map(({ slug }) => slug);
+  // const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  // const languages = await languagesCollection.find({}).toArray();
+  // const locales = languages.map(({ slug }) => slug);
   const fileName = getLogFileDateName();
   const logger = await getLogger(fileName);
 
@@ -104,8 +104,9 @@ export async function updateProductTitles(match?: Record<any, any>) {
   logger(`\n\n Total products count ${products.length} \n`);
 
   for await (const [index, initialProduct] of products.entries()) {
-    const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
-      initialProduct;
+    const { rubric, originalName } = initialProduct;
+    /*const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
+      initialProduct;*/
     if (!rubric) {
       logger(`No rubric ${originalName}`);
       logger(JSON.stringify(initialProduct, null, 2));
@@ -113,7 +114,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
     }
 
     // update titles
-    const cardTitleI18n: TranslationModel = {};
+    /*const cardTitleI18n: TranslationModel = {};
     const snippetTitleI18n: TranslationModel = {};
     for await (const locale of locales) {
       const categoriesTree = getTreeFromList({
@@ -138,11 +139,11 @@ export async function updateProductTitles(match?: Record<any, any>) {
       cardTitleI18n[locale] = cardTitle;
       const snippetTitle = generateSnippetTitle(titleProps);
       snippetTitleI18n[locale] = snippetTitle;
-    }
+    }*/
 
-    logger(JSON.stringify({ cardTitleI18n, snippetTitleI18n }, null, 2));
+    // logger(JSON.stringify({ cardTitleI18n, snippetTitleI18n }, null, 2));
 
-    await productSummariesCollection.findOneAndUpdate(
+    /*await productSummariesCollection.findOneAndUpdate(
       {
         _id: initialProduct._id,
       },
@@ -152,11 +153,12 @@ export async function updateProductTitles(match?: Record<any, any>) {
           snippetTitleI18n,
         },
       },
-    );
+    );*/
 
     // update algolia index
-    await updateAlgoliaProducts({ _id: initialProduct._id });
+    // await updateAlgoliaProducts({ _id: initialProduct._id });
 
+    logger(originalName);
     const counter = index + 1;
     if (counter % 10 === 0) {
       logger(`${counter}`);

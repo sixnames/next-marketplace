@@ -181,7 +181,6 @@ export async function updateProductTitles(match?: Record<any, any>) {
   }
   logger(`Done >>>>>>>>>>>>>>>>>>>>>>>>>>>>>`);
   await client.close();
-  process.exit(0);
   return true;
 }
 

@@ -106,8 +106,6 @@ export async function updateProductTitles(match?: Record<any, any>) {
     ])
     .toArray();
 
-  console.log(`\n\nTotal products count ${products.length}\n`);
-  console.log(`Match \n${JSON.stringify(match, null, 2)}\n`);
   logger(`\n\nTotal products count ${products.length}\n`);
   logger(`Match \n${JSON.stringify(match, null, 2)}\n`);
 
@@ -116,11 +114,9 @@ export async function updateProductTitles(match?: Record<any, any>) {
       initialProduct;
     // const { rubric, originalName } = initialProduct;
     if (!rubric) {
-      console.log(`No rubric ${originalName}`);
-      console.log(JSON.stringify(initialProduct, null, 2));
       logger(`No rubric ${originalName}`);
       logger(JSON.stringify(initialProduct, null, 2));
-      return false;
+      continue;
     }
 
     // update titles
@@ -151,7 +147,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
       snippetTitleI18n[locale] = snippetTitle;
     });
 
-    const updatedProductResult = await productSummariesCollection.findOneAndUpdate(
+    await productSummariesCollection.findOneAndUpdate(
       {
         _id: initialProduct._id,
       },
@@ -163,7 +159,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
       },
     );
 
-    logger(
+    /*logger(
       JSON.stringify(
         {
           updatedProductResult: updatedProductResult.ok,
@@ -173,14 +169,13 @@ export async function updateProductTitles(match?: Record<any, any>) {
         null,
         2,
       ),
-    );
+    );*/
 
     // update algolia index
     await updateAlgoliaProducts({ _id: initialProduct._id });
 
     const counter = index + 1;
     if (counter % 10 === 0) {
-      console.log(counter);
       logger(`${counter}`);
     }
   }
@@ -194,7 +189,7 @@ export function execUpdateProductTitles(param: string) {
   getLogger(`${fileName}_execUpdateProductTitles_result`).then((logger) => {
     exec(
       `node -r esbuild-register db/dao/childProcess/updateProductTitlesInChildProcess.ts ${param}`,
-      (error, stdout, stderr) => {
+      (error, _stdout, stderr) => {
         if (error) {
           console.log(`error: ${error.message}`);
           logger(`error: ${error.message}`);
@@ -207,8 +202,8 @@ export function execUpdateProductTitles(param: string) {
           return;
         }
 
-        console.log(`stdout:\n${stdout}`);
-        logger(`stdout:\n${stdout}`);
+        // console.log(`stdout:\n${stdout}`);
+        // logger(`stdout:\n${stdout}`);
       },
     );
   });

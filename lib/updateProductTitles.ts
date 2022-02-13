@@ -104,6 +104,8 @@ export async function updateProductTitles(match?: Record<any, any>) {
     const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
       initialProduct;
     if (!rubric) {
+      logger(`No rubric ${originalName}`);
+      logger(JSON.stringify(initialProduct, null, 2));
       return false;
     }
 
@@ -134,6 +136,8 @@ export async function updateProductTitles(match?: Record<any, any>) {
       const snippetTitle = generateSnippetTitle(titleProps);
       snippetTitleI18n[locale] = snippetTitle;
     }
+
+    logger(JSON.stringify({ cardTitleI18n, snippetTitleI18n }, null, 2));
 
     await productSummariesCollection.findOneAndUpdate(
       {

@@ -10,7 +10,7 @@ import {
 import { LanguageModel, ProductSummaryModel, TranslationModel } from 'db/dbModels';
 import { ProductSummaryInterface } from 'db/uiInterfaces';
 import { getProdDb } from 'tests/testUtils/getProdDb';
-import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
+// import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from './i18n';
 import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
 import { getTreeFromList } from './treeUtils';
@@ -142,9 +142,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
       snippetTitleI18n[locale] = snippetTitle;
     });
 
-    // logger(JSON.stringify({ cardTitleI18n, snippetTitleI18n }, null, 2));
-
-    await productSummariesCollection.findOneAndUpdate(
+    const updatedProductResult = await productSummariesCollection.findOneAndUpdate(
       {
         _id: initialProduct._id,
       },
@@ -156,8 +154,20 @@ export async function updateProductTitles(match?: Record<any, any>) {
       },
     );
 
+    logger(
+      JSON.stringify(
+        {
+          updatedProductResult: updatedProductResult.ok,
+          cardTitleI18n,
+          snippetTitleI18n,
+        },
+        null,
+        2,
+      ),
+    );
+
     // update algolia index
-    await updateAlgoliaProducts({ _id: initialProduct._id });
+    // await updateAlgoliaProducts({ _id: initialProduct._id });
 
     const counter = index + 1;
     if (counter % 10 === 0) {

@@ -1,3 +1,4 @@
+import addZero from 'add-zero';
 import { exec } from 'child_process';
 import { COL_LANGUAGES, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
 import {
@@ -13,6 +14,28 @@ import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from './i18n';
 import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
 import { getTreeFromList } from './treeUtils';
+import fs from 'fs';
+import path from 'path';
+import mkdirp from 'mkdirp';
+
+async function getLogger(fileName: string) {
+  const dirPath = path.join(process.cwd(), 'log');
+  await mkdirp(dirPath);
+  const logPath = path.join(dirPath, `${fileName}.txt`);
+
+  function logger(message: string) {
+    const exist = fs.existsSync(logPath);
+
+    if (!exist) {
+      fs.writeFileSync(logPath, message);
+      return;
+    }
+
+    const file = fs.readFileSync(logPath);
+    fs.writeFileSync(logPath, `${file.toString()} \n${message}`);
+  }
+  return logger;
+}
 
 export async function updateProductTitles(match?: Record<any, any>) {
   try {
@@ -21,6 +44,17 @@ export async function updateProductTitles(match?: Record<any, any>) {
     const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
     const languages = await languagesCollection.find({}).toArray();
     const locales = languages.map(({ slug }) => slug);
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const date = currentDate.getDate();
+    const hours = currentDate.getHours();
+    const minutes = currentDate.getMinutes();
+    const dateString = `${addZero(date, 2)}.${addZero(month, 2)}.${year}_${addZero(
+      hours,
+      2,
+    )}_${addZero(minutes, 2)}`;
+    const logger = await getLogger(`${dateString}`);
 
     const aggregationMatch = match
       ? [
@@ -60,7 +94,9 @@ export async function updateProductTitles(match?: Record<any, any>) {
       ])
       .toArray();
 
-    for await (const initialProduct of products) {
+    logger(`\n\n Total products count ${products.length} \n`);
+
+    for await (const [index, initialProduct] of products.entries()) {
       const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
         initialProduct;
       if (!rubric) {
@@ -94,6 +130,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
         const snippetTitle = generateSnippetTitle(titleProps);
         snippetTitleI18n[locale] = snippetTitle;
       }
+
       await productSummariesCollection.findOneAndUpdate(
         {
           _id: initialProduct._id,
@@ -108,7 +145,13 @@ export async function updateProductTitles(match?: Record<any, any>) {
 
       // update algolia index
       await updateAlgoliaProducts({ _id: initialProduct._id });
+
+      const counter = index + 1;
+      if (counter % 10 === 0) {
+        logger(`${counter}`);
+      }
     }
+    logger(`Done >>>>>>>>>>>>>>>>>>>>>>>>>>>>>`);
     return true;
   } catch (e) {
     console.log('updateProductTitlesInterface error ', e);

@@ -17,7 +17,6 @@
     "ci": "server-test 3000",
     "build-and-test": "yarn build && yarn ci",
     "generate-links": "node -r esbuild-register lib/generateProjectLinks.ts && prettier --write lib/getProjectLinks.ts",
-    "update-product-titles": "node -r esbuild-register db/dao/childProcess/updateProductTitlesInChildProcess.ts",
     "seed-stage-db": "node -r esbuild-register tests/seedStageDb.ts",
     "fast-update-prods": "node -r esbuild-register tests/testUtils/fastUpdateProds.ts",
     "update-prods": "node -r esbuild-register tests/testUtils/updateProds.ts",

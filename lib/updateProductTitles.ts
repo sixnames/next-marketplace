@@ -77,33 +77,38 @@ export async function updateProductTitles(match?: Record<any, any>) {
     : [];
 
   const products = await productSummariesCollection
-    .aggregate<ProductSummaryInterface>([
-      ...aggregationMatch,
+    .aggregate<ProductSummaryInterface>(
+      [
+        ...aggregationMatch,
 
-      // get product rubric
-      ...productRubricPipeline,
+        // get product rubric
+        ...productRubricPipeline,
 
-      // get product attributes
-      ...productAttributesPipeline(),
+        // get product attributes
+        ...productAttributesPipeline(),
 
-      // get product brand
-      ...brandPipeline,
+        // get product brand
+        ...brandPipeline,
 
-      // get product categories
-      ...productCategoriesPipeline(),
-      {
-        $project: {
-          _id: true,
-          rubric: true,
-          attributes: true,
-          categories: true,
-          titleCategorySlugs: true,
-          originalName: true,
-          gender: true,
-          brand: true,
+        // get product categories
+        ...productCategoriesPipeline(),
+        {
+          $project: {
+            _id: true,
+            rubric: true,
+            attributes: true,
+            categories: true,
+            titleCategorySlugs: true,
+            originalName: true,
+            gender: true,
+            brand: true,
+          },
         },
+      ],
+      {
+        allowDiskUse: true,
       },
-    ])
+    )
     .toArray();
 
   logger(`\n\nTotal products count ${products.length}\n`);

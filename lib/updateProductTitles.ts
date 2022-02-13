@@ -1,13 +1,18 @@
 import addZero from 'add-zero';
 import { exec } from 'child_process';
-import { COL_LANGUAGES, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
+import { COL_LANGUAGES, COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
 } from 'db/dao/constantPipelines';
-import { LanguageModel, ProductSummaryModel, TranslationModel } from 'db/dbModels';
+import {
+  LanguageModel,
+  ProductFacetModel,
+  ProductSummaryModel,
+  TranslationModel,
+} from 'db/dbModels';
 import { ProductSummaryInterface } from 'db/uiInterfaces';
 import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -61,6 +66,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
     dbName: `${process.env.MONGO_DB_NAME}`,
     uri: `${process.env.MONGO_URL}`,
   });
+  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const languages = await languagesCollection.find({}).toArray();
@@ -76,32 +82,13 @@ export async function updateProductTitles(match?: Record<any, any>) {
       ]
     : [];
 
-  const products = await productSummariesCollection
-    .aggregate<ProductSummaryInterface>(
+  const facets = await productFacetsCollection
+    .aggregate<ProductFacetModel>(
       [
         ...aggregationMatch,
-
-        // get product rubric
-        ...productRubricPipeline,
-
-        // get product attributes
-        ...productAttributesPipeline(),
-
-        // get product brand
-        ...brandPipeline,
-
-        // get product categories
-        ...productCategoriesPipeline(),
         {
           $project: {
             _id: true,
-            rubric: true,
-            attributes: true,
-            categories: true,
-            titleCategorySlugs: true,
-            originalName: true,
-            gender: true,
-            brand: true,
           },
         },
       ],
@@ -111,16 +98,58 @@ export async function updateProductTitles(match?: Record<any, any>) {
     )
     .toArray();
 
-  logger(`\n\nTotal products count ${products.length}\n`);
+  logger(`\n\nTotal products count ${facets.length}\n`);
   logger(`Match \n${JSON.stringify(match, null, 2)}\n`);
 
-  for await (const [index, initialProduct] of products.entries()) {
+  for await (const [index, facet] of facets.entries()) {
+    const productAggregation = await productFacetsCollection
+      .aggregate<ProductSummaryInterface>(
+        [
+          {
+            _id: facet._id,
+          },
+
+          // get product rubric
+          ...productRubricPipeline,
+
+          // get product attributes
+          ...productAttributesPipeline(),
+
+          // get product brand
+          ...brandPipeline,
+
+          // get product categories
+          ...productCategoriesPipeline(),
+          {
+            $project: {
+              _id: true,
+              rubric: true,
+              attributes: true,
+              categories: true,
+              titleCategorySlugs: true,
+              originalName: true,
+              gender: true,
+              brand: true,
+            },
+          },
+        ],
+        {
+          allowDiskUse: true,
+        },
+      )
+      .toArray();
+    const summary = productAggregation[0];
+    if (!summary) {
+      logger(`No summary ${facet._id}`);
+      logger(JSON.stringify(summary, null, 2));
+      continue;
+    }
+
     const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
-      initialProduct;
-    // const { rubric, originalName } = initialProduct;
+      summary;
     if (!rubric) {
       logger(`No rubric ${originalName}`);
-      logger(JSON.stringify(initialProduct, null, 2));
+      logger(JSON.stringify(summary, null, 2));
       continue;
     }
 
@@ -154,7 +183,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
 
     await productSummariesCollection.findOneAndUpdate(
       {
-        _id: initialProduct._id,
+        _id: summary._id,
       },
       {
         $set: {
@@ -164,20 +193,8 @@ export async function updateProductTitles(match?: Record<any, any>) {
       },
     );
 
-    /*logger(
-      JSON.stringify(
-        {
-          updatedProductResult: updatedProductResult.ok,
-          cardTitleI18n,
-          snippetTitleI18n,
-        },
-        null,
-        2,
-      ),
-    );*/
-
     // update algolia index
-    await updateAlgoliaProducts({ _id: initialProduct._id });
+    await updateAlgoliaProducts({ _id: summary._id });
 
     const counter = index + 1;
     if (counter % 10 === 0) {

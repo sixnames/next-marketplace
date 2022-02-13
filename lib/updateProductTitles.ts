@@ -10,7 +10,7 @@ import {
 import { LanguageModel, ProductSummaryModel, TranslationModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductSummaryInterface } from 'db/uiInterfaces';
-// import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
+import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from './i18n';
 import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
 import { getTreeFromList } from './treeUtils';
@@ -71,6 +71,9 @@ export async function updateProductTitles(match?: Record<any, any>) {
   const products = await productSummariesCollection
     .aggregate<ProductSummaryInterface>([
       ...aggregationMatch,
+      {
+        $limit: 10,
+      },
 
       // get product rubric
       ...productRubricPipeline,
@@ -152,7 +155,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
     );
 
     // update algolia index
-    // await updateAlgoliaProducts({ _id: initialProduct._id });
+    await updateAlgoliaProducts({ _id: initialProduct._id });
 
     const counter = index + 1;
     if (counter % 10 === 0) {

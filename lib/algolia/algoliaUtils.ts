@@ -1,5 +1,6 @@
 import algoliasearch from 'algoliasearch';
 import { SearchClient, SearchIndex } from 'algoliasearch/dist/algoliasearch';
+require('dotenv').config();
 
 interface GetAlgoliaClientPayloadInterface {
   algoliaClient: SearchClient;
@@ -7,10 +8,12 @@ interface GetAlgoliaClientPayloadInterface {
 }
 
 export const getAlgoliaClient = (indexName: string): GetAlgoliaClientPayloadInterface => {
-  const algoliaClient = algoliasearch(
-    `${process.env.ALGOLIA_APP_ID}`,
-    `${process.env.ALGOLIA_API_KEY}`,
-  );
+  const appId = process.env.ALGOLIA_APP_ID;
+  const apiKey = process.env.ALGOLIA_API_KEY;
+  if (!appId || !apiKey) {
+    throw Error('No env variables in getAlgoliaClient');
+  }
+  const algoliaClient = algoliasearch(`${appId}`, `${apiKey}`);
   const algoliaIndex = algoliaClient.initIndex(indexName);
   return {
     algoliaClient,

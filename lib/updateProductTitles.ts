@@ -52,116 +52,111 @@ function getLogFileDateName() {
 }
 
 export async function updateProductTitles(match?: Record<any, any>) {
-  try {
-    const { db } = await getDatabase();
-    const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-    const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-    const languages = await languagesCollection.find({}).toArray();
-    const locales = languages.map(({ slug }) => slug);
-    const fileName = getLogFileDateName();
-    const logger = await getLogger(fileName);
+  const { db } = await getDatabase();
+  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  const languages = await languagesCollection.find({}).toArray();
+  const locales = languages.map(({ slug }) => slug);
+  const fileName = getLogFileDateName();
+  const logger = await getLogger(fileName);
 
-    const aggregationMatch = match
-      ? [
-          {
-            $match: match,
-          },
-        ]
-      : [];
-
-    const products = await productSummariesCollection
-      .aggregate<ProductSummaryInterface>([
-        ...aggregationMatch,
-
-        // get product rubric
-        ...productRubricPipeline,
-
-        // get product attributes
-        ...productAttributesPipeline(),
-
-        // get product brand
-        ...brandPipeline,
-
-        // get product categories
-        ...productCategoriesPipeline(),
+  const aggregationMatch = match
+    ? [
         {
-          $project: {
-            _id: true,
-            rubric: true,
-            attributes: true,
-            categories: true,
-            titleCategorySlugs: true,
-            originalName: true,
-            gender: true,
-            brand: true,
-          },
+          $match: match,
         },
-      ])
-      .toArray();
+      ]
+    : [];
 
-    logger(`\n\n Total products count ${products.length} \n`);
+  const products = await productSummariesCollection
+    .aggregate<ProductSummaryInterface>([
+      ...aggregationMatch,
 
-    for await (const [index, initialProduct] of products.entries()) {
-      const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
-        initialProduct;
-      if (!rubric) {
-        return false;
-      }
+      // get product rubric
+      ...productRubricPipeline,
 
-      // update titles
-      const cardTitleI18n: TranslationModel = {};
-      const snippetTitleI18n: TranslationModel = {};
-      for await (const locale of locales) {
-        const categoriesTree = getTreeFromList({
-          list: categories,
-          childrenFieldName: 'categories',
-          locale,
-        });
+      // get product attributes
+      ...productAttributesPipeline(),
 
-        const titleProps: GenerateCardTitleInterface = {
-          locale,
-          attributes,
-          titleCategorySlugs,
-          originalName,
-          brand,
-          defaultGender: gender,
-          categories: categoriesTree,
-          rubricName: getFieldStringLocale(rubric.nameI18n, locale),
-          showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
-          showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-        };
-        const cardTitle = generateCardTitle(titleProps);
-        cardTitleI18n[locale] = cardTitle;
-        const snippetTitle = generateSnippetTitle(titleProps);
-        snippetTitleI18n[locale] = snippetTitle;
-      }
+      // get product brand
+      ...brandPipeline,
 
-      await productSummariesCollection.findOneAndUpdate(
-        {
-          _id: initialProduct._id,
+      // get product categories
+      ...productCategoriesPipeline(),
+      {
+        $project: {
+          _id: true,
+          rubric: true,
+          attributes: true,
+          categories: true,
+          titleCategorySlugs: true,
+          originalName: true,
+          gender: true,
+          brand: true,
         },
-        {
-          $set: {
-            cardTitleI18n,
-            snippetTitleI18n,
-          },
-        },
-      );
+      },
+    ])
+    .toArray();
 
-      // update algolia index
-      await updateAlgoliaProducts({ _id: initialProduct._id });
+  logger(`\n\n Total products count ${products.length} \n`);
 
-      const counter = index + 1;
-      if (counter % 10 === 0) {
-        logger(`${counter}`);
-      }
+  for await (const [index, initialProduct] of products.entries()) {
+    const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
+      initialProduct;
+    if (!rubric) {
+      return false;
     }
-    logger(`Done >>>>>>>>>>>>>>>>>>>>>>>>>>>>>`);
-    return true;
-  } catch (e) {
-    console.log('updateProductTitlesInterface error ', e);
-    return false;
+
+    // update titles
+    const cardTitleI18n: TranslationModel = {};
+    const snippetTitleI18n: TranslationModel = {};
+    for await (const locale of locales) {
+      const categoriesTree = getTreeFromList({
+        list: categories,
+        childrenFieldName: 'categories',
+        locale,
+      });
+
+      const titleProps: GenerateCardTitleInterface = {
+        locale,
+        attributes,
+        titleCategorySlugs,
+        originalName,
+        brand,
+        defaultGender: gender,
+        categories: categoriesTree,
+        rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+        showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
+        showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+      };
+      const cardTitle = generateCardTitle(titleProps);
+      cardTitleI18n[locale] = cardTitle;
+      const snippetTitle = generateSnippetTitle(titleProps);
+      snippetTitleI18n[locale] = snippetTitle;
+    }
+
+    await productSummariesCollection.findOneAndUpdate(
+      {
+        _id: initialProduct._id,
+      },
+      {
+        $set: {
+          cardTitleI18n,
+          snippetTitleI18n,
+        },
+      },
+    );
+
+    // update algolia index
+    await updateAlgoliaProducts({ _id: initialProduct._id });
+
+    const counter = index + 1;
+    if (counter % 10 === 0) {
+      logger(`${counter}`);
+    }
   }
+  logger(`Done >>>>>>>>>>>>>>>>>>>>>>>>>>>>>`);
+  return true;
 }
 
 export function execUpdateProductTitles(param: string) {

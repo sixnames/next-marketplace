@@ -71,6 +71,9 @@ export async function updateProductTitles(match?: Record<any, any>) {
   const products = await productSummariesCollection
     .aggregate<ProductSummaryInterface>([
       ...aggregationMatch,
+      {
+        $limit: 10,
+      },
 
       // get product rubric
       ...productRubricPipeline,

@@ -142,7 +142,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
       snippetTitleI18n[locale] = snippetTitle;
     });
 
-    const updatedProductResult = await productSummariesCollection.findOneAndUpdate(
+    /*const updatedProductResult = await productSummariesCollection.findOneAndUpdate(
       {
         _id: initialProduct._id,
       },
@@ -152,12 +152,12 @@ export async function updateProductTitles(match?: Record<any, any>) {
           snippetTitleI18n,
         },
       },
-    );
+    );*/
 
     logger(
       JSON.stringify(
         {
-          updatedProductResult: updatedProductResult.ok,
+          // updatedProductResult: updatedProductResult.ok,
           cardTitleI18n,
           snippetTitleI18n,
         },

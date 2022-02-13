@@ -1,19 +1,15 @@
 import addZero from 'add-zero';
 import { exec } from 'child_process';
-import { COL_LANGUAGES, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
+import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
 } from 'db/dao/constantPipelines';
-import { LanguageModel, ProductSummaryModel, TranslationModel } from 'db/dbModels';
+import { ProductSummaryModel } from 'db/dbModels';
 import { ProductSummaryInterface } from 'db/uiInterfaces';
 import { getProdDb } from 'tests/testUtils/getProdDb';
-// import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
-import { getFieldStringLocale } from './i18n';
-import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
-import { getTreeFromList } from './treeUtils';
 import fs from 'fs';
 import path from 'path';
 import mkdirp from 'mkdirp';
@@ -58,9 +54,9 @@ export async function updateProductTitles(match?: Record<any, any>) {
     uri: `${process.env.MONGO_URL}`,
   });
   const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-  const languages = await languagesCollection.find({}).toArray();
-  const locales = languages.map(({ slug }) => slug);
+  // const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  // const languages = await languagesCollection.find({}).toArray();
+  // const locales = languages.map(({ slug }) => slug);
   const fileName = getLogFileDateName();
   const logger = await getLogger(fileName);
 
@@ -102,20 +98,25 @@ export async function updateProductTitles(match?: Record<any, any>) {
     ])
     .toArray();
 
+  console.log(`\n\nTotal products count ${products.length}\n`);
+  console.log(`Match \n${JSON.stringify(match, null, 2)}\n`);
   logger(`\n\nTotal products count ${products.length}\n`);
   logger(`Match \n${JSON.stringify(match, null, 2)}\n`);
 
   for await (const [index, initialProduct] of products.entries()) {
-    const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
-      initialProduct;
+    /*const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
+      initialProduct;*/
+    const { rubric, originalName } = initialProduct;
     if (!rubric) {
+      console.log(`No rubric ${originalName}`);
+      console.log(JSON.stringify(initialProduct, null, 2));
       logger(`No rubric ${originalName}`);
       logger(JSON.stringify(initialProduct, null, 2));
       return false;
     }
 
     // update titles
-    const cardTitleI18n: TranslationModel = {};
+    /*const cardTitleI18n: TranslationModel = {};
     const snippetTitleI18n: TranslationModel = {};
     locales.forEach((locale) => {
       const categoriesTree = getTreeFromList({
@@ -142,7 +143,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
       snippetTitleI18n[locale] = snippetTitle;
     });
 
-    /*const updatedProductResult = await productSummariesCollection.findOneAndUpdate(
+    const updatedProductResult = await productSummariesCollection.findOneAndUpdate(
       {
         _id: initialProduct._id,
       },
@@ -152,25 +153,26 @@ export async function updateProductTitles(match?: Record<any, any>) {
           snippetTitleI18n,
         },
       },
-    );*/
+    );
 
     logger(
       JSON.stringify(
         {
-          // updatedProductResult: updatedProductResult.ok,
+          updatedProductResult: updatedProductResult.ok,
           cardTitleI18n,
           snippetTitleI18n,
         },
         null,
         2,
       ),
-    );
+    );*/
 
     // update algolia index
     // await updateAlgoliaProducts({ _id: initialProduct._id });
 
     const counter = index + 1;
     if (counter % 10 === 0) {
+      console.log(counter);
       logger(`${counter}`);
     }
   }
@@ -186,15 +188,18 @@ export function execUpdateProductTitles(param: string) {
       `node -r esbuild-register db/dao/childProcess/updateProductTitlesInChildProcess.ts ${param}`,
       (error, stdout, stderr) => {
         if (error) {
+          console.log(`error: ${error.message}`);
           logger(`error: ${error.message}`);
           return;
         }
 
         if (stderr) {
+          console.log(`stderr: ${stderr}`);
           logger(`stderr: ${stderr}`);
           return;
         }
 
+        console.log(`stdout:\n${stdout}`);
         logger(`stdout:\n${stdout}`);
       },
     );

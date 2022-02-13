@@ -1,14 +1,22 @@
 import addZero from 'add-zero';
 import { exec } from 'child_process';
-import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
+import { COL_LANGUAGES, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
 } from 'db/dao/constantPipelines';
-import { ProductSummaryModel } from 'db/dbModels';
+import { LanguageModel, ProductSummaryModel, TranslationModel } from 'db/dbModels';
 import { ProductSummaryInterface } from 'db/uiInterfaces';
+import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import {
+  generateCardTitle,
+  GenerateCardTitleInterface,
+  generateSnippetTitle,
+} from 'lib/titleUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { getProdDb } from 'tests/testUtils/getProdDb';
 import fs from 'fs';
 import path from 'path';
@@ -54,9 +62,9 @@ export async function updateProductTitles(match?: Record<any, any>) {
     uri: `${process.env.MONGO_URL}`,
   });
   const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  // const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-  // const languages = await languagesCollection.find({}).toArray();
-  // const locales = languages.map(({ slug }) => slug);
+  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  const languages = await languagesCollection.find({}).toArray();
+  const locales = languages.map(({ slug }) => slug);
   const fileName = getLogFileDateName();
   const logger = await getLogger(fileName);
 
@@ -104,9 +112,9 @@ export async function updateProductTitles(match?: Record<any, any>) {
   logger(`Match \n${JSON.stringify(match, null, 2)}\n`);
 
   for await (const [index, initialProduct] of products.entries()) {
-    /*const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
-      initialProduct;*/
-    const { rubric, originalName } = initialProduct;
+    const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
+      initialProduct;
+    // const { rubric, originalName } = initialProduct;
     if (!rubric) {
       console.log(`No rubric ${originalName}`);
       console.log(JSON.stringify(initialProduct, null, 2));
@@ -116,7 +124,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
     }
 
     // update titles
-    /*const cardTitleI18n: TranslationModel = {};
+    const cardTitleI18n: TranslationModel = {};
     const snippetTitleI18n: TranslationModel = {};
     locales.forEach((locale) => {
       const categoriesTree = getTreeFromList({
@@ -165,10 +173,10 @@ export async function updateProductTitles(match?: Record<any, any>) {
         null,
         2,
       ),
-    );*/
+    );
 
     // update algolia index
-    // await updateAlgoliaProducts({ _id: initialProduct._id });
+    await updateAlgoliaProducts({ _id: initialProduct._id });
 
     const counter = index + 1;
     if (counter % 10 === 0) {

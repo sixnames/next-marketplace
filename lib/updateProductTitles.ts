@@ -1,22 +1,23 @@
 import addZero from 'add-zero';
 import { exec } from 'child_process';
-import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
+import { COL_LANGUAGES, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
 } from 'db/dao/constantPipelines';
-import { ProductSummaryModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { LanguageModel, ProductSummaryModel, TranslationModel } from 'db/dbModels';
 import { ProductSummaryInterface } from 'db/uiInterfaces';
-// import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
-// import { getFieldStringLocale } from './i18n';
-// import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
-// import { getTreeFromList } from './treeUtils';
+import { getProdDb } from 'tests/testUtils/getProdDb';
+import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
+import { getFieldStringLocale } from './i18n';
+import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
+import { getTreeFromList } from './treeUtils';
 import fs from 'fs';
 import path from 'path';
 import mkdirp from 'mkdirp';
+require('dotenv').config();
 
 async function getLogger(fileName: string) {
   const dirPath = path.join(process.cwd(), 'log');
@@ -52,11 +53,14 @@ function getLogFileDateName() {
 }
 
 export async function updateProductTitles(match?: Record<any, any>) {
-  const { db, client } = await getDatabase();
+  const { db, client } = await getProdDb({
+    dbName: `${process.env.MONGO_DB_NAME}`,
+    uri: `${process.env.MONGO_URL}`,
+  });
   const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  // const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-  // const languages = await languagesCollection.find({}).toArray();
-  // const locales = languages.map(({ slug }) => slug);
+  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  const languages = await languagesCollection.find({}).toArray();
+  const locales = languages.map(({ slug }) => slug);
   const fileName = getLogFileDateName();
   const logger = await getLogger(fileName);
 
@@ -71,9 +75,6 @@ export async function updateProductTitles(match?: Record<any, any>) {
   const products = await productSummariesCollection
     .aggregate<ProductSummaryInterface>([
       ...aggregationMatch,
-      {
-        $limit: 10,
-      },
 
       // get product rubric
       ...productRubricPipeline,
@@ -101,12 +102,12 @@ export async function updateProductTitles(match?: Record<any, any>) {
     ])
     .toArray();
 
-  logger(`\n\n Total products count ${products.length} \n`);
+  logger(`\n\nTotal products count ${products.length}\n`);
+  logger(`Match \n${JSON.stringify(match, null, 2)}\n`);
 
   for await (const [index, initialProduct] of products.entries()) {
-    const { rubric, originalName } = initialProduct;
-    /*const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
-      initialProduct;*/
+    const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
+      initialProduct;
     if (!rubric) {
       logger(`No rubric ${originalName}`);
       logger(JSON.stringify(initialProduct, null, 2));
@@ -114,9 +115,9 @@ export async function updateProductTitles(match?: Record<any, any>) {
     }
 
     // update titles
-    /*const cardTitleI18n: TranslationModel = {};
+    const cardTitleI18n: TranslationModel = {};
     const snippetTitleI18n: TranslationModel = {};
-    for await (const locale of locales) {
+    locales.forEach((locale) => {
       const categoriesTree = getTreeFromList({
         list: categories,
         childrenFieldName: 'categories',
@@ -139,11 +140,11 @@ export async function updateProductTitles(match?: Record<any, any>) {
       cardTitleI18n[locale] = cardTitle;
       const snippetTitle = generateSnippetTitle(titleProps);
       snippetTitleI18n[locale] = snippetTitle;
-    }*/
+    });
 
     // logger(JSON.stringify({ cardTitleI18n, snippetTitleI18n }, null, 2));
 
-    /*await productSummariesCollection.findOneAndUpdate(
+    await productSummariesCollection.findOneAndUpdate(
       {
         _id: initialProduct._id,
       },
@@ -153,12 +154,11 @@ export async function updateProductTitles(match?: Record<any, any>) {
           snippetTitleI18n,
         },
       },
-    );*/
+    );
 
     // update algolia index
-    // await updateAlgoliaProducts({ _id: initialProduct._id });
+    await updateAlgoliaProducts({ _id: initialProduct._id });
 
-    logger(originalName);
     const counter = index + 1;
     if (counter % 10 === 0) {
       logger(`${counter}`);
@@ -171,21 +171,22 @@ export async function updateProductTitles(match?: Record<any, any>) {
 
 export function execUpdateProductTitles(param: string) {
   const fileName = getLogFileDateName();
-  getLogger(`${fileName}_execUpdateProductTitles_error`).then((logger) => {
-    exec(`yarn update-product-titles ${param}`, (error, stdout, stderr) => {
-      if (error) {
-        logger(
-          JSON.stringify(
-            {
-              error,
-              stdout,
-              stderr,
-            },
-            null,
-            2,
-          ),
-        );
-      }
-    });
+  getLogger(`${fileName}_execUpdateProductTitles_result`).then((logger) => {
+    exec(
+      `node -r esbuild-register db/dao/childProcess/updateProductTitlesInChildProcess.ts ${param}`,
+      (error, stdout, stderr) => {
+        if (error) {
+          logger(`error: ${error.message}`);
+          return;
+        }
+
+        if (stderr) {
+          logger(`stderr: ${stderr}`);
+          return;
+        }
+
+        logger(`stdout:\n${stdout}`);
+      },
+    );
   });
 }

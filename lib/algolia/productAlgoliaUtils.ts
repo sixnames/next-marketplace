@@ -7,6 +7,7 @@ import { getDatabase } from 'db/mongodb';
 import { ProductFacetInterface, ProductSummaryInterface } from 'db/uiInterfaces';
 import { noNaN } from '../numbers';
 import { deleteAlgoliaObjects, getAlgoliaClient, saveAlgoliaObjects } from './algoliaUtils';
+require('dotenv').config();
 
 export function getAlgoliaProductsIndex() {
   const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_PRODUCTS}`);

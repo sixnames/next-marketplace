@@ -10,7 +10,7 @@ import {
 import { LanguageModel, ProductSummaryModel, TranslationModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductSummaryInterface } from 'db/uiInterfaces';
-// import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
+import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from './i18n';
 import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
 import { getTreeFromList } from './treeUtils';
@@ -52,7 +52,7 @@ function getLogFileDateName() {
 }
 
 export async function updateProductTitles(match?: Record<any, any>) {
-  const { db } = await getDatabase();
+  const { db, client } = await getDatabase();
   const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const languages = await languagesCollection.find({}).toArray();
@@ -152,7 +152,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
     );
 
     // update algolia index
-    // await updateAlgoliaProducts({ _id: initialProduct._id });
+    await updateAlgoliaProducts({ _id: initialProduct._id });
 
     const counter = index + 1;
     if (counter % 10 === 0) {
@@ -160,6 +160,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
     }
   }
   logger(`Done >>>>>>>>>>>>>>>>>>>>>>>>>>>>>`);
+  await client.close();
   return true;
 }
 
@@ -167,17 +168,19 @@ export function execUpdateProductTitles(param: string) {
   const fileName = getLogFileDateName();
   getLogger(`${fileName}_execUpdateProductTitles_error`).then((logger) => {
     exec(`yarn update-product-titles ${param}`, (error, stdout, stderr) => {
-      logger(
-        JSON.stringify(
-          {
-            error,
-            stdout,
-            stderr,
-          },
-          null,
-          2,
-        ),
-      );
+      if (error) {
+        logger(
+          JSON.stringify(
+            {
+              error,
+              stdout,
+              stderr,
+            },
+            null,
+            2,
+          ),
+        );
+      }
     });
   });
 }

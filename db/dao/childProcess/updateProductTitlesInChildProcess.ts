@@ -78,10 +78,10 @@ async function updateProductTitlesInChildProcess() {
 (() => {
   updateProductTitlesInChildProcess()
     .then(() => {
-      process.exit();
+      process.exit(0);
     })
     .catch((e) => {
       console.log(e);
-      process.exit();
+      process.exit(1);
     });
 })();

@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
-import { GenderModel, ObjectIdModel, OptionVariantsModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { GenderModel, ObjectIdModel, OptionVariantsModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import { alwaysArray, sortObjectsByField } from './arrayUtils';
 import { getFieldStringLocale } from './i18n';
 

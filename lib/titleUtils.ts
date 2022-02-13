@@ -8,16 +8,16 @@ import {
   GENDER_IT,
   FILTER_PRICE_KEY,
   FILTER_CATEGORY_KEY,
-} from '../config/common';
-import { getConstantTranslation } from '../config/constantTranslations';
-import { GenderModel } from '../db/dbModels';
+} from 'config/common';
+import { getConstantTranslation } from 'config/constantTranslations';
+import { GenderModel } from 'db/dbModels';
 import {
   AttributeInterface,
   BrandInterface,
   CategoryInterface,
   OptionInterface,
   ProductAttributeInterface,
-} from '../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import { getFieldStringLocale } from './i18n';
 import { get } from 'lodash';
 import trim from 'trim';

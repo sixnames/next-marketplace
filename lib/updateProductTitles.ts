@@ -37,6 +37,20 @@ async function getLogger(fileName: string) {
   return logger;
 }
 
+function getLogFileDateName() {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1;
+  const date = currentDate.getDate();
+  const hours = currentDate.getHours();
+  const minutes = currentDate.getMinutes();
+  const dateString = `${addZero(date, 2)}.${addZero(month, 2)}.${year}_${addZero(
+    hours,
+    2,
+  )}_${addZero(minutes, 2)}`;
+  return dateString;
+}
+
 export async function updateProductTitles(match?: Record<any, any>) {
   try {
     const { db } = await getDatabase();
@@ -44,17 +58,8 @@ export async function updateProductTitles(match?: Record<any, any>) {
     const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
     const languages = await languagesCollection.find({}).toArray();
     const locales = languages.map(({ slug }) => slug);
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
-    const date = currentDate.getDate();
-    const hours = currentDate.getHours();
-    const minutes = currentDate.getMinutes();
-    const dateString = `${addZero(date, 2)}.${addZero(month, 2)}.${year}_${addZero(
-      hours,
-      2,
-    )}_${addZero(minutes, 2)}`;
-    const logger = await getLogger(`${dateString}`);
+    const fileName = getLogFileDateName();
+    const logger = await getLogger(fileName);
 
     const aggregationMatch = match
       ? [
@@ -160,5 +165,20 @@ export async function updateProductTitles(match?: Record<any, any>) {
 }
 
 export function execUpdateProductTitles(param: string) {
-  exec(`yarn update-product-titles ${param}`);
+  const fileName = getLogFileDateName();
+  getLogger(`${fileName}_execUpdateProductTitles_error`).then((logger) => {
+    exec(`yarn update-product-titles ${param}`, (error, stdout, stderr) => {
+      logger(
+        JSON.stringify(
+          {
+            error,
+            stdout,
+            stderr,
+          },
+          null,
+          2,
+        ),
+      );
+    });
+  });
 }

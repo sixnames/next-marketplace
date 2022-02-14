@@ -6,27 +6,23 @@ import WpCheckbox from '../../../../../../components/FormElements/Checkbox/WpChe
 import Inner from '../../../../../../components/Inner';
 import WpAccordion from '../../../../../../components/WpAccordion';
 import WpTable, { WpTableColumn } from '../../../../../../components/WpTable';
-import { getConstantTranslation } from '../../../../../../config/constantTranslations';
-import { useLocaleContext } from '../../../../../../context/localeContext';
-import { COL_CATEGORIES, COL_RUBRICS } from '../../../../../../db/collectionNames';
-import { castCategoryForUI } from '../../../../../../db/dao/category/castCategoryForUI';
-import { rubricAttributeGroupsPipeline } from '../../../../../../db/dao/constantPipelines';
-import { getDatabase } from '../../../../../../db/mongodb';
+import { getConstantTranslation } from 'config/constantTranslations';
+import { useLocaleContext } from 'context/localeContext';
+import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
+import { castCategoryForUI } from 'db/dao/category/castCategoryForUI';
+import { rubricAttributeGroupsPipeline } from 'db/dao/constantPipelines';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   AttributeInterface,
   CategoryInterface,
-} from '../../../../../../db/uiInterfaces';
-import { useToggleCmsCardAttributeInCategoryMutation } from '../../../../../../generated/apolloComponents';
+} from 'db/uiInterfaces';
+import { useToggleCmsCardAttributeInCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from '../../../../../../hooks/useMutationCallbacks';
 import CmsCategoryLayout from '../../../../../../layout/cms/CmsCategoryLayout';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleRubricLinks } from '../../../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../lib/ssrUtils';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CategoryAttributesConsumerInterface {
   category: CategoryInterface;

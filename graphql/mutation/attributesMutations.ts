@@ -26,3 +26,12 @@ export const DELETE_ATTRIBUTES_GROUP_MUTATION = gql`
     }
   }
 `;
+
+export const TOGGLE_CMS_CARD_ATTRIBUTE_IN_CATEGORY = gql`
+  mutation ToggleCmsCardAttributeInCategory($input: UpdateAttributeInCategoryInput!) {
+    toggleCmsCardAttributeInCategory(input: $input) {
+      success
+      message
+    }
+  }
+`;

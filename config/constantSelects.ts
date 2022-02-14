@@ -669,6 +669,9 @@ export function getTaskVariantSlugByRule(ruleSlug: RoleRuleSlugType): string {
     updateUser: '',
     updateUserCategory: '',
     updateUserPassword: '',
+    createEventRubric: '',
+    deleteEventRubric: '',
+    updateEventRubric: '',
   };
   return slugsList[ruleSlug];
 }

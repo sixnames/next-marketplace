@@ -26,11 +26,6 @@ export type Scalars = {
   URL: any;
 };
 
-export type AddAttributesGroupToRubricInput = {
-  rubricId: Scalars['ObjectId'];
-  attributesGroupId: Scalars['ObjectId'];
-};
-
 export type AddCityToCountryInput = {
   countryId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
@@ -315,7 +310,8 @@ export enum ConfigVariant {
   Address = 'address',
   Password = 'password',
   CategoriesTree = 'categoriesTree',
-  Rubrics = 'rubrics'
+  Rubrics = 'rubrics',
+  VisibleRubrics = 'visibleRubrics'
 }
 
 export type Contacts = {
@@ -439,23 +435,6 @@ export type CreateRoleInput = {
   showAdminUiInCatalogue: Scalars['Boolean'];
 };
 
-export type CreateRubricInput = {
-  nameI18n: Scalars['JSONObject'];
-  capitalise?: Maybe<Scalars['Boolean']>;
-  showRubricNameInProductTitle?: Maybe<Scalars['Boolean']>;
-  showCategoryInProductTitle?: Maybe<Scalars['Boolean']>;
-  showBrandInNav?: Maybe<Scalars['Boolean']>;
-  showBrandInFilter?: Maybe<Scalars['Boolean']>;
-  showBrandAsAlphabet?: Maybe<Scalars['Boolean']>;
-  descriptionI18n: Scalars['JSONObject'];
-  shortDescriptionI18n: Scalars['JSONObject'];
-  variantId: Scalars['ObjectId'];
-  defaultTitleI18n: Scalars['JSONObject'];
-  prefixI18n?: Maybe<Scalars['JSONObject']>;
-  keywordI18n: Scalars['JSONObject'];
-  gender: Gender;
-};
-
 export type CreateRubricVariantInput = {
   nameI18n: Scalars['JSONObject'];
   companySlug: Scalars['String'];
@@ -480,11 +459,6 @@ export type CurrencyPayload = Payload & {
   payload?: Maybe<Currency>;
 };
 
-
-export type DeleteAttributesGroupFromRubricInput = {
-  rubricId: Scalars['ObjectId'];
-  attributesGroupId: Scalars['ObjectId'];
-};
 
 export type DeleteCityFromCountryInput = {
   countryId: Scalars['ObjectId'];
@@ -742,20 +716,6 @@ export type Mutation = {
   updateRoleNav: RolePayload;
   /** Should update role rule */
   updateRoleRule: RoleRulePayload;
-  /** Should create rubric */
-  createRubric: RubricPayload;
-  /** Should update rubric */
-  updateRubric: RubricPayload;
-  /** Should delete rubric */
-  deleteRubric: RubricPayload;
-  /** Should add attributes group to the rubric */
-  addAttributesGroupToRubric: RubricPayload;
-  /** Should delete attributes group from rubric */
-  deleteAttributesGroupFromRubric: RubricPayload;
-  /** Should update rubric attribute */
-  updateAttributeInRubric: RubricPayload;
-  /** Should toggle cms card attribute visibility */
-  toggleCmsCardAttributeInRubric: RubricPayload;
   /** Should create rubric variant */
   createRubricVariant: RubricVariantPayload;
   /** Should update rubric variant */
@@ -1051,41 +1011,6 @@ export type MutationUpdateRoleNavArgs = {
 
 export type MutationUpdateRoleRuleArgs = {
   input: UpdateRoleRuleInput;
-};
-
-
-export type MutationCreateRubricArgs = {
-  input: CreateRubricInput;
-};
-
-
-export type MutationUpdateRubricArgs = {
-  input: UpdateRubricInput;
-};
-
-
-export type MutationDeleteRubricArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type MutationAddAttributesGroupToRubricArgs = {
-  input: AddAttributesGroupToRubricInput;
-};
-
-
-export type MutationDeleteAttributesGroupFromRubricArgs = {
-  input: DeleteAttributesGroupFromRubricInput;
-};
-
-
-export type MutationUpdateAttributeInRubricArgs = {
-  input: UpdateAttributeInRubricInput;
-};
-
-
-export type MutationToggleCmsCardAttributeInRubricArgs = {
-  input: UpdateAttributeInRubricInput;
 };
 
 
@@ -1574,13 +1499,6 @@ export type RubricOption = {
   name: Scalars['String'];
 };
 
-export type RubricPayload = Payload & {
-  __typename?: 'RubricPayload';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  payload?: Maybe<Rubric>;
-};
-
 export type RubricProductsCountersInput = {
   /** Filter by current attributes */
   attributesIds?: Maybe<Array<Scalars['ObjectId']>>;
@@ -1783,12 +1701,6 @@ export type UpdateAttributeInCategoryInput = {
   attributeIds: Array<Scalars['ObjectId']>;
 };
 
-export type UpdateAttributeInRubricInput = {
-  rubricId: Scalars['ObjectId'];
-  attributesGroupId: Scalars['ObjectId'];
-  attributeIds: Array<Scalars['ObjectId']>;
-};
-
 export type UpdateAttributesGroupInput = {
   attributesGroupId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
@@ -1929,28 +1841,6 @@ export type UpdateRoleRuleInput = {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   roleId: Scalars['ObjectId'];
-};
-
-export type UpdateRubricInput = {
-  companySlug: Scalars['String'];
-  rubricId: Scalars['ObjectId'];
-  capitalise?: Maybe<Scalars['Boolean']>;
-  showRubricNameInProductTitle?: Maybe<Scalars['Boolean']>;
-  showCategoryInProductTitle?: Maybe<Scalars['Boolean']>;
-  showBrandInNav?: Maybe<Scalars['Boolean']>;
-  showBrandInFilter?: Maybe<Scalars['Boolean']>;
-  showBrandAsAlphabet?: Maybe<Scalars['Boolean']>;
-  nameI18n: Scalars['JSONObject'];
-  descriptionI18n: Scalars['JSONObject'];
-  shortDescriptionI18n: Scalars['JSONObject'];
-  textTop?: Maybe<Scalars['JSONObject']>;
-  textBottom?: Maybe<Scalars['JSONObject']>;
-  variantId: Scalars['ObjectId'];
-  active: Scalars['Boolean'];
-  defaultTitleI18n: Scalars['JSONObject'];
-  prefixI18n?: Maybe<Scalars['JSONObject']>;
-  keywordI18n: Scalars['JSONObject'];
-  gender: Gender;
 };
 
 export type UpdateRubricNavItemConfigInput = {
@@ -2113,32 +2003,6 @@ export type DeleteAttributesGroupMutation = (
   ) }
 );
 
-export type AddAttributesGroupToRubricMutationVariables = Exact<{
-  input: AddAttributesGroupToRubricInput;
-}>;
-
-
-export type AddAttributesGroupToRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { addAttributesGroupToRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
-
-export type DeleteAttributesGroupFromRubricMutationVariables = Exact<{
-  input: DeleteAttributesGroupFromRubricInput;
-}>;
-
-
-export type DeleteAttributesGroupFromRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteAttributesGroupFromRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
-
 export type ToggleCmsCardAttributeInCategoryMutationVariables = Exact<{
   input: UpdateAttributeInCategoryInput;
 }>;
@@ -2149,19 +2013,6 @@ export type ToggleCmsCardAttributeInCategoryMutation = (
   & { toggleCmsCardAttributeInCategory: (
     { __typename?: 'CategoryPayload' }
     & Pick<CategoryPayload, 'success' | 'message'>
-  ) }
-);
-
-export type ToggleCmsCardAttributeInRubricMutationVariables = Exact<{
-  input: UpdateAttributeInRubricInput;
-}>;
-
-
-export type ToggleCmsCardAttributeInRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { toggleCmsCardAttributeInRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
   ) }
 );
 
@@ -2721,58 +2572,6 @@ export type DeleteRubricVariantMutation = (
   ) }
 );
 
-export type CreateRubricMutationVariables = Exact<{
-  input: CreateRubricInput;
-}>;
-
-
-export type CreateRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { createRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
-
-export type UpdateRubricMutationVariables = Exact<{
-  input: UpdateRubricInput;
-}>;
-
-
-export type UpdateRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { updateRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
-
-export type DeleteRubricMutationVariables = Exact<{
-  _id: Scalars['ObjectId'];
-}>;
-
-
-export type DeleteRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
-
-export type UpdateAttributeInRubricMutationVariables = Exact<{
-  input: UpdateAttributeInRubricInput;
-}>;
-
-
-export type UpdateAttributeInRubricMutation = (
-  { __typename?: 'Mutation' }
-  & { updateAttributeInRubric: (
-    { __typename?: 'RubricPayload' }
-    & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
-
 export type UpdateShopMutationVariables = Exact<{
   input: UpdateShopInput;
 }>;
@@ -3136,74 +2935,6 @@ export function useDeleteAttributesGroupMutation(baseOptions?: Apollo.MutationHo
 export type DeleteAttributesGroupMutationHookResult = ReturnType<typeof useDeleteAttributesGroupMutation>;
 export type DeleteAttributesGroupMutationResult = Apollo.MutationResult<DeleteAttributesGroupMutation>;
 export type DeleteAttributesGroupMutationOptions = Apollo.BaseMutationOptions<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>;
-export const AddAttributesGroupToRubricDocument = gql`
-    mutation AddAttributesGroupToRubric($input: AddAttributesGroupToRubricInput!) {
-  addAttributesGroupToRubric(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type AddAttributesGroupToRubricMutationFn = Apollo.MutationFunction<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>;
-
-/**
- * __useAddAttributesGroupToRubricMutation__
- *
- * To run a mutation, you first call `useAddAttributesGroupToRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddAttributesGroupToRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addAttributesGroupToRubricMutation, { data, loading, error }] = useAddAttributesGroupToRubricMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddAttributesGroupToRubricMutation(baseOptions?: Apollo.MutationHookOptions<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>(AddAttributesGroupToRubricDocument, options);
-      }
-export type AddAttributesGroupToRubricMutationHookResult = ReturnType<typeof useAddAttributesGroupToRubricMutation>;
-export type AddAttributesGroupToRubricMutationResult = Apollo.MutationResult<AddAttributesGroupToRubricMutation>;
-export type AddAttributesGroupToRubricMutationOptions = Apollo.BaseMutationOptions<AddAttributesGroupToRubricMutation, AddAttributesGroupToRubricMutationVariables>;
-export const DeleteAttributesGroupFromRubricDocument = gql`
-    mutation DeleteAttributesGroupFromRubric($input: DeleteAttributesGroupFromRubricInput!) {
-  deleteAttributesGroupFromRubric(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type DeleteAttributesGroupFromRubricMutationFn = Apollo.MutationFunction<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
-
-/**
- * __useDeleteAttributesGroupFromRubricMutation__
- *
- * To run a mutation, you first call `useDeleteAttributesGroupFromRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteAttributesGroupFromRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteAttributesGroupFromRubricMutation, { data, loading, error }] = useDeleteAttributesGroupFromRubricMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteAttributesGroupFromRubricMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>(DeleteAttributesGroupFromRubricDocument, options);
-      }
-export type DeleteAttributesGroupFromRubricMutationHookResult = ReturnType<typeof useDeleteAttributesGroupFromRubricMutation>;
-export type DeleteAttributesGroupFromRubricMutationResult = Apollo.MutationResult<DeleteAttributesGroupFromRubricMutation>;
-export type DeleteAttributesGroupFromRubricMutationOptions = Apollo.BaseMutationOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
 export const ToggleCmsCardAttributeInCategoryDocument = gql`
     mutation ToggleCmsCardAttributeInCategory($input: UpdateAttributeInCategoryInput!) {
   toggleCmsCardAttributeInCategory(input: $input) {
@@ -3238,40 +2969,6 @@ export function useToggleCmsCardAttributeInCategoryMutation(baseOptions?: Apollo
 export type ToggleCmsCardAttributeInCategoryMutationHookResult = ReturnType<typeof useToggleCmsCardAttributeInCategoryMutation>;
 export type ToggleCmsCardAttributeInCategoryMutationResult = Apollo.MutationResult<ToggleCmsCardAttributeInCategoryMutation>;
 export type ToggleCmsCardAttributeInCategoryMutationOptions = Apollo.BaseMutationOptions<ToggleCmsCardAttributeInCategoryMutation, ToggleCmsCardAttributeInCategoryMutationVariables>;
-export const ToggleCmsCardAttributeInRubricDocument = gql`
-    mutation ToggleCmsCardAttributeInRubric($input: UpdateAttributeInRubricInput!) {
-  toggleCmsCardAttributeInRubric(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type ToggleCmsCardAttributeInRubricMutationFn = Apollo.MutationFunction<ToggleCmsCardAttributeInRubricMutation, ToggleCmsCardAttributeInRubricMutationVariables>;
-
-/**
- * __useToggleCmsCardAttributeInRubricMutation__
- *
- * To run a mutation, you first call `useToggleCmsCardAttributeInRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useToggleCmsCardAttributeInRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [toggleCmsCardAttributeInRubricMutation, { data, loading, error }] = useToggleCmsCardAttributeInRubricMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useToggleCmsCardAttributeInRubricMutation(baseOptions?: Apollo.MutationHookOptions<ToggleCmsCardAttributeInRubricMutation, ToggleCmsCardAttributeInRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ToggleCmsCardAttributeInRubricMutation, ToggleCmsCardAttributeInRubricMutationVariables>(ToggleCmsCardAttributeInRubricDocument, options);
-      }
-export type ToggleCmsCardAttributeInRubricMutationHookResult = ReturnType<typeof useToggleCmsCardAttributeInRubricMutation>;
-export type ToggleCmsCardAttributeInRubricMutationResult = Apollo.MutationResult<ToggleCmsCardAttributeInRubricMutation>;
-export type ToggleCmsCardAttributeInRubricMutationOptions = Apollo.BaseMutationOptions<ToggleCmsCardAttributeInRubricMutation, ToggleCmsCardAttributeInRubricMutationVariables>;
 export const CreateCategoryDocument = gql`
     mutation CreateCategory($input: CreateCategoryInput!) {
   createCategory(input: $input) {
@@ -4731,142 +4428,6 @@ export function useDeleteRubricVariantMutation(baseOptions?: Apollo.MutationHook
 export type DeleteRubricVariantMutationHookResult = ReturnType<typeof useDeleteRubricVariantMutation>;
 export type DeleteRubricVariantMutationResult = Apollo.MutationResult<DeleteRubricVariantMutation>;
 export type DeleteRubricVariantMutationOptions = Apollo.BaseMutationOptions<DeleteRubricVariantMutation, DeleteRubricVariantMutationVariables>;
-export const CreateRubricDocument = gql`
-    mutation CreateRubric($input: CreateRubricInput!) {
-  createRubric(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type CreateRubricMutationFn = Apollo.MutationFunction<CreateRubricMutation, CreateRubricMutationVariables>;
-
-/**
- * __useCreateRubricMutation__
- *
- * To run a mutation, you first call `useCreateRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createRubricMutation, { data, loading, error }] = useCreateRubricMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateRubricMutation(baseOptions?: Apollo.MutationHookOptions<CreateRubricMutation, CreateRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateRubricMutation, CreateRubricMutationVariables>(CreateRubricDocument, options);
-      }
-export type CreateRubricMutationHookResult = ReturnType<typeof useCreateRubricMutation>;
-export type CreateRubricMutationResult = Apollo.MutationResult<CreateRubricMutation>;
-export type CreateRubricMutationOptions = Apollo.BaseMutationOptions<CreateRubricMutation, CreateRubricMutationVariables>;
-export const UpdateRubricDocument = gql`
-    mutation UpdateRubric($input: UpdateRubricInput!) {
-  updateRubric(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type UpdateRubricMutationFn = Apollo.MutationFunction<UpdateRubricMutation, UpdateRubricMutationVariables>;
-
-/**
- * __useUpdateRubricMutation__
- *
- * To run a mutation, you first call `useUpdateRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateRubricMutation, { data, loading, error }] = useUpdateRubricMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateRubricMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRubricMutation, UpdateRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateRubricMutation, UpdateRubricMutationVariables>(UpdateRubricDocument, options);
-      }
-export type UpdateRubricMutationHookResult = ReturnType<typeof useUpdateRubricMutation>;
-export type UpdateRubricMutationResult = Apollo.MutationResult<UpdateRubricMutation>;
-export type UpdateRubricMutationOptions = Apollo.BaseMutationOptions<UpdateRubricMutation, UpdateRubricMutationVariables>;
-export const DeleteRubricDocument = gql`
-    mutation DeleteRubric($_id: ObjectId!) {
-  deleteRubric(_id: $_id) {
-    success
-    message
-  }
-}
-    `;
-export type DeleteRubricMutationFn = Apollo.MutationFunction<DeleteRubricMutation, DeleteRubricMutationVariables>;
-
-/**
- * __useDeleteRubricMutation__
- *
- * To run a mutation, you first call `useDeleteRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteRubricMutation, { data, loading, error }] = useDeleteRubricMutation({
- *   variables: {
- *      _id: // value for '_id'
- *   },
- * });
- */
-export function useDeleteRubricMutation(baseOptions?: Apollo.MutationHookOptions<DeleteRubricMutation, DeleteRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteRubricMutation, DeleteRubricMutationVariables>(DeleteRubricDocument, options);
-      }
-export type DeleteRubricMutationHookResult = ReturnType<typeof useDeleteRubricMutation>;
-export type DeleteRubricMutationResult = Apollo.MutationResult<DeleteRubricMutation>;
-export type DeleteRubricMutationOptions = Apollo.BaseMutationOptions<DeleteRubricMutation, DeleteRubricMutationVariables>;
-export const UpdateAttributeInRubricDocument = gql`
-    mutation UpdateAttributeInRubric($input: UpdateAttributeInRubricInput!) {
-  updateAttributeInRubric(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type UpdateAttributeInRubricMutationFn = Apollo.MutationFunction<UpdateAttributeInRubricMutation, UpdateAttributeInRubricMutationVariables>;
-
-/**
- * __useUpdateAttributeInRubricMutation__
- *
- * To run a mutation, you first call `useUpdateAttributeInRubricMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAttributeInRubricMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAttributeInRubricMutation, { data, loading, error }] = useUpdateAttributeInRubricMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateAttributeInRubricMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAttributeInRubricMutation, UpdateAttributeInRubricMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateAttributeInRubricMutation, UpdateAttributeInRubricMutationVariables>(UpdateAttributeInRubricDocument, options);
-      }
-export type UpdateAttributeInRubricMutationHookResult = ReturnType<typeof useUpdateAttributeInRubricMutation>;
-export type UpdateAttributeInRubricMutationResult = Apollo.MutationResult<UpdateAttributeInRubricMutation>;
-export type UpdateAttributeInRubricMutationOptions = Apollo.BaseMutationOptions<UpdateAttributeInRubricMutation, UpdateAttributeInRubricMutationVariables>;
 export const UpdateShopDocument = gql`
     mutation UpdateShop($input: UpdateShopInput!) {
   updateShop(input: $input) {

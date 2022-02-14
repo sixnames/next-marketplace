@@ -2,7 +2,6 @@ import * as Yup from 'yup';
 import { GENDER_ENUMS } from 'config/common';
 import { getFieldValidationMessage } from 'lib/getFieldValidationMessage';
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
-import { attributesGroupIdSchema } from './attributesGroupSchema';
 import { rubricVariantIdSchema } from './rubricVariantSchema';
 import { objectIdSchema, requiredStringTranslationSchema } from './schemaTemplates';
 
@@ -50,20 +49,6 @@ export const updateRubricSchema = (args: ValidationSchemaArgsInterface) => {
     _id: rubricIdSchema(args),
     variantId: rubricVariantIdSchema(args),
     ...rubricCommonFieldsSchema(args),
-  });
-};
-
-export const addAttributesGroupToRubricSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    _id: rubricIdSchema(args),
-    attributesGroupId: attributesGroupIdSchema(args),
-  });
-};
-
-export const deleteAttributesGroupFromRubricSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    _id: rubricIdSchema(args),
-    attributesGroupId: attributesGroupIdSchema(args),
   });
 };
 

@@ -191,7 +191,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
     await updateAlgoliaProducts({ _id: summary._id });
 
     const counter = index + 1;
-    if (counter % 1000 === 0) {
+    if (counter % 500 === 0) {
       console.log(`${counter}`);
     }
   }

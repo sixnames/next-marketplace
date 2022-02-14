@@ -1,18 +1,18 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "types": ["cypress", "node", "@4tw/cypress-drag-drop"],
     "baseUrl": "../",
-    "moduleResolution": "node",
-    "strict": true,
-    "lib": ["es5", "es2016", "dom"],
-    "resolveJsonModule": true,
     "esModuleInterop": true,
-    "jsx": "react",
     "experimentalDecorators": true,
     "isolatedModules": false,
+    "jsx": "react",
+    "lib": ["es5", "es2016", "dom"],
+    "moduleResolution": "node",
+    "noEmit": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
-    "noEmit": true
+    "strict": true,
+    "target": "es5",
+    "types": ["cypress"],
   },
   "include": ["./**/*.ts"],
   "exclude": ["../node_modules"]

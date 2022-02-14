@@ -3,33 +3,21 @@ import { getProjectLinks } from 'lib/getProjectLinks';
 import { fixtureIds } from '../../fixtures/fixtureIds';
 
 describe('Rubrics', () => {
-  const links = getProjectLinks();
+  const links = getProjectLinks({
+    companyId: fixtureIds.companyA,
+  });
   beforeEach(() => {
-    cy.testAuth(links.cms.rubrics.url);
+    cy.testAuth(links.cms.companies.companyId.events.url);
   });
 
   it('Should CRUD rubrics', () => {
-    const mainRubricName = 'Вино';
+    const mainRubricName = 'Event rubric A';
     const newRubricName = 'newRubricName';
     const updatedRubricName = 'updatedRubricName';
 
-    // Shouldn't create a new rubric if exists
-    cy.getByCy(`create-rubric`).click();
-    cy.getByCy(`create-rubric-modal`).should('exist');
-    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
-    cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
-    cy.getByCy(`shortDescriptionI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
-    cy.getByCy(`defaultTitleI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
-    cy.getByCy(`prefixI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
-    cy.getByCy(`keywordI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
-    cy.getByCy(`variantId`).select(fixtureIds.rubricVariantAlcohol);
-    cy.getByCy(`gender`).select(GENDER_SHE);
-    cy.getByCy(`rubric-submit`).click();
-    cy.getByCy(`create-rubric-modal`).should('not.exist');
-    cy.shouldError();
-
-    // Should create new rubrics
-    cy.getByCy(`create-rubric`).click();
+    // Should create new event rubric
+    cy.getByCy(`create-event-rubric`).click();
+    cy.getByCy(`create-event-rubric-modal`).should('exist');
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(newRubricName);
     cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).type(newRubricName);
     cy.getByCy(`shortDescriptionI18n-${DEFAULT_LOCALE}`).type(newRubricName);
@@ -42,14 +30,14 @@ describe('Rubrics', () => {
     cy.wait(1500);
     cy.getByCy(`${newRubricName}-row`).should('exist');
 
-    // Should delete rubric
+    // Should delete event rubric
     cy.getByCy(`${newRubricName}-delete`).click();
     cy.getByCy('delete-rubric-modal').should('exist');
     cy.getByCy('confirm').click();
     cy.wait(1500);
     cy.getByCy(`${newRubricName}-row`).should('not.exist');
 
-    // Should have rubric details tab and should update rubric
+    // Should have event rubric details tab and should update rubric
     cy.getByCy(`${mainRubricName}-update`).click();
     cy.getByCy(`details`).click();
     cy.getByCy(`rubric-details`).should('exist');

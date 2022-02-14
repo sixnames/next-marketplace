@@ -67,7 +67,7 @@ const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({ rubricVariants 
       <FormikTranslationsInput
         label={'Заголовок каталога'}
         name={'defaultTitleI18n'}
-        testId={'catalogueTitle-defaultTitleI18n'}
+        testId={'defaultTitleI18n'}
         showInlineError
         isRequired
       />
@@ -75,13 +75,13 @@ const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({ rubricVariants 
       <FormikTranslationsInput
         label={'Префикс заголовка каталога'}
         name={'prefixI18n'}
-        testId={'catalogueTitle-prefixI18n'}
+        testId={'prefixI18n'}
       />
 
       <FormikTranslationsInput
         label={'Ключевое слово заголовка каталога'}
         name={'keywordI18n'}
-        testId={'catalogueTitle-keywordI18n'}
+        testId={'keywordI18n'}
         showInlineError
         isRequired
       />
@@ -90,7 +90,7 @@ const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({ rubricVariants 
         firstOption
         name={`gender`}
         label={'Род ключевого слова'}
-        testId={'catalogueTitle-gender'}
+        testId={'gender'}
         showInlineError
         isRequired
         options={genderOptions}

@@ -3,12 +3,6 @@ import { EventRubricModel, GenderModel, ObjectIdModel } from 'db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 import attributes from '../attributes/attributes';
 
-const booleans = {
-  capitalise: true,
-  active: true,
-  showRubricNameInProductTitle: true,
-};
-
 function getAttributeIds(groupIds: string[]) {
   return attributes.reduce((acc: ObjectIdModel[], attribute) => {
     const exist = groupIds.some((_idString) => {
@@ -20,6 +14,23 @@ function getAttributeIds(groupIds: string[]) {
     return acc;
   }, []);
 }
+
+const common = {
+  companySlug: 'company_a',
+  companyId: getObjectId('company Company A'),
+  capitalise: true,
+  active: true,
+  showRubricNameInProductTitle: true,
+  gender: GENDER_SHE as GenderModel,
+  cmsCardAttributeIds: getAttributeIds(['attributesGroup Общие характеристики']),
+  filterVisibleAttributeIds: getAttributeIds(['attributesGroup Общие характеристики']),
+  attributesGroupIds: getObjectIds(['attributesGroup Общие характеристики']),
+  views: {
+    [DEFAULT_COMPANY_SLUG]: {
+      [DEFAULT_CITY]: 50,
+    },
+  },
+};
 
 const eventRubrics: EventRubricModel[] = [
   {
@@ -43,16 +54,7 @@ const eventRubrics: EventRubricModel[] = [
     prefixI18n: {
       ru: '',
     },
-    gender: GENDER_SHE as GenderModel,
-    cmsCardAttributeIds: getAttributeIds(['attributesGroup Общие характеристики']),
-    filterVisibleAttributeIds: getAttributeIds(['attributesGroup Общие характеристики']),
-    attributesGroupIds: getObjectIds(['attributesGroup Общие характеристики']),
-    ...booleans,
-    views: {
-      [DEFAULT_COMPANY_SLUG]: {
-        [DEFAULT_CITY]: 50,
-      },
-    },
+    ...common,
   },
   {
     _id: getObjectId('event_rubric_b'),
@@ -75,16 +77,7 @@ const eventRubrics: EventRubricModel[] = [
     prefixI18n: {
       ru: '',
     },
-    gender: GENDER_SHE as GenderModel,
-    cmsCardAttributeIds: getAttributeIds(['attributesGroup Общие характеристики']),
-    filterVisibleAttributeIds: getAttributeIds(['attributesGroup Общие характеристики']),
-    attributesGroupIds: getObjectIds(['attributesGroup Общие характеристики']),
-    ...booleans,
-    views: {
-      [DEFAULT_COMPANY_SLUG]: {
-        [DEFAULT_CITY]: 50,
-      },
-    },
+    ...common,
   },
 ];
 

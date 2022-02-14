@@ -59,7 +59,7 @@ export async function updateEventRubric({
     });
     await validationSchema.validate(input);
 
-    const { _id, textTop, textBottom, companySlug, ...values } = input;
+    const { _id, textTop, textBottom, companySlug, companyId, ...values } = input;
 
     // get rubric
     const rubricId = new ObjectId(_id);
@@ -72,12 +72,14 @@ export async function updateEventRubric({
     }
 
     // check if exist
+    const companyObjectId = new ObjectId(companyId);
     const exist = await findDocumentByI18nField<EventRubricModel>({
       collectionName: COL_EVENT_RUBRICS,
       fieldArg: input.nameI18n,
       fieldName: 'nameI18n',
       additionalQuery: {
         _id: { $ne: rubricId },
+        companyId: companyObjectId,
       },
     });
     if (exist) {

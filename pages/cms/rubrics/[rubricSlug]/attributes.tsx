@@ -260,7 +260,6 @@ export const getServerSideProps = async (
       },
       {
         $project: {
-          priorities: false,
           views: false,
         },
       },

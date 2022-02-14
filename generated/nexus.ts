@@ -681,7 +681,6 @@ export interface NexusGenObjects {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    priorities: NexusGenScalars['JSONObject']; // JSONObject!
     showInCatalogueFilter: boolean; // Boolean!
     showInCatalogueNav: boolean; // Boolean!
     slug?: string | null; // String
@@ -701,7 +700,6 @@ export interface NexusGenObjects {
     color?: string | null; // String
     icon?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    priorities: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
     variants: NexusGenScalars['JSONObject']; // JSONObject!
     views: NexusGenScalars['JSONObject']; // JSONObject!
@@ -787,7 +785,6 @@ export interface NexusGenFieldTypes {
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId: NexusGenScalars['ObjectId'] | null; // ObjectId
-    priorities: NexusGenScalars['JSONObject']; // JSONObject!
     replaceParentNameInCatalogueTitle: boolean | null; // Boolean
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     slug: string; // String!
@@ -1260,7 +1257,6 @@ export interface NexusGenFieldTypes {
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     prefixI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
-    priorities: NexusGenScalars['JSONObject']; // JSONObject!
     shortDescription: string; // String!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
@@ -1279,7 +1275,6 @@ export interface NexusGenFieldTypes {
     optionsGroup: NexusGenRootTypes['OptionsGroup'] | null; // OptionsGroup
     optionsGroupId: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInTitle: NexusGenScalars['JSONObject'] | null; // JSONObject
-    priorities: NexusGenScalars['JSONObject']; // JSONObject!
     showInCatalogueFilter: boolean; // Boolean!
     showInCatalogueNav: boolean; // Boolean!
     slug: string | null; // String
@@ -1301,7 +1296,6 @@ export interface NexusGenFieldTypes {
     icon: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    priorities: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
     variants: NexusGenScalars['JSONObject']; // JSONObject!
     views: NexusGenScalars['JSONObject']; // JSONObject!
@@ -1558,7 +1552,6 @@ export interface NexusGenFieldTypeNames {
     name: 'String';
     nameI18n: 'JSONObject';
     parentId: 'ObjectId';
-    priorities: 'JSONObject';
     replaceParentNameInCatalogueTitle: 'Boolean';
     rubricId: 'ObjectId';
     slug: 'String';
@@ -2031,7 +2024,6 @@ export interface NexusGenFieldTypeNames {
     name: 'String';
     nameI18n: 'JSONObject';
     prefixI18n: 'JSONObject';
-    priorities: 'JSONObject';
     shortDescription: 'String';
     shortDescriptionI18n: 'JSONObject';
     slug: 'String';
@@ -2050,7 +2042,6 @@ export interface NexusGenFieldTypeNames {
     optionsGroup: 'OptionsGroup';
     optionsGroupId: 'ObjectId';
     positioningInTitle: 'JSONObject';
-    priorities: 'JSONObject';
     showInCatalogueFilter: 'Boolean';
     showInCatalogueNav: 'Boolean';
     slug: 'String';
@@ -2072,7 +2063,6 @@ export interface NexusGenFieldTypeNames {
     icon: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
-    priorities: 'JSONObject';
     slug: 'String';
     variants: 'JSONObject';
     views: 'JSONObject';

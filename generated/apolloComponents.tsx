@@ -183,7 +183,6 @@ export type Category = {
   parentId?: Maybe<Scalars['ObjectId']>;
   replaceParentNameInCatalogueTitle?: Maybe<Scalars['Boolean']>;
   views: Scalars['JSONObject'];
-  priorities: Scalars['JSONObject'];
   name: Scalars['String'];
   categories: Array<Category>;
 };
@@ -1449,7 +1448,6 @@ export type Rubric = {
   variantId: Scalars['ObjectId'];
   views: Scalars['JSONObject'];
   capitalise?: Maybe<Scalars['Boolean']>;
-  priorities: Scalars['JSONObject'];
   defaultTitleI18n: Scalars['JSONObject'];
   prefixI18n?: Maybe<Scalars['JSONObject']>;
   keywordI18n: Scalars['JSONObject'];
@@ -1469,7 +1467,6 @@ export type RubricAttribute = {
   slug?: Maybe<Scalars['String']>;
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
   views: Scalars['JSONObject'];
-  priorities: Scalars['JSONObject'];
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
   variant: AttributeVariant;
   viewVariant: AttributeViewVariant;
@@ -1494,7 +1491,6 @@ export type RubricOption = {
   color?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
   views: Scalars['JSONObject'];
-  priorities: Scalars['JSONObject'];
   variants: Scalars['JSONObject'];
   name: Scalars['String'];
 };

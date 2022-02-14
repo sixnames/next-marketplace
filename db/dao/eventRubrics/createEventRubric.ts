@@ -16,9 +16,12 @@ import {
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
+import { ObjectId } from 'mongodb';
 import { createRubricSchema } from 'validation/rubricSchema';
 
 export interface CreateEventRubricInputInterface {
+  companySlug: string;
+  companyId: string;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
   shortDescriptionI18n: TranslationModel;
@@ -68,10 +71,14 @@ export async function createEventRubric({
     await validationSchema.validate(input);
 
     // check if exist
+    const companyId = new ObjectId(input.companyId);
     const exist = await findDocumentByI18nField<EventRubricModel>({
       collectionName: COL_EVENT_RUBRICS,
       fieldArg: input.nameI18n,
       fieldName: 'nameI18n',
+      additionalQuery: {
+        companyId,
+      },
     });
     if (exist) {
       return {
@@ -85,6 +92,7 @@ export async function createEventRubric({
     const createdRubricResult = await rubricsCollection.insertOne({
       ...input,
       slug,
+      companyId,
       active: true,
       attributesGroupIds: [],
       filterVisibleAttributeIds: [],

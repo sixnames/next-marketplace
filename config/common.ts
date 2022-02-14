@@ -297,6 +297,7 @@ export const ASSETS_DIST_CONFIGS_WATERMARK = 'watermark';
 export const ASSETS_DIST_OPTIONS = 'options';
 export const ASSETS_DIST_PAGES = 'pages';
 export const ASSETS_DIST_PRODUCTS = 'products';
+export const ASSETS_DIST_EVENTS = 'events';
 export const ASSETS_DIST_PROMO = 'promo';
 export const ASSETS_DIST_SEO = 'seo';
 export const ASSETS_DIST_SEO_TEXTS = 'seo-content';

@@ -1,14 +1,14 @@
 import { getObjectId } from 'mongo-seeding';
-import { ObjectIdModel } from '../db/dbModels';
+import { ObjectIdModel } from 'db/dbModels';
 import {
   AttributeInterface,
   BrandInterface,
   CategoryInterface,
   OptionInterface,
   RubricInterface,
-} from '../db/uiInterfaces';
-import { getFieldStringLocale } from '../lib/i18n';
-import { getTreeFromList } from '../lib/treeUtils';
+} from 'db/uiInterfaces';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getTreeFromList } from 'lib/treeUtils';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
@@ -29,7 +29,6 @@ export const getCommonOptionFields = (
   optionsGroupId: ObjectIdModel,
 ): Omit<OptionInterface, 'nameI18n' | '_id' | 'slug'> => {
   return {
-    priorities: {},
     views: {},
     options: [],
     variants: {},
@@ -56,7 +55,6 @@ export function getCategoryFilterAttribute({
       nameI18n: category.nameI18n,
       slug: category.slug,
       parentId: category.parentId,
-      priorities: category.priorities,
       views: category.views,
       gender: category.gender,
     };
@@ -79,7 +77,6 @@ export function getCategoryFilterAttribute({
     },
     slug: FILTER_CATEGORY_KEY,
     childrenCount: options.length,
-    priorities: {},
     views: {},
     showInCatalogueNav: false,
     showInCatalogueFilter: true,
@@ -129,7 +126,6 @@ export function getBrandFilterAttribute({
       nameI18n: brand.nameI18n,
       name: getFieldStringLocale(brand.nameI18n, locale),
       slug: brand.itemId,
-      priorities: brand.priorities,
       views: brand.views,
       gender: GENDER_IT,
       options: (brand.collections || []).map((collection) => {
@@ -139,7 +135,6 @@ export function getBrandFilterAttribute({
           nameI18n: collection.nameI18n,
           name: getFieldStringLocale(collection.nameI18n, locale),
           slug: collection.itemId,
-          priorities: collection.priorities,
           views: collection.views,
           gender: GENDER_IT,
         };
@@ -160,7 +155,6 @@ export function getBrandFilterAttribute({
     },
     slug: FILTER_BRAND_KEY,
     childrenCount: options.length,
-    priorities: {},
     views: {},
     showInCatalogueNav: false,
     showInCatalogueFilter: true,
@@ -209,7 +203,6 @@ export function getRubricFilterAttribute({
       nameI18n: rubric.nameI18n,
       name: getFieldStringLocale(rubric.nameI18n, locale),
       slug: rubric.slug,
-      priorities: rubric.priorities,
       views: rubric.views,
       gender: rubric.gender,
     };
@@ -227,7 +220,6 @@ export function getRubricFilterAttribute({
       [SECONDARY_LOCALE]: 'Rubric',
     },
     slug: FILTER_RUBRIC_KEY,
-    priorities: {},
     views: {},
     showInCatalogueNav: false,
     showInCatalogueFilter: true,
@@ -283,7 +275,6 @@ export function getCommonFilterAttribute(): AttributeInterface {
     },
     slug: FILTER_COMMON_KEY,
     childrenCount: options.length,
-    priorities: {},
     views: {},
     showInCatalogueNav: false,
     showInCatalogueFilter: true,
@@ -325,7 +316,6 @@ export function getPriceAttribute(currency: string): AttributeInterface {
       [SECONDARY_LOCALE]: 'Price',
     },
     slug: FILTER_PRICE_KEY,
-    priorities: {},
     views: {},
     metric: {
       _id: getObjectId('getPriceAttribute metric'),

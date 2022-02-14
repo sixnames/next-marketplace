@@ -13,7 +13,6 @@ export const RubricOption = objectType({
     t.string('color');
     t.string('icon');
     t.nonNull.json('views');
-    t.nonNull.json('priorities');
     t.nonNull.json('variants');
 
     // RubricOption name translation field resolver
@@ -37,7 +36,6 @@ export const RubricAttribute = objectType({
     t.string('slug');
     t.objectId('optionsGroupId');
     t.nonNull.json('views');
-    t.nonNull.json('priorities');
     t.json('positioningInTitle');
     t.nonNull.field('variant', {
       type: 'AttributeVariant',

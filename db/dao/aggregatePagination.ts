@@ -74,7 +74,6 @@ export async function aggregatePagination<TModel>({
             $sort: {
               [`${sortBy}`]: sortDir,
               [`views.${citySlug}`]: SORT_DESC,
-              [`priorities.${citySlug}`]: SORT_DESC,
               _id: SORT_BY_ID_DIRECTION,
             },
           },

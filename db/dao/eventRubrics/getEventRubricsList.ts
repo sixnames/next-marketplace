@@ -3,7 +3,7 @@ import { COL_EVENT_RUBRICS } from 'db/collectionNames';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface, EventRubricInterface, RubricInterface } from 'db/uiInterfaces';
+import { DaoPropsInterface, EventRubricInterface } from 'db/uiInterfaces';
 import { castEventRubricForUI } from 'db/dao/ssr/castRubricForUI';
 
 export interface GetRubricsListInputInterface {}
@@ -17,7 +17,7 @@ export async function getEventRubricsList({
     const rubricsCollection = db.collection<EventRubricInterface>(COL_EVENT_RUBRICS);
 
     const rubricsAggregationResult = await rubricsCollection
-      .aggregate<RubricInterface>([
+      .aggregate<EventRubricInterface>([
         {
           $sort: {
             _id: SORT_DESC,

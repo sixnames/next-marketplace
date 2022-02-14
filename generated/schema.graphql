@@ -155,7 +155,6 @@ type Category {
   name: String!
   nameI18n: JSONObject!
   parentId: ObjectId
-  priorities: JSONObject!
   replaceParentNameInCatalogueTitle: Boolean
   rubricId: ObjectId!
   slug: String!
@@ -1275,7 +1274,6 @@ type Rubric {
   name: String!
   nameI18n: JSONObject!
   prefixI18n: JSONObject
-  priorities: JSONObject!
   shortDescription: String!
   shortDescriptionI18n: JSONObject!
   slug: String!
@@ -1294,7 +1292,6 @@ type RubricAttribute {
   optionsGroup: OptionsGroup
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
-  priorities: JSONObject!
   showInCatalogueFilter: Boolean!
   showInCatalogueNav: Boolean!
   slug: String
@@ -1316,7 +1313,6 @@ type RubricOption {
   icon: String
   name: String!
   nameI18n: JSONObject!
-  priorities: JSONObject!
   slug: String!
   variants: JSONObject!
   views: JSONObject!

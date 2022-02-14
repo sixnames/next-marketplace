@@ -164,11 +164,10 @@ export async function updateIndexes(db: Db) {
   await createCollectionIfNotExist(COL_OPTIONS);
   const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
   await optionsCollection.createIndex({ slug: 1 }, { unique: true });
-  await optionsCollection.createIndex({ parentId: 1, priorities: -1, views: -1, _id: -1 });
+  await optionsCollection.createIndex({ parentId: 1, views: -1, _id: -1 });
   await optionsCollection.createIndex({
     optionsGroupId: 1,
     parentId: 1,
-    priorities: -1,
     views: -1,
     _id: -1,
   });
@@ -176,7 +175,6 @@ export async function updateIndexes(db: Db) {
     optionsGroupId: 1,
     slug: 1,
     parentId: 1,
-    priorities: -1,
     views: -1,
     _id: -1,
   });
@@ -239,7 +237,6 @@ export async function updateIndexes(db: Db) {
   await brandsCollection.createIndex({ itemId: 1 }, { unique: true });
   await brandsCollection.createIndex({
     itemId: -1,
-    priorities: -1,
     views: -1,
     _id: -1,
   });
@@ -251,7 +248,6 @@ export async function updateIndexes(db: Db) {
   await brandCollectionsCollection.createIndex({ brandId: 1 });
   await brandCollectionsCollection.createIndex({
     itemId: -1,
-    priorities: -1,
     views: -1,
     _id: -1,
   });
@@ -262,7 +258,6 @@ export async function updateIndexes(db: Db) {
   await manufacturersCollection.createIndex({ itemId: 1 }, { unique: true });
   await manufacturersCollection.createIndex({
     itemId: -1,
-    priorities: -1,
     views: -1,
     _id: -1,
   });
@@ -273,7 +268,6 @@ export async function updateIndexes(db: Db) {
   await suppliersCollection.createIndex({ itemId: 1 }, { unique: true });
   await suppliersCollection.createIndex({
     itemId: -1,
-    priorities: -1,
     views: -1,
     _id: -1,
   });
@@ -295,14 +289,12 @@ export async function updateIndexes(db: Db) {
     companySlug: 1,
     state: 1,
     filterSlugs: 1,
-    priorities: -1,
     views: -1,
     createdAt: -1,
   });
   await blogPostsCollection.createIndex({
     companySlug: 1,
     state: 1,
-    priorities: -1,
     views: -1,
     createdAt: -1,
   });

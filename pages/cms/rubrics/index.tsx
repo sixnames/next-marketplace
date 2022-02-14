@@ -175,7 +175,6 @@ export const getServerSideProps = async (
           catalogueTitle: false,
           descriptionI18n: false,
           shortDescriptionI18n: false,
-          priorities: false,
           views: false,
         },
       },

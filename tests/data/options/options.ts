@@ -3,7 +3,7 @@ import { OptionModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 const addZero = require('add-zero');
 
-interface OptionBaseModel extends Omit<OptionModel, 'slug' | 'priorities' | 'views' | 'variants'> {
+interface OptionBaseModel extends Omit<OptionModel, 'slug' | 'views' | 'variants'> {
   slug?: string;
 }
 

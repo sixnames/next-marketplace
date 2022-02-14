@@ -74,11 +74,6 @@ rubrics.forEach((rubric) => {
               [DEFAULT_CITY]: withConnection ? i : 1,
             },
           },
-          priorities: {
-            [DEFAULT_COMPANY_SLUG]: {
-              [DEFAULT_CITY]: withConnection ? i : 1,
-            },
-          },
         });
       }
     });

@@ -91,7 +91,7 @@ function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] 
   return resultOptions;
 }
 
-const maxProductsCount = 70;
+const maxSummariesCount = 70;
 const manufacturersAttributeSlug = 'manufacturers';
 const brandsAttributeSlug = 'brands';
 const brandCollectionsAttributeSlug = 'brandCollections';
@@ -173,7 +173,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
     }
   }
 
-  for (let i = 1; i <= maxProductsCount; i = i + 1) {
+  for (let i = 1; i <= maxSummariesCount; i = i + 1) {
     counter = counter + 1;
     const gender = GENDER_IT;
     const attributeIds: ObjectIdModel[] = [];

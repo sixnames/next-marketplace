@@ -195,7 +195,6 @@ export interface CountersItemModel {
 
 export interface CountersModel {
   views: CountersItemModel;
-  priorities?: CountersItemModel;
 }
 
 export interface AttributeCountersItemModel {
@@ -204,7 +203,6 @@ export interface AttributeCountersItemModel {
 
 export interface AttributeCountersModel {
   views?: AttributeCountersItemModel;
-  priorities?: AttributeCountersItemModel;
 }
 
 export interface AttributeModel extends AttributeCountersModel {
@@ -1190,6 +1188,8 @@ export interface TaskModel extends TimestampModel {
 // events
 export interface EventRubricModel extends RubricBaseModel {
   _id: ObjectIdModel;
+  companySlug: string;
+  companyId: ObjectIdModel;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
   shortDescriptionI18n: TranslationModel;
@@ -1210,17 +1210,20 @@ export interface EventRubricModel extends RubricBaseModel {
 
 export interface EventFacetModel {
   _id: ObjectIdModel;
+  itemId: string;
+  slug: string;
   companySlug: string;
-  companyId: string;
+  companyId: ObjectIdModel;
   citySlug: string;
   rubricId: ObjectIdModel;
   rubricSlug: string;
   filterSlugs: string[];
   startAt: DateModel;
   endAt?: DateModel | null;
+  attributeIds: ObjectIdModel[];
 }
 
-export interface EventSummaryModel extends CountersModel, EventFacetModel {
+export interface EventSummaryModel extends CountersModel, TimestampModel, EventFacetModel {
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
   mainImage: string;
@@ -1229,7 +1232,7 @@ export interface EventSummaryModel extends CountersModel, EventFacetModel {
   attributes: ProductSummaryAttributeModel[];
   address: AddressModel;
   seatsCount: number;
-  seatsLeft: number;
+  seatsAvailable: number;
   price?: number | null;
 }
 

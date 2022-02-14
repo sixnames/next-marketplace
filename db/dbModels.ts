@@ -783,7 +783,7 @@ export interface RubricVariantModel {
   cardBrandsLabelI18n?: TranslationModel | null;
 }
 
-export interface RubricModel extends CountersModel {
+export interface RubricBaseModel extends CountersModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
@@ -794,18 +794,21 @@ export interface RubricModel extends CountersModel {
   gender: GenderModel;
   slug: string;
   active: boolean;
-  variantId: ObjectIdModel;
   capitalise?: boolean | null;
   attributesGroupIds: ObjectIdModel[];
   cmsCardAttributeIds: ObjectIdModel[];
   filterVisibleAttributeIds: ObjectIdModel[];
   showRubricNameInProductTitle?: boolean | null;
+  icon?: string;
+  image?: string;
+}
+
+export interface RubricModel extends RubricBaseModel {
+  variantId: ObjectIdModel;
   showCategoryInProductTitle?: boolean | null;
   showBrandInNav?: boolean | null;
   showBrandInFilter?: boolean | null;
   showBrandAsAlphabet?: boolean | null;
-  icon?: string;
-  image?: string;
 }
 
 export type DescriptionPositionType = 'top' | 'bottom';
@@ -1182,6 +1185,30 @@ export interface TaskModel extends TimestampModel {
   log: TaskLogModel[];
   createdAt: DateModel;
   updatedAt: DateModel;
+}
+
+// events
+export interface EventRubricModel extends RubricBaseModel {
+  _id: ObjectIdModel;
+  nameI18n: TranslationModel;
+  descriptionI18n: TranslationModel;
+  shortDescriptionI18n: TranslationModel;
+  defaultTitleI18n: TranslationModel;
+  prefixI18n?: TranslationModel | null;
+  keywordI18n: TranslationModel;
+  gender: GenderModel;
+  slug: string;
+  active: boolean;
+  capitalise?: boolean | null;
+  attributesGroupIds: ObjectIdModel[];
+  cmsCardAttributeIds: ObjectIdModel[];
+  filterVisibleAttributeIds: ObjectIdModel[];
+  showRubricNameInProductTitle?: boolean | null;
+  icon?: string;
+  image?: string;
+}
+export interface EventModel extends CountersModel {
+  _id: ObjectIdModel;
 }
 
 // Payload

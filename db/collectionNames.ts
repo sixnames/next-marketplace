@@ -59,3 +59,4 @@ export const COL_USERS = 'users';
 export const COL_USER_CASHBACK_LOGS = 'userCashbackLogs';
 export const COL_USER_CATEGORIES = 'userCategories';
 export const COL_USER_PAYBACK_LOGS = 'userPaybackLogs';
+export const COL_EVENT_RUBRICS = 'eventRubrics';

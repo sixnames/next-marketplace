@@ -141,6 +141,11 @@ export type RoleRuleSlugType =
   | 'updateRubric'
   | 'deleteRubric'
 
+  // Event rubric
+  | 'createEventRubric'
+  | 'updateEventRubric'
+  | 'deleteEventRubric'
+
   // Category
   | 'createCategory'
   | 'updateCategory'
@@ -962,6 +967,32 @@ export const roleRulesBase: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление рубрики',
+    },
+  },
+
+  // Event rubric
+  {
+    allow: false,
+    slug: 'createEventRubric',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание рубрики мероприятий',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateEventRubric',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление рубрики мероприятий',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteEventRubric',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление рубрики мероприятий',
     },
   },
 

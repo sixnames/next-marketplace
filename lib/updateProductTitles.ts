@@ -97,16 +97,17 @@ export async function updateProductTitles(match?: Record<any, any>) {
       },
     )
     .toArray();
-
   logger(`\n\nTotal products count ${facets.length}\n`);
   logger(`Match \n${JSON.stringify(match, null, 2)}\n`);
 
   for await (const [index, facet] of facets.entries()) {
-    const productAggregation = await productFacetsCollection
+    const productAggregation = await productSummariesCollection
       .aggregate<ProductSummaryInterface>(
         [
           {
-            _id: facet._id,
+            $match: {
+              _id: facet._id,
+            },
           },
 
           // get product rubric
@@ -224,7 +225,7 @@ export function execUpdateProductTitles(param: string) {
           return;
         }
 
-        // console.log(`stdout:\n${stdout}`);
+        // console.log(`stdout:\n${_stdout}`);
         // logger(`stdout:\n${stdout}`);
       },
     );

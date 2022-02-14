@@ -1,42 +1,29 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
   COL_CATEGORIES,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_FACETS,
-  COL_PRODUCT_SUMMARIES,
   COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import {
   AttributeModel,
   AttributesGroupModel,
   CategoryModel,
   ProductSummaryAttributeModel,
-  ProductFacetModel,
-  ProductSummaryModel,
   RubricModel,
   RubricPayloadModel,
-  ShopProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { updateCitiesSeoContent } from 'lib/seoContentUniquenessUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
-import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import {
   addAttributesGroupToRubricSchema,
-  createRubricSchema,
   deleteAttributesGroupFromRubricSchema,
-  updateRubricSchema,
 } from 'validation/rubricSchema';
 
 export const RubricPayload = objectType({
@@ -45,55 +32,6 @@ export const RubricPayload = objectType({
     t.implements('Payload');
     t.field('payload', {
       type: 'Rubric',
-    });
-  },
-});
-
-export const CreateRubricInput = inputObjectType({
-  name: 'CreateRubricInput',
-  definition(t) {
-    t.nonNull.json('nameI18n');
-    t.boolean('capitalise');
-    t.boolean('showRubricNameInProductTitle');
-    t.boolean('showCategoryInProductTitle');
-    t.boolean('showBrandInNav');
-    t.boolean('showBrandInFilter');
-    t.boolean('showBrandAsAlphabet');
-    t.nonNull.json('descriptionI18n');
-    t.nonNull.json('shortDescriptionI18n');
-    t.nonNull.objectId('variantId');
-    t.nonNull.json('defaultTitleI18n');
-    t.json('prefixI18n');
-    t.nonNull.json('keywordI18n');
-    t.nonNull.field('gender', {
-      type: 'Gender',
-    });
-  },
-});
-
-export const UpdateRubricInput = inputObjectType({
-  name: 'UpdateRubricInput',
-  definition(t) {
-    t.nonNull.string('companySlug');
-    t.nonNull.objectId('rubricId');
-    t.boolean('capitalise');
-    t.boolean('showRubricNameInProductTitle');
-    t.boolean('showCategoryInProductTitle');
-    t.boolean('showBrandInNav');
-    t.boolean('showBrandInFilter');
-    t.boolean('showBrandAsAlphabet');
-    t.nonNull.json('nameI18n');
-    t.nonNull.json('descriptionI18n');
-    t.nonNull.json('shortDescriptionI18n');
-    t.json('textTop');
-    t.json('textBottom');
-    t.nonNull.objectId('variantId');
-    t.nonNull.boolean('active');
-    t.nonNull.json('defaultTitleI18n');
-    t.json('prefixI18n');
-    t.nonNull.json('keywordI18n');
-    t.nonNull.field('gender', {
-      type: 'Gender',
     });
   },
 });
@@ -126,323 +64,6 @@ export const UpdateAttributeInRubricInput = inputObjectType({
 export const RubricMutations = extendType({
   type: 'Mutation',
   definition(t) {
-    // Should create rubric
-    t.nonNull.field('createRubric', {
-      type: 'RubricPayload',
-      description: 'Should create rubric',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'CreateRubricInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
-        try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'createRubric',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: createRubricSchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const { input } = args;
-
-          // Check if rubric already exist
-          const exist = await findDocumentByI18nField<RubricModel>({
-            collectionName: COL_RUBRICS,
-            fieldArg: input.nameI18n,
-            fieldName: 'nameI18n',
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.create.duplicate'),
-            };
-          }
-
-          // Create rubric
-          const slug = generateDefaultLangSlug(input.nameI18n);
-          const createdRubricResult = await rubricsCollection.insertOne({
-            ...input,
-            slug,
-            active: true,
-            attributesGroupIds: [],
-            filterVisibleAttributeIds: [],
-            cmsCardAttributeIds: [],
-            ...DEFAULT_COUNTERS_OBJECT,
-          });
-          const createdRubric = await rubricsCollection.findOne({
-            _id: createdRubricResult.insertedId,
-          });
-          if (!createdRubricResult.acknowledged || !createdRubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.create.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('rubrics.create.success'),
-            payload: createdRubric,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
-    // Should update rubric
-    t.nonNull.field('updateRubric', {
-      type: 'RubricPayload',
-      description: 'Should update rubric',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateRubricInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
-        try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateRubric',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateRubricSchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const { input } = args;
-          const { rubricId, textTop, textBottom, companySlug, ...values } = input;
-
-          // Check rubric availability
-          const rubric = await rubricsCollection.findOne({ _id: rubricId });
-          if (!rubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.update.notFound'),
-            };
-          }
-
-          // Check if rubric already exist
-          const exist = await findDocumentByI18nField<RubricModel>({
-            collectionName: COL_RUBRICS,
-            fieldArg: input.nameI18n,
-            fieldName: 'nameI18n',
-            additionalQuery: {
-              _id: { $ne: rubricId },
-            },
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.update.duplicate'),
-            };
-          }
-
-          // update rubric
-          const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
-            { _id: rubricId },
-            {
-              $set: {
-                ...values,
-              },
-            },
-            {
-              returnDocument: 'after',
-            },
-          );
-          const updatedRubric = updatedRubricResult.value;
-          if (!updatedRubricResult.ok || !updatedRubric) {
-            return {
-              success: false,
-              message: await getApiMessage('rubrics.update.error'),
-            };
-          }
-
-          // update seo text
-          if (textTop) {
-            await updateCitiesSeoContent({
-              seoContentsList: textTop,
-              companySlug,
-            });
-          }
-          if (textBottom) {
-            await updateCitiesSeoContent({
-              seoContentsList: textBottom,
-              companySlug,
-            });
-          }
-
-          // update product titles
-          execUpdateProductTitles(`rubricSlug=${updatedRubric.slug}`);
-
-          return {
-            success: true,
-            message: await getApiMessage('rubrics.update.success'),
-            payload: updatedRubric,
-          };
-        } catch (e) {
-          console.log(e);
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
-    // Should delete rubric
-    t.nonNull.field('deleteRubric', {
-      type: 'RubricPayload',
-      description: 'Should delete rubric',
-      args: {
-        _id: nonNull(
-          arg({
-            type: 'ObjectId',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-        const productSummariesCollection =
-          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-
-        const session = client.startSession();
-
-        let mutationPayload: RubricPayloadModel = {
-          success: false,
-          message: await getApiMessage('rubrics.delete.error'),
-        };
-
-        try {
-          await session.withTransaction(async () => {
-            // Permission
-            const { allow, message } = await getOperationPermission({
-              context,
-              slug: 'deleteRubric',
-            });
-            if (!allow) {
-              mutationPayload = {
-                success: false,
-                message,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            const { _id } = args;
-
-            // Check rubric availability
-            const rubric = await rubricsCollection.findOne({ _id });
-            if (!rubric) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('rubrics.delete.notFound'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Delete rubric products
-            const removedShopProductsResult = await shopProductsCollection.deleteMany({
-              rubricId: _id,
-            });
-            const removedFacetsResult = await productFacetsCollection.deleteMany({
-              rubricId: _id,
-            });
-            const removedSummariesResult = await productSummariesCollection.deleteMany({
-              rubricId: _id,
-            });
-            if (
-              !removedFacetsResult.acknowledged ||
-              !removedSummariesResult.acknowledged ||
-              !removedShopProductsResult.acknowledged
-            ) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('rubrics.deleteProduct.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Delete categories
-            await categoriesCollection.deleteMany({
-              rubricId: rubric._id,
-            });
-
-            // Delete rubric
-            const removedRubricsResult = await rubricsCollection.deleteOne({
-              _id,
-            });
-            if (!removedRubricsResult.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('rubrics.delete.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            mutationPayload = {
-              success: true,
-              message: await getApiMessage('rubrics.delete.success'),
-            };
-          });
-
-          return mutationPayload;
-        } catch (e) {
-          console.log(e);
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        } finally {
-          await session.endSession();
-        }
-      },
-    });
-
     // Should add attributes group to the rubric
     t.nonNull.field('addAttributesGroupToRubric', {
       type: 'RubricPayload',

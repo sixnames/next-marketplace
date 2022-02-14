@@ -9,7 +9,7 @@ import {
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
 } from '../../../../../config/common';
 import { COL_SEO_CONTENTS } from '../../../../../db/collectionNames';
-import { getConsoleRubricDetails } from '../../../../../db/dao/rubrics/getConsoleRubricDetails';
+import { getConsoleRubricDetails } from 'db/dao/ssr/getConsoleRubricDetails';
 import { SeoContentModel } from '../../../../../db/dbModels';
 import { getDatabase } from '../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from '../../../../../db/uiInterfaces';

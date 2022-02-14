@@ -6,7 +6,7 @@ import {
   COL_PROMO_PRODUCTS,
   COL_RUBRICS,
 } from '../../../../../../../../db/collectionNames';
-import { castRubricForUI } from '../../../../../../../../db/dao/rubrics/castRubricForUI';
+import { castRubricForUI } from 'db/dao/ssr/castRubricForUI';
 import { RubricModel } from '../../../../../../../../db/dbModels';
 import { getDatabase } from '../../../../../../../../db/mongodb';
 import {

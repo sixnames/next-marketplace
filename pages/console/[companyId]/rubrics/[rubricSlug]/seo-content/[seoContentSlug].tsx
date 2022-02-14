@@ -5,7 +5,7 @@ import ConsoleSeoContentDetails, {
 } from '../../../../../../components/console/ConsoleSeoContentDetails';
 import Inner from '../../../../../../components/Inner';
 import { CATALOGUE_SEO_TEXT_POSITION_TOP } from '../../../../../../config/common';
-import { getConsoleRubricDetails } from '../../../../../../db/dao/rubrics/getConsoleRubricDetails';
+import { getConsoleRubricDetails } from 'db/dao/ssr/getConsoleRubricDetails';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,

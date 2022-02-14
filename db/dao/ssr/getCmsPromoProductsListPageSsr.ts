@@ -11,7 +11,7 @@ import { RubricModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { CompanyInterface } from '../../uiInterfaces';
 import { getConsolePromoProducts } from '../promo/getConsolePromoProducts';
-import { castRubricForUI } from '../rubrics/castRubricForUI';
+import { castRubricForUI } from 'db/dao/ssr/castRubricForUI';
 
 export const getCmsPromoProductsListPageSsr = async (
   context: GetServerSidePropsContext,

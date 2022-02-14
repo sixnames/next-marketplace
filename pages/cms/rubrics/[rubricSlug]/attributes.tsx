@@ -16,7 +16,7 @@ import {
 import { useLocaleContext } from '../../../../context/localeContext';
 import { COL_ATTRIBUTES_GROUPS, COL_RUBRICS } from '../../../../db/collectionNames';
 import { rubricAttributeGroupsPipeline } from '../../../../db/dao/constantPipelines';
-import { castRubricForUI } from '../../../../db/dao/rubrics/castRubricForUI';
+import { castRubricForUI } from 'db/dao/ssr/castRubricForUI';
 import { RubricModel } from '../../../../db/dbModels';
 import { getDatabase } from '../../../../db/mongodb';
 import {

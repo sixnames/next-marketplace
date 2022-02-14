@@ -9,7 +9,7 @@ import { COL_RUBRICS } from '../../collectionNames';
 import { RubricModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { getConsolePromoProducts } from '../promo/getConsolePromoProducts';
-import { castRubricForUI } from '../rubrics/castRubricForUI';
+import { castRubricForUI } from 'db/dao/ssr/castRubricForUI';
 
 export const getConsolePromoProductsListPageSsr = async (
   context: GetServerSidePropsContext,

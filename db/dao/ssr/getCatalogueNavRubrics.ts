@@ -20,7 +20,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { ignoreNoImageStage } from '../constantPipelines';
-import { castRubricForUI } from '../rubrics/castRubricForUI';
+import { castRubricForUI } from 'db/dao/ssr/castRubricForUI';
 
 interface CatalogueGroupedNavConfigItemInterface {
   attributeSlug: string;

@@ -1207,6 +1207,7 @@ export interface EventRubricModel extends RubricBaseModel {
   icon?: string;
   image?: string;
 }
+
 export interface EventModel extends CountersModel {
   _id: ObjectIdModel;
 }

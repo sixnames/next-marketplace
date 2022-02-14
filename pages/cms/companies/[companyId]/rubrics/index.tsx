@@ -7,7 +7,7 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from '../../../../../db/collectionNames';
-import { castRubricForUI } from '../../../../../db/dao/rubrics/castRubricForUI';
+import { castRubricForUI } from 'db/dao/ssr/castRubricForUI';
 import { RubricModel } from '../../../../../db/dbModels';
 import { getDatabase } from '../../../../../db/mongodb';
 import {

@@ -25,7 +25,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany })
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Рубрикатор',
+    currentPageName: 'Мероприятия',
     config: [
       {
         name: 'Компании',

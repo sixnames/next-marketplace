@@ -750,7 +750,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
     },
     contacts: { url: `/contacts` },
     docs: { url: `/docs`, pageSlug: { url: `/docs/${pageSlug}` } },
-    '': { url: `/` },
+    root: { url: `/` },
     profile: {
       url: `/profile`,
       details: { url: `/profile/details` },
@@ -761,4 +761,245 @@ export function getProjectLinks(props?: LinkPropsInterface) {
     signIn: { url: `/sign-in` },
     thankYou: { url: `/thank-you` },
   };
+}
+
+export interface ConsoleCompanyLinkPropsInterface {
+  basePath: string;
+  card?: DynamicPagePropType;
+  blogPostSlug?: DynamicPagePropType;
+  rubricSlug?: DynamicPagePropType;
+  attributesGroupId?: DynamicPagePropType;
+  blogPostId?: DynamicPagePropType;
+  brandId?: DynamicPagePropType;
+  companyId?: DynamicPagePropType;
+  eventId?: DynamicPagePropType;
+  seoContentSlug?: DynamicPagePropType;
+  giftCertificateId?: DynamicPagePropType;
+  pagesGroupId?: DynamicPagePropType;
+  pageId?: DynamicPagePropType;
+  promoId?: DynamicPagePropType;
+  promoCodeId?: DynamicPagePropType;
+  categoryId?: DynamicPagePropType;
+  productId?: DynamicPagePropType;
+  shopId?: DynamicPagePropType;
+  shopProductId?: DynamicPagePropType;
+  orderId?: DynamicPagePropType;
+  taskVariantId?: DynamicPagePropType;
+  taskId?: DynamicPagePropType;
+  optionsGroupId?: DynamicPagePropType;
+  optionId?: DynamicPagePropType;
+  roleId?: DynamicPagePropType;
+  rubricVariantId?: DynamicPagePropType;
+  userId?: DynamicPagePropType;
+  pageSlug?: DynamicPagePropType;
+  promoSlug?: DynamicPagePropType;
+}
+
+export function getConsoleCompanyLinks(props: ConsoleCompanyLinkPropsInterface) {
+  const {
+    basePath,
+    blogPostId,
+    rubricSlug,
+    eventId,
+    seoContentSlug,
+    giftCertificateId,
+    pagesGroupId,
+    pageId,
+    promoId,
+    promoCodeId,
+    categoryId,
+    productId,
+    shopId,
+    shopProductId,
+    orderId,
+    taskVariantId,
+    taskId,
+  } = props;
+  return {
+    assets: { url: `${basePath}/assets` },
+    blog: {
+      url: `${basePath}/blog`,
+      post: {
+        url: `${basePath}/blog/post`,
+        blogPostId: { url: `${basePath}/blog/post/${blogPostId}` },
+      },
+    },
+    config: {
+      url: `${basePath}/config`,
+      analytics: { url: `${basePath}/config/analytics` },
+      catalogue: { url: `${basePath}/config/catalogue` },
+      contacts: { url: `${basePath}/config/contacts` },
+      seo: { url: `${basePath}/config/seo` },
+      ui: { url: `${basePath}/config/ui` },
+    },
+    events: {
+      url: `${basePath}/events`,
+      rubricSlug: {
+        url: `${basePath}/events/${rubricSlug}`,
+        events: {
+          url: `${basePath}/events/${rubricSlug}/events`,
+          event: {
+            url: `${basePath}/events/${rubricSlug}/events/event`,
+            eventId: {
+              url: `${basePath}/events/${rubricSlug}/events/event/${eventId}`,
+              assets: { url: `${basePath}/events/${rubricSlug}/events/event/${eventId}/assets` },
+              attributes: {
+                url: `${basePath}/events/${rubricSlug}/events/event/${eventId}/attributes`,
+              },
+            },
+          },
+        },
+        seoContent: {
+          url: `${basePath}/events/${rubricSlug}/seo-content`,
+          seoContentSlug: { url: `${basePath}/events/${rubricSlug}/seo-content/${seoContentSlug}` },
+        },
+      },
+    },
+    giftCertificates: {
+      url: `${basePath}/gift-certificates`,
+      certificate: {
+        url: `${basePath}/gift-certificates/certificate`,
+        giftCertificateId: {
+          url: `${basePath}/gift-certificates/certificate/${giftCertificateId}`,
+        },
+      },
+    },
+    root: { url: `${basePath}/` },
+    pages: {
+      url: `${basePath}/pages`,
+      pagesGroupId: {
+        url: `${basePath}/pages/${pagesGroupId}`,
+        pageId: { url: `${basePath}/pages/${pagesGroupId}/${pageId}` },
+      },
+    },
+    promo: {
+      url: `${basePath}/promo`,
+      details: {
+        url: `${basePath}/promo/details`,
+        promoId: {
+          url: `${basePath}/promo/details/${promoId}`,
+          code: {
+            url: `${basePath}/promo/details/${promoId}/code`,
+            promoCodeId: { url: `${basePath}/promo/details/${promoId}/code/${promoCodeId}` },
+          },
+          rubrics: {
+            url: `${basePath}/promo/details/${promoId}/rubrics`,
+            rubricSlug: {
+              url: `${basePath}/promo/details/${promoId}/rubrics/${rubricSlug}`,
+              products: {
+                url: `${basePath}/promo/details/${promoId}/rubrics/${rubricSlug}/products`,
+              },
+            },
+          },
+        },
+      },
+    },
+    rubrics: {
+      url: `${basePath}/rubrics`,
+      rubricSlug: {
+        url: `${basePath}/rubrics/${rubricSlug}`,
+        categories: {
+          url: `${basePath}/rubrics/${rubricSlug}/categories`,
+          categoryId: { url: `${basePath}/rubrics/${rubricSlug}/categories/${categoryId}` },
+        },
+        products: {
+          url: `${basePath}/rubrics/${rubricSlug}/products`,
+          product: {
+            url: `${basePath}/rubrics/${rubricSlug}/products/product`,
+            productId: {
+              url: `${basePath}/rubrics/${rubricSlug}/products/product/${productId}`,
+              assets: {
+                url: `${basePath}/rubrics/${rubricSlug}/products/product/${productId}/assets`,
+              },
+              attributes: {
+                url: `${basePath}/rubrics/${rubricSlug}/products/product/${productId}/attributes`,
+              },
+              brands: {
+                url: `${basePath}/rubrics/${rubricSlug}/products/product/${productId}/brands`,
+              },
+              categories: {
+                url: `${basePath}/rubrics/${rubricSlug}/products/product/${productId}/categories`,
+              },
+              editor: {
+                url: `${basePath}/rubrics/${rubricSlug}/products/product/${productId}/editor`,
+              },
+              variants: {
+                url: `${basePath}/rubrics/${rubricSlug}/products/product/${productId}/variants`,
+              },
+            },
+          },
+        },
+        seoContent: {
+          url: `${basePath}/rubrics/${rubricSlug}/seo-content`,
+          seoContentSlug: {
+            url: `${basePath}/rubrics/${rubricSlug}/seo-content/${seoContentSlug}`,
+          },
+        },
+      },
+    },
+    shops: {
+      url: `${basePath}/shops`,
+      shop: {
+        url: `${basePath}/shops/shop`,
+        shopId: {
+          url: `${basePath}/shops/shop/${shopId}`,
+          assets: { url: `${basePath}/shops/shop/${shopId}/assets` },
+          rubrics: {
+            url: `${basePath}/shops/shop/${shopId}/rubrics`,
+            rubricSlug: {
+              url: `${basePath}/shops/shop/${shopId}/rubrics/${rubricSlug}`,
+              add: { url: `${basePath}/shops/shop/${shopId}/rubrics/${rubricSlug}/add` },
+              products: {
+                url: `${basePath}/shops/shop/${shopId}/rubrics/${rubricSlug}/products`,
+                product: {
+                  url: `${basePath}/shops/shop/${shopId}/rubrics/${rubricSlug}/products/product`,
+                  shopProductId: {
+                    url: `${basePath}/shops/shop/${shopId}/rubrics/${rubricSlug}/products/product/${shopProductId}`,
+                    suppliers: {
+                      url: `${basePath}/shops/shop/${shopId}/rubrics/${rubricSlug}/products/product/${shopProductId}/suppliers`,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          shopOrders: {
+            url: `${basePath}/shops/shop/${shopId}/shop-orders`,
+            orderId: { url: `${basePath}/shops/shop/${shopId}/shop-orders/${orderId}` },
+          },
+          syncErrors: { url: `${basePath}/shops/shop/${shopId}/sync-errors` },
+        },
+      },
+    },
+    taskVariants: {
+      url: `${basePath}/task-variants`,
+      taskVariantId: { url: `${basePath}/task-variants/${taskVariantId}` },
+      create: { url: `${basePath}/task-variants/create` },
+    },
+    tasks: {
+      url: `${basePath}/tasks`,
+      create: { url: `${basePath}/tasks/create` },
+      details: {
+        url: `${basePath}/tasks/details`,
+        taskId: { url: `${basePath}/tasks/details/${taskId}` },
+      },
+    },
+    userCategories: { url: `${basePath}/user-categories` },
+  };
+}
+
+export interface CmsCompanyLinkPropsInterface
+  extends Omit<ConsoleCompanyLinkPropsInterface, 'basePath'> {
+  companyId: ObjectId | string;
+}
+
+export function getCmsCompanyLinks(props: CmsCompanyLinkPropsInterface) {
+  const links = getProjectLinks({
+    companyId: props.companyId,
+  });
+
+  return getConsoleCompanyLinks({
+    basePath: links.cms.companies.companyId.url,
+    ...props,
+  });
 }

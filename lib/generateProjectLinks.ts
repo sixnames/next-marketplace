@@ -52,7 +52,12 @@ function normalizeFieldName(name: string) {
   return fieldName;
 }
 
-function normalizeUrlPath(pagePath: string, replacePath: string) {
+interface NormalizeUrlPathInterface {
+  pagePath: string;
+  replacePath: string;
+}
+
+function normalizeUrlPath({ pagePath, replacePath }: NormalizeUrlPathInterface) {
   const url = pagePath
     .replace(replacePath, '')
     .replace('index', '')
@@ -83,7 +88,13 @@ function normalizeFieldPath(urlPath: string) {
   return normalizedPathNames;
 }
 
-function iterPages(pagesPath: string, replacePath: string) {
+interface IterPagesInterface {
+  pagesPath: string;
+  replacePath: string;
+  addBasePathVariable: boolean;
+}
+
+function iterPages({ pagesPath, replacePath, addBasePathVariable }: IterPagesInterface) {
   const allPagesTree = dirTree(pagesPath, {
     attributes: ['type'],
   });
@@ -100,9 +111,20 @@ function iterPages(pagesPath: string, replacePath: string) {
       return;
     }
     const cleanName = cleanupName(page.name);
-    const urlPath = normalizeUrlPath(page.path, replacePath);
-    const fieldPath = normalizeFieldPath(urlPath);
-    set(fields, `${fieldPath}.url`, urlPath);
+
+    const urlPath = normalizeUrlPath({
+      pagePath: page.path,
+      replacePath,
+    });
+
+    let fieldPath = normalizeFieldPath(urlPath);
+    if (!fieldPath) {
+      fieldPath = 'root';
+    }
+
+    // eslint-disable-next-line no-template-curly-in-string
+    const finalUrl = addBasePathVariable ? '${basePath}' + urlPath : urlPath;
+    set(fields, `${fieldPath}.url`, finalUrl);
 
     if (page.name.includes('[') && !page.name.includes('...')) {
       props.add(cleanName);
@@ -134,7 +156,18 @@ function iterPages(pagesPath: string, replacePath: string) {
 
 (function () {
   console.log('reading pages directory');
-  const allPagesResult = iterPages('./pages', 'pages');
+  const allPagesResult = iterPages({
+    pagesPath: './pages',
+    replacePath: 'pages',
+    addBasePathVariable: false,
+  });
+
+  console.log('reading pages/cms/companies/[companyId] directory');
+  const companyPagesResult = iterPages({
+    pagesPath: './pages/cms/companies/[companyId]',
+    replacePath: 'pages/cms/companies/[companyId]',
+    addBasePathVariable: true,
+  });
 
   const output = `
   import { ObjectId } from 'mongodb';
@@ -147,6 +180,31 @@ function iterPages(pagesPath: string, replacePath: string) {
   export function getProjectLinks(props?: LinkPropsInterface) {
     const {${allPagesResult.propsDestructure}} = props || {};
     return ${allPagesResult.fieldsString};
+  }
+  
+  export interface ConsoleCompanyLinkPropsInterface {
+    basePath: string;
+    ${allPagesResult.propsString}
+  }
+  
+  export function getConsoleCompanyLinks(props: ConsoleCompanyLinkPropsInterface) {
+    const {basePath, ${companyPagesResult.propsDestructure}} = props;
+    return ${companyPagesResult.fieldsString};
+  }
+  
+  export interface CmsCompanyLinkPropsInterface extends Omit<ConsoleCompanyLinkPropsInterface, 'basePath'> {
+    companyId: ObjectId | string;
+  }
+ 
+  export function getCmsCompanyLinks(props: CmsCompanyLinkPropsInterface) {
+    const links = getProjectLinks({
+      companyId: props.companyId,
+    });
+    
+    return getConsoleCompanyLinks({
+    basePath: links.cms.companies.companyId.url,
+    ...props,
+    });
   }
   `;
   fs.writeFileSync('./lib/getProjectLinks.ts', output);

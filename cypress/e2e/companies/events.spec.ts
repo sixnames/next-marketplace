@@ -2,7 +2,7 @@ import { DEFAULT_LOCALE, GENDER_HE, GENDER_SHE, SECONDARY_LOCALE } from 'config/
 import { getProjectLinks } from 'lib/getProjectLinks';
 import { fixtureIds } from '../../fixtures/fixtureIds';
 
-describe('Rubrics', () => {
+describe('Event rubrics', () => {
   const links = getProjectLinks({
     companyId: fixtureIds.companyA,
   });
@@ -24,15 +24,14 @@ describe('Rubrics', () => {
     cy.getByCy(`defaultTitleI18n-${DEFAULT_LOCALE}`).type(newRubricName);
     cy.getByCy(`prefixI18n-${DEFAULT_LOCALE}`).type(newRubricName);
     cy.getByCy(`keywordI18n-${DEFAULT_LOCALE}`).type(newRubricName);
-    cy.getByCy(`variantId`).select(fixtureIds.rubricVariantAlcohol);
     cy.getByCy(`gender`).select(GENDER_SHE);
-    cy.getByCy(`rubric-submit`).click();
+    cy.getByCy(`event-rubric-submit`).click();
     cy.wait(1500);
     cy.getByCy(`${newRubricName}-row`).should('exist');
 
     // Should delete event rubric
     cy.getByCy(`${newRubricName}-delete`).click();
-    cy.getByCy('delete-rubric-modal').should('exist');
+    cy.getByCy('delete-event-rubric-modal').should('exist');
     cy.getByCy('confirm').click();
     cy.wait(1500);
     cy.getByCy(`${newRubricName}-row`).should('not.exist');
@@ -50,7 +49,7 @@ describe('Rubrics', () => {
     cy.getByCy(`prefixI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
     cy.getByCy(`keywordI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
     cy.getByCy(`gender`).select(GENDER_HE);
-    cy.getByCy('rubric-submit').click();
+    cy.getByCy('event-rubric-submit').click();
     cy.wait(1500);
     cy.visit(links.cms.rubrics.url);
     cy.getByCy(`${updatedRubricName}-row`).should('exist');

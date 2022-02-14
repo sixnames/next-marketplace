@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import Inner from '../components/Inner';
 import WpLink from '../components/Link/WpLink';
-import { ClientNavItemInterface } from '../types/clientTypes';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface AppSubNavInterface {
   navConfig: ClientNavItemInterface[];
@@ -34,7 +34,11 @@ const AppSubNav: React.FC<AppSubNavInterface> = ({ navConfig }) => {
             const asPathArray = asPath.split('?');
             const cleanAasPath = asPathArray[0];
             const hrefArray = `${path}`.split('?');
-            const cleanHref = hrefArray[0];
+            const noTrailingSlashesHref = `${hrefArray[0]}`
+              .split('/')
+              .filter((path) => path)
+              .join('/');
+            const cleanHref = `/${noTrailingSlashesHref}`;
             const reg = RegExp(`${path}`);
             const isCurrent = exact ? cleanHref === cleanAasPath : reg.test(asPath);
 

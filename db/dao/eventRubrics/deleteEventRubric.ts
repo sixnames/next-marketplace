@@ -1,5 +1,10 @@
-import { COL_EVENT_RUBRICS, COL_EVENTS } from 'db/collectionNames';
-import { EventRubricModel, EventRubricPayloadModel } from 'db/dbModels';
+import { COL_EVENT_RUBRICS, COL_EVENT_SUMMARIES, COL_EVENT_FACETS } from 'db/collectionNames';
+import {
+  EventFacetModel,
+  EventRubricModel,
+  EventRubricPayloadModel,
+  EventSummaryModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -17,7 +22,8 @@ export async function deleteEventRubric({
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const rubricsCollection = db.collection<EventRubricModel>(COL_EVENT_RUBRICS);
-  const eventsCollection = db.collection<any>(COL_EVENTS);
+  const eventsCollection = db.collection<EventSummaryModel>(COL_EVENT_SUMMARIES);
+  const eventFacetsCollection = db.collection<EventFacetModel>(COL_EVENT_FACETS);
   const session = client.startSession();
 
   let mutationPayload: EventRubricPayloadModel = {
@@ -67,7 +73,10 @@ export async function deleteEventRubric({
       const removedEventsResult = await eventsCollection.deleteMany({
         rubricId,
       });
-      if (!removedEventsResult.acknowledged) {
+      const removedEventFacetsResult = await eventFacetsCollection.deleteMany({
+        rubricId,
+      });
+      if (!removedEventsResult.acknowledged || !removedEventFacetsResult.acknowledged) {
         mutationPayload = {
           success: false,
           message: await getApiMessage('rubrics.deleteProduct.error'),

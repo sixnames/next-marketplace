@@ -1208,8 +1208,29 @@ export interface EventRubricModel extends RubricBaseModel {
   image?: string;
 }
 
-export interface EventModel extends CountersModel {
+export interface EventFacetModel {
   _id: ObjectIdModel;
+  companySlug: string;
+  companyId: string;
+  citySlug: string;
+  rubricId: ObjectIdModel;
+  rubricSlug: string;
+  filterSlugs: string[];
+  startAt: DateModel;
+  endAt?: DateModel | null;
+}
+
+export interface EventSummaryModel extends CountersModel, EventFacetModel {
+  nameI18n?: TranslationModel | null;
+  descriptionI18n?: TranslationModel | null;
+  mainImage: string;
+  assets: string[];
+  videos?: string[];
+  attributes: ProductSummaryAttributeModel[];
+  address: AddressModel;
+  seatsCount: number;
+  seatsLeft: number;
+  price?: number | null;
 }
 
 // Payload
@@ -1244,6 +1265,7 @@ export type RolePayloadModel = PayloadType<RoleModel>;
 export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export type RubricPayloadModel = PayloadType<RubricModel>;
 export type EventRubricPayloadModel = PayloadType<EventRubricModel>;
+export type EventPayloadModel = PayloadType<EventSummaryModel>;
 export type RubricVariantPayloadModel = PayloadType<RubricVariantModel>;
 export type ShopPayloadModel = PayloadType<ShopModel>;
 export type SupplierPayloadModel = PayloadType<SupplierModel>;

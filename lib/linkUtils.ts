@@ -1,4 +1,4 @@
-import { ObjectIdModel } from '../db/dbModels';
+import { ObjectIdModel } from 'db/dbModels';
 import { getProjectLinks } from './getProjectLinks';
 
 const links = getProjectLinks();

@@ -68,6 +68,7 @@ import {
   TaskVariantModel,
   TaskLogModel,
   EventRubricModel,
+  EventSummaryModel,
 } from './dbModels';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { MessageSlug } from 'types/messageSlugTypes';
@@ -376,6 +377,23 @@ export interface EventRubricInterface extends EventRubricModel {
   textBottom?: string | null;
   seoDescriptionTop?: SeoContentModel | null;
   seoDescriptionBottom?: SeoContentModel | null;
+}
+
+export interface EventSummaryInterface extends EventSummaryModel {
+  // ui
+  cardContent?: SeoContentModel | null;
+
+  // parents
+  rubric?: EventRubricInterface | null;
+
+  // attributes
+  attributes: ProductAttributeInterface[];
+  attributesGroups?: ProductAttributesGroupInterface[] | null;
+  listAttributes?: ProductAttributeInterface[] | null;
+  textAttributes?: ProductAttributeInterface[] | null;
+  tagAttributes?: ProductAttributeInterface[] | null;
+  iconAttributes?: ProductAttributeInterface[] | null;
+  ratingAttributes?: ProductAttributeInterface[] | null;
 }
 
 export interface CategoryInterface extends CategoryModel {

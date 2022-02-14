@@ -13,7 +13,7 @@ import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ConfigConsumerInterface extends ConfigPageInterface {
-  pageCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
 const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({

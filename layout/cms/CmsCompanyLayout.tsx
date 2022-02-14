@@ -20,7 +20,7 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
 }) => {
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     const links = getCmsCompanyLinks({
-      companyId: company?._id,
+      companyId: company._id,
     });
 
     return [

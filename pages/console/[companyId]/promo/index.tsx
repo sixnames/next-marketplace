@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Inner from '../../../../components/Inner';
-import PromoList, { PromoListInterface } from '../../../../components/Promo/PromoList';
-import WpTitle from '../../../../components/WpTitle';
-import { CompanyInterface } from '../../../../db/uiInterfaces';
-import AppContentWrapper from '../../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../lib/linkUtils';
-import { getPromoListSsr } from '../../../../lib/promoUtils';
+import Inner from 'components/Inner';
+import PromoList, { PromoListInterface } from 'components/Promo/PromoList';
+import WpTitle from 'components/WpTitle';
+import { CompanyInterface } from 'db/uiInterfaces';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getPromoListSsr } from 'lib/promoUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
+} from 'lib/ssrUtils';
 
 const pageTitle = 'Акции';
 

@@ -2,30 +2,23 @@ import { Form, Formik } from 'formik';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import WpButton from '../../../../components/button/WpButton';
-import CompanyMainFields from '../../../../components/FormTemplates/CompanyMainFields';
-import Inner from '../../../../components/Inner';
-import { COL_COMPANIES, COL_ROLES, COL_USERS } from '../../../../db/collectionNames';
-import { getDatabase } from '../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../db/uiInterfaces';
-import {
-  UpdateCompanyInput,
-  useUpdateCompanyMutation,
-} from '../../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
-import useValidationSchema from '../../../../hooks/useValidationSchema';
-import CmsCompanyLayout from '../../../../layout/cms/CmsCompanyLayout';
-import { getProjectLinks } from '../../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../../lib/i18n';
-import { getFullName, getShortName } from '../../../../lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from '../../../../lib/phoneUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
-import { updateCompanyClientSchema } from '../../../../validation/companySchema';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import WpButton from 'components/button/WpButton';
+import CompanyMainFields from 'components/FormTemplates/CompanyMainFields';
+import Inner from 'components/Inner';
+import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import { UpdateCompanyInput, useUpdateCompanyMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
+import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getFullName, getShortName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { updateCompanyClientSchema } from 'validation/companySchema';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 
 interface CompanyDetailsConsumerInterface {
   pageCompany: CompanyInterface;

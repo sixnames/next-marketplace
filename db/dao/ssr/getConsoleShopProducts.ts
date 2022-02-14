@@ -1,23 +1,18 @@
 import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
-import {
-  DEFAULT_CITY,
-  DEFAULT_CURRENCY,
-  GENDER_HE,
-  PAGINATION_DEFAULT_LIMIT,
-} from '../../../config/common';
+import { DEFAULT_CITY, DEFAULT_CURRENCY, GENDER_HE, PAGINATION_DEFAULT_LIMIT } from 'config/common';
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
   getCommonFilterAttribute,
   getPriceAttribute,
-} from '../../../config/constantAttributes';
-import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../lib/castUrlFilters';
-import { getCatalogueAttributes } from '../../../lib/catalogueUtils';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { castSupplierProductsList } from '../../../lib/productUtils';
-import { getTreeFromList } from '../../../lib/treeUtils';
+} from 'config/constantAttributes';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import { getCatalogueAttributes } from 'lib/catalogueUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { castSupplierProductsList } from 'lib/productUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import {
   COL_CITIES,
   COL_COMPANIES,

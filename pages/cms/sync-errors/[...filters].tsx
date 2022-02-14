@@ -1,12 +1,12 @@
 import { NextPage } from 'next';
 import * as React from 'react';
-import Inner from '../../../components/Inner';
-import SyncErrorsList, { SyncErrorsListInterface } from '../../../components/SyncErrorsList';
-import WpTitle from '../../../components/WpTitle';
-import { getCmsSyncErrorsPageSsr } from '../../../db/dao/ssr/getCmsSyncErrorsPageSsr';
-import AppContentWrapper from '../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
-import { GetAppInitialDataPropsInterface } from '../../../lib/ssrUtils';
+import Inner from 'components/Inner';
+import SyncErrorsList, { SyncErrorsListInterface } from 'components/SyncErrorsList';
+import WpTitle from 'components/WpTitle';
+import { getCmsSyncErrorsPageSsr } from 'db/dao/ssr/getCmsSyncErrorsPageSsr';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Ошибки синхронизации';
 

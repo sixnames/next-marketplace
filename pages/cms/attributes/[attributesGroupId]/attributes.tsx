@@ -2,59 +2,52 @@ import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import Head from 'next/head';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ContentItemControls from '../../../../components/button/ContentItemControls';
-import FixedButtons from '../../../../components/button/FixedButtons';
-import WpButton from '../../../../components/button/WpButton';
-import Inner from '../../../../components/Inner';
-import { AddAttributeToGroupModalInterface } from '../../../../components/Modal/AttributeInGroupModal';
-import { ConfirmModalInterface } from '../../../../components/Modal/ConfirmModal';
-import { MoveAttributeModalInterface } from '../../../../components/Modal/MoveAttributeModal';
-import WpTable, { WpTableColumn } from '../../../../components/WpTable';
-import WpTitle from '../../../../components/WpTitle';
-import { DEFAULT_LOCALE, SORT_ASC } from '../../../../config/common';
-import {
-  getBooleanTranslation,
-  getConstantTranslation,
-} from '../../../../config/constantTranslations';
+import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import Inner from 'components/Inner';
+import { AddAttributeToGroupModalInterface } from 'components/Modal/AttributeInGroupModal';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { MoveAttributeModalInterface } from 'components/Modal/MoveAttributeModal';
+import WpTable, { WpTableColumn } from 'components/WpTable';
+import WpTitle from 'components/WpTitle';
+import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
+import { getBooleanTranslation, getConstantTranslation } from 'config/constantTranslations';
 import {
   ATTRIBUTE_IN_GROUP_MODAL,
   CONFIRM_MODAL,
   MOVE_ATTRIBUTE_MODAL,
-} from '../../../../config/modalVariants';
-import { useLocaleContext } from '../../../../context/localeContext';
+} from 'config/modalVariants';
+import { useLocaleContext } from 'context/localeContext';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
   COL_METRICS,
   COL_OPTIONS_GROUPS,
-} from '../../../../db/collectionNames';
-import { castAttributeForUI } from '../../../../db/dao/attributes/castAttributesGroupForUI';
-import { getDatabase } from '../../../../db/mongodb';
+} from 'db/collectionNames';
+import { castAttributeForUI } from 'db/dao/attributes/castAttributesGroupForUI';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   AttributeInterface,
   AttributesGroupInterface,
   MetricInterface,
   OptionsGroupInterface,
-} from '../../../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import {
   useCreateAttributeMutation,
   useDeleteAttributeMutation,
   useUpdateAttributeMutation,
-} from '../../../../hooks/mutations/useAttributeMutations';
-import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
-import AppContentWrapper from '../../../../layout/AppContentWrapper';
-import AppSubNav from '../../../../layout/AppSubNav';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { sortObjectsByField } from '../../../../lib/arrayUtils';
-import { getFieldStringLocale } from '../../../../lib/i18n';
-import { getCmsLinks } from '../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
-import { ClientNavItemInterface } from '../../../../types/clientTypes';
+} from 'hooks/mutations/useAttributeMutations';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import AppSubNav from 'layout/AppSubNav';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
 const pageTitle = `Группы атрибутов`;
 

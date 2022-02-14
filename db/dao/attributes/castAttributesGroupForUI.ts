@@ -1,5 +1,5 @@
-import { sortObjectsByField } from '../../../lib/arrayUtils';
-import { getFieldStringLocale } from '../../../lib/i18n';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { getFieldStringLocale } from 'lib/i18n';
 import { GenderModel } from '../../dbModels';
 import { AttributeInterface, AttributesGroupInterface } from '../../uiInterfaces';
 import { castOptionForUI } from '../options/castOptionForUI';

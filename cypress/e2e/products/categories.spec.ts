@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE } from 'config/common';
-import { getConsoleRubricLinks } from '../../../lib/linkUtils';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { fixtureIds } from '../../fixtures/fixtureIds';
 
 describe('Categories', () => {

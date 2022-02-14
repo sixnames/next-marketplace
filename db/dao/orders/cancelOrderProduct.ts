@@ -1,9 +1,9 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_DIFF } from '../../../config/common';
-import { sendOrderProductCanceledEmail } from '../../../lib/email/sendOrderProductCanceledEmail';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { sendOrderProductCanceledSms } from '../../../lib/sms/sendOrderProductCanceledSms';
+import { DEFAULT_DIFF } from 'config/common';
+import { sendOrderProductCanceledEmail } from 'lib/email/sendOrderProductCanceledEmail';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { sendOrderProductCanceledSms } from 'lib/sms/sendOrderProductCanceledSms';
 import {
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,

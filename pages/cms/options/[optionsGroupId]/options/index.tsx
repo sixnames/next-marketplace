@@ -2,49 +2,41 @@ import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ContentItemControls from '../../../../../components/button/ContentItemControls';
-import FixedButtons from '../../../../../components/button/FixedButtons';
-import WpButton from '../../../../../components/button/WpButton';
-import Inner from '../../../../../components/Inner';
-import { ConfirmModalInterface } from '../../../../../components/Modal/ConfirmModal';
-import { MoveOptionModalInterface } from '../../../../../components/Modal/MoveOptionModal';
-import { OptionInGroupModalInterface } from '../../../../../components/Modal/OptionInGroupModal';
-import RequestError from '../../../../../components/RequestError';
-import WpImage from '../../../../../components/WpImage';
-import WpTitle from '../../../../../components/WpTitle';
-import { DEFAULT_LOCALE, SORT_ASC } from '../../../../../config/common';
-import { getConstantTranslation } from '../../../../../config/constantTranslations';
-import {
-  CONFIRM_MODAL,
-  MOVE_OPTION_MODAL,
-  OPTION_IN_GROUP_MODAL,
-} from '../../../../../config/modalVariants';
-import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from '../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../db/mongodb';
+import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import Inner from 'components/Inner';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { MoveOptionModalInterface } from 'components/Modal/MoveOptionModal';
+import { OptionInGroupModalInterface } from 'components/Modal/OptionInGroupModal';
+import RequestError from 'components/RequestError';
+import WpImage from 'components/WpImage';
+import WpTitle from 'components/WpTitle';
+import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
+import { getConstantTranslation } from 'config/constantTranslations';
+import { CONFIRM_MODAL, MOVE_OPTION_MODAL, OPTION_IN_GROUP_MODAL } from 'config/modalVariants';
+import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   OptionInterface,
   OptionsGroupInterface,
-} from '../../../../../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import {
   Gender,
   OptionsGroupVariant,
   useAddOptionToGroupMutation,
   useDeleteOptionFromGroupMutation,
-} from '../../../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
-import AppContentWrapper from '../../../../../layout/AppContentWrapper';
-import AppSubNav from '../../../../../layout/AppSubNav';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { sortObjectsByField } from '../../../../../lib/arrayUtils';
-import { getProjectLinks } from '../../../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../../../lib/i18n';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
-import { getTreeFromList } from '../../../../../lib/treeUtils';
+} from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import AppSubNav from 'layout/AppSubNav';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 
 interface OptionsGroupOptionsConsumerInterface {
   optionsGroup: OptionsGroupInterface;

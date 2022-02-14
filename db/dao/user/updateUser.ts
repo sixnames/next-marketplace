@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { phoneToRaw } from '../../../lib/phoneUtils';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { phoneToRaw } from 'lib/phoneUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { updateUserSchema } from '../../../validation/userSchema';
+} from 'lib/sessionHelpers';
+import { updateUserSchema } from 'validation/userSchema';
 import { COL_USERS } from '../../collectionNames';
 import { UserModel, UserNotificationsModel, UserPayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_GET } from '../../../config/common';
-import { getPageSessionUser } from '../../../db/dao/user/getPageSessionUser';
-import { getRequestParams } from '../../../lib/sessionHelpers';
+import { REQUEST_METHOD_GET } from 'config/common';
+import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
+import { getRequestParams } from 'lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_GET) {

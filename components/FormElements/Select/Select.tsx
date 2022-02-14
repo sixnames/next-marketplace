@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useLocaleContext } from '../../../context/localeContext';
-import { TranslationModel } from '../../../db/dbModels';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { InputTheme, OnOffType } from '../../../types/clientTypes';
+import { useLocaleContext } from 'context/localeContext';
+import { TranslationModel } from 'db/dbModels';
+import { getFieldStringLocale } from 'lib/i18n';
+import { InputTheme, OnOffType } from 'types/clientTypes';
 import WpIcon from '../../WpIcon';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
 

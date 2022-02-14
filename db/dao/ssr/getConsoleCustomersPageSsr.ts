@@ -1,17 +1,17 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_PAGE, SORT_DESC } from '../../../config/common';
-import { alwaysArray } from '../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../lib/castUrlFilters';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../lib/linkUtils';
-import { getFullName } from '../../../lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
-import { castDbData, getConsoleInitialData } from '../../../lib/ssrUtils';
+import { DEFAULT_PAGE, SORT_DESC } from 'config/common';
+import { alwaysArray } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getFullName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import {
   ConsoleCustomersPageConsumerInterface,
   ConsoleCustomersPageInterface,
-} from '../../../pages/console/[companyId]/users/[...filters]';
+} from 'pages/console/[companyId]/users/[...filters]';
 import { COL_ORDERS, COL_USER_CATEGORIES, COL_USERS } from '../../collectionNames';
 import { getDatabase } from '../../mongodb';
 import { AppPaginationInterface, OrderInterface, UserInterface } from '../../uiInterfaces';

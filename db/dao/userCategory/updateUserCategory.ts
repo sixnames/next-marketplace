@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { noNaN } from '../../../lib/numbers';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { noNaN } from 'lib/numbers';
 import {
   getApiResolverValidationSchema,
   getOperationPermission,
   getRequestParams,
-} from '../../../lib/sessionHelpers';
-import { updateUserCategorySchema } from '../../../validation/userCategorySchema';
+} from 'lib/sessionHelpers';
+import { updateUserCategorySchema } from 'validation/userCategorySchema';
 import { COL_COMPANIES, COL_USER_CATEGORIES } from '../../collectionNames';
 import {
   CompanyModel,

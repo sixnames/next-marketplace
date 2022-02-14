@@ -1,4 +1,4 @@
-import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { COL_COMPANIES, COL_SHOPS } from '../../collectionNames';
 import { getDatabase } from '../../mongodb';
 import { CompanyInterface } from '../../uiInterfaces';

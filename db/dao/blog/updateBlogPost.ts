@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getApiResolverValidationSchema,
   getOperationPermission,
   getRequestParams,
-} from '../../../lib/sessionHelpers';
-import { updateBlogPostSchema } from '../../../validation/blogSchema';
+} from 'lib/sessionHelpers';
+import { updateBlogPostSchema } from 'validation/blogSchema';
 import { COL_BLOG_POSTS } from '../../collectionNames';
 import {
   BlogPostModel,

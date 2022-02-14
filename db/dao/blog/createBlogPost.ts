@@ -3,15 +3,15 @@ import {
   DEFAULT_COUNTERS_OBJECT,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   PAGE_STATE_PUBLISHED,
-} from '../../../config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getNextNumberItemId } from '../../../lib/itemIdUtils';
+} from 'config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getNextNumberItemId } from 'lib/itemIdUtils';
 import {
   getApiResolverValidationSchema,
   getOperationPermission,
   getRequestParams,
-} from '../../../lib/sessionHelpers';
-import { createBlogPostSchema } from '../../../validation/blogSchema';
+} from 'lib/sessionHelpers';
+import { createBlogPostSchema } from 'validation/blogSchema';
 import { COL_BLOG_POSTS } from '../../collectionNames';
 import { BlogPostModel, BlogPostPayloadModel, TranslationModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

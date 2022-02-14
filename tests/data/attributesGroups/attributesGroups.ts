@@ -1,4 +1,4 @@
-import { AttributesGroupModel } from '../../../db/dbModels';
+import { AttributesGroupModel } from 'db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 
 const attributesGroups: AttributesGroupModel[] = [

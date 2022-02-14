@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ConsoleRubricProductDetails from '../../../../../../../components/console/ConsoleRubricProductDetails';
+import ConsoleRubricProductDetails from 'components/console/ConsoleRubricProductDetails';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
-import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
-import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import CmsProductLayout from 'layout/cms/CmsProductLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

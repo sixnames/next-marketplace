@@ -3,31 +3,20 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CompanyProductSuppliers, {
   CompanyProductSuppliersInterface,
-} from '../../../../../../../../../../../../components/company/CompanyProductSuppliers';
-import { SelectOptionInterface } from '../../../../../../../../../../../../components/FormElements/Select/Select';
-import RequestError from '../../../../../../../../../../../../components/RequestError';
-import { SORT_ASC } from '../../../../../../../../../../../../config/common';
-import {
-  COL_COMPANIES,
-  COL_SUPPLIERS,
-} from '../../../../../../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../../../../../../db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-  SupplierInterface,
-} from '../../../../../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../../../../../layout/cms/ConsoleLayout';
-import ConsoleShopProductLayout from '../../../../../../../../../../../../layout/console/ConsoleShopProductLayout';
-import { getProjectLinks } from '../../../../../../../../../../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../../../../../../../../../../lib/i18n';
-import { getCmsCompanyLinks } from '../../../../../../../../../../../../lib/linkUtils';
-import { getConsoleShopProduct } from '../../../../../../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../../../../../../lib/ssrUtils';
+} from 'components/company/CompanyProductSuppliers';
+import { SelectOptionInterface } from 'components/FormElements/Select/Select';
+import RequestError from 'components/RequestError';
+import { SORT_ASC } from 'config/common';
+import { COL_COMPANIES, COL_SUPPLIERS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface, SupplierInterface } from 'db/uiInterfaces';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getConsoleShopProduct } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ProductDetailsInterface extends CompanyProductSuppliersInterface {
   pageCompany: CompanyInterface;

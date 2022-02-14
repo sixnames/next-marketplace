@@ -4,15 +4,15 @@ import {
   TEXT_HORIZONTAL_ALIGN_OPTIONS,
   TEXT_HORIZONTAL_FLEX_OPTIONS,
   TEXT_VERTICAL_FLEX_OPTIONS,
-} from '../../../config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getNextItemId } from '../../../lib/itemIdUtils';
+} from 'config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getNextItemId } from 'lib/itemIdUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { createPromoSchema } from '../../../validation/promoSchema';
+} from 'lib/sessionHelpers';
+import { createPromoSchema } from 'validation/promoSchema';
 import { COL_PROMO } from '../../collectionNames';
 import { DateModel, PromoModel, PromoPayloadModel, TranslationModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

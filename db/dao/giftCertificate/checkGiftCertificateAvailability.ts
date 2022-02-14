@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getRequestParams } from '../../../lib/sessionHelpers';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getRequestParams } from 'lib/sessionHelpers';
 import { COL_GIFT_CERTIFICATES } from '../../collectionNames';
 import { GiftCertificateModel, GiftCertificatePayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

@@ -1,20 +1,16 @@
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Inner from '../../../../../../components/Inner';
-import PageDetails, { PageDetailsInterface } from '../../../../../../components/Pages/PageDetails';
-import { COL_COMPANIES } from '../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../../db/uiInterfaces';
-import CmsCompanyLayout from '../../../../../../layout/cms/CmsCompanyLayout';
-import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../../lib/linkUtils';
-import { getPageSsr } from '../../../../../../lib/pageUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../lib/ssrUtils';
+import Inner from 'components/Inner';
+import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getPageSsr } from 'lib/pageUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 export interface PageDetailsPageInterface
   extends GetAppInitialDataPropsInterface,

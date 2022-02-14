@@ -4,22 +4,22 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
-import WpButton from '../../../components/button/WpButton';
+import WpButton from 'components/button/WpButton';
 import CompanyMainFields, {
   CompanyFormMainValuesInterface,
-} from '../../../components/FormTemplates/CompanyMainFields';
-import Inner from '../../../components/Inner';
-import WpTitle from '../../../components/WpTitle';
-import { AppContentWrapperBreadCrumbs } from '../../../db/uiInterfaces';
-import { useCreateCompanyMutation } from '../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
-import useValidationSchema from '../../../hooks/useValidationSchema';
-import AppContentWrapper from '../../../layout/AppContentWrapper';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
-import { phoneToRaw } from '../../../lib/phoneUtils';
-import { getAppInitialData, GetAppInitialDataPropsInterface } from '../../../lib/ssrUtils';
-import { createCompanyClientSchema } from '../../../validation/companySchema';
-import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+} from 'components/FormTemplates/CompanyMainFields';
+import Inner from 'components/Inner';
+import WpTitle from 'components/WpTitle';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import { useCreateCompanyMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { phoneToRaw } from 'lib/phoneUtils';
+import { getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { createCompanyClientSchema } from 'validation/companySchema';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 
 const pageTitle = 'Создание компании';
 

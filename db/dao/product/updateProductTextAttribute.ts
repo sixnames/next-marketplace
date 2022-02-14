@@ -8,7 +8,7 @@ import {
   SECONDARY_LOCALE,
   TASK_STATE_IN_PROGRESS,
 } from 'config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { COL_ATTRIBUTES, COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';

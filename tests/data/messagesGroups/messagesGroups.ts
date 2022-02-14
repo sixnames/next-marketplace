@@ -1,4 +1,4 @@
-import { MessagesGroupModel } from '../../../db/dbModels';
+import { MessagesGroupModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const messagesGroups: MessagesGroupModel[] = [

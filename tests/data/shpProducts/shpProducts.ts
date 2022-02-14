@@ -1,6 +1,6 @@
 import addZero from 'add-zero';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ID_COUNTER_DIGITS } from '../../../config/common';
-import { ShopProductModel } from '../../../db/dbModels';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ID_COUNTER_DIGITS } from 'config/common';
+import { ShopProductModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import productSummaries from '../productSummaries/productSummaries';
 import shops from '../shops/shops';

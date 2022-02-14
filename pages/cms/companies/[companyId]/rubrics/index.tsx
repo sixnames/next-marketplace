@@ -6,26 +6,16 @@ import {
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
-} from '../../../../../db/collectionNames';
+} from 'db/collectionNames';
 import { castRubricForUI } from 'db/dao/ssr/castRubricForUI';
-import { RubricModel } from '../../../../../db/dbModels';
-import { getDatabase } from '../../../../../db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-  RubricInterface,
-} from '../../../../../db/uiInterfaces';
-import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
-import CompanyRubricsList, {
-  CompanyRubricsListInterface,
-} from '../../../../../layout/CompanyRubricsList';
-import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { RubricModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
+import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
+import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 

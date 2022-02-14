@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ConsoleRubricProductBrands from '../../../../../../../components/console/ConsoleRubricProductBrands';
+import ConsoleRubricProductBrands from 'components/console/ConsoleRubricProductBrands';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_MANUFACTURERS } from 'db/collectionNames';
 import { BrandCollectionModel, BrandModel, ManufacturerModel } from 'db/dbModels';
@@ -12,8 +12,8 @@ import {
   ManufacturerInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
-import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
-import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import CmsProductLayout from 'layout/cms/CmsProductLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';

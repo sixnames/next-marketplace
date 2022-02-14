@@ -5,20 +5,20 @@ import {
   HEADER_SEARCH_PRODUCTS_LIMIT,
   REQUEST_METHOD_POST,
   SORT_DESC,
-} from '../../../config/common';
-import { COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+} from 'config/common';
+import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   ignoreNoImageStage,
   shopProductsGroupPipeline,
   summaryPipeline,
-} from '../../../db/dao/constantPipelines';
-import { ObjectIdModel } from '../../../db/dbModels';
-import { getDatabase } from '../../../db/mongodb';
-import { ShopProductInterface } from '../../../db/uiInterfaces';
-import { getAlgoliaProductsSearch } from '../../../lib/algolia/productAlgoliaUtils';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { noNaN } from '../../../lib/numbers';
-import { getRequestParams } from '../../../lib/sessionHelpers';
+} from 'db/dao/constantPipelines';
+import { ObjectIdModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { ShopProductInterface } from 'db/uiInterfaces';
+import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
+import { getRequestParams } from 'lib/sessionHelpers';
 
 export interface HeaderSearchPayloadInterface {
   shopProducts: ShopProductInterface[];

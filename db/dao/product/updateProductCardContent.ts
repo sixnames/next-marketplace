@@ -6,7 +6,7 @@ import { COL_LANGUAGES } from 'db/collectionNames';
 import { getCitiesList } from 'db/dao/cities/getCitiesList';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { getDatabase } from 'db/mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { updateCitiesSeoContent } from 'lib/seoContentUniquenessUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { LanguageModel, ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';

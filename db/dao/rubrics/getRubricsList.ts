@@ -32,7 +32,7 @@ export async function getRubricsList({
 
     return sortObjectsByField(rubrics, 'name');
   } catch (e) {
-    console.log(e);
+    console.log('getRubricsList error', e);
     return [];
   }
 }

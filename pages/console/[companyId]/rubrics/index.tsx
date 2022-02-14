@@ -1,28 +1,22 @@
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Inner from '../../../../components/Inner';
-import WpTitle from '../../../../components/WpTitle';
-import {
-  COL_RUBRIC_VARIANTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from '../../../../db/collectionNames';
-import { RubricModel } from '../../../../db/dbModels';
-import { getDatabase } from '../../../../db/mongodb';
-import { RubricInterface } from '../../../../db/uiInterfaces';
-import AppContentWrapper from '../../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import CompanyRubricsList, {
-  CompanyRubricsListInterface,
-} from '../../../../layout/CompanyRubricsList';
-import { getFieldStringLocale } from '../../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../../lib/linkUtils';
+import Inner from 'components/Inner';
+import WpTitle from 'components/WpTitle';
+import { COL_RUBRIC_VARIANTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { RubricModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { RubricInterface } from 'db/uiInterfaces';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
+} from 'lib/ssrUtils';
 
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 const pageTitle = 'Рубрикатор';

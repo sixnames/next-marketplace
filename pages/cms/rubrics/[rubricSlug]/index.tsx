@@ -1,35 +1,31 @@
+import { UpdateRubricInputInterface } from 'db/dao/rubrics/updateRubric';
 import { Form, Formik } from 'formik';
+import { useUpdateRubric } from 'hooks/mutations/useRubricMutations';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import FixedButtons from '../../../../components/button/FixedButtons';
-import WpButton from '../../../../components/button/WpButton';
-import RubricMainFields from '../../../../components/FormTemplates/RubricMainFields';
-import Inner from '../../../../components/Inner';
-import SeoContentEditor from '../../../../components/SeoContentEditor';
-import { DEFAULT_COMPANY_SLUG } from '../../../../config/common';
-import { COL_RUBRIC_VARIANTS } from '../../../../db/collectionNames';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import RubricMainFields from 'components/FormTemplates/RubricMainFields';
+import Inner from 'components/Inner';
+import SeoContentEditor from 'components/SeoContentEditor';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { getConsoleRubricDetails } from 'db/dao/ssr/getConsoleRubricDetails';
-import { getDatabase } from '../../../../db/mongodb';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   RubricInterface,
   RubricVariantInterface,
   SeoContentCitiesInterface,
-} from '../../../../db/uiInterfaces';
-import { UpdateRubricInput, useUpdateRubricMutation } from '../../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
-import useValidationSchema from '../../../../hooks/useValidationSchema';
-import CmsRubricLayout from '../../../../layout/cms/CmsRubricLayout';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { sortObjectsByField } from '../../../../lib/arrayUtils';
-import { getFieldStringLocale } from '../../../../lib/i18n';
-import { getConsoleRubricLinks } from '../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
-import { updateRubricSchema } from '../../../../validation/rubricSchema';
+} from 'db/uiInterfaces';
+import useValidationSchema from 'hooks/useValidationSchema';
+import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { updateRubricSchema } from 'validation/rubricSchema';
 
 interface RubricDetailsInterface {
   rubric: RubricInterface;
@@ -49,14 +45,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   const validationSchema = useValidationSchema({
     schema: updateRubricSchema,
   });
-  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
-    reload: true,
-  });
-
-  const [updateRubricMutation] = useUpdateRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateRubric),
-    onError: onErrorCallback,
-  });
+  const [updateRubricMutation] = useUpdateRubric();
 
   const {
     _id = '',
@@ -77,8 +66,8 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     gender,
   } = rubric;
 
-  const initialValues: UpdateRubricInput = {
-    rubricId: _id,
+  const initialValues: UpdateRubricInputInterface = {
+    _id: `${_id}`,
     active,
     nameI18n,
     descriptionI18n,
@@ -96,7 +85,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     prefixI18n,
     keywordI18n,
     gender: gender as any,
-    variantId,
+    variantId: `${variantId}`,
   };
 
   const { parentLink } = getConsoleRubricLinks({
@@ -121,12 +110,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
           initialValues={initialValues}
           enableReinitialize
           onSubmit={(values) => {
-            showLoading();
-            return updateRubricMutation({
-              variables: {
-                input: values,
-              },
-            });
+            updateRubricMutation(values).catch(console.log);
           }}
         >
           {() => {

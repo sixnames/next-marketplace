@@ -1,9 +1,9 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_DIFF, SORT_ASC } from '../../../config/common';
-import { sendOrderConfirmedEmail } from '../../../lib/email/sendOrderConfirmedEmail';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { sendOrderConfirmedSms } from '../../../lib/sms/sendOrderConfirmedSms';
+import { DEFAULT_DIFF, SORT_ASC } from 'config/common';
+import { sendOrderConfirmedEmail } from 'lib/email/sendOrderConfirmedEmail';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { sendOrderConfirmedSms } from 'lib/sms/sendOrderConfirmedSms';
 import {
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,

@@ -1,9 +1,9 @@
 import { ObjectId } from 'mongodb';
-import { SORT_ASC } from '../../../config/common';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getFullName } from '../../../lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
-import { castSupplierProductsList } from '../../../lib/productUtils';
+import { SORT_ASC } from 'config/common';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getFullName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { castSupplierProductsList } from 'lib/productUtils';
 import {
   COL_GIFT_CERTIFICATES,
   COL_ORDER_CUSTOMERS,

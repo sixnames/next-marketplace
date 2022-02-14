@@ -1,4 +1,4 @@
-import { CurrencyModel } from '../../../db/dbModels';
+import { CurrencyModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const currencies: CurrencyModel[] = [

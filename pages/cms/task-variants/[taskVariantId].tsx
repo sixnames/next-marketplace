@@ -2,18 +2,14 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import UpdateTaskVariantForm, {
   UpdateTaskVariantFormInterface,
-} from '../../../components/console/UpdateTaskVariantForm';
-import { getCompanyTaskVariantSsr } from '../../../db/dao/ssr/getCompanyTaskVariantSsr';
-import { AppContentWrapperBreadCrumbs } from '../../../db/uiInterfaces';
-import AppContentWrapper from '../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getCmsLinks, getConsoleTaskVariantLinks } from '../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../lib/ssrUtils';
+} from 'components/console/UpdateTaskVariantForm';
+import { getCompanyTaskVariantSsr } from 'db/dao/ssr/getCompanyTaskVariantSsr';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsLinks, getConsoleTaskVariantLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface TaskVariantDetailsConsumerInterface extends UpdateTaskVariantFormInterface {
   basePath: string;

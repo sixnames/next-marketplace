@@ -1,28 +1,20 @@
 import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
-import {
-  DEFAULT_CITY,
-  GENDER_HE,
-  PAGINATION_DEFAULT_LIMIT,
-  SORT_DESC,
-} from '../../../config/common';
+import { DEFAULT_CITY, GENDER_HE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
   getCommonFilterAttribute,
   getPriceAttribute,
-} from '../../../config/constantAttributes';
-import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../lib/castUrlFilters';
-import { getCatalogueAttributes } from '../../../lib/catalogueUtils';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { noNaN } from '../../../lib/numbers';
-import {
-  countProductAttributes,
-  getRubricAllAttributes,
-} from '../../../lib/productAttributesUtils';
-import { getProductAllSeoContents } from '../../../lib/seoContentUtils';
-import { getTreeFromList } from '../../../lib/treeUtils';
+} from 'config/constantAttributes';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import { getCatalogueAttributes } from 'lib/catalogueUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
+import { countProductAttributes, getRubricAllAttributes } from 'lib/productAttributesUtils';
+import { getProductAllSeoContents } from 'lib/seoContentUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { COL_PRODUCT_FACETS, COL_RUBRICS, COL_SHOP_PRODUCTS } from '../../collectionNames';
 import { ObjectIdModel, ProductFacetModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

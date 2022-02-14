@@ -3,29 +3,25 @@ import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import FixedButtons from '../../../../components/button/FixedButtons';
-import WpButton from '../../../../components/button/WpButton';
-import RoleMainFields from '../../../../components/FormTemplates/RoleMainFields';
-import Inner from '../../../../components/Inner';
-import WpTitle from '../../../../components/WpTitle';
-import { COL_ROLES } from '../../../../db/collectionNames';
-import { getDatabase } from '../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, RoleInterface } from '../../../../db/uiInterfaces';
-import { useUpdateRoleMutation } from '../../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
-import useValidationSchema from '../../../../hooks/useValidationSchema';
-import AppContentWrapper from '../../../../layout/AppContentWrapper';
-import AppSubNav from '../../../../layout/AppSubNav';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { getProjectLinks } from '../../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../../lib/i18n';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
-import { ClientNavItemInterface } from '../../../../types/clientTypes';
-import { updateRoleSchema } from '../../../../validation/roleSchema';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import RoleMainFields from 'components/FormTemplates/RoleMainFields';
+import Inner from 'components/Inner';
+import WpTitle from 'components/WpTitle';
+import { COL_ROLES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, RoleInterface } from 'db/uiInterfaces';
+import { useUpdateRoleMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import AppSubNav from 'layout/AppSubNav';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ClientNavItemInterface } from 'types/clientTypes';
+import { updateRoleSchema } from 'validation/roleSchema';
 
 interface RoleDetailsConsumerInterface {
   role: RoleInterface;

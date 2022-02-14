@@ -1,6 +1,6 @@
 import { DEFAULT_LOCALE } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/getProjectLinks';
 
 describe('User categories', () => {
   const links = getProjectLinks({

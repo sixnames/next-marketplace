@@ -1,12 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import {
-  REQUEST_METHOD_DELETE,
-  REQUEST_METHOD_PATCH,
-  REQUEST_METHOD_POST,
-} from '../../../config/common';
-import { createBlogAttribute } from '../../../db/dao/blog/createBlogAttribute';
-import { deleteBlogAttribute } from '../../../db/dao/blog/deleteBlogAttribute';
-import { updateBlogAttribute } from '../../../db/dao/blog/updateBlogAttribute';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
+import { createBlogAttribute } from 'db/dao/blog/createBlogAttribute';
+import { deleteBlogAttribute } from 'db/dao/blog/deleteBlogAttribute';
+import { updateBlogAttribute } from 'db/dao/blog/updateBlogAttribute';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_POST) {

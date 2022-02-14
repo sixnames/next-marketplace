@@ -23,7 +23,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from 'db/syncInterfaces';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { noNaN } from 'lib/numbers';
 import { castSummaryToShopProduct } from 'lib/productUtils';

@@ -5,9 +5,9 @@ import {
   GRID_SNIPPET_LAYOUT_BIG_IMAGE,
   NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
   ROW_SNIPPET_LAYOUT_BIG_IMAGE,
-} from '../../../config/constantSelects';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, SECONDARY_LOCALE } from '../../../config/common';
-import { RubricVariantModel } from '../../../db/dbModels';
+} from 'config/constantSelects';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
+import { RubricVariantModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const rubricVariants: RubricVariantModel[] = [

@@ -1,5 +1,5 @@
-import { SORT_ASC } from '../../../config/common';
-import { getFieldStringLocale } from '../../../lib/i18n';
+import { SORT_ASC } from 'config/common';
+import { getFieldStringLocale } from 'lib/i18n';
 import { COL_TASK_VARIANTS } from '../../collectionNames';
 import { getDatabase } from '../../mongodb';
 import { TaskVariantInterface } from '../../uiInterfaces';

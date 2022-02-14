@@ -1,11 +1,11 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { updateAttributeInGroupSchema } from '../../../validation/attributesGroupSchema';
+} from 'lib/sessionHelpers';
+import { updateAttributeInGroupSchema } from 'validation/attributesGroupSchema';
 import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_METRICS } from '../../collectionNames';
 import {
   AttributeModel,

@@ -1243,6 +1243,7 @@ export type PromoCodePayloadModel = PayloadType<PromoCodeModel>;
 export type RolePayloadModel = PayloadType<RoleModel>;
 export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export type RubricPayloadModel = PayloadType<RubricModel>;
+export type EventRubricPayloadModel = PayloadType<EventRubricModel>;
 export type RubricVariantPayloadModel = PayloadType<RubricVariantModel>;
 export type ShopPayloadModel = PayloadType<ShopModel>;
 export type SupplierPayloadModel = PayloadType<SupplierModel>;

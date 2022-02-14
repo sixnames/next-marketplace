@@ -3,20 +3,16 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import UpdateTaskVariantForm, {
   UpdateTaskVariantFormInterface,
-} from '../../../../../components/console/UpdateTaskVariantForm';
-import { COL_COMPANIES } from '../../../../../db/collectionNames';
-import { getCompanyTaskVariantSsr } from '../../../../../db/dao/ssr/getCompanyTaskVariantSsr';
-import { getDatabase } from '../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
-import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from '../../../../../lib/i18n';
-import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+} from 'components/console/UpdateTaskVariantForm';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getCompanyTaskVariantSsr } from 'db/dao/ssr/getCompanyTaskVariantSsr';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CreateTaskVariantDetailsConsumerInterface extends UpdateTaskVariantFormInterface {
   pageCompany: CompanyInterface;

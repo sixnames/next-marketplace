@@ -8,7 +8,7 @@ import {
   DEFAULT_COMPANY_SLUG,
   TASK_STATE_IN_PROGRESS,
 } from 'config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,

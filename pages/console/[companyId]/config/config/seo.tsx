@@ -1,19 +1,19 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import ConfigsFormTemplate from '../../../../../components/FormTemplates/ConfigsFormTemplate';
-import Inner from '../../../../../components/Inner';
-import { CONFIG_GROUP_SEO } from '../../../../../config/common';
-import { ConfigModel } from '../../../../../db/dbModels';
-import { CompanyInterface } from '../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import ConsoleCompanyLayout from '../../../../../layout/console/ConsoleCompanyLayout';
-import { getConfigPageData } from '../../../../../lib/configsUtils';
+import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
+import Inner from 'components/Inner';
+import { CONFIG_GROUP_SEO } from 'config/common';
+import { ConfigModel } from 'db/dbModels';
+import { CompanyInterface } from 'db/uiInterfaces';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
+import { getConfigPageData } from 'lib/configsUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
-import { PagePropsInterface } from '../../../../_app';
+} from 'lib/ssrUtils';
 
 interface ConfigConsumerInterface {
   pageCompany: CompanyInterface;

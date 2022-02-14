@@ -5,8 +5,8 @@ import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   PAGE_STATE_PUBLISHED,
-} from '../../../config/common';
-import { BlogPostModel } from '../../../db/dbModels';
+} from 'config/common';
+import { BlogPostModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();

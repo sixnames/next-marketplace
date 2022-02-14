@@ -3,23 +3,16 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import ConsolePromoCodeList, {
   ConsolePromoCodeListInterface,
-} from '../../../../../../../../components/console/ConsolePromoCodeList';
-import { COL_COMPANIES, COL_PROMO_CODES } from '../../../../../../../../db/collectionNames';
-import { PromoCodeModel } from '../../../../../../../../db/dbModels';
-import { getDatabase } from '../../../../../../../../db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-} from '../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
-import ConsolePromoLayout from '../../../../../../../../layout/console/ConsolePromoLayout';
-import { getCmsCompanyLinks } from '../../../../../../../../lib/linkUtils';
-import { getPromoSsr } from '../../../../../../../../lib/promoUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../../lib/ssrUtils';
+} from 'components/console/ConsolePromoCodeList';
+import { COL_COMPANIES, COL_PROMO_CODES } from 'db/collectionNames';
+import { PromoCodeModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getPromoSsr } from 'lib/promoUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface PromoCodeListPageInterface
   extends GetAppInitialDataPropsInterface,

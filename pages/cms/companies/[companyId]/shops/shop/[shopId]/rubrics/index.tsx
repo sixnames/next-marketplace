@@ -1,30 +1,16 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ShopRubrics, {
-  ShopRubricsInterface,
-} from '../../../../../../../../components/shops/ShopRubrics';
-import {
-  COL_COMPANIES,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-} from '../../../../../../../../db/collectionNames';
-import { RubricModel, ShopModel } from '../../../../../../../../db/dbModels';
-import { getDatabase } from '../../../../../../../../db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  RubricInterface,
-} from '../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
-import { getI18nLocaleValue } from '../../../../../../../../lib/i18n';
-import { getCmsCompanyLinks } from '../../../../../../../../lib/linkUtils';
-import { noNaN } from '../../../../../../../../lib/numbers';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../../lib/ssrUtils';
+import ShopRubrics, { ShopRubricsInterface } from 'components/shops/ShopRubrics';
+import { COL_COMPANIES, COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { RubricModel, ShopModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getI18nLocaleValue } from 'lib/i18n';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { noNaN } from 'lib/numbers';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CompanyShopProductsInterface
   extends GetAppInitialDataPropsInterface,

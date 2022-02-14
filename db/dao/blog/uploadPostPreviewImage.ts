@@ -1,10 +1,10 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_BLOG } from '../../../config/common';
-import { deleteUpload, storeUploads } from '../../../lib/assetUtils/assetUtils';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { parseApiFormData, UploadRestApiImageInterface } from '../../../lib/restApi';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { ASSETS_DIST_BLOG } from 'config/common';
+import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { parseApiFormData, UploadRestApiImageInterface } from 'lib/restApi';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { COL_BLOG_POSTS } from '../../collectionNames';
 import { BlogPostModel, BlogPostPayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

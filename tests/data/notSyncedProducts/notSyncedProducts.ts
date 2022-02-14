@@ -1,4 +1,4 @@
-import { NotSyncedProductModel } from '../../../db/dbModels';
+import { NotSyncedProductModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const carts: NotSyncedProductModel[] = [

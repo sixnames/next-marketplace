@@ -1,24 +1,20 @@
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import CompanyProductDetails from '../../../../../../../../../../../../components/company/CompanyProductDetails';
-import RequestError from '../../../../../../../../../../../../components/RequestError';
-import { COL_COMPANIES } from '../../../../../../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../../../../../../db/mongodb';
+import CompanyProductDetails from 'components/company/CompanyProductDetails';
+import RequestError from 'components/RequestError';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   ShopProductInterface,
-} from '../../../../../../../../../../../../db/uiInterfaces';
-import ConsoleShopProductLayout from '../../../../../../../../../../../../layout/console/ConsoleShopProductLayout';
-import { getCmsCompanyLinks } from '../../../../../../../../../../../../lib/linkUtils';
-import { getConsoleShopProduct } from '../../../../../../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../../../../../../lib/ssrUtils';
-import ConsoleLayout from '../../../../../../../../../../../../layout/cms/ConsoleLayout';
+} from 'db/uiInterfaces';
+import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getConsoleShopProduct } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;

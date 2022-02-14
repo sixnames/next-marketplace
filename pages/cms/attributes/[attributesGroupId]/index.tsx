@@ -3,31 +3,24 @@ import * as React from 'react';
 import Head from 'next/head';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { Form, Formik } from 'formik';
-import FixedButtons from '../../../../components/button/FixedButtons';
-import WpButton from '../../../../components/button/WpButton';
-import FormikTranslationsInput from '../../../../components/FormElements/Input/FormikTranslationsInput';
-import Inner from '../../../../components/Inner';
-import WpTitle from '../../../../components/WpTitle';
-import { COL_ATTRIBUTES_GROUPS } from '../../../../db/collectionNames';
-import { getDatabase } from '../../../../db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  AttributesGroupInterface,
-} from '../../../../db/uiInterfaces';
-import { useUpdateAttributesGroupMutation } from '../../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
-import useValidationSchema from '../../../../hooks/useValidationSchema';
-import AppContentWrapper from '../../../../layout/AppContentWrapper';
-import AppSubNav from '../../../../layout/AppSubNav';
-import { getFieldStringLocale } from '../../../../lib/i18n';
-import { getCmsLinks } from '../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
-import { attributesGroupModalSchema } from '../../../../validation/attributesGroupSchema';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
+import Inner from 'components/Inner';
+import WpTitle from 'components/WpTitle';
+import { COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, AttributesGroupInterface } from 'db/uiInterfaces';
+import { useUpdateAttributesGroupMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import AppSubNav from 'layout/AppSubNav';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { attributesGroupModalSchema } from 'validation/attributesGroupSchema';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 
 const pageTitle = `Группы атрибутов`;
 

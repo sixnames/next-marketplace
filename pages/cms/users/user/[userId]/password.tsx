@@ -2,24 +2,20 @@ import { Form, Formik } from 'formik';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import WpButton from '../../../../../components/button/WpButton';
-import FormikInput from '../../../../../components/FormElements/Input/FormikInput';
-import Inner from '../../../../../components/Inner';
-import { COL_ROLES, COL_USERS } from '../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, UserInterface } from '../../../../../db/uiInterfaces';
-import { useUpdateUserPasswordMutation } from '../../../../../hooks/mutations/useUserMutations';
-import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
-import CmsUserLayout from '../../../../../layout/cms/CmsUserLayout';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getProjectLinks } from '../../../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../../../lib/i18n';
-import { getFullName } from '../../../../../lib/nameUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+import WpButton from 'components/button/WpButton';
+import FormikInput from 'components/FormElements/Input/FormikInput';
+import Inner from 'components/Inner';
+import { COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
+import { useUpdateUserPasswordMutation } from 'hooks/mutations/useUserMutations';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import CmsUserLayout from 'layout/cms/CmsUserLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getFullName } from 'lib/nameUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface UserPasswordInterface {
   user: UserInterface;

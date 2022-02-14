@@ -1,14 +1,14 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { DEFAULT_COUNTERS_OBJECT } from '../../../config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getApiResolverValidationSchema,
   getOperationPermission,
   getRequestParams,
-} from '../../../lib/sessionHelpers';
-import { generateDefaultLangSlug } from '../../../lib/slugUtils';
-import { createBlogAttributeSchema } from '../../../validation/blogSchema';
+} from 'lib/sessionHelpers';
+import { generateDefaultLangSlug } from 'lib/slugUtils';
+import { createBlogAttributeSchema } from 'validation/blogSchema';
 import { COL_BLOG_ATTRIBUTES } from '../../collectionNames';
 import { BlogAttributeModel, BlogAttributePayloadModel, TranslationModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

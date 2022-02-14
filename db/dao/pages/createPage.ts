@@ -1,13 +1,13 @@
 import { ObjectId } from 'mongodb';
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING, PAGE_STATE_PUBLISHED } from '../../../config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getNextItemId } from '../../../lib/itemIdUtils';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING, PAGE_STATE_PUBLISHED } from 'config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getNextItemId } from 'lib/itemIdUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { createPageSchema } from '../../../validation/pagesSchema';
+} from 'lib/sessionHelpers';
+import { createPageSchema } from 'validation/pagesSchema';
 import {
   COL_PAGE_TEMPLATES,
   COL_PAGES,

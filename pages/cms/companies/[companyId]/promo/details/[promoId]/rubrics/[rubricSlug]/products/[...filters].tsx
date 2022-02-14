@@ -1,13 +1,13 @@
 import * as React from 'react';
 import ConsolePromoProducts, {
   ConsolePromoProductsInterface,
-} from '../../../../../../../../../../components/console/ConsolePromoProducts';
-import { getCmsPromoProductsListPageSsr } from '../../../../../../../../../../db/dao/ssr/getCmsPromoProductsListPageSsr';
-import { AppContentWrapperBreadCrumbs } from '../../../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../../../layout/cms/ConsoleLayout';
-import ConsolePromoLayout from '../../../../../../../../../../layout/console/ConsolePromoLayout';
-import { getCmsCompanyLinks } from '../../../../../../../../../../lib/linkUtils';
-import { GetAppInitialDataPropsInterface } from '../../../../../../../../../../lib/ssrUtils';
+} from 'components/console/ConsolePromoProducts';
+import { getCmsPromoProductsListPageSsr } from 'db/dao/ssr/getCmsPromoProductsListPageSsr';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 export interface CmsPromoProductsListPageInterface
   extends GetAppInitialDataPropsInterface,

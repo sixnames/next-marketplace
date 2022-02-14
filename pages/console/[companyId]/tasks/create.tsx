@@ -1,18 +1,12 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import CreateTaskForm, {
-  CreateTaskFormInterface,
-} from '../../../../components/console/CreateTaskForm';
-import { getCompanyTaskVariantsListSsr } from '../../../../db/dao/ssr/getCompanyTaskVariantsListSsr';
-import { AppContentWrapperBreadCrumbs } from '../../../../db/uiInterfaces';
-import AppContentWrapper from '../../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks, getConsoleTaskLinks } from '../../../../lib/linkUtils';
-import {
-  castDbData,
-  GetAppInitialDataPropsInterface,
-  getConsoleInitialData,
-} from '../../../../lib/ssrUtils';
+import CreateTaskForm, { CreateTaskFormInterface } from 'components/console/CreateTaskForm';
+import { getCompanyTaskVariantsListSsr } from 'db/dao/ssr/getCompanyTaskVariantsListSsr';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks, getConsoleTaskLinks } from 'lib/linkUtils';
+import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface CreateTaskConsumerInterface extends CreateTaskFormInterface {}
 

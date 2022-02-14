@@ -1,11 +1,11 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import WpButton from '../../../../../../components/button/WpButton';
-import WpCheckbox from '../../../../../../components/FormElements/Checkbox/WpCheckbox';
-import Inner from '../../../../../../components/Inner';
-import WpAccordion from '../../../../../../components/WpAccordion';
-import WpTable, { WpTableColumn } from '../../../../../../components/WpTable';
+import WpButton from 'components/button/WpButton';
+import WpCheckbox from 'components/FormElements/Checkbox/WpCheckbox';
+import Inner from 'components/Inner';
+import WpAccordion from 'components/WpAccordion';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useLocaleContext } from 'context/localeContext';
 import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
@@ -18,9 +18,9 @@ import {
   CategoryInterface,
 } from 'db/uiInterfaces';
 import { useToggleCmsCardAttributeInCategoryMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from '../../../../../../hooks/useMutationCallbacks';
-import CmsCategoryLayout from '../../../../../../layout/cms/CmsCategoryLayout';
-import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

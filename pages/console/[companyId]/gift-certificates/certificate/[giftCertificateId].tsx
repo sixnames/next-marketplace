@@ -3,25 +3,18 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import ConsoleGiftCertificateDetails, {
   ConsoleGiftCertificateDetailsInterface,
-} from '../../../../../components/console/ConsoleGiftCertificateDetails';
-import Inner from '../../../../../components/Inner';
-import { COL_GIFT_CERTIFICATES, COL_USERS } from '../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  GiftCertificateInterface,
-} from '../../../../../db/uiInterfaces';
-import AppContentWrapper from '../../../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from '../../../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
-import { getFullName } from '../../../../../lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from '../../../../../lib/phoneUtils';
-import {
-  castDbData,
-  GetAppInitialDataPropsInterface,
-  getConsoleInitialData,
-} from '../../../../../lib/ssrUtils';
+} from 'components/console/ConsoleGiftCertificateDetails';
+import Inner from 'components/Inner';
+import { COL_GIFT_CERTIFICATES, COL_USERS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, GiftCertificateInterface } from 'db/uiInterfaces';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getFullName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface GiftCertificateDetailsConsumerInterface extends ConsoleGiftCertificateDetailsInterface {}
 

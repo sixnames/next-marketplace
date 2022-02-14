@@ -1,4 +1,4 @@
-import { MetricModel } from '../../../db/dbModels';
+import { MetricModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const metrics: MetricModel[] = [

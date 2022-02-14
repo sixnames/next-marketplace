@@ -1,7 +1,7 @@
 import { detailedDiff } from 'deep-object-diff';
 import { ObjectId } from 'mongodb';
 import { get } from 'lodash';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { countDiscountedPrice, getOrderDiscountedPrice } from 'lib/priceUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';

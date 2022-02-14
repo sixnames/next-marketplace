@@ -1,5 +1,5 @@
-import { DEFAULT_CITY, DEFAULT_CURRENCY } from '../../../config/common';
-import { CityModel } from '../../../db/dbModels';
+import { DEFAULT_CITY, DEFAULT_CURRENCY } from 'config/common';
+import { CityModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const cities: CityModel[] = [

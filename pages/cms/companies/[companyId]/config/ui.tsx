@@ -1,20 +1,16 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ConfigsFormTemplate from '../../../../../components/FormTemplates/ConfigsFormTemplate';
-import Inner from '../../../../../components/Inner';
-import { CONFIG_GROUP_UI } from '../../../../../config/common';
-import { getConfigRubrics } from '../../../../../db/dao/configs/getConfigRubrics';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
-import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { ConfigPageInterface } from '../../../../../layout/console/ConsoleConfigsLayout';
-import { getConfigPageData } from '../../../../../lib/configsUtils';
-import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
+import Inner from 'components/Inner';
+import { CONFIG_GROUP_UI } from 'config/common';
+import { getConfigRubrics } from 'db/dao/configs/getConfigRubrics';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { ConfigPageInterface } from 'layout/console/ConsoleConfigsLayout';
+import { getConfigPageData } from 'lib/configsUtils';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ConfigConsumerInterface extends ConfigPageInterface {
   pageCompany?: CompanyInterface | null;

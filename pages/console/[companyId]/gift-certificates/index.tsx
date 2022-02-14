@@ -1,4 +1,4 @@
-import { getConsoleGiftCertificatesPageSsr } from '../../../../db/dao/ssr/getConsoleGiftCertificatesPageSsr';
+import { getConsoleGiftCertificatesPageSsr } from 'db/dao/ssr/getConsoleGiftCertificatesPageSsr';
 import ConsoleGiftCertificatesPage from './[...filters]';
 
 export const getServerSideProps = getConsoleGiftCertificatesPageSsr;

@@ -2,18 +2,14 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import ConsoleTaskVariantsList, {
   ConsoleTaskVariantsListInterface,
-} from '../../../../components/console/ConsoleTaskVariantsList';
-import Inner from '../../../../components/Inner';
-import WpTitle from '../../../../components/WpTitle';
-import { getCompanyTaskVariantsListSsr } from '../../../../db/dao/ssr/getCompanyTaskVariantsListSsr';
-import AppContentWrapper from '../../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../lib/linkUtils';
-import {
-  castDbData,
-  GetAppInitialDataPropsInterface,
-  getConsoleInitialData,
-} from '../../../../lib/ssrUtils';
+} from 'components/console/ConsoleTaskVariantsList';
+import Inner from 'components/Inner';
+import WpTitle from 'components/WpTitle';
+import { getCompanyTaskVariantsListSsr } from 'db/dao/ssr/getCompanyTaskVariantsListSsr';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 
 const pageTitle = 'Типы задач';
 interface TaskVariantsListConsumerInterface extends ConsoleTaskVariantsListInterface {}

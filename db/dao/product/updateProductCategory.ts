@@ -3,7 +3,7 @@ import { getTaskVariantSlugByRule } from 'config/constantSelects';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { getParentTreeSlugs } from 'lib/treeUtils';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';

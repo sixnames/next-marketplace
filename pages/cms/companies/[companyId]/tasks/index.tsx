@@ -1,22 +1,16 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import ConsoleTasksList, {
-  ConsoleTasksListInterface,
-} from '../../../../../components/console/ConsoleTasksList';
-import Inner from '../../../../../components/Inner';
-import { COL_COMPANIES } from '../../../../../db/collectionNames';
-import { getCompanyTasksListSsr } from '../../../../../db/dao/ssr/getCompanyTasksListSsr';
-import { getDatabase } from '../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
-import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+import ConsoleTasksList, { ConsoleTasksListInterface } from 'components/console/ConsoleTasksList';
+import Inner from 'components/Inner';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getCompanyTasksListSsr } from 'db/dao/ssr/getCompanyTasksListSsr';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Задачи';
 interface TasksListConsumerInterface extends ConsoleTasksListInterface {

@@ -1,11 +1,11 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext } from 'next';
-import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from '../../../config/common';
-import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../lib/castUrlFilters';
-import { getShortName } from '../../../lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
-import { getRequestParams } from '../../../lib/sessionHelpers';
+import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import { getShortName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { getRequestParams } from 'lib/sessionHelpers';
 import {
   COL_ORDER_CUSTOMERS,
   COL_ORDER_STATUSES,

@@ -5,8 +5,8 @@ import {
   DEFAULT_CITY,
   DEFAULT_LOCALE,
   GEO_POINT_TYPE,
-} from '../../../config/common';
-import { ShopModel } from '../../../db/dbModels';
+} from 'config/common';
+import { ShopModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();

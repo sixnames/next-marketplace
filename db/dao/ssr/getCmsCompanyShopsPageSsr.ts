@@ -1,13 +1,13 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_PAGE, SORT_DESC } from '../../../config/common';
-import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../lib/castUrlFilters';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getCmsCompanyLinks } from '../../../lib/linkUtils';
-import { noNaN } from '../../../lib/numbers';
-import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
-import { CmsCompanyShopsPageInterface } from '../../../pages/cms/companies/[companyId]/shops/[...filters]';
+import { DEFAULT_PAGE, SORT_DESC } from 'config/common';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { noNaN } from 'lib/numbers';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { CmsCompanyShopsPageInterface } from 'pages/cms/companies/[companyId]/shops/[...filters]';
 import {
   COL_CITIES,
   COL_COMPANIES,

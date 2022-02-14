@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { COL_ORDER_STATUSES, COL_ORDERS } from '../../collectionNames';
 import { OrderModel, OrderStatusModel, PayloadType } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

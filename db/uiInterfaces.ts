@@ -67,6 +67,7 @@ import {
   TaskModel,
   TaskVariantModel,
   TaskLogModel,
+  EventRubricModel,
 } from './dbModels';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { MessageSlug } from 'types/messageSlugTypes';
@@ -358,6 +359,19 @@ export interface RubricInterface extends RubricModel {
   variant?: RubricVariantInterface | null;
   attributesGroups?: AttributesGroupInterface[] | null;
   categories?: CategoryInterface[] | null;
+  textTop?: string | null;
+  textBottom?: string | null;
+  seoDescriptionTop?: SeoContentModel | null;
+  seoDescriptionBottom?: SeoContentModel | null;
+}
+
+export interface EventRubricInterface extends EventRubricModel {
+  name?: string | null;
+  attributes?: AttributeInterface[] | null;
+  navItems?: AttributeInterface[] | null;
+  activeEventsCount?: number | null;
+  eventsCount?: number | null;
+  attributesGroups?: AttributesGroupInterface[] | null;
   textTop?: string | null;
   textBottom?: string | null;
   seoDescriptionTop?: SeoContentModel | null;

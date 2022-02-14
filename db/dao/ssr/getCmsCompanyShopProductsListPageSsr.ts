@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { getCmsCompanyLinks } from '../../../lib/linkUtils';
-import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
-import { CmsCompanyShopProductsListPageInterface } from '../../../pages/cms/companies/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/products/[...filters]';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { CmsCompanyShopProductsListPageInterface } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/products/[...filters]';
 import { COL_COMPANIES } from '../../collectionNames';
 import { CompanyModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

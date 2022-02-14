@@ -1,6 +1,6 @@
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { RubricInterface } from 'db/uiInterfaces';
+import { EventRubricInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   castAttributeForUI,
   castAttributesGroupForUI,
@@ -39,6 +39,39 @@ export function castRubricForUI({ rubric, locale, noSort }: CastRubricForUI): Ru
     ...rubric,
     name: getFieldStringLocale(rubric.nameI18n, locale),
     categories: noSort ? categories : sortObjectsByField(categories),
+    attributesGroups: noSort ? attributesGroups : sortObjectsByField(attributesGroups),
+    attributes: noSort ? attributes : sortObjectsByField(attributes),
+  };
+}
+
+interface CastEventRubricForUI {
+  rubric: EventRubricInterface;
+  locale: string;
+  noSort?: boolean;
+}
+
+export function castEventRubricForUI({
+  rubric,
+  locale,
+  noSort,
+}: CastEventRubricForUI): EventRubricInterface {
+  const attributesGroups = (rubric.attributesGroups || []).map((attributesGroup) => {
+    return castAttributesGroupForUI({
+      attributesGroup,
+      locale,
+    });
+  });
+
+  const attributes = (rubric.attributes || []).map((attribute) => {
+    return castAttributeForUI({
+      attribute,
+      locale,
+    });
+  });
+
+  return {
+    ...rubric,
+    name: getFieldStringLocale(rubric.nameI18n, locale),
     attributesGroups: noSort ? attributesGroups : sortObjectsByField(attributesGroups),
     attributes: noSort ? attributes : sortObjectsByField(attributes),
   };

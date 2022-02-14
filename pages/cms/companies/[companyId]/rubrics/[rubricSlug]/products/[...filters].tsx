@@ -2,14 +2,14 @@ import { NextPage } from 'next';
 import * as React from 'react';
 import CompanyRubricProductsList, {
   CompanyRubricProductsListInterface,
-} from '../../../../../../../components/company/CompanyRubricProductsList';
-import RequestError from '../../../../../../../components/RequestError';
-import { getCmsCompanyRubricProductsPageSsr } from '../../../../../../../db/dao/ssr/getCmsCompanyRubricProductsPageSsr';
-import { AppContentWrapperBreadCrumbs } from '../../../../../../../db/uiInterfaces';
-import CmsRubricLayout from '../../../../../../../layout/cms/CmsRubricLayout';
-import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../../../lib/linkUtils';
-import { GetAppInitialDataPropsInterface } from '../../../../../../../lib/ssrUtils';
+} from 'components/company/CompanyRubricProductsList';
+import RequestError from 'components/RequestError';
+import { getCmsCompanyRubricProductsPageSsr } from 'db/dao/ssr/getCmsCompanyRubricProductsPageSsr';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface RubricProductsConsumerInterface extends CompanyRubricProductsListInterface {}
 

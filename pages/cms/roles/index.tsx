@@ -2,30 +2,26 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ContentItemControls from '../../../components/button/ContentItemControls';
-import FixedButtons from '../../../components/button/FixedButtons';
-import WpButton from '../../../components/button/WpButton';
-import Inner from '../../../components/Inner';
-import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
-import { CreateRoleModalInterface } from '../../../components/Modal/CreateRoleModal';
-import WpTable, { WpTableColumn } from '../../../components/WpTable';
-import WpTitle from '../../../components/WpTitle';
-import { SORT_DESC } from '../../../config/common';
-import { CONFIRM_MODAL, CREATE_ROLE_MODAL } from '../../../config/modalVariants';
-import { COL_ROLES } from '../../../db/collectionNames';
-import { getDatabase } from '../../../db/mongodb';
-import { RoleInterface } from '../../../db/uiInterfaces';
-import { useCreateRoleMutation, useDeleteRoleMutation } from '../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
-import AppContentWrapper from '../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../lib/ssrUtils';
+import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import Inner from 'components/Inner';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { CreateRoleModalInterface } from 'components/Modal/CreateRoleModal';
+import WpTable, { WpTableColumn } from 'components/WpTable';
+import WpTitle from 'components/WpTitle';
+import { SORT_DESC } from 'config/common';
+import { CONFIRM_MODAL, CREATE_ROLE_MODAL } from 'config/modalVariants';
+import { COL_ROLES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { RoleInterface } from 'db/uiInterfaces';
+import { useCreateRoleMutation, useDeleteRoleMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface RolesConsumerInterface {
   roles: RoleInterface[];

@@ -1,5 +1,5 @@
-import { ASSETS_DIST_COMPANIES } from '../../../config/common';
-import { CompanyModel } from '../../../db/dbModels';
+import { ASSETS_DIST_COMPANIES } from 'config/common';
+import { CompanyModel } from 'db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 
 const companies: CompanyModel[] = [

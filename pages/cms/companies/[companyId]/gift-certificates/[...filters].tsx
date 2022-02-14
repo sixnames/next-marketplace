@@ -2,14 +2,14 @@ import { NextPage } from 'next';
 import * as React from 'react';
 import ConsoleGiftCertificatesList, {
   ConsoleGiftCertificatesListInterface,
-} from '../../../../../components/console/ConsoleGiftCertificatesList';
-import Inner from '../../../../../components/Inner';
-import { getCmsCompanyGiftCertificatesPageSsr } from '../../../../../db/dao/ssr/getCmsCompanyGiftCertificatesPageSsr';
-import { AppContentWrapperBreadCrumbs } from '../../../../../db/uiInterfaces';
-import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
-import { GetAppInitialDataPropsInterface } from '../../../../../lib/ssrUtils';
+} from 'components/console/ConsoleGiftCertificatesList';
+import Inner from 'components/Inner';
+import { getCmsCompanyGiftCertificatesPageSsr } from 'db/dao/ssr/getCmsCompanyGiftCertificatesPageSsr';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CompanyGiftCertificatesConsumerInterface extends ConsoleGiftCertificatesListInterface {}
 

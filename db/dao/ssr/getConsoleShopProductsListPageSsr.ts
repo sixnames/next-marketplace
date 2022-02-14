@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { getConsoleCompanyLinks } from '../../../lib/linkUtils';
-import { castDbData, getConsoleInitialData } from '../../../lib/ssrUtils';
-import { ConsoleShopProductsListPageInterface } from '../../../pages/console/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/products/[...filters]';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import { ConsoleShopProductsListPageInterface } from 'pages/console/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/products/[...filters]';
 import { getConsoleShopProducts } from './getConsoleShopProducts';
 
 export const getConsoleShopProductsListPageSsr = async (

@@ -1,5 +1,5 @@
-import { sortObjectsByField } from '../../../lib/arrayUtils';
-import { getFieldStringLocale } from '../../../lib/i18n';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { getFieldStringLocale } from 'lib/i18n';
 import { CategoryInterface } from '../../uiInterfaces';
 import { castAttributesGroupForUI } from '../attributes/castAttributesGroupForUI';
 import { castRubricForUI } from 'db/dao/ssr/castRubricForUI';

@@ -1,10 +1,10 @@
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { createPagesGroupSchema } from '../../../validation/pagesSchema';
+} from 'lib/sessionHelpers';
+import { createPagesGroupSchema } from 'validation/pagesSchema';
 import { COL_PAGES_GROUP, COL_PAGES_GROUP_TEMPLATES } from '../../collectionNames';
 import { PagesGroupModel, PagesGroupPayloadModel, TranslationModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

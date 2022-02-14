@@ -1,5 +1,5 @@
-import { MessageBaseInterface } from '../../../db/uiInterfaces';
-import { MessageModel } from '../../../db/dbModels';
+import { MessageBaseInterface } from 'db/uiInterfaces';
+import { MessageModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import { pageGroupsMessages } from '../../apiMessages/pagesGroupsMessages';
 import { pagesMessages } from '../../apiMessages/pagesMessages';

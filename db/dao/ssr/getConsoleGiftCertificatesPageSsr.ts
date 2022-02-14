@@ -1,9 +1,9 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { alwaysArray } from '../../../lib/arrayUtils';
-import { getConsoleCompanyLinks } from '../../../lib/linkUtils';
-import { castDbData, getConsoleInitialData } from '../../../lib/ssrUtils';
-import { ConsoleGiftCertificatesPageInterface } from '../../../pages/console/[companyId]/gift-certificates/[...filters]';
+import { alwaysArray } from 'lib/arrayUtils';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import { ConsoleGiftCertificatesPageInterface } from 'pages/console/[companyId]/gift-certificates/[...filters]';
 import { getConsoleGiftCertificates } from '../giftCertificate/getConsoleGiftCertificates';
 
 export const getConsoleGiftCertificatesPageSsr = async (

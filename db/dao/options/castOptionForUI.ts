@@ -1,4 +1,4 @@
-import { getFieldStringLocale } from '../../../lib/i18n';
+import { getFieldStringLocale } from 'lib/i18n';
 import { GenderModel } from '../../dbModels';
 import { OptionInterface } from '../../uiInterfaces';
 

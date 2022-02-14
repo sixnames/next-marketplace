@@ -3,33 +3,26 @@ import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import WpButton from '../../../../components/button/WpButton';
-import FormikTranslationsInput from '../../../../components/FormElements/Input/FormikTranslationsInput';
-import FormikSelect from '../../../../components/FormElements/Select/FormikSelect';
-import Inner from '../../../../components/Inner';
-import WpTitle from '../../../../components/WpTitle';
-import { getConstantTranslation } from '../../../../config/constantTranslations';
-import { COL_OPTIONS_GROUPS } from '../../../../db/collectionNames';
-import { getDatabase } from '../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, OptionsGroupInterface } from '../../../../db/uiInterfaces';
-import {
-  OptionsGroupVariant,
-  useUpdateOptionsGroupMutation,
-} from '../../../../generated/apolloComponents';
-import { useConstantOptions } from '../../../../hooks/useConstantOptions';
-import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
-import useValidationSchema from '../../../../hooks/useValidationSchema';
-import AppContentWrapper from '../../../../layout/AppContentWrapper';
-import AppSubNav from '../../../../layout/AppSubNav';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { getProjectLinks } from '../../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../../lib/i18n';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
-import { optionsGroupModalSchema } from '../../../../validation/optionsGroupSchema';
+import WpButton from 'components/button/WpButton';
+import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
+import FormikSelect from 'components/FormElements/Select/FormikSelect';
+import Inner from 'components/Inner';
+import WpTitle from 'components/WpTitle';
+import { getConstantTranslation } from 'config/constantTranslations';
+import { COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, OptionsGroupInterface } from 'db/uiInterfaces';
+import { OptionsGroupVariant, useUpdateOptionsGroupMutation } from 'generated/apolloComponents';
+import { useConstantOptions } from 'hooks/useConstantOptions';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import AppSubNav from 'layout/AppSubNav';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { optionsGroupModalSchema } from 'validation/optionsGroupSchema';
 
 interface OptionsGroupConsumerInterface {
   optionsGroup: OptionsGroupInterface;

@@ -5,18 +5,18 @@ import {
   DEFAULT_PAGE,
   GENDER_HE,
   PAGINATION_DEFAULT_LIMIT,
-} from '../../../config/common';
+} from 'config/common';
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
   getCommonFilterAttribute,
   getPriceAttribute,
-} from '../../../config/constantAttributes';
-import { castUrlFilters } from '../../../lib/castUrlFilters';
-import { getCatalogueAttributes } from '../../../lib/catalogueUtils';
-import { noNaN } from '../../../lib/numbers';
-import { castSupplierProductsList } from '../../../lib/productUtils';
-import { getTreeFromList } from '../../../lib/treeUtils';
+} from 'config/constantAttributes';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import { getCatalogueAttributes } from 'lib/catalogueUtils';
+import { noNaN } from 'lib/numbers';
+import { castSupplierProductsList } from 'lib/productUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { COL_PROMO_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from '../../collectionNames';
 import { ObjectIdModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

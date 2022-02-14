@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Inner from '../../../../../components/Inner';
-import PageDetails, { PageDetailsInterface } from '../../../../../components/Pages/PageDetails';
-import WpTitle from '../../../../../components/WpTitle';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
-import AppContentWrapper from '../../../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
-import { getPageSsr } from '../../../../../lib/pageUtils';
+import Inner from 'components/Inner';
+import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
+import WpTitle from 'components/WpTitle';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getPageSsr } from 'lib/pageUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+} from 'lib/ssrUtils';
 
 interface PageDetailsPageInterface
   extends GetConsoleInitialDataPropsInterface,

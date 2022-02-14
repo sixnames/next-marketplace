@@ -1,12 +1,8 @@
 import { compare, hash } from 'bcryptjs';
-import { sendPasswordUpdatedEmail } from '../../../lib/email/sendPasswordUpdatedEmail';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import {
-  getRequestParams,
-  getResolverValidationSchema,
-  getSessionUser,
-} from '../../../lib/sessionHelpers';
-import { updateMyPasswordSchema } from '../../../validation/userSchema';
+import { sendPasswordUpdatedEmail } from 'lib/email/sendPasswordUpdatedEmail';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getRequestParams, getResolverValidationSchema, getSessionUser } from 'lib/sessionHelpers';
+import { updateMyPasswordSchema } from 'validation/userSchema';
 import { COL_USERS } from '../../collectionNames';
 import { UserModel, UserPayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

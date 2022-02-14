@@ -1,23 +1,17 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import UpdateTaskForm, {
-  UpdateTaskFormInterface,
-} from '../../../../../../components/console/UpdateTaskForm';
-import { DEFAULT_COMPANY_SLUG } from '../../../../../../config/common';
-import { COL_COMPANIES } from '../../../../../../db/collectionNames';
-import { getCompanyTaskSsr } from '../../../../../../db/dao/ssr/getCompanyTaskSsr';
-import { getCompanyTaskVariantsListSsr } from '../../../../../../db/dao/ssr/getCompanyTaskVariantsListSsr';
-import { getDatabase } from '../../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../../db/uiInterfaces';
-import CmsCompanyLayout from '../../../../../../layout/cms/CmsCompanyLayout';
-import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../lib/ssrUtils';
+import UpdateTaskForm, { UpdateTaskFormInterface } from 'components/console/UpdateTaskForm';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getCompanyTaskSsr } from 'db/dao/ssr/getCompanyTaskSsr';
+import { getCompanyTaskVariantsListSsr } from 'db/dao/ssr/getCompanyTaskVariantsListSsr';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface TaskDetailsConsumerInterface extends UpdateTaskFormInterface {
   pageCompany: CompanyInterface;

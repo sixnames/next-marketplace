@@ -1,4 +1,4 @@
-import { getConsoleShopSyncErrorsListPageSsr } from '../../../../../../../db/dao/ssr/getConsoleShopSyncErrorsListPageSsr';
+import { getConsoleShopSyncErrorsListPageSsr } from 'db/dao/ssr/getConsoleShopSyncErrorsListPageSsr';
 import ConsoleShopSyncErrorsListPage from './[...filters]';
 
 export const getServerSideProps = getConsoleShopSyncErrorsListPageSsr;

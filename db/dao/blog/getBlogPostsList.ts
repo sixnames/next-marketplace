@@ -1,6 +1,6 @@
-import { SORT_DESC } from '../../../config/common';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getFullName } from '../../../lib/nameUtils';
+import { SORT_DESC } from 'config/common';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getFullName } from 'lib/nameUtils';
 import { COL_BLOG_POSTS, COL_USERS } from '../../collectionNames';
 import { getDatabase } from '../../mongodb';
 import { BlogPostInterface } from '../../uiInterfaces';

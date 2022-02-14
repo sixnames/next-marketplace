@@ -1,20 +1,16 @@
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Inner from '../../../../../components/Inner';
-import PromoList, { PromoListInterface } from '../../../../../components/Promo/PromoList';
-import { COL_COMPANIES } from '../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
-import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
-import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
-import { getPromoListSsr } from '../../../../../lib/promoUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import Inner from 'components/Inner';
+import PromoList, { PromoListInterface } from 'components/Promo/PromoList';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getPromoListSsr } from 'lib/promoUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 
 const pageTitle = 'Акции';
 

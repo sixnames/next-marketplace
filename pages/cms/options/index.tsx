@@ -2,34 +2,30 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ContentItemControls from '../../../components/button/ContentItemControls';
-import FixedButtons from '../../../components/button/FixedButtons';
-import WpButton from '../../../components/button/WpButton';
-import Inner from '../../../components/Inner';
-import { OptionsGroupModalInterface } from '../../../components/Modal/OptionsGroupModal';
-import WpTable, { WpTableColumn } from '../../../components/WpTable';
-import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_LOCALE, SORT_ASC } from '../../../config/common';
-import { getConstantTranslation } from '../../../config/constantTranslations';
-import { CONFIRM_MODAL, OPTIONS_GROUP_MODAL } from '../../../config/modalVariants';
-import { COL_OPTIONS, COL_OPTIONS_GROUPS } from '../../../db/collectionNames';
-import { getDatabase } from '../../../db/mongodb';
-import { OptionsGroupInterface } from '../../../db/uiInterfaces';
+import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import Inner from 'components/Inner';
+import { OptionsGroupModalInterface } from 'components/Modal/OptionsGroupModal';
+import WpTable, { WpTableColumn } from 'components/WpTable';
+import WpTitle from 'components/WpTitle';
+import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
+import { getConstantTranslation } from 'config/constantTranslations';
+import { CONFIRM_MODAL, OPTIONS_GROUP_MODAL } from 'config/modalVariants';
+import { COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { OptionsGroupInterface } from 'db/uiInterfaces';
 import {
   useCreateOptionsGroupMutation,
   useDeleteOptionsGroupMutation,
-} from '../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
-import AppContentWrapper from '../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { noNaN } from '../../../lib/numbers';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../lib/ssrUtils';
+} from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface OptionsGroupsConsumerInterface {
   optionsGroups: OptionsGroupInterface[];

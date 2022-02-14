@@ -1,22 +1,22 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Inner from '../../../../../components/Inner';
-import PagesList, { PagesListInterface } from '../../../../../components/Pages/PagesList';
-import WpTitle from '../../../../../components/WpTitle';
-import { COL_CITIES } from '../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, CityInterface } from '../../../../../db/uiInterfaces';
-import AppContentWrapper from '../../../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { sortObjectsByField } from '../../../../../lib/arrayUtils';
-import { getFieldStringLocale } from '../../../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
-import { getPagesListSsr } from '../../../../../lib/pageUtils';
+import Inner from 'components/Inner';
+import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
+import WpTitle from 'components/WpTitle';
+import { COL_CITIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CityInterface } from 'db/uiInterfaces';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getPagesListSsr } from 'lib/pageUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+} from 'lib/ssrUtils';
 
 interface PagesListPageInterface
   extends GetConsoleInitialDataPropsInterface,

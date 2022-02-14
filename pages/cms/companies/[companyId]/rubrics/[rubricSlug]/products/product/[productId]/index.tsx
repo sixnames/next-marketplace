@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ConsoleRubricProductDetails from '../../../../../../../../../components/console/ConsoleRubricProductDetails';
+import ConsoleRubricProductDetails from 'components/console/ConsoleRubricProductDetails';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -9,11 +9,11 @@ import {
   CompanyInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
-import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
+import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getFullProductSummary } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 
 interface ProductDetailsInterface {
   product: ProductSummaryInterface;

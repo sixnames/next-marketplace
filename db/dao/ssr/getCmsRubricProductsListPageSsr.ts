@@ -1,9 +1,9 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_COMPANY_SLUG } from '../../../config/common';
-import { alwaysString } from '../../../lib/arrayUtils';
-import { getConsoleRubricLinks } from '../../../lib/linkUtils';
-import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
-import { CmsRubricProductsListPageInterface } from '../../../pages/cms/rubrics/[rubricSlug]/products/[...filters]';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { alwaysString } from 'lib/arrayUtils';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { CmsRubricProductsListPageInterface } from 'pages/cms/rubrics/[rubricSlug]/products/[...filters]';
 import { getConsoleRubricProducts } from './getConsoleRubricProducts';
 
 export const getCmsRubricProductsListPageSsr = async (

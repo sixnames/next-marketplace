@@ -1,5 +1,5 @@
-import { DEFAULT_LOCALE, ONE_WEEK } from '../../../config/common';
-import { PromoCodeModel } from '../../../db/dbModels';
+import { DEFAULT_LOCALE, ONE_WEEK } from 'config/common';
+import { PromoCodeModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 require('dotenv').config();
 

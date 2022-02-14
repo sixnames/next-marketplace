@@ -1,9 +1,9 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { alwaysArray } from '../../../lib/arrayUtils';
-import { getCmsCompanyLinks } from '../../../lib/linkUtils';
-import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
-import { CmsCompanyGiftCertificatesPageInterface } from '../../../pages/cms/companies/[companyId]/gift-certificates/[...filters]';
+import { alwaysArray } from 'lib/arrayUtils';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { CmsCompanyGiftCertificatesPageInterface } from 'pages/cms/companies/[companyId]/gift-certificates/[...filters]';
 import { COL_COMPANIES, COL_USERS } from '../../collectionNames';
 import { getDatabase } from '../../mongodb';
 import { CompanyInterface } from '../../uiInterfaces';

@@ -6,14 +6,14 @@ import {
 } from 'hooks/mutations/useRubricMutations';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ContentItemControls from '../../../../components/button/ContentItemControls';
-import FixedButtons from '../../../../components/button/FixedButtons';
-import WpButton from '../../../../components/button/WpButton';
-import WpCheckbox from '../../../../components/FormElements/Checkbox/WpCheckbox';
-import Inner from '../../../../components/Inner';
+import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import WpCheckbox from 'components/FormElements/Checkbox/WpCheckbox';
+import Inner from 'components/Inner';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
-import WpAccordion from '../../../../components/WpAccordion';
-import WpTable, { WpTableColumn } from '../../../../components/WpTable';
+import WpAccordion from 'components/WpAccordion';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
@@ -28,8 +28,8 @@ import {
   AttributesGroupInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
-import CmsRubricLayout from '../../../../layout/cms/CmsRubricLayout';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleRubricLinks } from 'lib/linkUtils';

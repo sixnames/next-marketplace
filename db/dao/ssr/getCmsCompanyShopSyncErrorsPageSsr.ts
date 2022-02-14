@@ -1,9 +1,9 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_COMPANY_SLUG } from '../../../config/common';
-import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
-import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
-import { CmsCompanyShopSyncErrorsPageInterface } from '../../../pages/cms/companies/[companyId]/shops/shop/[shopId]/sync-errors/[...filters]';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { CmsCompanyShopSyncErrorsPageInterface } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/sync-errors/[...filters]';
 import { COL_COMPANIES, COL_SHOPS } from '../../collectionNames';
 import { ShopModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

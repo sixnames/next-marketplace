@@ -1,7 +1,7 @@
 import { getNextItemId } from 'lib/itemIdUtils';
 import { ObjectId } from 'mongodb';
 import { TASK_STATE_PENDING } from 'config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { COL_TASK_VARIANTS, COL_TASKS } from 'db/collectionNames';
 import { TaskModel, TaskPayloadModel, TaskVariantModel, TranslationModel } from 'db/dbModels';

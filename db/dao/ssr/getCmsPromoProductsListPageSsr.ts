@@ -1,11 +1,11 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_CURRENCY } from '../../../config/common';
-import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
-import { getCmsCompanyLinks } from '../../../lib/linkUtils';
-import { getPromoSsr } from '../../../lib/promoUtils';
-import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
-import { CmsPromoProductsListPageInterface } from '../../../pages/cms/companies/[companyId]/promo/details/[promoId]/rubrics/[rubricSlug]/products/[...filters]';
+import { DEFAULT_CURRENCY } from 'config/common';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getPromoSsr } from 'lib/promoUtils';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { CmsPromoProductsListPageInterface } from 'pages/cms/companies/[companyId]/promo/details/[promoId]/rubrics/[rubricSlug]/products/[...filters]';
 import { COL_COMPANIES, COL_RUBRICS } from '../../collectionNames';
 import { RubricModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

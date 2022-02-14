@@ -1,9 +1,9 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_DIFF } from '../../../config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { noNaN } from '../../../lib/numbers';
-import { countDiscountedPrice } from '../../../lib/priceUtils';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { DEFAULT_DIFF } from 'config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { noNaN } from 'lib/numbers';
+import { countDiscountedPrice } from 'lib/priceUtils';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import {
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,

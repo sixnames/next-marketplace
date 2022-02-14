@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { NEGATIVE_INDEX } from '../../../config/common';
+import { NEGATIVE_INDEX } from 'config/common';
 import WpButton from '../../button/WpButton';
 import FormikInput, { FormikInputPropsInterface } from './FormikInput';
 import { useField } from 'formik';

@@ -1,19 +1,17 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Inner from '../../../../components/Inner';
-import PageGroupsList, {
-  PageGroupsListInterface,
-} from '../../../../components/Pages/PageGroupsList';
-import WpTitle from '../../../../components/WpTitle';
-import AppContentWrapper from '../../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../lib/linkUtils';
-import { getPageGroupsSsr } from '../../../../lib/pageUtils';
+import Inner from 'components/Inner';
+import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
+import WpTitle from 'components/WpTitle';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getPageGroupsSsr } from 'lib/pageUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
+} from 'lib/ssrUtils';
 
 const pageTitle = 'Группы страниц';
 

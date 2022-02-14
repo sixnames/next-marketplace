@@ -1,23 +1,23 @@
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import * as React from 'react';
-import BlogPostsDetails from '../../../../../components/blog/BlogPostsDetails';
-import Inner from '../../../../../components/Inner';
-import WpTitle from '../../../../../components/WpTitle';
-import { getBlogPost } from '../../../../../db/dao/blog/getBlogPost';
+import BlogPostsDetails from 'components/blog/BlogPostsDetails';
+import Inner from 'components/Inner';
+import WpTitle from 'components/WpTitle';
+import { getBlogPost } from 'db/dao/blog/getBlogPost';
 import {
   AppContentWrapperBreadCrumbs,
   BlogAttributeInterface,
   BlogPostInterface,
   CompanyInterface,
-} from '../../../../../db/uiInterfaces';
-import AppContentWrapper from '../../../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
+} from 'db/uiInterfaces';
+import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+} from 'lib/ssrUtils';
 
 interface BlogPostConsumerInterface {
   post: BlogPostInterface;

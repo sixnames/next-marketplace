@@ -1,11 +1,11 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { updatePageSchema } from '../../../validation/pagesSchema';
+} from 'lib/sessionHelpers';
+import { updatePageSchema } from 'validation/pagesSchema';
 import {
   COL_PAGE_TEMPLATES,
   COL_PAGES,

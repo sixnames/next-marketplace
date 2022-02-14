@@ -1,18 +1,18 @@
 import { hash } from 'bcryptjs';
 import generator from 'generate-password';
 import { ObjectId } from 'mongodb';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from '../../../config/common';
-import { sendSignUpEmail } from '../../../lib/email/sendSignUpEmail';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getUserInitialNotificationsConf } from '../../../lib/getUserNotificationsTemplate';
-import { getNextItemId } from '../../../lib/itemIdUtils';
-import { phoneToRaw } from '../../../lib/phoneUtils';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'config/common';
+import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
+import { getNextItemId } from 'lib/itemIdUtils';
+import { phoneToRaw } from 'lib/phoneUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { createUserSchema } from '../../../validation/userSchema';
+} from 'lib/sessionHelpers';
+import { createUserSchema } from 'validation/userSchema';
 import { COL_USERS } from '../../collectionNames';
 import { UserModel, UserPayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

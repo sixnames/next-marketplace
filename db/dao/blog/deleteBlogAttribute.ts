@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { COL_BLOG_ATTRIBUTES } from '../../collectionNames';
 import { BlogAttributeModel, BlogAttributePayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

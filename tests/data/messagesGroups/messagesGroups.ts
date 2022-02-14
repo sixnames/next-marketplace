@@ -212,6 +212,12 @@ const messagesGroups: MessagesGroupModel[] = [
       ru: 'Задачи',
     },
   },
+  {
+    _id: getObjectId('messagesGroups Мероприятия'),
+    nameI18n: {
+      ru: 'Мероприятия',
+    },
+  },
 ];
 
 // @ts-ignore

@@ -1,5 +1,5 @@
-import { DEFAULT_LOCALE, SECONDARY_LOCALE } from '../../config/common';
-import { MessageBaseInterface } from '../../db/uiInterfaces';
+import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
+import { MessageBaseInterface } from 'db/uiInterfaces';
 
 export const productsMessages: MessageBaseInterface[] = [
   {
@@ -101,34 +101,6 @@ export const productsMessages: MessageBaseInterface[] = [
     },
   },
   {
-    slug: 'products.update.attributesGroupNotFound',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `Группа атрибутов не найдена.`,
-      [SECONDARY_LOCALE]: `Attributes group not found.`,
-    },
-  },
-  {
-    slug: 'products.update.attributeNotFound',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `Атрибут не найден.`,
-      [SECONDARY_LOCALE]: `Attribute not found.`,
-    },
-  },
-  {
-    slug: 'products.update.attributeValueNotFound',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `Значение атрибута не найдено.`,
-      [SECONDARY_LOCALE]: `Attribute value not found.`,
-    },
-  },
-  {
-    slug: 'products.update.allOptionsAreUsed',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `В связи использованы все опции.`,
-      [SECONDARY_LOCALE]: `All options are used in this variant.`,
-    },
-  },
-  {
     slug: 'products.update.success',
     messageI18n: {
       [DEFAULT_LOCALE]: `Товар обновлён.`,
@@ -210,41 +182,6 @@ export const productsMessages: MessageBaseInterface[] = [
     messageI18n: {
       [DEFAULT_LOCALE]: `Производитель товара обязателен.`,
       [SECONDARY_LOCALE]: `Product manufacturer is required.`,
-    },
-  },
-  {
-    slug: 'validation.products.price',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `Цена товара обязательна.`,
-      [SECONDARY_LOCALE]: `Product price is required.`,
-    },
-  },
-  {
-    slug: 'validation.products.attributesGroupId',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `ID группы атрибутов обязательно.`,
-      [SECONDARY_LOCALE]: `Product attributes group ID is required.`,
-    },
-  },
-  {
-    slug: 'validation.products.attributeId',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `ID атрибута обязательно.`,
-      [SECONDARY_LOCALE]: `Product attribute ID is required.`,
-    },
-  },
-  {
-    slug: 'validation.products.attributeSlug',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `Ключ атрибута обязателен.`,
-      [SECONDARY_LOCALE]: `Product attribute key is required.`,
-    },
-  },
-  {
-    slug: 'validation.products.assets',
-    messageI18n: {
-      [DEFAULT_LOCALE]: `Фото товара обязательно.`,
-      [SECONDARY_LOCALE]: `Product assets is required.`,
     },
   },
 ];

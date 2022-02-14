@@ -516,10 +516,6 @@ export type MessageSlug =
   | 'products.update.notFound'
   | 'products.update.error'
   | 'products.update.attributeVariantError'
-  | 'products.update.attributesGroupNotFound'
-  | 'products.update.attributeNotFound'
-  | 'products.update.attributeValueNotFound'
-  | 'products.update.allOptionsAreUsed'
   | 'products.update.success'
   | 'products.delete.notFound'
   | 'products.delete.error'
@@ -542,11 +538,21 @@ export type MessageSlug =
   | 'validation.products.description'
   | 'validation.products.rubrics'
   | 'validation.products.manufacturer'
-  | 'validation.products.price'
-  | 'validation.products.attributesGroupId'
-  | 'validation.products.attributeId'
-  | 'validation.products.attributeSlug'
-  | 'validation.products.assets'
+
+  // Events ----------
+  | 'events.create.error'
+  | 'events.create.success'
+  | 'events.update.notFound'
+  | 'events.update.error'
+  | 'events.update.success'
+  | 'events.delete.notFound'
+  | 'events.delete.error'
+  | 'events.delete.success'
+  // Event validation
+  | 'validation.events.id'
+  | 'validation.events.name'
+  | 'validation.events.description'
+  | 'validation.events.rubrics'
 
   // Brands ----------
   | 'brands.create.duplicate'

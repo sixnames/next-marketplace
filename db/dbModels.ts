@@ -1218,9 +1218,9 @@ export interface EventFacetModel {
   rubricId: ObjectIdModel;
   rubricSlug: string;
   filterSlugs: string[];
+  attributeIds: ObjectIdModel[];
   startAt: DateModel;
   endAt?: DateModel | null;
-  attributeIds: ObjectIdModel[];
 }
 
 export interface EventSummaryModel extends CountersModel, TimestampModel, EventFacetModel {

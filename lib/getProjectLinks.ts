@@ -10,6 +10,8 @@ export interface LinkPropsInterface {
   blogPostId?: DynamicPagePropType;
   brandId?: DynamicPagePropType;
   companyId?: DynamicPagePropType;
+  eventId?: DynamicPagePropType;
+  seoContentSlug?: DynamicPagePropType;
   giftCertificateId?: DynamicPagePropType;
   pagesGroupId?: DynamicPagePropType;
   pageId?: DynamicPagePropType;
@@ -17,7 +19,6 @@ export interface LinkPropsInterface {
   promoCodeId?: DynamicPagePropType;
   categoryId?: DynamicPagePropType;
   productId?: DynamicPagePropType;
-  seoContentSlug?: DynamicPagePropType;
   shopId?: DynamicPagePropType;
   shopProductId?: DynamicPagePropType;
   orderId?: DynamicPagePropType;
@@ -41,6 +42,8 @@ export function getProjectLinks(props?: LinkPropsInterface) {
     blogPostId,
     brandId,
     companyId,
+    eventId,
+    seoContentSlug,
     giftCertificateId,
     pagesGroupId,
     pageId,
@@ -48,7 +51,6 @@ export function getProjectLinks(props?: LinkPropsInterface) {
     promoCodeId,
     categoryId,
     productId,
-    seoContentSlug,
     shopId,
     shopProductId,
     orderId,
@@ -523,7 +525,15 @@ export function getProjectLinks(props?: LinkPropsInterface) {
         updatePostAttribute: { url: `/api/blog/update-post-attribute` },
         updatePostCounters: { url: `/api/blog/update-post-counters` },
       },
-      brand: { url: `/api/brand`, logo: { url: `/api/brand/logo` } },
+      brand: {
+        url: `/api/brand`,
+        alphabet: { url: `/api/brand/alphabet` },
+        logo: { url: `/api/brand/logo` },
+      },
+      brandCollections: {
+        url: `/api/brand-collections`,
+        alphabet: { url: `/api/brand-collections/alphabet` },
+      },
       cart: {
         url: `/api/cart`,
         product: { url: `/api/cart/product` },
@@ -549,6 +559,12 @@ export function getProjectLinks(props?: LinkPropsInterface) {
         updateAssetConfig: { url: `/api/config/update-asset-config` },
       },
       dev: { url: `/api/dev`, algolia: { url: `/api/dev/algolia` } },
+      eventRubrics: {
+        url: `/api/event-rubrics`,
+        attributesGroup: { url: `/api/event-rubrics/attributes-group` },
+        cmsProductAttributes: { url: `/api/event-rubrics/cms-product-attributes` },
+        filterAttributes: { url: `/api/event-rubrics/filter-attributes` },
+      },
       giftCertificates: {
         url: `/api/gift-certificates`,
         check: { url: `/api/gift-certificates/check` },
@@ -608,7 +624,12 @@ export function getProjectLinks(props?: LinkPropsInterface) {
         updatePromoMainBanner: { url: `/api/promo/update-promo-main-banner` },
         updatePromoSecondaryBanner: { url: `/api/promo/update-promo-secondary-banner` },
       },
-      rubrics: { url: `/api/rubrics` },
+      rubrics: {
+        url: `/api/rubrics`,
+        attributesGroup: { url: `/api/rubrics/attributes-group` },
+        cmsProductAttributes: { url: `/api/rubrics/cms-product-attributes` },
+        filterAttributes: { url: `/api/rubrics/filter-attributes` },
+      },
       search: { url: `/api/search`, headerSearch: { url: `/api/search/header-search` } },
       seoContent: {
         url: `/api/seo-content`,
@@ -641,6 +662,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
         updateUserAvatar: { url: `/api/user/update-user-avatar` },
       },
       userCategory: { url: `/api/user-category` },
+      xlsx: { url: `/api/xlsx`, shopProducts: { url: `/api/xlsx/shop-products` } },
     },
     assets: { url: `/assets` },
     blog: {
@@ -692,6 +714,33 @@ export function getProjectLinks(props?: LinkPropsInterface) {
             contacts: { url: `/cms/companies/${companyId}/config/contacts` },
             seo: { url: `/cms/companies/${companyId}/config/seo` },
             ui: { url: `/cms/companies/${companyId}/config/ui` },
+          },
+          events: {
+            url: `/cms/companies/${companyId}/events`,
+            rubricSlug: {
+              url: `/cms/companies/${companyId}/events/${rubricSlug}`,
+              events: {
+                url: `/cms/companies/${companyId}/events/${rubricSlug}/events`,
+                event: {
+                  url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event`,
+                  eventId: {
+                    url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event/${eventId}`,
+                    assets: {
+                      url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event/${eventId}/assets`,
+                    },
+                    attributes: {
+                      url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event/${eventId}/attributes`,
+                    },
+                  },
+                },
+              },
+              seoContent: {
+                url: `/cms/companies/${companyId}/events/${rubricSlug}/seo-content`,
+                seoContentSlug: {
+                  url: `/cms/companies/${companyId}/events/${rubricSlug}/seo-content/${seoContentSlug}`,
+                },
+              },
+            },
           },
           giftCertificates: {
             url: `/cms/companies/${companyId}/gift-certificates`,

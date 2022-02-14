@@ -3,6 +3,38 @@ import fs from 'fs';
 import capitalize from 'capitalize';
 import { set } from 'lodash';
 
+const excludedNames = [
+  'webmanifest',
+  'robots',
+  'sitemap',
+  '404',
+  '_app',
+  '_document',
+  '_error',
+  '0',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
+  '12',
+  '14',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19',
+  '20',
+  '21',
+  '22',
+  '23',
+  '24',
+  '25',
+  '26',
+];
+
 function cleanupName(name: string) {
   return name
     .replace('[', '')
@@ -20,26 +52,23 @@ function normalizeFieldName(name: string) {
   return fieldName;
 }
 
-function normalizeUrlPath(pagePath: string) {
-  const pagePathArray = pagePath.split('/');
-  const cleanPagePath = pagePathArray.slice(1).join('/');
-  return (
-    '/' +
-    cleanPagePath
-      .replace('index', '')
-      .replaceAll('/[...filters].tsx', '')
-      .replaceAll('/[...filters].ts', '')
-      .replaceAll('/[...nextauth].ts', '')
-      .replaceAll('/[...props].ts', '')
-      .replaceAll('/[...url].tsx', '')
-      .replace('.tsx', '')
-      .replace('.ts', '')
-      .replaceAll('[', '${')
-      .replaceAll(']', '}')
-      .split('/')
-      .filter((part) => part)
-      .join('/')
-  );
+function normalizeUrlPath(pagePath: string, replacePath: string) {
+  const url = pagePath
+    .replace(replacePath, '')
+    .replace('index', '')
+    .replaceAll('/[...filters].tsx', '')
+    .replaceAll('/[...filters].ts', '')
+    .replaceAll('/[...nextauth].ts', '')
+    .replaceAll('/[...props].ts', '')
+    .replaceAll('/[...url].tsx', '')
+    .replace('.tsx', '')
+    .replace('.ts', '')
+    .replaceAll('[', '${')
+    .replaceAll(']', '}')
+    .split('/')
+    .filter((part) => part)
+    .join('/');
+  return `/${url}`;
 }
 
 function normalizeFieldPath(urlPath: string) {
@@ -54,13 +83,11 @@ function normalizeFieldPath(urlPath: string) {
   return normalizedPathNames;
 }
 
-(function () {
-  console.log('reading pages directory');
-  const tree = dirTree('./pages', {
+function iterPages(pagesPath: string, replacePath: string) {
+  const allPagesTree = dirTree(pagesPath, {
     attributes: ['type'],
   });
-  const excludedNames = ['webmanifest', 'robots', 'sitemap'];
-  const pages = tree.children || [];
+  const pages = allPagesTree.children || [];
   const props = new Set<string>();
   const fields: Record<any, any> = {};
 
@@ -73,8 +100,7 @@ function normalizeFieldPath(urlPath: string) {
       return;
     }
     const cleanName = cleanupName(page.name);
-    // const fieldName = normalizeFieldName(cleanName);
-    const urlPath = normalizeUrlPath(page.path);
+    const urlPath = normalizeUrlPath(page.path, replacePath);
     const fieldPath = normalizeFieldPath(urlPath);
     set(fields, `${fieldPath}.url`, urlPath);
 
@@ -90,24 +116,38 @@ function normalizeFieldPath(urlPath: string) {
     propsString = `${propsString}${prop}?: DynamicPagePropType; \n`;
   });
 
-  // const fieldsString = JSON.stringify(fields).replaceAll('"', '`');
+  const propsDestructure = Array.from(props).join(',');
+
   const fieldsString = JSON.stringify(fields)
     .replaceAll(':"', ':`')
     .replaceAll('",', '`,')
     .replaceAll('"}', '`}');
+
+  return {
+    props,
+    fields,
+    propsString,
+    propsDestructure,
+    fieldsString,
+  };
+}
+
+(function () {
+  console.log('reading pages directory');
+  const allPagesResult = iterPages('./pages', 'pages');
+
   const output = `
   import { ObjectId } from 'mongodb';
   
   type DynamicPagePropType = ObjectId | string | null;
   export interface LinkPropsInterface {
-    ${propsString}
+    ${allPagesResult.propsString}
   }
   
   export function getProjectLinks(props?: LinkPropsInterface) {
-    const {${Array.from(props).join(',')}} = props || {};
-    return ${fieldsString};
+    const {${allPagesResult.propsDestructure}} = props || {};
+    return ${allPagesResult.fieldsString};
   }
   `;
   fs.writeFileSync('./lib/getProjectLinks.ts', output);
-  // console.log(fields);
 })();

@@ -606,6 +606,33 @@ export function getProjectLinks(props?: LinkPropsInterface) {
             ui: { url: `/console/${companyId}/config/config/ui` },
           },
         },
+        events: {
+          url: `/console/${companyId}/events`,
+          rubricSlug: {
+            url: `/console/${companyId}/events/${rubricSlug}`,
+            events: {
+              url: `/console/${companyId}/events/${rubricSlug}/events`,
+              event: {
+                url: `/console/${companyId}/events/${rubricSlug}/events/event`,
+                eventId: {
+                  url: `/console/${companyId}/events/${rubricSlug}/events/event/${eventId}`,
+                  assets: {
+                    url: `/console/${companyId}/events/${rubricSlug}/events/event/${eventId}/assets`,
+                  },
+                  attributes: {
+                    url: `/console/${companyId}/events/${rubricSlug}/events/event/${eventId}/attributes`,
+                  },
+                },
+              },
+            },
+            seoContent: {
+              url: `/console/${companyId}/events/${rubricSlug}/seo-content`,
+              seoContentSlug: {
+                url: `/console/${companyId}/events/${rubricSlug}/seo-content/${seoContentSlug}`,
+              },
+            },
+          },
+        },
         giftCertificates: {
           url: `/console/${companyId}/gift-certificates`,
           certificate: {

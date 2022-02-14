@@ -79,6 +79,14 @@ const consoleNavItemBases: NavItemBaseMode[] = [
   },
   {
     nameI18n: {
+      ru: 'Мероприятия',
+      en: 'Events',
+    },
+    slug: 'console-events',
+    path: getConsoleLink(links.console.companyId.events.url),
+  },
+  {
+    nameI18n: {
       ru: 'Страницы',
       en: 'Pages',
     },

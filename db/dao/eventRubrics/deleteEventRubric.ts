@@ -6,14 +6,14 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
-export interface DeleteRubricInputInterface {
+export interface DeleteEventRubricInputInterface {
   _id: string;
 }
 
 export async function deleteEventRubric({
   context,
   input,
-}: DaoPropsInterface<DeleteRubricInputInterface>): Promise<EventRubricPayloadModel> {
+}: DaoPropsInterface<DeleteEventRubricInputInterface>): Promise<EventRubricPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const rubricsCollection = db.collection<EventRubricModel>(COL_EVENT_RUBRICS);

@@ -1,7 +1,7 @@
 import { getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { ProductPayloadModel } from 'db/dbModels';
+import { EventPayloadModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
@@ -16,16 +16,16 @@ export interface UpdateEventAssetIndexInputInterface {
 export async function updateEventAssetIndex({
   context,
   input,
-}: DaoPropsInterface<UpdateEventAssetIndexInputInterface>): Promise<ProductPayloadModel> {
+}: DaoPropsInterface<UpdateEventAssetIndexInputInterface>): Promise<EventPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const collections = await getDbCollections();
   const eventSummariesCollection = collections.eventSummariesCollection();
 
   const session = collections.client.startSession();
 
-  let mutationPayload: ProductPayloadModel = {
+  let mutationPayload: EventPayloadModel = {
     success: false,
-    message: await getApiMessage(`products.update.error`),
+    message: await getApiMessage(`events.update.error`),
   };
 
   try {
@@ -71,7 +71,7 @@ export async function updateEventAssetIndex({
       if (!reorderedAssets) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.error`),
+          message: await getApiMessage(`events.update.error`),
         };
         await session.abortTransaction();
         return;
@@ -80,7 +80,7 @@ export async function updateEventAssetIndex({
       updatedSummary.mainImage = getMainImage(reorderedAssets);
 
       // update documents
-      const updatedProductAssetsResult = await eventSummariesCollection.findOneAndUpdate(
+      const updatedAssetsResult = await eventSummariesCollection.findOneAndUpdate(
         {
           _id: summary._id,
         },
@@ -91,10 +91,10 @@ export async function updateEventAssetIndex({
           },
         },
       );
-      if (!updatedProductAssetsResult.ok) {
+      if (!updatedAssetsResult.ok) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage('products.update.error'),
+          message: await getApiMessage('events.update.error'),
         };
         await session.abortTransaction();
         return;
@@ -102,7 +102,7 @@ export async function updateEventAssetIndex({
 
       mutationPayload = {
         success: true,
-        message: await getApiMessage('products.update.success'),
+        message: await getApiMessage('events.update.success'),
       };
     });
 

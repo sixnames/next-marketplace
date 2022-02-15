@@ -1,7 +1,7 @@
 import { deleteUpload, getMainImage } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { ProductPayloadModel } from 'db/dbModels';
+import { EventPayloadModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
@@ -15,14 +15,14 @@ export interface DeleteEventAssetInputInterface {
 export async function deleteEventAsset({
   input,
   context,
-}: DaoPropsInterface<DeleteEventAssetInputInterface>): Promise<ProductPayloadModel> {
+}: DaoPropsInterface<DeleteEventAssetInputInterface>): Promise<EventPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const collections = await getDbCollections();
   const eventSummariesCollection = collections.eventSummariesCollection();
 
   const session = collections.client.startSession();
 
-  let mutationPayload: ProductPayloadModel = {
+  let mutationPayload: EventPayloadModel = {
     success: false,
     message: await getApiMessage(`events.update.error`),
   };
@@ -87,7 +87,7 @@ export async function deleteEventAsset({
       }
 
       // update documents
-      const updatedProductAssetsResult = await eventSummariesCollection.findOneAndUpdate(
+      const updatedAssetsResult = await eventSummariesCollection.findOneAndUpdate(
         {
           _id: summary._id,
         },
@@ -98,7 +98,7 @@ export async function deleteEventAsset({
           },
         },
       );
-      if (!updatedProductAssetsResult.ok) {
+      if (!updatedAssetsResult.ok) {
         mutationPayload = {
           success: false,
           message: await getApiMessage('events.update.error'),

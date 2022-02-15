@@ -51,7 +51,8 @@ export async function addProductAsset(context: NextContextInterface): Promise<Pr
       // check input
       const formData = await parseApiFormData<AddProductAssetInterface>(context.req);
       if (!formData || !formData.files || !formData.fields) {
-        return mutationPayload;
+        await session.abortTransaction();
+        return;
       }
 
       // get summary or summary draft

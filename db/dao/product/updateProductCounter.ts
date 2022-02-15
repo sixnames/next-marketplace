@@ -89,7 +89,7 @@ export async function updateProductCounter({
       message: 'success',
     };
   } catch (e) {
-    console.log(e);
+    console.log('updateProductCounter error', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

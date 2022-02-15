@@ -148,14 +148,12 @@ export async function updateEventNumberAttribute({
         }
       }
 
-      // create task log for content manager
+      // update documents
       const updatedSummary: EventSummaryInterface = {
         ...summary,
         attributeIds,
         attributes: productAttributes,
       };
-
-      // update documents
       const updatedEventAttributeResult = await eventSummariesCollection.findOneAndUpdate(
         {
           _id: summary._id,

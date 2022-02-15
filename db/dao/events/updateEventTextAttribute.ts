@@ -1,22 +1,14 @@
-import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
-import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
-import {
-  DEFAULT_COMPANY_SLUG,
-  DEFAULT_LOCALE,
-  SECONDARY_LOCALE,
-  TASK_STATE_IN_PROGRESS,
-} from 'lib/config/common';
+import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { ProductPayloadModel, SummaryDiffModel, TranslationModel } from 'db/dbModels';
+import { EventPayloadModel, TranslationModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import {
   DaoPropsInterface,
+  EventSummaryInterface,
   ProductAttributeInterface,
-  ProductSummaryInterface,
 } from 'db/uiInterfaces';
 
 export interface UpdateEventTextAttributeItemInputInterface {
@@ -26,7 +18,7 @@ export interface UpdateEventTextAttributeItemInputInterface {
 }
 
 export interface UpdateEventTextAttributeInputInterface {
-  productId: string;
+  eventId: string;
   attributes: UpdateEventTextAttributeItemInputInterface[];
   taskId?: string | null;
 }
@@ -34,26 +26,26 @@ export interface UpdateEventTextAttributeInputInterface {
 export async function updateEventTextAttribute({
   input,
   context,
-}: DaoPropsInterface<UpdateEventTextAttributeInputInterface>): Promise<ProductPayloadModel> {
-  const { getApiMessage, locale } = await getRequestParams(context);
+}: DaoPropsInterface<UpdateEventTextAttributeInputInterface>): Promise<EventPayloadModel> {
+  const { getApiMessage } = await getRequestParams(context);
   const collections = await getDbCollections();
-  const productSummariesCollection = collections.productSummariesCollection();
-  const productFacetsCollection = collections.productFacetsCollection();
+  const eventSummariesCollection = collections.eventSummariesCollection();
+  const eventFacetsCollection = collections.eventFacetsCollection();
   const attributesCollection = collections.attributesCollection();
 
   const session = collections.client.startSession();
 
-  let mutationPayload: ProductPayloadModel = {
+  let mutationPayload: EventPayloadModel = {
     success: false,
-    message: await getApiMessage('products.update.error'),
+    message: await getApiMessage('events.update.error'),
   };
 
   try {
     await session.withTransaction(async () => {
       // permission
-      const { allow, message, role, user } = await getOperationPermission({
+      const { allow, message } = await getOperationPermission({
         context,
-        slug: 'updateProductAttributes',
+        slug: 'updateEventAttributes',
       });
       if (!allow) {
         mutationPayload = {
@@ -68,42 +60,21 @@ export async function updateEventTextAttribute({
       if (!input) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage('products.update.error'),
+          message: await getApiMessage('events.update.error'),
         };
         await session.abortTransaction();
         return;
       }
 
-      // get summary or summary draft
-      const diff: SummaryDiffModel = {
-        added: {
-          textAttributes: [],
-        },
-        updated: {
-          textAttributes: [],
-        },
-        deleted: {
-          textAttributes: [],
-        },
-      };
-      const taskVariantSlug = getTaskVariantSlugByRule('updateProductAttributes');
-      const summaryPayload = await getFullProductSummaryWithDraft({
-        locale,
-        productId: input.productId,
-        taskId: input.taskId,
-        companySlug: DEFAULT_COMPANY_SLUG,
-        isContentManager: role.isContentManager,
+      // get summary
+      const summary = await eventSummariesCollection.findOne({
+        _id: new ObjectId(input.eventId),
       });
-      if (!summaryPayload) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage('products.update.error'),
-        };
+      if (!summary) {
         await session.abortTransaction();
         return;
       }
 
-      const { summary } = summaryPayload;
       let productAttributes = summary.attributes;
       let attributeIds = summary.attributeIds;
 
@@ -120,7 +91,6 @@ export async function updateEventTextAttribute({
           attributeIds = attributeIds.filter((_id) => {
             return !_id.equals(attributeId);
           });
-          diff.deleted?.textAttributes?.push(productAttributeId);
           continue;
         }
 
@@ -153,7 +123,6 @@ export async function updateEventTextAttribute({
             ...productAttribute,
             attribute,
           },
-          gender: summary.gender,
         });
         productAttribute.readableValueI18n = readableValueI18n;
 
@@ -161,7 +130,6 @@ export async function updateEventTextAttribute({
         if (productAttributeNotExist) {
           productAttributes.push(productAttribute);
           attributeIds.push(attributeId);
-          diff.added?.textAttributes?.push(productAttributeId);
           continue;
         }
 
@@ -180,60 +148,16 @@ export async function updateEventTextAttribute({
             },
             [],
           );
-          diff.updated?.textAttributes?.push(productAttributeId);
         }
       }
 
-      // create task log for content manager
-      const updatedSummary: ProductSummaryInterface = {
+      // update documents
+      const updatedSummary: EventSummaryInterface = {
         ...summary,
         attributeIds,
         attributes: productAttributes,
       };
-      if (role.isContentManager && user) {
-        const task = await findOrCreateUserTask({
-          productId: summary._id,
-          variantSlug: taskVariantSlug,
-          executorId: user._id,
-          taskId: input.taskId,
-        });
-
-        if (!task) {
-          mutationPayload = {
-            success: false,
-            message: await getApiMessage('tasks.create.error'),
-          };
-          await session.abortTransaction();
-          return;
-        }
-
-        const newTaskLogResult = await addTaskLogItem({
-          taskId: task._id,
-          diff,
-          prevStateEnum: task.stateEnum,
-          nextStateEnum: TASK_STATE_IN_PROGRESS,
-          draft: updatedSummary,
-          createdById: user._id,
-        });
-        if (!newTaskLogResult) {
-          mutationPayload = {
-            success: false,
-            message: await getApiMessage('products.update.error'),
-          };
-          await session.abortTransaction();
-          return;
-        }
-
-        mutationPayload = {
-          success: true,
-          message: await getApiMessage('products.update.success'),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
-      // update documents
-      const updatedProductAttributeResult = await productSummariesCollection.findOneAndUpdate(
+      const updatedProductAttributeResult = await eventSummariesCollection.findOneAndUpdate(
         {
           _id: summary._id,
         },
@@ -257,12 +181,12 @@ export async function updateEventTextAttribute({
       if (!updatedProductAttributeResult.ok) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage('products.update.error'),
+          message: await getApiMessage('events.update.error'),
         };
         await session.abortTransaction();
         return;
       }
-      await productFacetsCollection.findOneAndUpdate(
+      await eventFacetsCollection.findOneAndUpdate(
         {
           _id: summary._id,
         },
@@ -275,7 +199,7 @@ export async function updateEventTextAttribute({
 
       mutationPayload = {
         success: true,
-        message: await getApiMessage('products.update.success'),
+        message: await getApiMessage('events.update.success'),
         payload: summary,
       };
     });

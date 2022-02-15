@@ -1,26 +1,22 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import { COL_PROMO_PRODUCTS, COL_RUBRICS } from '../../../../../../../db/collectionNames';
-import { castRubricForUI } from '../../../../../../../db/dao/rubrics/castRubricForUI';
-import { RubricModel } from '../../../../../../../db/dbModels';
-import { getDatabase } from '../../../../../../../db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  PromoInterface,
-  RubricInterface,
-} from '../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import { COL_PROMO_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
+import { castRubricForUI } from 'db/cast/castRubricForUI';
+import { RubricModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, PromoInterface, RubricInterface } from 'db/uiInterfaces';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import CompanyRubricsList, {
   CompanyRubricsListInterface,
-} from '../../../../../../../layout/CompanyRubricsList';
-import ConsolePromoLayout from '../../../../../../../layout/console/ConsolePromoLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../lib/linkUtils';
-import { getPromoSsr } from '../../../../../../../lib/promoUtils';
+} from 'components/layout/CompanyRubricsList';
+import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getPromoSsr } from 'lib/promoUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from '../../../../../../../lib/ssrUtils';
+} from 'lib/ssrUtils';
 
 interface ConsolePromoRubricsInterface extends Omit<CompanyRubricsListInterface, 'routeBasePath'> {
   promo: PromoInterface;
@@ -106,7 +102,6 @@ export const getServerSideProps = async (
           catalogueTitle: false,
           descriptionI18n: false,
           shortDescriptionI18n: false,
-          priorities: false,
           views: false,
         },
       },

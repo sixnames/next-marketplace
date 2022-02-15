@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ConsoleShopLayoutInterface } from '../../db/uiInterfaces';
-import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import Inner from '../Inner';
 import SyncErrorsList, { SyncErrorsListInterface } from '../SyncErrorsList';
 

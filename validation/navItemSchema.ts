@@ -5,7 +5,7 @@ import {
   requiredNumberSchema,
   requiredStringSchema,
   requiredStringTranslationSchema,
-} from './schemaTemplates';
+} from 'validation/utils/schemaTemplates';
 
 export const navItemIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({

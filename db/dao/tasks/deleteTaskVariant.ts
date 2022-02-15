@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { COL_TASK_VARIANTS } from '../../collectionNames';
 import { TaskVariantModel, TaskVariantPayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

@@ -1,7 +1,7 @@
 import { findTask } from 'db/dao/tasks/taskUtils';
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import { COL_OPTIONS, COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   brandPipeline,
@@ -11,7 +11,7 @@ import {
   shopProductShopPipeline,
   shopProductSupplierProductsPipeline,
   summaryPipeline,
-} from 'db/dao/constantPipelines';
+} from 'db/utils/constantPipelines';
 import {
   ObjectIdModel,
   OptionModel,
@@ -474,22 +474,26 @@ export async function checkShopProductBarcodeIntersects({
   return barcodeDoubles;
 }
 
+export function trimTranslationField(fieldI18n?: TranslationModel | null) {
+  const translation = fieldI18n || {};
+  return Object.keys(translation).reduce((acc: TranslationModel, key) => {
+    const value = translation[key];
+    if (!value) {
+      return acc;
+    }
+    acc[key] = trim(value);
+    return acc;
+  }, {});
+}
+
 interface TrimProductNameInterface {
   originalName?: string | null;
   nameI18n?: TranslationModel | null;
 }
 export function trimProductName({ originalName, nameI18n }: TrimProductNameInterface) {
-  const translation = nameI18n || {};
   return {
     originalName: originalName ? trim(originalName) : '',
-    nameI18n: Object.keys(translation).reduce((acc: TranslationModel, key) => {
-      const value = translation[key];
-      if (!value) {
-        return acc;
-      }
-      acc[key] = trim(value);
-      return acc;
-    }, {}),
+    nameI18n: trimTranslationField(nameI18n),
   };
 }
 

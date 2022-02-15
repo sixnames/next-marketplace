@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_PATCH } from '../../../../config/common';
-import { updateProductTextAttribute } from '../../../../db/dao/product/updateProductTextAttribute';
-import { sendApiRouteResponse } from '../../../../lib/sessionHelpers';
+import { REQUEST_METHOD_PATCH } from 'lib/config/common';
+import { updateProductTextAttribute } from 'db/dao/product/updateProductTextAttribute';
+import { sendApiRouteResponse } from 'lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_PATCH) {

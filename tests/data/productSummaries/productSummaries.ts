@@ -11,7 +11,7 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
-} from '../../../config/common';
+} from 'lib/config/common';
 import {
   ObjectIdModel,
   OptionModel,
@@ -19,16 +19,16 @@ import {
   ProductSummaryAttributeModel,
   CategoryModel,
   ProductVariantModel,
-} from '../../../db/dbModels';
+} from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
-import { OptionInterface, ProductAttributeInterface } from '../../../db/uiInterfaces';
-import { getFieldStringLocale } from '../../../lib/i18n';
+import { OptionInterface, ProductAttributeInterface } from 'db/uiInterfaces';
+import { getFieldStringLocale } from 'lib/i18n';
 import {
   generateCardTitle,
   GenerateCardTitleInterface,
   generateSnippetTitle,
-} from '../../../lib/titleUtils';
-import { getTreeFromList } from '../../../lib/treeUtils';
+} from 'lib/titleUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 const addZero = require('add-zero');
 import rubrics from '../rubrics/rubrics';
 import rubricVariants from '../rubricVariants/rubricVariants';
@@ -38,7 +38,7 @@ import manufacturers from '../manufacturers/manufacturers';
 import brands from '../brands/brands';
 import brandCollections from '../brandCollections/brandCollections';
 import categories from '../categories/categories';
-import { getAttributeReadableValueLocales } from '../../../lib/productAttributesUtils';
+import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
 
 const attributeText = `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi debitis eligendi eum, excepturi iure libero molestias quas quis ratione reiciendis sed sequi sint sit! Architecto minus modi officia provident voluptates.`;
 
@@ -91,7 +91,7 @@ function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] 
   return resultOptions;
 }
 
-const maxProductsCount = 70;
+const maxSummariesCount = 70;
 const manufacturersAttributeSlug = 'manufacturers';
 const brandsAttributeSlug = 'brands';
 const brandCollectionsAttributeSlug = 'brandCollections';
@@ -173,7 +173,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
     }
   }
 
-  for (let i = 1; i <= maxProductsCount; i = i + 1) {
+  for (let i = 1; i <= maxSummariesCount; i = i + 1) {
     counter = counter + 1;
     const gender = GENDER_IT;
     const attributeIds: ObjectIdModel[] = [];

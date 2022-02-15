@@ -1,5 +1,5 @@
-import { COL_CATEGORIES } from '../../../db/collectionNames';
-import { IconModel } from '../../../db/dbModels';
+import { COL_CATEGORIES } from 'db/collectionNames';
+import { IconModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import categories from '../categories/categories';
 

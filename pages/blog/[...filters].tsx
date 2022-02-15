@@ -9,19 +9,19 @@ import WpBreadcrumbs from '../../components/WpBreadcrumbs';
 import WpIcon from '../../components/WpIcon';
 import WpImage from '../../components/WpImage';
 import WpTitle from '../../components/WpTitle';
-import { FILTER_SEPARATOR, REQUEST_METHOD_POST } from '../../config/common';
-import { useAppContext } from '../../context/appContext';
-import { useConfigContext } from '../../context/configContext';
+import { FILTER_SEPARATOR, REQUEST_METHOD_POST } from '../../lib/config/common';
+import { useAppContext } from '../../components/context/appContext';
+import { useConfigContext } from '../../components/context/configContext';
 import { UpdateBlogAttributeCountersInputInterface } from '../../db/dao/blog/updateBlogAttributeCounters';
-import { getCatalogueBlogSsr } from 'db/dao/ssr/getCatalogueBlogSsr';
+import { getCatalogueBlogSsr } from 'db/ssr/blog/getCatalogueBlogSsr';
 import {
   BlogAttributeInterface,
   BlogPostInterface,
   CatalogueFilterAttributeInterface,
 } from '../../db/uiInterfaces';
-import SiteLayout, { SiteLayoutProviderInterface } from '../../layout/SiteLayout';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
 import { alwaysArray } from '../../lib/arrayUtils';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 const links = getProjectLinks();
 

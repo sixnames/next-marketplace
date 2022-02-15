@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useRouter } from 'next/router';
-import { useAppContext } from '../../context/appContext';
-import { useNotificationsContext } from '../../context/notificationsContext';
-import { useSiteContext } from '../../context/siteContext';
+import { useAppContext } from '../context/appContext';
+import { useNotificationsContext } from '../context/notificationsContext';
+import { useSiteContext } from '../context/siteContext';
 import WpButton from '../button/WpButton';
 import RequestError from '../RequestError';
 import Spinner from '../Spinner';

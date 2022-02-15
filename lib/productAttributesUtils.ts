@@ -6,9 +6,9 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_LOCALE,
   LOCALES,
-} from '../config/common';
+} from './config/common';
 import { COL_RUBRICS } from '../db/collectionNames';
-import { rubricAttributeGroupsPipeline } from '../db/dao/constantPipelines';
+import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { ObjectIdModel, TranslationModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import { AttributeInterface, ProductAttributeInterface, RubricInterface } from '../db/uiInterfaces';

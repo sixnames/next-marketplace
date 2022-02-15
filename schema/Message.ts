@@ -1,6 +1,6 @@
 import { extendType, objectType } from 'nexus';
 import { MessageModel } from '../db/dbModels';
-import { getValidationMessages } from '../db/dao/messages/apiMessageUtils';
+import { getValidationMessages } from 'db/utils/apiMessageUtils';
 import { getRequestParams } from '../lib/sessionHelpers';
 
 export const Message = objectType({

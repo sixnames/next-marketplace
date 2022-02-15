@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getRequestParams } from '../../../lib/sessionHelpers';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getRequestParams } from 'lib/sessionHelpers';
 import { COL_CARTS, COL_PROMO_CODES, COL_PROMO_PRODUCTS } from '../../collectionNames';
 import {
   CartModel,

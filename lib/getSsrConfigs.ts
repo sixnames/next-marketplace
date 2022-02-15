@@ -2,13 +2,13 @@ import {
   CATALOGUE_PRODUCTS_LIMIT,
   CONFIG_GROUP_PROJECT,
   DEFAULT_COMPANY_SLUG,
-} from 'config/common';
+} from 'lib/config/common';
+import { castConfigs } from 'db/cast/castConfigs';
 import { COL_CONFIGS, COL_SHOPS } from 'db/collectionNames';
 import { ConfigModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SsrConfigsInterface } from 'db/uiInterfaces';
 import {
-  castConfigs,
   getConfigBooleanValue,
   getConfigListValue,
   getConfigNumberValue,

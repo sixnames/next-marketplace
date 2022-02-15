@@ -1,4 +1,4 @@
-import { getCmsPromoProductsListPageSsr } from '../../../../../../../../../../db/dao/ssr/getCmsPromoProductsListPageSsr';
+import { getCmsPromoProductsListPageSsr } from 'db/ssr/promo/getCmsPromoProductsListPageSsr';
 import CmsPromoProductsListPage from './[...filters]';
 
 export const getServerSideProps = getCmsPromoProductsListPageSsr;

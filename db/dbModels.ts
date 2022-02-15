@@ -1,6 +1,6 @@
 import { CreateProductInputInterface } from 'db/dao/product/createProduct';
 import { ObjectId } from 'mongodb';
-import { GEO_POINT_TYPE } from 'config/common';
+import { GEO_POINT_TYPE } from 'lib/config/common';
 import { IpInfoInterface } from 'types/clientTypes';
 import { IconType } from 'types/iconTypes';
 import {
@@ -34,17 +34,6 @@ export interface SelectOptionModel {
 export interface MapMarkerModel {
   lightTheme?: string | null;
   darkTheme?: string | null;
-}
-
-export interface PayloadModel {
-  success: boolean;
-  message: string;
-  statusCode?: number | null;
-  type?: any;
-}
-
-export interface PayloadType<TModel> extends PayloadModel {
-  payload?: TModel | null;
 }
 
 export interface IdCounterModel {
@@ -126,32 +115,6 @@ export interface IconModel {
   icon: string;
 }
 
-export interface PaginationPayloadModel {
-  sortBy: string;
-  sortDir: SortDirectionModel;
-  totalDocs: number;
-  totalActiveDocs: number;
-  limit: number;
-  page: number;
-  totalPages: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-  type?: any;
-}
-
-export interface AlphabetListModel {
-  letter: string;
-  type?: any;
-}
-
-export interface AlphabetListModelType<TModel> extends AlphabetListModel {
-  docs: TModel[];
-}
-
-export interface PaginationPayloadType<TModel> extends PaginationPayloadModel {
-  docs: TModel[];
-}
-
 // Attribute variant
 export enum AttributeVariantModel {
   select = 'select',
@@ -195,7 +158,6 @@ export interface CountersItemModel {
 
 export interface CountersModel {
   views: CountersItemModel;
-  priorities?: CountersItemModel;
 }
 
 export interface AttributeCountersItemModel {
@@ -204,7 +166,6 @@ export interface AttributeCountersItemModel {
 
 export interface AttributeCountersModel {
   views?: AttributeCountersItemModel;
-  priorities?: AttributeCountersItemModel;
 }
 
 export interface AttributeModel extends AttributeCountersModel {
@@ -783,7 +744,7 @@ export interface RubricVariantModel {
   cardBrandsLabelI18n?: TranslationModel | null;
 }
 
-export interface RubricModel extends CountersModel {
+export interface RubricBaseModel extends CountersModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
@@ -794,18 +755,21 @@ export interface RubricModel extends CountersModel {
   gender: GenderModel;
   slug: string;
   active: boolean;
-  variantId: ObjectIdModel;
   capitalise?: boolean | null;
   attributesGroupIds: ObjectIdModel[];
   cmsCardAttributeIds: ObjectIdModel[];
   filterVisibleAttributeIds: ObjectIdModel[];
   showRubricNameInProductTitle?: boolean | null;
+  icon?: string;
+  image?: string;
+}
+
+export interface RubricModel extends RubricBaseModel {
+  variantId: ObjectIdModel;
   showCategoryInProductTitle?: boolean | null;
   showBrandInNav?: boolean | null;
   showBrandInFilter?: boolean | null;
   showBrandAsAlphabet?: boolean | null;
-  icon?: string;
-  image?: string;
 }
 
 export type DescriptionPositionType = 'top' | 'bottom';
@@ -1084,7 +1048,6 @@ export interface PagesGroupModel {
   showInHeader: boolean;
 }
 
-// Page state enum
 export enum PageStateModel {
   draft = 'draft',
   published = 'published',
@@ -1183,83 +1146,6 @@ export interface TaskModel extends TimestampModel {
   createdAt: DateModel;
   updatedAt: DateModel;
 }
-
-// Payload
-export interface ConstructorAssetPayloadModel extends PayloadType<string> {
-  payload: string;
-}
-
-export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;
-export type AttributePayloadModel = PayloadType<AttributeModel>;
-export type BlogAttributePayloadModel = PayloadType<BlogAttributeModel>;
-export type BlogPostPayloadModel = PayloadType<BlogPostModel>;
-export type BrandPayloadModel = PayloadType<BrandModel>;
-export type BrandCollectionPayloadModel = PayloadType<BrandCollectionModel>;
-export type CategoryPayloadModel = PayloadType<CategoryModel>;
-export type CompanyPayloadModel = PayloadType<CompanyModel>;
-export type ConfigPayloadModel = PayloadType<ConfigModel>;
-export type CountryPayloadModel = PayloadType<CountryModel>;
-export type CurrencyPayloadModel = PayloadType<CurrencyModel>;
-export type LanguagePayloadModel = PayloadType<LanguageModel>;
-export type ManufacturerPayloadModel = PayloadType<ManufacturerModel>;
-export type MetricPayloadModel = PayloadType<MetricModel>;
-export type NavItemPayloadModel = PayloadType<NavItemModel>;
-export type OptionsGroupPayloadModel = PayloadType<OptionsGroupModel>;
-export type OrderPayloadModel = PayloadType<OrderModel>;
-export type OrderProductPayloadModel = PayloadType<OrderProductModel>;
-export type OrderStatusPayloadModel = PayloadType<OrderStatusModel>;
-export type PagePayloadModel = PayloadType<PageModel>;
-export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
-export type PromoPayloadModel = PayloadType<PromoModel>;
-export type PromoCodePayloadModel = PayloadType<PromoCodeModel>;
-export type RolePayloadModel = PayloadType<RoleModel>;
-export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
-export type RubricPayloadModel = PayloadType<RubricModel>;
-export type RubricVariantPayloadModel = PayloadType<RubricVariantModel>;
-export type ShopPayloadModel = PayloadType<ShopModel>;
-export type SupplierPayloadModel = PayloadType<SupplierModel>;
-export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
-export type UserPayloadModel = PayloadType<UserModel>;
-export type SeoContentPayloadModel = PayloadType<SeoContentModel>;
-export type SessionLogPayloadModel = PayloadType<SessionLogModel>;
-export type TaskVariantPayloadModel = PayloadType<TaskVariantModel>;
-export type TaskPayloadModel = PayloadType<TaskModel>;
-
-export interface GiftCertificatePayloadModel extends PayloadType<GiftCertificateModel> {
-  notAuth?: boolean;
-}
-
-export interface ProductPayloadModel extends PayloadType<ProductFacetModel> {
-  barcodeDoubles?: BarcodeDoublesInterface[] | null;
-}
-
-export interface ShopProductPayloadModel extends PayloadType<ShopProductModel> {
-  barcodeDoubles?: ShopProductBarcodeDoublesInterface[] | null;
-}
-
-export interface CartPayloadModel {
-  success: boolean;
-  message: string;
-}
-
-// Lists payload
-export type ManufacturersAlphabetListModel = AlphabetListModelType<ManufacturerModel>;
-export type SuppliersAlphabetListModel = AlphabetListModelType<SupplierModel>;
-export type BrandsAlphabetListModel = AlphabetListModelType<BrandModel>;
-export type CategoriesAlphabetListModel = AlphabetListModelType<CategoryModel>;
-export type BrandCollectionsAlphabetListModel = AlphabetListModelType<BrandCollectionModel>;
-export type OptionAlphabetListModel = AlphabetListModelType<OptionModel>;
-
-// Pagination payload
-export type BrandsPaginationPayloadModel = PaginationPayloadType<BrandModel>;
-export type BrandCollectionsPaginationPayloadModel = PaginationPayloadType<BrandCollectionModel>;
-export type CitiesPaginationPayloadModel = PaginationPayloadType<CityModel>;
-export type CompaniesPaginationPayloadModel = PaginationPayloadType<CompanyModel>;
-export type ManufacturersPaginationPayloadModel = PaginationPayloadType<ManufacturerModel>;
-export type SuppliersPaginationPayloadModel = PaginationPayloadType<SupplierModel>;
-export type ShopProductsPaginationPayloadModel = PaginationPayloadType<ShopProductModel>;
-export type ShopsPaginationPayloadModel = PaginationPayloadType<ShopModel>;
-export type UsersPaginationPayloadModel = PayloadType<PaginationPayloadType<UserModel>>;
 
 // SEO
 export interface TextUniquenessApiResponseInterface {
@@ -1400,3 +1286,168 @@ export interface SessionLogModel {
   createdAt: DateModel;
   updatedAt: DateModel;
 }
+
+// events
+export interface EventRubricModel extends RubricBaseModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  companyId: ObjectIdModel;
+  nameI18n: TranslationModel;
+  descriptionI18n: TranslationModel;
+  shortDescriptionI18n: TranslationModel;
+  defaultTitleI18n: TranslationModel;
+  prefixI18n?: TranslationModel | null;
+  keywordI18n: TranslationModel;
+  gender: GenderModel;
+  slug: string;
+  active: boolean;
+  capitalise?: boolean | null;
+  attributesGroupIds: ObjectIdModel[];
+  cmsCardAttributeIds: ObjectIdModel[];
+  filterVisibleAttributeIds: ObjectIdModel[];
+  showRubricNameInProductTitle?: boolean | null;
+  icon?: string;
+  image?: string;
+}
+
+export interface EventFacetModel {
+  _id: ObjectIdModel;
+  itemId: string;
+  slug: string;
+  companySlug: string;
+  companyId: ObjectIdModel;
+  citySlug: string;
+  rubricId: ObjectIdModel;
+  rubricSlug: string;
+  filterSlugs: string[];
+  attributeIds: ObjectIdModel[];
+  startAt: DateModel;
+  endAt?: DateModel | null;
+}
+
+export interface EventSummaryModel extends CountersModel, TimestampModel, EventFacetModel {
+  nameI18n?: TranslationModel | null;
+  descriptionI18n?: TranslationModel | null;
+  mainImage: string;
+  assets: string[];
+  videos?: string[];
+  attributes: ProductSummaryAttributeModel[];
+  address: AddressModel;
+  seatsCount: number;
+  seatsAvailable: number;
+  price?: number | null;
+}
+
+// Payload
+export interface PayloadModel {
+  success: boolean;
+  message: string;
+  statusCode?: number | null;
+  type?: any;
+}
+
+export interface PayloadType<TModel> extends PayloadModel {
+  payload?: TModel | null;
+}
+
+export interface ConstructorAssetPayloadModel extends PayloadType<string> {
+  payload: string;
+}
+
+export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;
+export type AttributePayloadModel = PayloadType<AttributeModel>;
+export type BlogAttributePayloadModel = PayloadType<BlogAttributeModel>;
+export type BlogPostPayloadModel = PayloadType<BlogPostModel>;
+export type BrandPayloadModel = PayloadType<BrandModel>;
+export type BrandCollectionPayloadModel = PayloadType<BrandCollectionModel>;
+export type CategoryPayloadModel = PayloadType<CategoryModel>;
+export type CompanyPayloadModel = PayloadType<CompanyModel>;
+export type ConfigPayloadModel = PayloadType<ConfigModel>;
+export type CountryPayloadModel = PayloadType<CountryModel>;
+export type CurrencyPayloadModel = PayloadType<CurrencyModel>;
+export type LanguagePayloadModel = PayloadType<LanguageModel>;
+export type ManufacturerPayloadModel = PayloadType<ManufacturerModel>;
+export type MetricPayloadModel = PayloadType<MetricModel>;
+export type NavItemPayloadModel = PayloadType<NavItemModel>;
+export type OptionsGroupPayloadModel = PayloadType<OptionsGroupModel>;
+export type OrderPayloadModel = PayloadType<OrderModel>;
+export type OrderProductPayloadModel = PayloadType<OrderProductModel>;
+export type OrderStatusPayloadModel = PayloadType<OrderStatusModel>;
+export type PagePayloadModel = PayloadType<PageModel>;
+export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
+export type PromoPayloadModel = PayloadType<PromoModel>;
+export type PromoCodePayloadModel = PayloadType<PromoCodeModel>;
+export type RolePayloadModel = PayloadType<RoleModel>;
+export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
+export type RubricPayloadModel = PayloadType<RubricModel>;
+export type EventRubricPayloadModel = PayloadType<EventRubricModel>;
+export type EventPayloadModel = PayloadType<EventSummaryModel>;
+export type RubricVariantPayloadModel = PayloadType<RubricVariantModel>;
+export type ShopPayloadModel = PayloadType<ShopModel>;
+export type SupplierPayloadModel = PayloadType<SupplierModel>;
+export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
+export type UserPayloadModel = PayloadType<UserModel>;
+export type SeoContentPayloadModel = PayloadType<SeoContentModel>;
+export type SessionLogPayloadModel = PayloadType<SessionLogModel>;
+export type TaskVariantPayloadModel = PayloadType<TaskVariantModel>;
+export type TaskPayloadModel = PayloadType<TaskModel>;
+
+export interface GiftCertificatePayloadModel extends PayloadType<GiftCertificateModel> {
+  notAuth?: boolean;
+}
+
+export interface ProductPayloadModel extends PayloadType<ProductFacetModel> {
+  barcodeDoubles?: BarcodeDoublesInterface[] | null;
+}
+
+export interface ShopProductPayloadModel extends PayloadType<ShopProductModel> {
+  barcodeDoubles?: ShopProductBarcodeDoublesInterface[] | null;
+}
+
+export interface CartPayloadModel {
+  success: boolean;
+  message: string;
+}
+
+// Lists payload
+export interface AlphabetListModel {
+  letter: string;
+  type?: any;
+}
+
+export interface AlphabetListModelType<TModel> extends AlphabetListModel {
+  docs: TModel[];
+}
+
+export type ManufacturersAlphabetListModel = AlphabetListModelType<ManufacturerModel>;
+export type SuppliersAlphabetListModel = AlphabetListModelType<SupplierModel>;
+export type BrandsAlphabetListModel = AlphabetListModelType<BrandModel>;
+export type CategoriesAlphabetListModel = AlphabetListModelType<CategoryModel>;
+export type BrandCollectionsAlphabetListModel = AlphabetListModelType<BrandCollectionModel>;
+export type OptionAlphabetListModel = AlphabetListModelType<OptionModel>;
+
+// Pagination payload
+export interface PaginationPayloadModel {
+  sortBy: string;
+  sortDir: SortDirectionModel;
+  totalDocs: number;
+  totalActiveDocs: number;
+  limit: number;
+  page: number;
+  totalPages: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+  type?: any;
+}
+
+export interface PaginationPayloadType<TModel> extends PaginationPayloadModel {
+  docs: TModel[];
+}
+
+export type CitiesPaginationPayloadModel = PaginationPayloadType<CityModel>;
+export type CompaniesPaginationPayloadModel = PaginationPayloadType<CompanyModel>;
+export type ManufacturersPaginationPayloadModel = PaginationPayloadType<ManufacturerModel>;
+export type SuppliersPaginationPayloadModel = PaginationPayloadType<SupplierModel>;
+export type ShopProductsPaginationPayloadModel = PaginationPayloadType<ShopProductModel>;
+export type ShopsPaginationPayloadModel = PaginationPayloadType<ShopModel>;
+export type UsersPaginationPayloadModel = PayloadType<PaginationPayloadType<UserModel>>;

@@ -3,33 +3,20 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CompanyRubricCategoryDetails, {
   CompanyRubricCategoryDetailsInterface,
-} from '../../../../../../../../components/company/CompanyRubricCategoryDetails';
+} from 'components/company/CompanyRubricCategoryDetails';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
-} from '../../../../../../../../config/common';
-import {
-  COL_CATEGORIES,
-  COL_COMPANIES,
-  COL_ICONS,
-  COL_RUBRICS,
-} from '../../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../../db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  CategoryInterface,
-  CompanyInterface,
-} from '../../../../../../../../db/uiInterfaces';
-import CmsCategoryLayout from '../../../../../../../../layout/cms/CmsCategoryLayout';
-import { getFieldStringLocale } from '../../../../../../../../lib/i18n';
-import { getCmsCompanyLinks } from '../../../../../../../../lib/linkUtils';
-import { getCategoryAllSeoContents } from '../../../../../../../../lib/seoContentUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../../lib/ssrUtils';
-import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
+} from 'lib/config/common';
+import { COL_CATEGORIES, COL_COMPANIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CategoryInterface, CompanyInterface } from 'db/uiInterfaces';
+import CmsCategoryLayout from 'components/layout/cms/CmsCategoryLayout';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getCategoryAllSeoContents } from 'lib/seoContentUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 interface CategoryDetailsInterface extends CompanyRubricCategoryDetailsInterface {}
 

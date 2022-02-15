@@ -5,13 +5,13 @@ import {
   DEFAULT_COMPANY_SLUG,
   FILTER_SEPARATOR,
   SORT_DESC,
-} from '../config/common';
+} from './config/common';
 import { COL_PROMO, COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
 import {
   ignoreNoImageStage,
   shopProductsGroupPipeline,
   summaryPipeline,
-} from '../db/dao/constantPipelines';
+} from 'db/utils/constantPipelines';
 import { getDatabase } from '../db/mongodb';
 import {
   CompanyInterface,
@@ -24,7 +24,7 @@ import {
   ShopProductInterface,
   TopFilterInterface,
 } from '../db/uiInterfaces';
-import { getProjectLinks } from './getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from './i18n';
 import { noNaN } from './numbers';
 import { phoneToRaw, phoneToReadable } from './phoneUtils';

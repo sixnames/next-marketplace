@@ -1,11 +1,11 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { updateAttributeInGroupSchema } from '../../../validation/attributesGroupSchema';
+} from 'lib/sessionHelpers';
+import { updateAttributeInGroupSchema } from 'validation/attributesGroupSchema';
 import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_METRICS } from '../../collectionNames';
 import {
   AttributeModel,
@@ -15,7 +15,7 @@ import {
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
-import { findDocumentByI18nField } from '../findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import { CreateAttributeInputInterface } from './createAttribute';
 
 export interface UpdateAttributeInputInterface extends CreateAttributeInputInterface {

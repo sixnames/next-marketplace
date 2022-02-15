@@ -5,8 +5,8 @@ import {
   TEXT_HORIZONTAL_ALIGN_OPTIONS,
   TEXT_HORIZONTAL_FLEX_OPTIONS,
   TEXT_VERTICAL_FLEX_OPTIONS,
-} from '../../../config/common';
-import { PromoModel } from '../../../db/dbModels';
+} from 'lib/config/common';
+import { PromoModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();

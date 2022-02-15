@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
-import { VIEWS_COUNTER_STEP } from '../../../config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getRequestParams, getSessionRole } from '../../../lib/sessionHelpers';
+import { VIEWS_COUNTER_STEP } from 'lib/config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { COL_BLOG_POSTS } from '../../collectionNames';
 import { BlogPostPayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

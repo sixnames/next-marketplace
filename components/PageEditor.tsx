@@ -20,8 +20,8 @@ import { CellPlugin } from '@react-page/editor/lib/core/types/plugins';
 // video
 // import html5video from '@react-page/plugins-html5-video';
 import video from '@react-page/plugins-video';
-import { PAGE_EDITOR_DEFAULT_VALUE } from '../config/common';
-import { useLocaleContext } from '../context/localeContext';
+import { PAGE_EDITOR_DEFAULT_VALUE } from '../lib/config/common';
+import { useLocaleContext } from './context/localeContext';
 
 // text color
 const customSlatePlugin = pluginFactories.createComponentPlugin<{

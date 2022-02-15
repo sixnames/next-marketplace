@@ -1,5 +1,5 @@
-import { DEFAULT_COMPANY_SLUG, ROLE_SLUG_ADMIN, TASK_STATE_PENDING } from 'config/common';
-import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { DEFAULT_COMPANY_SLUG, ROLE_SLUG_ADMIN, TASK_STATE_PENDING } from 'lib/config/common';
+import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import { COL_TASKS } from 'db/collectionNames';
 import {
   JSONObjectModel,

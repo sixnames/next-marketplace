@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { DEFAULT_LOCALE } from '../../config/common';
+import { DEFAULT_LOCALE } from '../../lib/config/common';
 import { PagesGroupInterface } from '../../db/uiInterfaces';
 import { useCreatePagesGroup, useUpdatePagesGroup } from '../../hooks/mutations/usePageMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';

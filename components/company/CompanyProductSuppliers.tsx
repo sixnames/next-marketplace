@@ -1,8 +1,8 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { getConstantTranslation } from '../../config/constantTranslations';
-import { CONFIRM_MODAL, SHOP_PRODUCT_SUPPLIER_MODAL } from '../../config/modalVariants';
-import { useLocaleContext } from '../../context/localeContext';
+import { getConstantTranslation } from '../../lib/config/constantTranslations';
+import { CONFIRM_MODAL, SHOP_PRODUCT_SUPPLIER_MODAL } from '../../lib/config/modalVariants';
+import { useLocaleContext } from '../context/localeContext';
 import { ShopProductInterface, SupplierProductInterface } from '../../db/uiInterfaces';
 import { useDeleteShopProductSupplierMutation } from '../../generated/apolloComponents';
 import { useUpdateManyShopProducts } from '../../hooks/mutations/useShopProductMutations';

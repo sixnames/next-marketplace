@@ -6,7 +6,7 @@ import {
   DEFAULT_LOCALE,
   FILTER_SEPARATOR,
   SORT_ASC,
-} from 'config/common';
+} from 'lib/config/common';
 import { COL_CATEGORIES, COL_CONFIGS } from 'db/collectionNames';
 import { CategoryModel, ConfigModel, ConfigPayloadModel, ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

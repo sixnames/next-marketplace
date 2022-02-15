@@ -4,8 +4,8 @@ import {
   UsersSearchModalControlsInterface,
   UsersSearchModalInterface,
 } from '../components/Modal/UsersSearchModal';
-import { USERS_SEARCH_MODAL } from '../config/modalVariants';
-import { useAppContext } from '../context/appContext';
+import { USERS_SEARCH_MODAL } from '../lib/config/modalVariants';
+import { useAppContext } from '../components/context/appContext';
 
 export function useUserSearchModal() {
   const { showModal } = useAppContext();

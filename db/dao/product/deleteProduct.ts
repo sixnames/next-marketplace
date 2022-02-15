@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb';
-import { deleteProductAlgoliaObjects } from '../../../lib/algolia/productAlgoliaUtils';
-import { deleteUpload } from '../../../lib/assetUtils/assetUtils';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { deleteProductAlgoliaObjects } from 'lib/algolia/productAlgoliaUtils';
+import { deleteUpload } from 'lib/assetUtils/assetUtils';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import {
   COL_PRODUCT_FACETS,
   COL_RUBRICS,

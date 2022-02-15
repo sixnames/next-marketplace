@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useConfigContext } from '../context/configContext';
+import { useConfigContext } from './context/configContext';
 import { SeoContentInterface } from '../db/uiInterfaces';
 import { useUpdateSeoContent } from '../hooks/mutations/useSeoContentMutations';
 import WpCheckbox from './FormElements/Checkbox/WpCheckbox';

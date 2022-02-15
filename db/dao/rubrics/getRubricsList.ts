@@ -1,9 +1,10 @@
-import { sortObjectsByField } from '../../../lib/arrayUtils';
-import { getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_RUBRICS } from '../../collectionNames';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface, RubricInterface } from '../../uiInterfaces';
-import { castRubricForUI } from './castRubricForUI';
+import { SORT_DESC } from 'lib/config/common';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { getRequestParams } from 'lib/sessionHelpers';
+import { COL_RUBRICS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface, RubricInterface } from 'db/uiInterfaces';
+import { castRubricForUI } from 'db/cast/castRubricForUI';
 
 export interface GetRubricsListInputInterface {}
 
@@ -16,7 +17,13 @@ export async function getRubricsList({
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
 
     const rubricsAggregationResult = await rubricsCollection
-      .aggregate<RubricInterface>([])
+      .aggregate<RubricInterface>([
+        {
+          $sort: {
+            _id: SORT_DESC,
+          },
+        },
+      ])
       .toArray();
 
     const rubrics = rubricsAggregationResult.map((rubric) => {
@@ -25,7 +32,7 @@ export async function getRubricsList({
 
     return sortObjectsByField(rubrics, 'name');
   } catch (e) {
-    console.log(e);
+    console.log('getRubricsList error', e);
     return [];
   }
 }

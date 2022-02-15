@@ -5,7 +5,7 @@ import {
   objectIdSchema,
   requiredNumberSchema,
   requiredStringTranslationSchema,
-} from './schemaTemplates';
+} from 'validation/utils/schemaTemplates';
 
 export const userCategoryIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.userCategories.id' });

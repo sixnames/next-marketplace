@@ -8,22 +8,18 @@ import {
   ORDER_DELIVERY_VARIANT_PICKUP,
   ORDER_PAYMENT_VARIANT_RECEIPT,
   ROLE_SLUG_GUEST,
-} from '../../../config/common';
-import { sendOrderCreatedEmail } from '../../../lib/email/sendOrderCreatedEmail';
-import { sendSignUpEmail } from '../../../lib/email/sendSignUpEmail';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getUserInitialNotificationsConf } from '../../../lib/getUserNotificationsTemplate';
-import { getNextItemId, getOrderNextItemId } from '../../../lib/itemIdUtils';
-import { noNaN } from '../../../lib/numbers';
-import { phoneToRaw } from '../../../lib/phoneUtils';
-import { countDiscountedPrice, getOrderDiscountedPrice } from '../../../lib/priceUtils';
-import {
-  getRequestParams,
-  getResolverValidationSchema,
-  getSessionUser,
-} from '../../../lib/sessionHelpers';
-import { sendOrderCreatedSms } from '../../../lib/sms/sendOrderCreatedSms';
-import { makeAnOrderSchema } from '../../../validation/orderSchema';
+} from 'lib/config/common';
+import { sendOrderCreatedEmail } from 'lib/email/sendOrderCreatedEmail';
+import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
+import { getNextItemId, getOrderNextItemId } from 'lib/itemIdUtils';
+import { noNaN } from 'lib/numbers';
+import { phoneToRaw } from 'lib/phoneUtils';
+import { countDiscountedPrice, getOrderDiscountedPrice } from 'lib/priceUtils';
+import { getRequestParams, getResolverValidationSchema, getSessionUser } from 'lib/sessionHelpers';
+import { sendOrderCreatedSms } from 'lib/sms/sendOrderCreatedSms';
+import { makeAnOrderSchema } from 'validation/orderSchema';
 import {
   COL_CARTS,
   COL_COMPANIES,

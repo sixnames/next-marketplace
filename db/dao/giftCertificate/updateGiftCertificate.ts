@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
-import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_CITY, DEFAULT_LOCALE } from 'lib/config/common';
 import { sendGiftCertificateEmail } from 'lib/email/sendGiftCertificateEmail';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { COL_GIFT_CERTIFICATES, COL_USERS } from 'db/collectionNames';
 import { GiftCertificateModel, GiftCertificatePayloadModel, UserModel } from 'db/dbModels';

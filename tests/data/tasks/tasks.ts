@@ -1,4 +1,4 @@
-import { DEFAULT_COMPANY_SLUG, TASK_STATE_PENDING } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, TASK_STATE_PENDING } from 'lib/config/common';
 import {
   TASK_VARIANT_SLUG_PRODUCT_ASSETS,
   TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
@@ -7,7 +7,7 @@ import {
   TASK_VARIANT_SLUG_PRODUCT_DETAILS,
   TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
   TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
-} from 'config/constantSelects';
+} from 'lib/config/constantSelects';
 import { TaskModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ConsoleRubricProductCategories from '../../../../../../../components/console/ConsoleRubricProductCategories';
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProductCategories';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { COL_CATEGORIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -10,8 +10,8 @@ import {
   ProductCategoryInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
-import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
-import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

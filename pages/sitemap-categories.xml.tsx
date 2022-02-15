@@ -1,3 +1,4 @@
+import { castConfigs } from 'db/cast/castConfigs';
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
 import { getDomain } from 'tldts';
@@ -10,18 +11,13 @@ import {
   DEFAULT_LOCALE,
   FILTER_CATEGORY_KEY,
   FILTER_SEPARATOR,
-} from 'config/common';
+} from 'lib/config/common';
 import { COL_COMPANIES, COL_CONFIGS, COL_RUBRICS, COL_SEO_CONTENTS } from 'db/collectionNames';
 import { CompanyModel, ConfigModel, RubricModel, SeoContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { getCatalogueData } from 'lib/catalogueUtils';
-import {
-  castConfigs,
-  getConfigBooleanValue,
-  getConfigListValue,
-  getConfigNumberValue,
-} from 'lib/configsUtils';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getCatalogueData } from 'db/utils/catalogueUtils';
+import { getConfigBooleanValue, getConfigListValue, getConfigNumberValue } from 'lib/configsUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 const SitemapXml: React.FC = () => {
   return <div />;

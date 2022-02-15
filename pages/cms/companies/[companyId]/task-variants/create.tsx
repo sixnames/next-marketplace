@@ -3,18 +3,14 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import CreateTaskVariantForm, {
   CreateTaskVariantFormInterface,
-} from '../../../../../components/console/CreateTaskVariantForm';
-import { COL_COMPANIES } from '../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
-import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+} from 'components/console/CreateTaskVariantForm';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CreateTaskVariantConsumerInterface extends CreateTaskVariantFormInterface {
   pageCompany: CompanyInterface;

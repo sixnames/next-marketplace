@@ -3,14 +3,14 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
-import FixedButtons from '../../../components/button/FixedButtons';
-import WpButton from '../../../components/button/WpButton';
-import FormikCheckboxLine from '../../../components/FormElements/Checkbox/FormikCheckboxLine';
-import FormikInput from '../../../components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from '../../../components/FormElements/Input/FormikTranslationsInput';
-import FormikLayoutSelect from '../../../components/FormElements/Select/FormikLayoutSelect';
-import Inner from '../../../components/Inner';
-import WpTitle from '../../../components/WpTitle';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
+import FormikInput from 'components/FormElements/Input/FormikInput';
+import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
+import FormikLayoutSelect from 'components/FormElements/Select/FormikLayoutSelect';
+import Inner from 'components/Inner';
+import WpTitle from 'components/WpTitle';
 import {
   CARD_LAYOUT_OPTIONS,
   CATALOGUE_FILTER_LAYOUT_OPTIONS,
@@ -19,26 +19,22 @@ import {
   GRID_SNIPPET_LAYOUT_OPTIONS,
   NAV_DROPDOWN_LAYOUT_OPTIONS,
   ROW_SNIPPET_LAYOUT_OPTIONS,
-} from '../../../config/constantSelects';
-import { COL_RUBRIC_VARIANTS } from '../../../db/collectionNames';
-import { getDatabase } from '../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, RubricVariantInterface } from '../../../db/uiInterfaces';
+} from 'lib/config/constantSelects';
+import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, RubricVariantInterface } from 'db/uiInterfaces';
 import {
   UpdateRubricVariantInput,
   useUpdateRubricVariantMutation,
-} from '../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
-import useValidationSchema from '../../../hooks/useValidationSchema';
-import AppContentWrapper from '../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../lib/ssrUtils';
-import { updateRubricVariantSchema } from '../../../validation/rubricVariantSchema';
+} from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { updateRubricVariantSchema } from 'validation/rubricVariantSchema';
 
 interface RubricVariantConsumerInterface {
   rubricVariant: RubricVariantInterface;

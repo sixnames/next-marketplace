@@ -1,6 +1,6 @@
 import { ProductVariantInterface, ProductVariantItemInterface } from '../../uiInterfaces';
 import { castAttributeForUI } from '../attributes/castAttributesGroupForUI';
-import { castOptionForUI } from '../options/castOptionForUI';
+import { castOptionForUI } from 'db/cast/castOptionForUI';
 
 interface CastProductVariantForUI {
   variant: ProductVariantInterface;

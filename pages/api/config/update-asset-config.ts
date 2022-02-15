@@ -6,14 +6,14 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   REQUEST_METHOD_DELETE,
-} from '../../../config/common';
-import { COL_CONFIGS } from '../../../db/collectionNames';
-import { ConfigModel } from '../../../db/dbModels';
-import { getDatabase } from '../../../db/mongodb';
-import { getApiMessageValue } from '../../../db/dao/messages/apiMessageUtils';
-import { storeUploads } from '../../../lib/assetUtils/assetUtils';
-import { parseRestApiFormData } from '../../../lib/restApi';
-import { getOperationPermission } from '../../../lib/sessionHelpers';
+} from 'lib/config/common';
+import { COL_CONFIGS } from 'db/collectionNames';
+import { ConfigModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { getApiMessageValue } from 'db/utils/apiMessageUtils';
+import { storeUploads } from 'lib/assetUtils/assetUtils';
+import { parseRestApiFormData } from 'lib/restApi';
+import { getOperationPermission } from 'lib/sessionHelpers';
 
 export const config = {
   api: {

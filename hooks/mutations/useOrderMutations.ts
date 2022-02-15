@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH } from '../../config/common';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH } from '../../lib/config/common';
 import { CancelOrderInputInterface } from '../../db/dao/orders/cancelOrder';
 import { CancelOrderProductInputInterface } from '../../db/dao/orders/cancelOrderProduct';
 import { ConfirmOrderInputInterface } from '../../db/dao/orders/confirmOrder';

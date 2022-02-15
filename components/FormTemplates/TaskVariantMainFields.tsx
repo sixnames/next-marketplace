@@ -6,10 +6,10 @@ import {
   TASK_PRICE_SLUGS,
   TASK_PRICE_TARGETS,
   TASK_VARIANT_SLUGS,
-} from '../../config/constantSelects';
-import { CONFIRM_MODAL, TASK_VARIANT_PRICE_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
-import { useLocaleContext } from '../../context/localeContext';
+} from '../../lib/config/constantSelects';
+import { CONFIRM_MODAL, TASK_VARIANT_PRICE_MODAL } from '../../lib/config/modalVariants';
+import { useAppContext } from '../context/appContext';
+import { useLocaleContext } from '../context/localeContext';
 import { CreateTaskVariantInputInterface } from '../../db/dao/tasks/createTaskVariant';
 import { TaskVariantPriceModel } from '../../db/dbModels';
 import ContentItemControls from '../button/ContentItemControls';

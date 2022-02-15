@@ -1,4 +1,4 @@
-import { DEFAULT_CURRENCY, SORT_ASC, SORT_DESC } from '../config/common';
+import { DEFAULT_CURRENCY, SORT_ASC, SORT_DESC } from './config/common';
 import { COL_CITIES, COL_LANGUAGES } from '../db/collectionNames';
 import { CityModel, LanguageModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';

@@ -6,7 +6,7 @@ import {
   OPTIONS_GROUP_VARIANT_COLOR,
   OPTIONS_GROUP_VARIANT_ENUMS,
   SORT_ASC,
-} from '../config/common';
+} from '../lib/config/common';
 import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
@@ -15,7 +15,7 @@ import {
   COL_SHOP_PRODUCTS,
   COL_PRODUCT_SUMMARIES,
 } from '../db/collectionNames';
-import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import {
   AttributeModel,
   OptionModel,

@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { USERS_SEARCH_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
+import { USERS_SEARCH_MODAL } from '../../lib/config/modalVariants';
+import { useAppContext } from '../context/appContext';
 import { UpdateGiftCertificateInputInterface } from '../../db/dao/giftCertificate/updateGiftCertificate';
 import { CompanyInterface, GiftCertificateInterface } from '../../db/uiInterfaces';
 import { useUpdateGiftCertificateMutation } from '../../hooks/mutations/useGiftCertificateMutations';

@@ -1,8 +1,5 @@
-import {
-  ORDER_DELIVERY_VARIANT_PICKUP,
-  ORDER_PAYMENT_VARIANT_RECEIPT,
-} from '../../../config/common';
-import { OrderModel } from '../../../db/dbModels';
+import { ORDER_DELIVERY_VARIANT_PICKUP, ORDER_PAYMENT_VARIANT_RECEIPT } from 'lib/config/common';
+import { OrderModel } from 'db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 
 const orders: OrderModel[] = [

@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { DEFAULT_PAGE, FILTER_PAGE_KEY, FILTER_SEPARATOR } from '../../../config/common';
+import { DEFAULT_PAGE, FILTER_PAGE_KEY, FILTER_SEPARATOR } from 'lib/config/common';
 import FormikIndividualSearch from './FormikIndividualSearch';
 
 interface FormikRouterSearchInterface {

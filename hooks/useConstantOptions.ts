@@ -6,8 +6,8 @@ import {
   getIconOptions,
   getOptionsGroupVariantsOptions,
   ISO_LANGUAGES,
-} from '../config/constantSelects';
-import { useLocaleContext } from '../context/localeContext';
+} from '../lib/config/constantSelects';
+import { useLocaleContext } from '../components/context/localeContext';
 
 export const useConstantOptions = () => {
   const { locale } = useLocaleContext();

@@ -6,7 +6,7 @@ import {
   TEXT_HORIZONTAL_ALIGN_OPTIONS,
   TEXT_HORIZONTAL_FLEX_OPTIONS,
   TEXT_VERTICAL_FLEX_OPTIONS,
-} from '../../config/common';
+} from '../../lib/config/common';
 import { CompanyInterface, PromoInterface } from '../../db/uiInterfaces';
 import { useUpdatePromo } from '../../hooks/mutations/usePromoMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';

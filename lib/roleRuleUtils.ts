@@ -141,6 +141,19 @@ export type RoleRuleSlugType =
   | 'updateRubric'
   | 'deleteRubric'
 
+  // Event rubric
+  | 'createEventRubric'
+  | 'updateEventRubric'
+  | 'deleteEventRubric'
+
+  // Event
+  | 'createEvent'
+  | 'updateEvent'
+  | 'deleteEvent'
+  | 'updateEventAttributes'
+  | 'updateEventAssets'
+  | 'updateEventSeoContent'
+
   // Category
   | 'createCategory'
   | 'updateCategory'
@@ -962,6 +975,82 @@ export const roleRulesBase: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление рубрики',
+    },
+  },
+
+  // Event rubric
+  {
+    allow: false,
+    slug: 'createEventRubric',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание рубрики мероприятий',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateEventRubric',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление рубрики мероприятий',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteEventRubric',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление рубрики мероприятий',
+    },
+  },
+
+  // Event
+  {
+    allow: false,
+    slug: 'createEvent',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание мероприятия',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateEvent',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление мероприятия',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteEvent',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление мероприятия',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateEventAttributes',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление атрибутов мероприятия',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateEventAssets',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление изображений мероприятия',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateEventSeoContent',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление СЕО контента мероприятия',
     },
   },
 

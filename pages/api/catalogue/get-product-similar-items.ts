@@ -1,18 +1,18 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { DEFAULT_COMPANY_SLUG, SORT_DESC } from '../../../config/common';
-import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+import { DEFAULT_COMPANY_SLUG, SORT_DESC } from 'lib/config/common';
+import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   ignoreNoImageStage,
   shopProductsGroupPipeline,
   summaryPipeline,
-} from '../../../db/dao/constantPipelines';
-import { ProductFacetModel } from '../../../db/dbModels';
-import { getDatabase } from '../../../db/mongodb';
-import { ShopProductInterface } from '../../../db/uiInterfaces';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { noNaN } from '../../../lib/numbers';
-import { getRequestParams, getSessionCompanySlug } from '../../../lib/sessionHelpers';
+} from 'db/utils/constantPipelines';
+import { ProductFacetModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { ShopProductInterface } from 'db/uiInterfaces';
+import { getFieldStringLocale } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
+import { getRequestParams, getSessionCompanySlug } from 'lib/sessionHelpers';
 
 const fullPercentage = 100;
 const filterPercentage = 50;

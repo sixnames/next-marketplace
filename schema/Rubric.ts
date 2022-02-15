@@ -32,7 +32,6 @@ export const Rubric = objectType({
     t.nonNull.objectId('variantId');
     t.nonNull.json('views');
     t.boolean('capitalise');
-    t.nonNull.json('priorities');
     t.nonNull.json('defaultTitleI18n');
     t.json('prefixI18n');
     t.nonNull.json('keywordI18n');

@@ -6,7 +6,7 @@ import DatePicker, {
 } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ru from 'date-fns/locale/ru';
-import { DATE_FORMAT_DATE, DEFAULT_LOCALE } from '../../config/common';
+import { DATE_FORMAT_DATE, DEFAULT_LOCALE } from '../../lib/config/common';
 import { InputTheme } from '../../types/clientTypes';
 import { IconType } from '../../types/iconTypes';
 import ButtonCross from '../button/ButtonCross';

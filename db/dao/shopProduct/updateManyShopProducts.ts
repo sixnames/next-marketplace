@@ -1,13 +1,13 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { checkShopProductBarcodeIntersects } from '../../../lib/productUtils';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { checkShopProductBarcodeIntersects } from 'lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { getUpdatedShopProductPrices } from '../../../lib/shopUtils';
-import { updateManyShopProductsSchema } from '../../../validation/shopSchema';
+} from 'lib/sessionHelpers';
+import { getUpdatedShopProductPrices } from 'lib/shopUtils';
+import { updateManyShopProductsSchema } from 'validation/shopSchema';
 import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../../collectionNames';
 import { ProductFacetModel, ShopProductModel, ShopProductPayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

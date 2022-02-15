@@ -5,10 +5,10 @@ import {
   ATTRIBUTE_VARIANTS_ENUMS,
   ATTRIBUTE_VIEW_VARIANTS_ENUMS,
   DEFAULT_LOCALE,
-} from '../config/common';
-import { getFieldValidationMessage } from '../lib/getFieldValidationMessage';
+} from '../lib/config/common';
+import { getFieldValidationMessage } from 'validation/utils/getFieldValidationMessage';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
-import { objectIdSchema, requiredStringTranslationSchema } from './schemaTemplates';
+import { objectIdSchema, requiredStringTranslationSchema } from 'validation/utils/schemaTemplates';
 
 export const attributesGroupIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.attributesGroups.id' });

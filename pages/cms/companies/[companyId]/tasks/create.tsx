@@ -1,22 +1,16 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import CreateTaskForm, {
-  CreateTaskFormInterface,
-} from '../../../../../components/console/CreateTaskForm';
-import { DEFAULT_COMPANY_SLUG } from '../../../../../config/common';
-import { COL_COMPANIES } from '../../../../../db/collectionNames';
-import { getCompanyTaskVariantsListSsr } from '../../../../../db/dao/ssr/getCompanyTaskVariantsListSsr';
-import { getDatabase } from '../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
-import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+import CreateTaskForm, { CreateTaskFormInterface } from 'components/console/CreateTaskForm';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CreateTaskConsumerInterface extends CreateTaskFormInterface {
   pageCompany: CompanyInterface;

@@ -1,26 +1,22 @@
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ConsoleRubricProductCategories from '../../../../../../../../../components/console/ConsoleRubricProductCategories';
-import { COL_CATEGORIES, COL_COMPANIES } from '../../../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../../../db/mongodb';
+import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProductCategories';
+import { COL_CATEGORIES, COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CategoryInterface,
   CompanyInterface,
   ProductCategoryInterface,
   ProductSummaryInterface,
-} from '../../../../../../../../../db/uiInterfaces';
-import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
-import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
-import { getFullProductSummary } from '../../../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../../../lib/ssrUtils';
-import { getTreeFromList } from '../../../../../../../../../lib/treeUtils';
+} from 'db/uiInterfaces';
+import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getFullProductSummary } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 
 interface ProductCategoriesInterface {
   product: ProductSummaryInterface;

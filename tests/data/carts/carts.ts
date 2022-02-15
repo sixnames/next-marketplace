@@ -1,4 +1,4 @@
-import { CartModel } from '../../../db/dbModels';
+import { CartModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const carts: CartModel[] = [

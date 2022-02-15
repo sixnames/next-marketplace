@@ -1,13 +1,17 @@
 import { useRouter } from 'next/router';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
-import { useNotificationsContext } from 'context/notificationsContext';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from 'lib/config/common';
+import { useNotificationsContext } from 'components/context/notificationsContext';
 import { AddCartProductInputInterface } from 'db/dao/cart/addCartProduct';
 import { DeleteCartProductInputInterface } from 'db/dao/cart/deleteCartProduct';
 import { RepeatOrderInputInterface } from 'db/dao/cart/repeatOrder';
 import { UpdateCartProductInputInterface } from 'db/dao/cart/updateCartProduct';
 import { MakeAnOrderInputInterface, MakeAnOrderPayloadModel } from 'db/dao/orders/makeAnOrder';
 import { CartPayloadModel } from 'db/dbModels';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { useMutationHandler } from './useFetch';
 
 export const cartApiRouteBasePath = '/api/cart';

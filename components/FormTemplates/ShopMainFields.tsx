@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useConfigContext } from '../../context/configContext';
+import { useConfigContext } from '../context/configContext';
 import FormikAddressInput from '../FormElements/Input/FormikAddressInput';
 import FormikInput from '../FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../FormElements/Input/FormikMultiLineInput';

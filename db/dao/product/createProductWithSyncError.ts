@@ -1,14 +1,14 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_LOCALE, IMAGE_FALLBACK } from '../../../config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getNextItemId } from '../../../lib/itemIdUtils';
+import { DEFAULT_LOCALE, IMAGE_FALLBACK } from 'lib/config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getNextItemId } from 'lib/itemIdUtils';
 import {
   castSummaryToFacet,
   castSummaryToShopProduct,
   checkBarcodeIntersects,
-} from '../../../lib/productUtils';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
+} from 'lib/productUtils';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import {
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCT_FACETS,

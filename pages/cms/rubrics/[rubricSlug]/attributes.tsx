@@ -1,47 +1,39 @@
+import { useAppContext } from 'components/context/appContext';
+import {
+  useDeleteAttributesGroupFromRubric,
+  useToggleAttributeInRubricFilter,
+  useToggleCmsCardAttributeInRubric,
+} from 'hooks/mutations/useRubricMutations';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ContentItemControls from '../../../../components/button/ContentItemControls';
-import FixedButtons from '../../../../components/button/FixedButtons';
-import WpButton from '../../../../components/button/WpButton';
-import WpCheckbox from '../../../../components/FormElements/Checkbox/WpCheckbox';
-import Inner from '../../../../components/Inner';
-import { AddAttributesGroupToRubricModalInterface } from '../../../../components/Modal/AddAttributesGroupToRubricModal';
-import WpAccordion from '../../../../components/WpAccordion';
-import WpTable, { WpTableColumn } from '../../../../components/WpTable';
-import { getConstantTranslation } from '../../../../config/constantTranslations';
-import {
-  ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
-  CONFIRM_MODAL,
-} from '../../../../config/modalVariants';
-import { useLocaleContext } from '../../../../context/localeContext';
-import { COL_ATTRIBUTES_GROUPS, COL_RUBRICS } from '../../../../db/collectionNames';
-import { rubricAttributeGroupsPipeline } from '../../../../db/dao/constantPipelines';
-import { castRubricForUI } from '../../../../db/dao/rubrics/castRubricForUI';
-import { RubricModel } from '../../../../db/dbModels';
-import { getDatabase } from '../../../../db/mongodb';
+import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import WpCheckbox from 'components/FormElements/Checkbox/WpCheckbox';
+import Inner from 'components/Inner';
+import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
+import WpAccordion from 'components/WpAccordion';
+import WpTable, { WpTableColumn } from 'components/WpTable';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
+import { useLocaleContext } from 'components/context/localeContext';
+import { COL_ATTRIBUTES_GROUPS, COL_RUBRICS } from 'db/collectionNames';
+import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
+import { castRubricForUI } from 'db/cast/castRubricForUI';
+import { RubricModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   AttributeInterface,
   AttributesGroupInterface,
   RubricInterface,
-} from '../../../../db/uiInterfaces';
-import {
-  useAddAttributesGroupToRubricMutation,
-  useDeleteAttributesGroupFromRubricMutation,
-  useToggleCmsCardAttributeInRubricMutation,
-  useUpdateAttributeInRubricMutation,
-} from '../../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
-import CmsRubricLayout from '../../../../layout/cms/CmsRubricLayout';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { sortObjectsByField } from '../../../../lib/arrayUtils';
-import { getFieldStringLocale } from '../../../../lib/i18n';
-import { getConsoleRubricLinks } from '../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
+} from 'db/uiInterfaces';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface RubricAttributesConsumerInterface {
   rubric: RubricInterface;
@@ -53,30 +45,11 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
   attributeGroups,
 }) => {
   const { locale } = useLocaleContext();
-  const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
-    withModal: true,
-    reload: true,
-  });
+  const { showModal } = useAppContext();
 
-  const [deleteAttributesGroupFromRubricMutation] = useDeleteAttributesGroupFromRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteAttributesGroupFromRubric),
-    onError: onErrorCallback,
-  });
-
-  const [addAttributesGroupToRubricMutation] = useAddAttributesGroupToRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.addAttributesGroupToRubric),
-    onError: onErrorCallback,
-  });
-
-  const [updateAttributeInRubricMutation] = useUpdateAttributeInRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateAttributeInRubric),
-    onError: onErrorCallback,
-  });
-
-  const [toggleCmsCardAttributeInRubricMutation] = useToggleCmsCardAttributeInRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.toggleCmsCardAttributeInRubric),
-    onError: onErrorCallback,
-  });
+  const [deleteAttributesGroupFromRubricMutation] = useDeleteAttributesGroupFromRubric();
+  const [toggleCmsCardAttributeInRubricMutation] = useToggleCmsCardAttributeInRubric();
+  const [toggleAttributeInRubricFilterMutation] = useToggleAttributeInRubricFilter();
 
   const columns: WpTableColumn<AttributeInterface>[] = [
     {
@@ -105,14 +78,10 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
             name={dataItem.slug}
             checked={checked}
             onChange={() => {
-              updateAttributeInRubricMutation({
-                variables: {
-                  input: {
-                    attributeIds: [dataItem._id],
-                    attributesGroupId: dataItem.attributesGroupId,
-                    rubricId: rubric._id,
-                  },
-                },
+              toggleAttributeInRubricFilterMutation({
+                attributeIds: [`${dataItem._id}`],
+                attributesGroupId: `${dataItem.attributesGroupId}`,
+                rubricId: `${rubric._id}`,
               }).catch(console.log);
             }}
           />
@@ -132,15 +101,10 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
             checked={checked}
             testId={`${dataItem.name}`}
             onChange={() => {
-              showLoading();
               toggleCmsCardAttributeInRubricMutation({
-                variables: {
-                  input: {
-                    attributeIds: [dataItem._id],
-                    attributesGroupId: dataItem.attributesGroupId,
-                    rubricId: rubric._id,
-                  },
-                },
+                attributeIds: [`${dataItem._id}`],
+                attributesGroupId: `${dataItem.attributesGroupId}`,
+                rubricId: `${rubric._id}`,
               }).catch(console.log);
             }}
           />
@@ -172,9 +136,9 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
       <Inner testId={'rubric-attributes'}>
         {(rubric.attributesGroups || []).map((attributesGroup) => {
           const { name, attributes, _id } = attributesGroup;
-          const allAttributeIds = (attributes || []).map(({ _id }) => _id);
+          const allAttributeIds = (attributes || []).map(({ _id }) => `${_id}`);
           const selectedCmsViewInGroup = (rubric.cmsCardAttributeIds || []).filter((_id) => {
-            return allAttributeIds.some((attributeId) => attributeId === _id);
+            return allAttributeIds.some((attributeId) => `${attributeId}` === `${_id}`);
           });
           const isDeleteAll = selectedCmsViewInGroup.length > 0;
           return (
@@ -188,15 +152,10 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                       size='small'
                       theme='secondary'
                       onClick={() => {
-                        showLoading();
                         toggleCmsCardAttributeInRubricMutation({
-                          variables: {
-                            input: {
-                              attributeIds: isDeleteAll ? [] : allAttributeIds,
-                              attributesGroupId: attributesGroup._id,
-                              rubricId: rubric._id,
-                            },
-                          },
+                          attributeIds: isDeleteAll ? [] : allAttributeIds,
+                          attributesGroupId: `${attributesGroup._id}`,
+                          rubricId: `${rubric._id}`,
                         }).catch(console.log);
                       }}
                     >
@@ -214,15 +173,10 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                             testId: 'attributes-group-delete-modal',
                             message: `Вы уверены, что хотите удалить группу атрибутов ${attributesGroup.name} из рубрики?`,
                             confirm: () => {
-                              showLoading();
-                              return deleteAttributesGroupFromRubricMutation({
-                                variables: {
-                                  input: {
-                                    rubricId: rubric._id,
-                                    attributesGroupId: attributesGroup._id,
-                                  },
-                                },
-                              });
+                              deleteAttributesGroupFromRubricMutation({
+                                rubricId: `${rubric._id}`,
+                                attributesGroupId: `${attributesGroup._id}`,
+                              }).catch(console.log);
                             },
                           },
                         });
@@ -255,14 +209,6 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                   testId: 'add-attributes-group-to-rubric-modal',
                   rubricId: `${rubric._id}`,
                   attributeGroups,
-                  confirm: (values) => {
-                    showLoading();
-                    return addAttributesGroupToRubricMutation({
-                      variables: {
-                        input: values,
-                      },
-                    });
-                  },
                 },
               });
             }}
@@ -314,7 +260,6 @@ export const getServerSideProps = async (
       },
       {
         $project: {
-          priorities: false,
           views: false,
         },
       },

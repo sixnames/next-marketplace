@@ -1,35 +1,35 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import ContentItemControls from '../../../../../components/button/ContentItemControls';
-import FixedButtons from '../../../../../components/button/FixedButtons';
-import WpButton from '../../../../../components/button/WpButton';
-import FormikRouterSearch from '../../../../../components/FormElements/Search/FormikRouterSearch';
-import Inner from '../../../../../components/Inner';
-import WpLink from '../../../../../components/Link/WpLink';
-import { ConfirmModalInterface } from '../../../../../components/Modal/ConfirmModal';
-import { CreateShopModalInterface } from '../../../../../components/Modal/CreateShopModal';
-import Pager from '../../../../../components/Pager';
-import Spinner from '../../../../../components/Spinner';
-import TableRowImage from '../../../../../components/TableRowImage';
-import WpTable, { WpTableColumn } from '../../../../../components/WpTable';
-import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from '../../../../../config/modalVariants';
-import { getCmsCompanyShopsPageSsr } from '../../../../../db/dao/ssr/getCmsCompanyShopsPageSsr';
+import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
+import Inner from 'components/Inner';
+import WpLink from 'components/Link/WpLink';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { CreateShopModalInterface } from 'components/Modal/CreateShopModal';
+import Pager from 'components/Pager';
+import Spinner from 'components/Spinner';
+import TableRowImage from 'components/TableRowImage';
+import WpTable, { WpTableColumn } from 'components/WpTable';
+import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'lib/config/modalVariants';
+import { getCmsCompanyShopsPageSsr } from 'db/ssr/shops/getCmsCompanyShopsPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   AppPaginationInterface,
   CompanyInterface,
   ShopInterface,
-} from '../../../../../db/uiInterfaces';
-import { useDeleteShopFromCompanyMutation } from '../../../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
-import usePageLoadingState from '../../../../../hooks/usePageLoadingState';
-import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getNumWord } from '../../../../../lib/i18n';
-import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
-import { noNaN } from '../../../../../lib/numbers';
-import { GetAppInitialDataPropsInterface } from '../../../../../lib/ssrUtils';
+} from 'db/uiInterfaces';
+import { useDeleteShopFromCompanyMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import usePageLoadingState from 'hooks/usePageLoadingState';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getNumWord } from 'lib/i18n';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { noNaN } from 'lib/numbers';
+import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CompanyShopsConsumerInterface extends AppPaginationInterface<ShopInterface> {
   pageCompany: CompanyInterface;

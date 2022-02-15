@@ -1,6 +1,6 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES } from '../../config/constantSelects';
+import { TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES } from '../../lib/config/constantSelects';
 import { CreateTaskVariantInputInterface } from '../../db/dao/tasks/createTaskVariant';
 import { TaskVariantPriceModel } from '../../db/dbModels';
 import { useCreateTaskVariant } from '../../hooks/mutations/useTaskMutations';

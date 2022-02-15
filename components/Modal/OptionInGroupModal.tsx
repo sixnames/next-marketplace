@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { GENDER_ENUMS } from '../../config/common';
-import { useAppContext } from '../../context/appContext';
+import { GENDER_ENUMS } from '../../lib/config/common';
+import { useAppContext } from '../context/appContext';
 import { OptionVariantsModel } from '../../db/dbModels';
 import {
   AddOptionToGroupInput,

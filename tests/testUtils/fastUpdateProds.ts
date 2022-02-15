@@ -1,5 +1,5 @@
 import { Db } from 'mongodb';
-import { ID_COUNTER_STEP } from 'config/common';
+import { ID_COUNTER_STEP } from 'lib/config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
 import { COL_ID_COUNTERS } from 'db/collectionNames';
 import { IdCounterModel } from 'db/dbModels';

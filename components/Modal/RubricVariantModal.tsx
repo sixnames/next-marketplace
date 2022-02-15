@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { DEFAULT_COMPANY_SLUG } from '../../config/common';
-import { useAppContext } from '../../context/appContext';
+import { DEFAULT_COMPANY_SLUG } from '../../lib/config/common';
+import { useAppContext } from '../context/appContext';
 import { TranslationModel } from '../../db/dbModels';
 import {
   CreateRubricVariantInput,

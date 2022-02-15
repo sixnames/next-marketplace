@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { CONFIRM_MODAL, CREATE_PROMO_CODE_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
+import { CONFIRM_MODAL, CREATE_PROMO_CODE_MODAL } from '../../lib/config/modalVariants';
+import { useAppContext } from '../context/appContext';
 import { PromoCodeModel } from '../../db/dbModels';
 import { CompanyInterface, PromoInterface } from '../../db/uiInterfaces';
 import { useDeletePromoCode } from '../../hooks/mutations/usePromoMutations';

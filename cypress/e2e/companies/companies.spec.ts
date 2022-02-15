@@ -1,4 +1,4 @@
-import { getProjectLinks } from '../../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Companies list', () => {
   const links = getProjectLinks();

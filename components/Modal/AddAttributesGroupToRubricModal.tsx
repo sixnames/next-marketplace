@@ -1,9 +1,8 @@
+import { AddAttributesGroupToRubricInputInterface } from 'db/dao/rubrics/addAttributesGroupToRubric';
 import { Form, Formik } from 'formik';
+import { useAddAttributesGroupToRubric } from 'hooks/mutations/useRubricMutations';
 import * as React from 'react';
-import { AttributesGroupInterface } from '../../db/uiInterfaces';
-import { AddAttributesGroupToRubricInput } from '../../generated/apolloComponents';
-import useValidationSchema from '../../hooks/useValidationSchema';
-import { addAttributesGroupToRubricSchema } from '../../validation/rubricSchema';
+import { AttributesGroupInterface } from 'db/uiInterfaces';
 import WpButton from '../button/WpButton';
 import FormikSelect from '../FormElements/Select/FormikSelect';
 import ModalButtons from './ModalButtons';
@@ -13,7 +12,6 @@ import ModalTitle from './ModalTitle';
 export interface AddAttributesGroupToRubricModalInterface {
   testId: string;
   rubricId: string;
-  confirm: (values: AddAttributesGroupToRubricInput) => void;
   attributeGroups: AttributesGroupInterface[];
 }
 
@@ -21,20 +19,18 @@ const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalI
   testId,
   rubricId,
   attributeGroups,
-  confirm,
 }) => {
-  const validationSchema = useValidationSchema({
-    schema: addAttributesGroupToRubricSchema,
-  });
-
+  const [addAttributesGroupToRubricMutation] = useAddAttributesGroupToRubric();
   return (
     <ModalFrame testId={testId}>
       <ModalTitle>Выберите группу атрибутов</ModalTitle>
-      <Formik<AddAttributesGroupToRubricInput>
-        validationSchema={validationSchema}
-        initialValues={{ attributesGroupId: null, rubricId }}
+      <Formik<AddAttributesGroupToRubricInputInterface>
+        initialValues={{
+          attributesGroupId: attributeGroups[0] ? `${attributeGroups[0]._id}` : '',
+          rubricId,
+        }}
         onSubmit={(values) => {
-          confirm(values);
+          addAttributesGroupToRubricMutation(values).catch(console.log);
         }}
       >
         {() => {

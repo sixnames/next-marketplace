@@ -1,4 +1,4 @@
-import { OrderStatusModel } from '../../../db/dbModels';
+import { OrderStatusModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const defaultSlug = 'orderStatus';

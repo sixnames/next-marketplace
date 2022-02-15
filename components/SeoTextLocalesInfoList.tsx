@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useConfigContext } from '../context/configContext';
+import { useConfigContext } from './context/configContext';
 import { TextUniquenessApiParsedResponseModel } from '../db/dbModels';
 import { SeoContentCitiesInterface } from '../db/uiInterfaces';
 import { noNaN } from '../lib/numbers';

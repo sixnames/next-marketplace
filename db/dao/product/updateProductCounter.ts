@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from '../../../config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getSessionRole } from '../../../lib/sessionHelpers';
+import { DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from 'lib/config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getSessionRole } from 'lib/sessionHelpers';
 import { COL_SHOP_PRODUCTS } from '../../collectionNames';
 import { ProductPayloadModel, ShopProductModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

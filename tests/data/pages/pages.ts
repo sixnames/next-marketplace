@@ -6,8 +6,8 @@ import {
   PAGE_EDITOR_DEFAULT_VALUE,
   PAGE_STATE_DRAFT,
   PAGE_STATE_PUBLISHED,
-} from '../../../config/common';
-import { PageModel } from '../../../db/dbModels';
+} from 'lib/config/common';
+import { PageModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();

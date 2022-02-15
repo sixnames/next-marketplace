@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { checkSeoContentUniqueness } from '../../../lib/seoContentUniquenessUtils';
-import { getRequestParams } from '../../../lib/sessionHelpers';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { checkSeoContentUniqueness } from 'lib/seoContentUniquenessUtils';
+import { getRequestParams } from 'lib/sessionHelpers';
 import { COL_SEO_CONTENTS } from '../../collectionNames';
 import { SeoContentModel, SeoContentPayloadModel, TranslationModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

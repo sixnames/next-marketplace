@@ -1,9 +1,9 @@
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
 import { getDomain } from 'tldts';
-import { DEFAULT_CITY, SORT_DESC } from '../config/common';
+import { DEFAULT_CITY, SORT_DESC } from '../lib/config/common';
 import { COL_COMPANIES, COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../db/collectionNames';
-import { ignoreNoImageStage } from '../db/dao/constantPipelines';
+import { ignoreNoImageStage } from 'db/utils/constantPipelines';
 import { CompanyModel, ShopProductModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import { ShopProductInterface } from '../db/uiInterfaces';

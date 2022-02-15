@@ -1,18 +1,14 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Inner from '../../../components/Inner';
-import PageGroupsList, { PageGroupsListInterface } from '../../../components/Pages/PageGroupsList';
-import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_COMPANY_SLUG } from '../../../config/common';
-import AppContentWrapper from '../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
-import { getPageGroupsSsr } from '../../../lib/pageUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../lib/ssrUtils';
+import Inner from 'components/Inner';
+import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
+import WpTitle from 'components/WpTitle';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { getPageGroupsSsr } from 'lib/pageUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Группы шаблонов страниц';
 

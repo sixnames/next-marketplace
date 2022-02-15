@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
-import { emailSchema, phoneSchema } from './schemaTemplates';
+import { emailSchema, phoneSchema } from 'validation/utils/schemaTemplates';
 import { userNameSchema } from './userSchema';
 
 export const makeAnOrderSchema = (args: ValidationSchemaArgsInterface) => {

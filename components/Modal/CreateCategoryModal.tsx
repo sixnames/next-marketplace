@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { GENDER_ENUMS } from '../../config/common';
+import { GENDER_ENUMS } from '../../lib/config/common';
 import { OptionVariantsModel } from '../../db/dbModels';
 import { CreateCategoryInput, useCreateCategoryMutation } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';

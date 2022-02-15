@@ -1,4 +1,4 @@
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from '../config/common';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'lib/config/common';
 
 export function sortStringArray(list: string[]): any[] {
   return [...list].sort((a, b) => {

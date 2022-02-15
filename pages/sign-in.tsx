@@ -6,10 +6,10 @@ import WpButton from '../components/button/WpButton';
 import FormikInput from '../components/FormElements/Input/FormikInput';
 import Inner from '../components/Inner';
 import WpTitle from '../components/WpTitle';
-import { useAppContext } from '../context/appContext';
+import { useAppContext } from '../components/context/appContext';
 import { getPageSessionUser } from '../db/dao/user/getPageSessionUser';
 import useValidationSchema from '../hooks/useValidationSchema';
-import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import SiteLayout, { SiteLayoutProviderInterface } from '../components/layout/SiteLayout';
 import { getSiteInitialData } from '../lib/ssrUtils';
 import { signInSchema } from '../validation/userSchema';
 

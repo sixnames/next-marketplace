@@ -1,4 +1,4 @@
-import { getConsolePromoProductsListPageSsr } from '../../../../../../../../../db/dao/ssr/getConsolePromoProductsListPageSsr';
+import { getConsolePromoProductsListPageSsr } from 'db/ssr/company/getConsolePromoProductsListPageSsr';
 import ConsolePromoProductsListPage from './[...filters]';
 
 export const getServerSideProps = getConsolePromoProductsListPageSsr;

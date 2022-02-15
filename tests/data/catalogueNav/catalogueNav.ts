@@ -1,4 +1,4 @@
-import { CatalogueNavModel } from '../../../db/dbModels';
+import { CatalogueNavModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const catalogueNav: CatalogueNavModel[] = [

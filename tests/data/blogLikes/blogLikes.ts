@@ -1,4 +1,4 @@
-import { BlogLikeModel } from '../../../db/dbModels';
+import { BlogLikeModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();

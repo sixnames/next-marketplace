@@ -2,31 +2,27 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ContentItemControls from '../../../components/button/ContentItemControls';
-import FixedButtons from '../../../components/button/FixedButtons';
-import WpButton from '../../../components/button/WpButton';
-import Inner from '../../../components/Inner';
-import WpLink from '../../../components/Link/WpLink';
-import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
-import TableRowImage from '../../../components/TableRowImage';
-import WpTable, { WpTableColumn } from '../../../components/WpTable';
-import WpTitle from '../../../components/WpTitle';
-import { SORT_DESC } from '../../../config/common';
-import { CONFIRM_MODAL } from '../../../config/modalVariants';
-import { COL_COMPANIES, COL_USERS } from '../../../db/collectionNames';
-import { getDatabase } from '../../../db/mongodb';
-import { CompanyInterface } from '../../../db/uiInterfaces';
-import { useDeleteCompanyMutation } from '../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
-import AppContentWrapper from '../../../layout/AppContentWrapper';
-import { getCmsCompanyLinks } from '../../../lib/linkUtils';
-import { getShortName } from '../../../lib/nameUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../lib/ssrUtils';
-import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import Inner from 'components/Inner';
+import WpLink from 'components/Link/WpLink';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import TableRowImage from 'components/TableRowImage';
+import WpTable, { WpTableColumn } from 'components/WpTable';
+import WpTitle from 'components/WpTitle';
+import { SORT_DESC } from 'lib/config/common';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
+import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { CompanyInterface } from 'db/uiInterfaces';
+import { useDeleteCompanyMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getShortName } from 'lib/nameUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 const pageTitle = 'Компании';
 

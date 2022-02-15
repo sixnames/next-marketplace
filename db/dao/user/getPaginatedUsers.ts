@@ -1,9 +1,9 @@
-import { DEFAULT_PAGE, SORT_BY_ID_DIRECTION } from '../../../config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getFullName, getShortName } from '../../../lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
-import { getRequestParams } from '../../../lib/sessionHelpers';
+import { DEFAULT_PAGE, SORT_BY_ID_DIRECTION } from 'lib/config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getFullName, getShortName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { getRequestParams } from 'lib/sessionHelpers';
 import { COL_ROLES, COL_USERS } from '../../collectionNames';
 import {
   PaginationInputModel,
@@ -12,7 +12,7 @@ import {
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface, UserInterface } from '../../uiInterfaces';
-import { castPaginationInput } from '../aggregatePagination';
+import { castPaginationInput } from 'db/utils/aggregatePagination';
 
 export async function getPaginatedUsers({
   context,

@@ -1,6 +1,6 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { useConfigContext } from 'context/configContext';
+import { useConfigContext } from 'components/context/configContext';
 import { SeoContentModel } from 'db/dbModels';
 import { useUpdateSeoContent } from 'hooks/mutations/useSeoContentMutations';
 import WpButton from '../button/WpButton';

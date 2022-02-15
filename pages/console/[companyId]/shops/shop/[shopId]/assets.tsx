@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ShopAssets, { ShopAssetsInterface } from '../../../../../../components/shops/ShopAssets';
+import ShopAssets, { ShopAssetsInterface } from 'components/shops/ShopAssets';
 import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import {
   castDbData,

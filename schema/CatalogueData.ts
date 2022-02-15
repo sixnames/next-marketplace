@@ -6,7 +6,7 @@ import {
   FILTER_CATEGORY_KEY,
   FILTER_MANUFACTURER_KEY,
   VIEWS_COUNTER_STEP,
-} from '../config/common';
+} from 'lib/config/common';
 import {
   COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,
@@ -14,9 +14,8 @@ import {
   COL_CATEGORIES,
   COL_MANUFACTURERS,
   COL_OPTIONS,
-  COL_PRODUCT_ATTRIBUTES,
   COL_RUBRICS,
-} from '../db/collectionNames';
+} from 'db/collectionNames';
 import {
   AttributeModel,
   BrandCollectionModel,
@@ -24,12 +23,11 @@ import {
   CategoryModel,
   ManufacturerModel,
   OptionModel,
-  ProductSummaryAttributeModel,
   RubricModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { castCatalogueParamToObject } from '../lib/catalogueUtils';
-import { getRequestParams, getSessionRole } from '../lib/sessionHelpers';
+} from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { castCatalogueParamToObject } from 'db/utils/catalogueUtils';
+import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 
 export const CatalogueAdditionalOptionsInput = inputObjectType({
   name: 'CatalogueAdditionalOptionsInput',
@@ -73,8 +71,6 @@ export const CatalogueMutations = extendType({
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const productAttributesCollection =
-            db.collection<ProductSummaryAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
           const brandCollectionsCollection =
@@ -188,15 +184,6 @@ export const CatalogueMutations = extendType({
                 },
               );
 
-              await productAttributesCollection.updateMany(
-                {
-                  slug: {
-                    $in: selectedAttributesSlugs,
-                  },
-                },
-                counterUpdater,
-              );
-
               const selectedAttributes = await attributesCollection
                 .find({
                   slug: {
@@ -225,7 +212,7 @@ export const CatalogueMutations = extendType({
 
           return true;
         } catch (e) {
-          console.log(e);
+          console.log('updateCatalogueCounters error', e);
           return false;
         }
       },

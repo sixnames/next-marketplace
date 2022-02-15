@@ -1,22 +1,16 @@
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Inner from '../../../../../components/Inner';
-import PageGroupsList, {
-  PageGroupsListInterface,
-} from '../../../../../components/Pages/PageGroupsList';
-import { COL_COMPANIES } from '../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
-import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
-import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
-import { getPageGroupsSsr } from '../../../../../lib/pageUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import Inner from 'components/Inner';
+import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getPageGroupsSsr } from 'lib/pageUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 const pageTitle = 'Группы страниц';
 

@@ -1,19 +1,15 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ConsoleRubricProductBrands from '../../../../../../../../../components/console/ConsoleRubricProductBrands';
+import ConsoleRubricProductBrands from 'components/console/ConsoleRubricProductBrands';
 import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_COMPANIES,
   COL_MANUFACTURERS,
-} from '../../../../../../../../../db/collectionNames';
-import {
-  BrandCollectionModel,
-  BrandModel,
-  ManufacturerModel,
-} from '../../../../../../../../../db/dbModels';
-import { getDatabase } from '../../../../../../../../../db/mongodb';
+} from 'db/collectionNames';
+import { BrandCollectionModel, BrandModel, ManufacturerModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   BrandCollectionInterface,
@@ -21,17 +17,13 @@ import {
   CompanyInterface,
   ManufacturerInterface,
   ProductSummaryInterface,
-} from '../../../../../../../../../db/uiInterfaces';
-import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
-import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from '../../../../../../../../../lib/i18n';
-import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
-import { getFullProductSummary } from '../../../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../../../lib/ssrUtils';
+} from 'db/uiInterfaces';
+import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getFullProductSummary } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ProductBrandsInterface {
   product: ProductSummaryInterface;

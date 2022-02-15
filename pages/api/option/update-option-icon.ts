@@ -1,13 +1,13 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
-import { COL_ICONS, COL_OPTIONS } from '../../../db/collectionNames';
-import { IconModel, OptionModel } from '../../../db/dbModels';
-import { getDatabase } from '../../../db/mongodb';
-import { getApiMessageValue } from '../../../db/dao/messages/apiMessageUtils';
-import { alwaysArray } from '../../../lib/arrayUtils';
-import { parseRestApiFormData } from '../../../lib/restApi';
-import { getOperationPermission } from '../../../lib/sessionHelpers';
+import { COL_ICONS, COL_OPTIONS } from 'db/collectionNames';
+import { IconModel, OptionModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { getApiMessageValue } from 'db/utils/apiMessageUtils';
+import { alwaysArray } from 'lib/arrayUtils';
+import { parseRestApiFormData } from 'lib/restApi';
+import { getOperationPermission } from 'lib/sessionHelpers';
 
 export const config = {
   api: {

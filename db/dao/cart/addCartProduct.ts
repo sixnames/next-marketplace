@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getRequestParams } from '../../../lib/sessionHelpers';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getRequestParams } from 'lib/sessionHelpers';
 import { COL_CARTS, COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../../collectionNames';
 import { CartModel, CartPayloadModel, ProductFacetModel, ShopProductModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

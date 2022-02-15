@@ -1,5 +1,5 @@
-import { DEFAULT_COUNTERS_OBJECT } from '../../../config/common';
-import { BrandBaseModel, BrandCollectionModel } from '../../../db/dbModels';
+import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
+import { BrandBaseModel, BrandCollectionModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const booleans: BrandBaseModel = {

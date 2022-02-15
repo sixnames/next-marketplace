@@ -1,5 +1,5 @@
-import { DEFAULT_LOCALE, OPTIONS_GROUP_VARIANT_ICON, SECONDARY_LOCALE } from 'config/common';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
+import { DEFAULT_LOCALE, OPTIONS_GROUP_VARIANT_ICON, SECONDARY_LOCALE } from 'lib/config/common';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Options Groups', () => {
   const links = getProjectLinks();

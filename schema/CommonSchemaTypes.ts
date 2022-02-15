@@ -6,7 +6,7 @@ import {
   SORT_ASC,
   SORT_BY_CREATED_AT,
   SORT_DESC,
-} from '../config/common';
+} from '../lib/config/common';
 import { CoordinatesModel } from '../db/dbModels';
 import { phoneToRaw, phoneToReadable } from '../lib/phoneUtils';
 

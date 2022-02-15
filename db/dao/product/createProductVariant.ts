@@ -1,4 +1,4 @@
-import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
@@ -7,8 +7,8 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   DEFAULT_COMPANY_SLUG,
   TASK_STATE_IN_PROGRESS,
-} from 'config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+} from 'lib/config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,

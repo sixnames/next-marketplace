@@ -3,22 +3,18 @@ import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import FormikImageUpload from '../../../../../components/FormElements/Upload/FormikImageUpload';
-import Inner from '../../../../../components/Inner';
-import { COL_ROLES, COL_USERS } from '../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, UserInterface } from '../../../../../db/uiInterfaces';
-import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
-import CmsUserLayout from '../../../../../layout/cms/CmsUserLayout';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getProjectLinks } from '../../../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../../../lib/i18n';
-import { getFullName } from '../../../../../lib/nameUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
+import Inner from 'components/Inner';
+import { COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import CmsUserLayout from 'components/layout/cms/CmsUserLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getFullName } from 'lib/nameUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface UserAssetsInterface {
   user: UserInterface;

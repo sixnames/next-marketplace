@@ -1,20 +1,16 @@
-import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
-import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { ObjectId } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
+import { FILTER_SEPARATOR } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { getParentTreeIds } from 'lib/treeUtils';
-import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import { COL_OPTIONS } from 'db/collectionNames';
-import { ObjectIdModel, ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
+import { EventPayloadModel, ObjectIdModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface, ProductAttributeInterface } from 'db/uiInterfaces';
 
 export interface UpdateEventSelectAttributeInputInterface {
-  productId: string;
+  eventId: string;
   taskId?: string | null;
   productAttributeId: string;
   attributeId: string;
@@ -24,28 +20,27 @@ export interface UpdateEventSelectAttributeInputInterface {
 export async function updateEventSelectAttribute({
   context,
   input,
-}: DaoPropsInterface<UpdateEventSelectAttributeInputInterface>): Promise<ProductPayloadModel> {
-  const { getApiMessage, locale } = await getRequestParams(context);
+}: DaoPropsInterface<UpdateEventSelectAttributeInputInterface>): Promise<EventPayloadModel> {
+  const { getApiMessage } = await getRequestParams(context);
   const collections = await getDbCollections();
-  const productSummariesCollection = collections.productSummariesCollection();
-  const productFacetsCollection = collections.productFacetsCollection();
-  const shopProductsCollection = collections.shopProductsCollection();
+  const eventSummariesCollection = collections.eventSummariesCollection();
+  const eventFacetsCollection = collections.eventFacetsCollection();
   const attributesCollection = collections.attributesCollection();
   const optionsCollection = collections.optionsCollection();
 
   const session = collections.client.startSession();
 
-  let mutationPayload: ProductPayloadModel = {
+  let mutationPayload: EventPayloadModel = {
     success: false,
-    message: await getApiMessage('products.update.error'),
+    message: await getApiMessage('events.update.error'),
   };
 
   try {
     await session.withTransaction(async () => {
       // permission
-      const { allow, message, role, user } = await getOperationPermission({
+      const { allow, message } = await getOperationPermission({
         context,
-        slug: 'updateProductAttributes',
+        slug: 'updateEventAttributes',
       });
       if (!allow) {
         mutationPayload = {
@@ -60,7 +55,7 @@ export async function updateEventSelectAttribute({
       if (!input) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage('products.update.error'),
+          message: await getApiMessage('events.update.error'),
         };
         await session.abortTransaction();
         return;
@@ -70,26 +65,15 @@ export async function updateEventSelectAttribute({
       const attributeId = new ObjectId(input.attributeId);
       const productAttributeId = new ObjectId(input.productAttributeId);
 
-      // get summary or summary draft
-      const taskVariantSlug = getTaskVariantSlugByRule('updateProductAttributes');
-      const summaryPayload = await getFullProductSummaryWithDraft({
-        locale,
-        taskId: input.taskId,
-        productId: input.productId,
-        companySlug: DEFAULT_COMPANY_SLUG,
-        isContentManager: role.isContentManager,
+      // get summary
+      const summary = await eventSummariesCollection.findOne({
+        _id: new ObjectId(input.eventId),
       });
-      if (!summaryPayload) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage('products.update.notFound'),
-        };
+      if (!summary) {
         await session.abortTransaction();
         return;
       }
-      const { summary } = summaryPayload;
       const updatedSummary = { ...summary };
-      const diff: SummaryDiffModel = {};
 
       // get product attribute
       let productAttribute = summary.attributes.find((productAttribute) => {
@@ -117,7 +101,7 @@ export async function updateEventSelectAttribute({
       if (!attribute) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage('products.update.error'),
+          message: await getApiMessage('events.update.error'),
         };
         await session.abortTransaction();
         return;
@@ -153,7 +137,6 @@ export async function updateEventSelectAttribute({
             options: finalOptions,
           },
         },
-        gender: summary.gender,
       });
       productAttribute.readableValueI18n = readableValueI18n;
       productAttribute.optionIds = finalOptionIds;
@@ -170,9 +153,6 @@ export async function updateEventSelectAttribute({
         updatedSummary.filterSlugs = updatedSummary.filterSlugs.filter((filterSlug) => {
           return !oldFilterSlugs.includes(filterSlug);
         });
-        diff.deleted = {
-          selectAttributes: [productAttribute._id],
-        };
       } else {
         // add new attribute
         if (productAttributeNotExist) {
@@ -181,9 +161,6 @@ export async function updateEventSelectAttribute({
           finalFilterSlugs.forEach((filterSlug) => {
             updatedSummary.filterSlugs.push(filterSlug);
           });
-          diff.added = {
-            selectAttributes: [productAttribute._id],
-          };
         } else {
           // update existing attribute
           updatedSummary.attributes = updatedSummary.attributes.reduce(
@@ -201,57 +178,11 @@ export async function updateEventSelectAttribute({
           finalFilterSlugs.forEach((filterSlug) => {
             updatedSummary.filterSlugs.push(filterSlug);
           });
-          diff.updated = {
-            selectAttributes: [productAttribute._id],
-          };
         }
-      }
-
-      // create task log for content manager
-      if (role.isContentManager && user) {
-        const task = await findOrCreateUserTask({
-          productId: summary._id,
-          variantSlug: taskVariantSlug,
-          executorId: user._id,
-          taskId: input.taskId,
-        });
-
-        if (!task) {
-          mutationPayload = {
-            success: false,
-            message: await getApiMessage('tasks.create.error'),
-          };
-          await session.abortTransaction();
-          return;
-        }
-
-        const newTaskLogResult = await addTaskLogItem({
-          taskId: task._id,
-          diff,
-          prevStateEnum: task.stateEnum,
-          nextStateEnum: TASK_STATE_IN_PROGRESS,
-          draft: updatedSummary,
-          createdById: user._id,
-        });
-        if (!newTaskLogResult) {
-          mutationPayload = {
-            success: false,
-            message: await getApiMessage('products.update.error'),
-          };
-          await session.abortTransaction();
-          return;
-        }
-
-        mutationPayload = {
-          success: true,
-          message: await getApiMessage('products.update.success'),
-        };
-        await session.abortTransaction();
-        return;
       }
 
       // update documents
-      const updatedProductAttributeResult = await productSummariesCollection.findOneAndUpdate(
+      const updatedEventAttributeResult = await eventSummariesCollection.findOneAndUpdate(
         {
           _id: summary._id,
         },
@@ -273,15 +204,15 @@ export async function updateEventSelectAttribute({
           },
         },
       );
-      if (!updatedProductAttributeResult.ok) {
+      if (!updatedEventAttributeResult.ok) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage('products.update.error'),
+          message: await getApiMessage('events.update.error'),
         };
         await session.abortTransaction();
         return;
       }
-      await productFacetsCollection.findOneAndUpdate(
+      await eventFacetsCollection.findOneAndUpdate(
         {
           _id: summary._id,
         },
@@ -292,22 +223,11 @@ export async function updateEventSelectAttribute({
           },
         },
       );
-      await shopProductsCollection.updateMany(
-        {
-          productId: summary._id,
-        },
-        {
-          $set: {
-            filterSlugs: updatedSummary.filterSlugs,
-          },
-        },
-      );
 
       // update product title
-      execUpdateProductTitles(`productId=${summary._id.toHexString()}`);
       mutationPayload = {
         success: true,
-        message: await getApiMessage('products.update.success'),
+        message: await getApiMessage('events.update.success'),
         payload: summary,
       };
     });

@@ -44,7 +44,7 @@ export async function updateEventNumberAttribute({
       // permission
       const { allow, message } = await getOperationPermission({
         context,
-        slug: 'updateProductAttributes',
+        slug: 'updateEventAttributes',
       });
       if (!allow) {
         mutationPayload = {

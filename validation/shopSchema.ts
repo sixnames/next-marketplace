@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
+import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import { productIdSchema } from './productSchema';
 import {
   addressSchema,

@@ -1,11 +1,11 @@
 import * as Yup from 'yup';
-import { DEFAULT_LOCALE } from '../config/common';
+import { DEFAULT_LOCALE } from 'config/common';
 import {
   getFieldValidationMessage,
   GetFieldValidationMessageInterface,
-} from '../lib/getFieldValidationMessage';
-import { MessageSlug } from '../types/messageSlugTypes';
-import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
+} from 'lib/getFieldValidationMessage';
+import { MessageSlug } from 'types/messageSlugTypes';
+import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import { phoneRegEx } from './regExp';
 
 export const MIN_STRING_FIELD_LENGTH = 1;

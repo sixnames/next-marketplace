@@ -86,4 +86,11 @@ export const eventMessages: MessageBaseInterface[] = [
       [SECONDARY_LOCALE]: `Event rubric is required.`,
     },
   },
+  {
+    slug: 'validation.events.seatsCount',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Количество билетов мероприятия обязательно.`,
+      [SECONDARY_LOCALE]: `Event seats count is required.`,
+    },
+  },
 ];

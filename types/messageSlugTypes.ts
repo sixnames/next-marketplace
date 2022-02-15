@@ -553,6 +553,7 @@ export type MessageSlug =
   | 'validation.events.name'
   | 'validation.events.description'
   | 'validation.events.rubrics'
+  | 'validation.events.seatsCount'
 
   // Brands ----------
   | 'brands.create.duplicate'

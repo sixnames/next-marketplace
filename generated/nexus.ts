@@ -104,11 +104,6 @@ declare global {
 }
 
 export interface NexusGenInputs {
-  AddAttributesGroupToRubricInput: {
-    // input type
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   AddCityToCountryInput: {
     // input type
     countryId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -271,23 +266,6 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     showAdminUiInCatalogue: boolean; // Boolean!
   };
-  CreateRubricInput: {
-    // input type
-    capitalise?: boolean | null; // Boolean
-    defaultTitleI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    gender: NexusGenEnums['Gender']; // Gender!
-    keywordI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    prefixI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    showBrandAsAlphabet?: boolean | null; // Boolean
-    showBrandInFilter?: boolean | null; // Boolean
-    showBrandInNav?: boolean | null; // Boolean
-    showCategoryInProductTitle?: boolean | null; // Boolean
-    showRubricNameInProductTitle?: boolean | null; // Boolean
-    variantId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   CreateRubricVariantInput: {
     // input type
     companySlug: string; // String!
@@ -298,11 +276,6 @@ export interface NexusGenInputs {
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     url?: NexusGenScalars['URL'][] | null; // [URL!]
-  };
-  DeleteAttributesGroupFromRubricInput: {
-    // input type
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   DeleteCityFromCountryInput: {
     // input type
@@ -371,12 +344,6 @@ export interface NexusGenInputs {
     attributeIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     categoryId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  UpdateAttributeInRubricInput: {
-    // input type
-    attributeIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateAttributesGroupInput: {
     // input type
@@ -519,28 +486,6 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     roleId: NexusGenScalars['ObjectId']; // ObjectId!
     slug: string; // String!
-  };
-  UpdateRubricInput: {
-    // input type
-    active: boolean; // Boolean!
-    capitalise?: boolean | null; // Boolean
-    companySlug: string; // String!
-    defaultTitleI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    gender: NexusGenEnums['Gender']; // Gender!
-    keywordI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    prefixI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-    shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    showBrandAsAlphabet?: boolean | null; // Boolean
-    showBrandInFilter?: boolean | null; // Boolean
-    showBrandInNav?: boolean | null; // Boolean
-    showCategoryInProductTitle?: boolean | null; // Boolean
-    showRubricNameInProductTitle?: boolean | null; // Boolean
-    textBottom?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    textTop?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    variantId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateRubricNavItemConfigInput: {
     // input type
@@ -736,7 +681,6 @@ export interface NexusGenObjects {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    priorities: NexusGenScalars['JSONObject']; // JSONObject!
     showInCatalogueFilter: boolean; // Boolean!
     showInCatalogueNav: boolean; // Boolean!
     slug?: string | null; // String
@@ -756,12 +700,10 @@ export interface NexusGenObjects {
     color?: string | null; // String
     icon?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    priorities: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
     variants: NexusGenScalars['JSONObject']; // JSONObject!
     views: NexusGenScalars['JSONObject']; // JSONObject!
   };
-  RubricPayload: dbModels.RubricPayloadModel;
   RubricVariant: dbModels.RubricVariantModel;
   RubricVariantPayload: dbModels.RubricVariantPayloadModel;
   SelectOption: dbModels.SelectOptionModel;
@@ -843,7 +785,6 @@ export interface NexusGenFieldTypes {
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId: NexusGenScalars['ObjectId'] | null; // ObjectId
-    priorities: NexusGenScalars['JSONObject']; // JSONObject!
     replaceParentNameInCatalogueTitle: boolean | null; // Boolean
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     slug: string; // String!
@@ -1054,7 +995,6 @@ export interface NexusGenFieldTypes {
   };
   Mutation: {
     // field return type
-    addAttributesGroupToRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     addCityToCountry: NexusGenRootTypes['CountryPayload']; // CountryPayload!
     addManyProductsToShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     addOptionToGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
@@ -1072,11 +1012,9 @@ export interface NexusGenFieldTypes {
     createOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     createOrderStatus: NexusGenRootTypes['OrderStatusPayload']; // OrderStatusPayload!
     createRole: NexusGenRootTypes['RolePayload']; // RolePayload!
-    createRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     createRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     createSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     deleteAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
-    deleteAttributesGroupFromRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     deleteCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     deleteCityFromCountry: NexusGenRootTypes['CountryPayload']; // CountryPayload!
     deleteCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
@@ -1091,7 +1029,6 @@ export interface NexusGenFieldTypes {
     deleteOrderStatus: NexusGenRootTypes['OrderStatusPayload']; // OrderStatusPayload!
     deleteProductFromShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     deleteRole: NexusGenRootTypes['RolePayload']; // RolePayload!
-    deleteRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     deleteRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     deleteShopAsset: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     deleteShopFromCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
@@ -1100,8 +1037,6 @@ export interface NexusGenFieldTypes {
     generateShopToken: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     moveOption: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     toggleCmsCardAttributeInCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
-    toggleCmsCardAttributeInRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
-    updateAttributeInRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     updateAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     updateCatalogueCounters: boolean; // Boolean!
     updateCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
@@ -1120,7 +1055,6 @@ export interface NexusGenFieldTypes {
     updateRole: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRoleNav: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRoleRule: NexusGenRootTypes['RoleRulePayload']; // RoleRulePayload!
-    updateRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     updateRubricNavItemConfig: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
     updateRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     updateShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
@@ -1323,7 +1257,6 @@ export interface NexusGenFieldTypes {
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     prefixI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
-    priorities: NexusGenScalars['JSONObject']; // JSONObject!
     shortDescription: string; // String!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
@@ -1342,7 +1275,6 @@ export interface NexusGenFieldTypes {
     optionsGroup: NexusGenRootTypes['OptionsGroup'] | null; // OptionsGroup
     optionsGroupId: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInTitle: NexusGenScalars['JSONObject'] | null; // JSONObject
-    priorities: NexusGenScalars['JSONObject']; // JSONObject!
     showInCatalogueFilter: boolean; // Boolean!
     showInCatalogueNav: boolean; // Boolean!
     slug: string | null; // String
@@ -1364,16 +1296,9 @@ export interface NexusGenFieldTypes {
     icon: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    priorities: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
     variants: NexusGenScalars['JSONObject']; // JSONObject!
     views: NexusGenScalars['JSONObject']; // JSONObject!
-  };
-  RubricPayload: {
-    // field return type
-    message: string; // String!
-    payload: NexusGenRootTypes['Rubric'] | null; // Rubric
-    success: boolean; // Boolean!
   };
   RubricVariant: {
     // field return type
@@ -1627,7 +1552,6 @@ export interface NexusGenFieldTypeNames {
     name: 'String';
     nameI18n: 'JSONObject';
     parentId: 'ObjectId';
-    priorities: 'JSONObject';
     replaceParentNameInCatalogueTitle: 'Boolean';
     rubricId: 'ObjectId';
     slug: 'String';
@@ -1838,7 +1762,6 @@ export interface NexusGenFieldTypeNames {
   };
   Mutation: {
     // field return type name
-    addAttributesGroupToRubric: 'RubricPayload';
     addCityToCountry: 'CountryPayload';
     addManyProductsToShop: 'ShopPayload';
     addOptionToGroup: 'OptionsGroupPayload';
@@ -1856,11 +1779,9 @@ export interface NexusGenFieldTypeNames {
     createOptionsGroup: 'OptionsGroupPayload';
     createOrderStatus: 'OrderStatusPayload';
     createRole: 'RolePayload';
-    createRubric: 'RubricPayload';
     createRubricVariant: 'RubricVariantPayload';
     createSupplier: 'SupplierPayload';
     deleteAttributesGroup: 'AttributesGroupPayload';
-    deleteAttributesGroupFromRubric: 'RubricPayload';
     deleteCategory: 'CategoryPayload';
     deleteCityFromCountry: 'CountryPayload';
     deleteCompany: 'CompanyPayload';
@@ -1875,7 +1796,6 @@ export interface NexusGenFieldTypeNames {
     deleteOrderStatus: 'OrderStatusPayload';
     deleteProductFromShop: 'ShopPayload';
     deleteRole: 'RolePayload';
-    deleteRubric: 'RubricPayload';
     deleteRubricVariant: 'RubricVariantPayload';
     deleteShopAsset: 'ShopPayload';
     deleteShopFromCompany: 'CompanyPayload';
@@ -1884,8 +1804,6 @@ export interface NexusGenFieldTypeNames {
     generateShopToken: 'ShopPayload';
     moveOption: 'OptionsGroupPayload';
     toggleCmsCardAttributeInCategory: 'CategoryPayload';
-    toggleCmsCardAttributeInRubric: 'RubricPayload';
-    updateAttributeInRubric: 'RubricPayload';
     updateAttributesGroup: 'AttributesGroupPayload';
     updateCatalogueCounters: 'Boolean';
     updateCategory: 'CategoryPayload';
@@ -1904,7 +1822,6 @@ export interface NexusGenFieldTypeNames {
     updateRole: 'RolePayload';
     updateRoleNav: 'RolePayload';
     updateRoleRule: 'RoleRulePayload';
-    updateRubric: 'RubricPayload';
     updateRubricNavItemConfig: 'ConfigPayload';
     updateRubricVariant: 'RubricVariantPayload';
     updateShop: 'ShopPayload';
@@ -2107,7 +2024,6 @@ export interface NexusGenFieldTypeNames {
     name: 'String';
     nameI18n: 'JSONObject';
     prefixI18n: 'JSONObject';
-    priorities: 'JSONObject';
     shortDescription: 'String';
     shortDescriptionI18n: 'JSONObject';
     slug: 'String';
@@ -2126,7 +2042,6 @@ export interface NexusGenFieldTypeNames {
     optionsGroup: 'OptionsGroup';
     optionsGroupId: 'ObjectId';
     positioningInTitle: 'JSONObject';
-    priorities: 'JSONObject';
     showInCatalogueFilter: 'Boolean';
     showInCatalogueNav: 'Boolean';
     slug: 'String';
@@ -2148,16 +2063,9 @@ export interface NexusGenFieldTypeNames {
     icon: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
-    priorities: 'JSONObject';
     slug: 'String';
     variants: 'JSONObject';
     views: 'JSONObject';
-  };
-  RubricPayload: {
-    // field return type name
-    message: 'String';
-    payload: 'Rubric';
-    success: 'Boolean';
   };
   RubricVariant: {
     // field return type name
@@ -2369,10 +2277,6 @@ export interface NexusGenArgTypes {
     };
   };
   Mutation: {
-    addAttributesGroupToRubric: {
-      // args
-      input: NexusGenInputs['AddAttributesGroupToRubricInput']; // AddAttributesGroupToRubricInput!
-    };
     addCityToCountry: {
       // args
       input: NexusGenInputs['AddCityToCountryInput']; // AddCityToCountryInput!
@@ -2441,10 +2345,6 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['CreateRoleInput']; // CreateRoleInput!
     };
-    createRubric: {
-      // args
-      input: NexusGenInputs['CreateRubricInput']; // CreateRubricInput!
-    };
     createRubricVariant: {
       // args
       input: NexusGenInputs['CreateRubricVariantInput']; // CreateRubricVariantInput!
@@ -2456,10 +2356,6 @@ export interface NexusGenArgTypes {
     deleteAttributesGroup: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
-    };
-    deleteAttributesGroupFromRubric: {
-      // args
-      input: NexusGenInputs['DeleteAttributesGroupFromRubricInput']; // DeleteAttributesGroupFromRubricInput!
     };
     deleteCategory: {
       // args
@@ -2517,10 +2413,6 @@ export interface NexusGenArgTypes {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
-    deleteRubric: {
-      // args
-      _id: NexusGenScalars['ObjectId']; // ObjectId!
-    };
     deleteRubricVariant: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -2552,14 +2444,6 @@ export interface NexusGenArgTypes {
     toggleCmsCardAttributeInCategory: {
       // args
       input: NexusGenInputs['UpdateAttributeInCategoryInput']; // UpdateAttributeInCategoryInput!
-    };
-    toggleCmsCardAttributeInRubric: {
-      // args
-      input: NexusGenInputs['UpdateAttributeInRubricInput']; // UpdateAttributeInRubricInput!
-    };
-    updateAttributeInRubric: {
-      // args
-      input: NexusGenInputs['UpdateAttributeInRubricInput']; // UpdateAttributeInRubricInput!
     };
     updateAttributesGroup: {
       // args
@@ -2632,10 +2516,6 @@ export interface NexusGenArgTypes {
     updateRoleRule: {
       // args
       input: NexusGenInputs['UpdateRoleRuleInput']; // UpdateRoleRuleInput!
-    };
-    updateRubric: {
-      // args
-      input: NexusGenInputs['UpdateRubricInput']; // UpdateRubricInput!
     };
     updateRubricNavItemConfig: {
       // args
@@ -2771,7 +2651,6 @@ export interface NexusGenAbstractTypeMembers {
     | 'OrderStatusPayload'
     | 'RolePayload'
     | 'RoleRulePayload'
-    | 'RubricPayload'
     | 'RubricVariantPayload'
     | 'ShopPayload'
     | 'ShopProductPayload'
@@ -2815,7 +2694,6 @@ export interface NexusGenTypeInterfaces {
   Role: 'Timestamp';
   RolePayload: 'Payload';
   RoleRulePayload: 'Payload';
-  RubricPayload: 'Payload';
   RubricVariantPayload: 'Payload';
   Shop: 'Base' | 'Timestamp';
   ShopPayload: 'Payload';

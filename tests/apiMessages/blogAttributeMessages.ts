@@ -1,5 +1,5 @@
 import { MessageBaseInterface } from '../../db/uiInterfaces';
-import { DEFAULT_LOCALE, SECONDARY_LOCALE } from '../../config/common';
+import { DEFAULT_LOCALE, SECONDARY_LOCALE } from '../../lib/config/common';
 
 export const blogAttributeMessages: MessageBaseInterface[] = [
   {

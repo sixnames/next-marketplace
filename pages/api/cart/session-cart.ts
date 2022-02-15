@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import nookies from 'nookies';
-import { CART_COOKIE_KEY } from '../../../config/common';
-import { getSessionCart } from '../../../db/dao/cart/getSessionCart';
+import { CART_COOKIE_KEY } from 'lib/config/common';
+import { getSessionCart } from 'db/dao/cart/getSessionCart';
 
 export interface CartQueryInterface {
   companyId?: string;

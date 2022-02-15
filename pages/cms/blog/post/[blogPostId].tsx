@@ -1,23 +1,19 @@
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
-import BlogPostsDetails from '../../../../components/blog/BlogPostsDetails';
-import Inner from '../../../../components/Inner';
-import WpTitle from '../../../../components/WpTitle';
-import { getBlogPost } from '../../../../db/dao/blog/getBlogPost';
+import BlogPostsDetails from 'components/blog/BlogPostsDetails';
+import Inner from 'components/Inner';
+import WpTitle from 'components/WpTitle';
+import { getBlogPost } from 'db/ssr/blog/getBlogPost';
 import {
   AppContentWrapperBreadCrumbs,
   BlogAttributeInterface,
   BlogPostInterface,
-} from '../../../../db/uiInterfaces';
-import AppContentWrapper from '../../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { getCmsLinks } from '../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
+} from 'db/uiInterfaces';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getCmsLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface BlogPostConsumerInterface {
   post: BlogPostInterface;

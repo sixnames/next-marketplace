@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { getFieldValidationMessage } from '../lib/getFieldValidationMessage';
+import { getFieldValidationMessage } from 'validation/utils/getFieldValidationMessage';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import {
   phoneSchema,
@@ -7,7 +7,7 @@ import {
   MAX_STRING_FIELD_LENGTH,
   emailSchema,
   objectIdSchema,
-} from './schemaTemplates';
+} from 'validation/utils/schemaTemplates';
 
 const minPasswordLength = 5;
 const maxPasswordLength = 30;

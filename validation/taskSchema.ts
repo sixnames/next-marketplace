@@ -6,13 +6,13 @@ import {
   TASK_PRICE_TARGET_FIELD,
   TASK_PRICE_TARGET_SYMBOL,
   TASK_PRICE_TARGET_TASK,
-} from '../config/constantSelects';
+} from '../lib/config/constantSelects';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import {
   objectIdSchema,
   requiredStringSchema,
   requiredStringTranslationSchema,
-} from './schemaTemplates';
+} from 'validation/utils/schemaTemplates';
 
 export const taskVariantIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.taskVariants.id' });

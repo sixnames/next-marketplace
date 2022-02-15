@@ -1,4 +1,4 @@
-import { ObjectIdModel, PromoBaseInterface, PromoProductModel } from '../../../db/dbModels';
+import { ObjectIdModel, PromoBaseInterface, PromoProductModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import promo from '../promo/promo';
 

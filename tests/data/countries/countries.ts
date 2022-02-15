@@ -1,4 +1,4 @@
-import { CountryModel } from '../../../db/dbModels';
+import { CountryModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const countries: CountryModel[] = [

@@ -1,6 +1,6 @@
 import addZero from 'add-zero';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ID_COUNTER_DIGITS } from '../../../config/common';
-import { ShopProductModel } from '../../../db/dbModels';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ID_COUNTER_DIGITS } from 'lib/config/common';
+import { ShopProductModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import productSummaries from '../productSummaries/productSummaries';
 import shops from '../shops/shops';
@@ -70,11 +70,6 @@ rubrics.forEach((rubric) => {
           createdAt: new Date(),
           updatedAt: new Date(),
           views: {
-            [DEFAULT_COMPANY_SLUG]: {
-              [DEFAULT_CITY]: withConnection ? i : 1,
-            },
-          },
-          priorities: {
             [DEFAULT_COMPANY_SLUG]: {
               [DEFAULT_CITY]: withConnection ? i : 1,
             },

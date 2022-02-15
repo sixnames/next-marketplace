@@ -1,7 +1,7 @@
-import { NAV_GROUP_CONSOLE, NAV_GROUP_CMS } from '../../../config/common';
-import { NavItemModel } from '../../../db/dbModels';
+import { NAV_GROUP_CONSOLE, NAV_GROUP_CMS } from 'lib/config/common';
+import { NavItemModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 const navItemsDefaultSlug = 'navItem';
 const links = getProjectLinks();
@@ -76,6 +76,14 @@ const consoleNavItemBases: NavItemBaseMode[] = [
     },
     slug: 'console-shops',
     path: getConsoleLink(links.console.companyId.shops.url),
+  },
+  {
+    nameI18n: {
+      ru: 'Мероприятия',
+      en: 'Events',
+    },
+    slug: 'console-events',
+    path: getConsoleLink(links.console.companyId.events.url),
   },
   {
     nameI18n: {

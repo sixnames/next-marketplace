@@ -1,14 +1,10 @@
+import { UpdateRubricInputInterface } from 'db/dao/rubrics/updateRubric';
 import { Form, Formik } from 'formik';
+import { useUpdateRubric } from 'hooks/mutations/useRubricMutations';
 import * as React from 'react';
-import {
-  CompanyInterface,
-  RubricInterface,
-  SeoContentCitiesInterface,
-} from '../../db/uiInterfaces';
-import { UpdateRubricInput, useUpdateRubricMutation } from '../../generated/apolloComponents';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { CompanyInterface, RubricInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { updateRubricSchema } from '../../validation/rubricSchema';
+import { updateRubricSchema } from 'validation/rubricSchema';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import Inner from '../Inner';
@@ -31,14 +27,8 @@ const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
   const validationSchema = useValidationSchema({
     schema: updateRubricSchema,
   });
-  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
-    reload: true,
-  });
 
-  const [updateRubricMutation] = useUpdateRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateRubric),
-    onError: onErrorCallback,
-  });
+  const [updateRubricMutation] = useUpdateRubric();
 
   const {
     _id = '',
@@ -58,8 +48,8 @@ const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
     gender,
   } = rubric;
 
-  const initialValues: UpdateRubricInput = {
-    rubricId: _id,
+  const initialValues: UpdateRubricInputInterface = {
+    _id: `${_id}`,
     active,
     nameI18n,
     descriptionI18n,
@@ -72,11 +62,12 @@ const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
     showCategoryInProductTitle: showCategoryInProductTitle || false,
     showBrandInNav: showBrandInNav || false,
     showBrandInFilter: showBrandInFilter || false,
+    showBrandAsAlphabet: rubric.showBrandAsAlphabet,
     defaultTitleI18n,
     prefixI18n,
     keywordI18n,
     gender: gender as any,
-    variantId,
+    variantId: `${variantId}`,
   };
 
   return (
@@ -86,12 +77,7 @@ const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
         initialValues={initialValues}
         enableReinitialize
         onSubmit={(values) => {
-          showLoading();
-          return updateRubricMutation({
-            variables: {
-              input: values,
-            },
-          });
+          updateRubricMutation(values).catch(console.log);
         }}
       >
         {() => {

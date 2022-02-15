@@ -2,14 +2,14 @@ import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import { optimize } from 'svgo';
-import { REQUEST_METHOD_DELETE } from '../../../config/common';
-import { COL_CATEGORIES, COL_ICONS } from '../../../db/collectionNames';
-import { CategoryModel, IconModel } from '../../../db/dbModels';
-import { getDatabase } from '../../../db/mongodb';
-import { getApiMessageValue } from '../../../db/dao/messages/apiMessageUtils';
-import { alwaysArray } from '../../../lib/arrayUtils';
-import { parseRestApiFormData } from '../../../lib/restApi';
-import { getOperationPermission } from '../../../lib/sessionHelpers';
+import { REQUEST_METHOD_DELETE } from 'lib/config/common';
+import { COL_CATEGORIES, COL_ICONS } from 'db/collectionNames';
+import { CategoryModel, IconModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { getApiMessageValue } from 'db/utils/apiMessageUtils';
+import { alwaysArray } from 'lib/arrayUtils';
+import { parseRestApiFormData } from 'lib/restApi';
+import { getOperationPermission } from 'lib/sessionHelpers';
 
 export const config = {
   api: {

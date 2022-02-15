@@ -5,7 +5,7 @@ import {
   requiredNumberSchema,
   requiredStringSchema,
   requiredStringTranslationSchema,
-} from './schemaTemplates';
+} from 'validation/utils/schemaTemplates';
 
 export const pagesGroupIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({

@@ -7,8 +7,8 @@ import {
   TASK_PRICE_SLUGS,
   TASK_PRICE_TARGET_TASK,
   TASK_PRICE_TARGETS,
-} from '../../config/constantSelects';
-import { useAppContext } from '../../context/appContext';
+} from '../../lib/config/constantSelects';
+import { useAppContext } from '../context/appContext';
 import { TaskVariantPriceModel } from '../../db/dbModels';
 import WpButton from '../button/WpButton';
 import FormikInput from '../FormElements/Input/FormikInput';

@@ -1,4 +1,4 @@
-import { SyncIntersectModel } from '../../../db/dbModels';
+import { SyncIntersectModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();

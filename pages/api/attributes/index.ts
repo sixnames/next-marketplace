@@ -3,12 +3,12 @@ import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-} from '../../../config/common';
-import { createAttribute } from '../../../db/dao/attributes/createAttribute';
-import { deleteAttribute } from '../../../db/dao/attributes/deleteAttribute';
-import { updateAttribute } from '../../../db/dao/attributes/updateAttribute';
-import { sendApiRouteResponse } from '../../../lib/sessionHelpers';
-import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
+} from 'lib/config/common';
+import { createAttribute } from 'db/dao/attributes/createAttribute';
+import { deleteAttribute } from 'db/dao/attributes/deleteAttribute';
+import { updateAttribute } from 'db/dao/attributes/updateAttribute';
+import { sendApiRouteResponse } from 'lib/sessionHelpers';
+import { execUpdateProductTitles } from 'lib/updateProductTitles';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // create

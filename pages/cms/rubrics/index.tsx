@@ -1,41 +1,34 @@
+import { useAppContext } from 'components/context/appContext';
+import { useDeleteRubric } from 'hooks/mutations/useRubricMutations';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ContentItemControls from '../../../components/button/ContentItemControls';
-import FixedButtons from '../../../components/button/FixedButtons';
-import WpButton from '../../../components/button/WpButton';
-import { RubricMainFieldsInterface } from '../../../components/FormTemplates/RubricMainFields';
-import Inner from '../../../components/Inner';
-import { CreateRubricModalInterface } from '../../../components/Modal/CreateRubricModal';
-import WpTable, { WpTableColumn } from '../../../components/WpTable';
-import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_COMPANY_SLUG } from '../../../config/common';
-import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from '../../../config/modalVariants';
+import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import { RubricMainFieldsInterface } from 'components/FormTemplates/RubricMainFields';
+import Inner from 'components/Inner';
+import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal';
+import WpTable, { WpTableColumn } from 'components/WpTable';
+import WpTitle from 'components/WpTitle';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'lib/config/modalVariants';
 import {
   COL_PRODUCT_FACETS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
-} from '../../../db/collectionNames';
-import { RubricModel } from '../../../db/dbModels';
-import { getDatabase } from '../../../db/mongodb';
-import { RubricInterface, RubricVariantInterface } from '../../../db/uiInterfaces';
-import {
-  useCreateRubricMutation,
-  useDeleteRubricMutation,
-} from '../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
-import AppContentWrapper from '../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
-import { sortObjectsByField } from '../../../lib/arrayUtils';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getConsoleRubricLinks } from '../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../lib/ssrUtils';
+} from 'db/collectionNames';
+import { RubricModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { RubricInterface, RubricVariantInterface } from 'db/uiInterfaces';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface RubricsRouteInterface extends RubricMainFieldsInterface {
   rubrics: RubricInterface[];
@@ -43,20 +36,8 @@ interface RubricsRouteInterface extends RubricMainFieldsInterface {
 
 const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants }) => {
   const router = useRouter();
-  const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
-    withModal: true,
-    reload: true,
-  });
-
-  const [deleteRubricMutation] = useDeleteRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteRubric),
-    onError: onErrorCallback,
-  });
-
-  const [createRubricMutation] = useCreateRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.createRubric),
-    onError: onErrorCallback,
-  });
+  const { showModal } = useAppContext();
+  const [deleteRubricMutation] = useDeleteRubric();
 
   const columns: WpTableColumn<RubricInterface>[] = [
     {
@@ -104,11 +85,8 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants
                   testId: 'delete-rubric-modal',
                   message: 'Рубрика будет удалена',
                   confirm: () => {
-                    showLoading();
                     return deleteRubricMutation({
-                      variables: {
-                        _id: dataItem._id,
-                      },
+                      _id: `${dataItem._id}`,
                     });
                   },
                 },
@@ -153,10 +131,6 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants
                 variant: CREATE_RUBRIC_MODAL,
                 props: {
                   rubricVariants,
-                  confirm: (values) => {
-                    showLoading();
-                    createRubricMutation({ variables: { input: values } }).catch(console.log);
-                  },
                 },
               });
             }}
@@ -201,7 +175,6 @@ export const getServerSideProps = async (
           catalogueTitle: false,
           descriptionI18n: false,
           shortDescriptionI18n: false,
-          priorities: false,
           views: false,
         },
       },

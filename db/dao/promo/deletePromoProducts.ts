@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
-import { castUrlFilters } from '../../../lib/castUrlFilters';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { COL_PROMO, COL_PROMO_PRODUCTS, COL_SHOP_PRODUCTS } from '../../collectionNames';
 import { ObjectIdModel, PromoModel, PromoProductModel, ShopProductModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

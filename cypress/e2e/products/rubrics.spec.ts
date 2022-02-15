@@ -1,5 +1,5 @@
-import { DEFAULT_LOCALE, GENDER_HE, GENDER_SHE, SECONDARY_LOCALE } from 'config/common';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
+import { DEFAULT_LOCALE, GENDER_HE, GENDER_SHE, SECONDARY_LOCALE } from 'lib/config/common';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { fixtureIds } from '../../fixtures/fixtureIds';
 
 describe('Rubrics', () => {
@@ -19,25 +19,22 @@ describe('Rubrics', () => {
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
     cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
     cy.getByCy(`shortDescriptionI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
-    cy.getByCy(`catalogueTitle-defaultTitleI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
-    cy.getByCy(`catalogueTitle-prefixI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
-    cy.getByCy(`catalogueTitle-keywordI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
+    cy.getByCy(`defaultTitleI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
+    cy.getByCy(`prefixI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
+    cy.getByCy(`keywordI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
     cy.getByCy(`variantId`).select(fixtureIds.rubricVariantAlcohol);
-    cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
+    cy.getByCy(`gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
-    cy.getByCy(`create-rubric-modal`).should('not.exist');
-    cy.shouldError();
+    cy.wait(1500);
 
     // Should create new rubrics
-    cy.getByCy(`create-rubric`).click();
-    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(newRubricName);
-    cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).type(newRubricName);
-    cy.getByCy(`shortDescriptionI18n-${DEFAULT_LOCALE}`).type(newRubricName);
-    cy.getByCy(`catalogueTitle-defaultTitleI18n-${DEFAULT_LOCALE}`).type(newRubricName);
-    cy.getByCy(`catalogueTitle-prefixI18n-${DEFAULT_LOCALE}`).type(newRubricName);
-    cy.getByCy(`catalogueTitle-keywordI18n-${DEFAULT_LOCALE}`).type(newRubricName);
+    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(newRubricName);
+    cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).clear().type(newRubricName);
+    cy.getByCy(`shortDescriptionI18n-${DEFAULT_LOCALE}`).clear().type(newRubricName);
+    cy.getByCy(`defaultTitleI18n-${DEFAULT_LOCALE}`).clear().type(newRubricName);
+    cy.getByCy(`prefixI18n-${DEFAULT_LOCALE}`).clear().type(newRubricName);
+    cy.getByCy(`keywordI18n-${DEFAULT_LOCALE}`).clear().type(newRubricName);
     cy.getByCy(`variantId`).select(fixtureIds.rubricVariantAlcohol);
-    cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
     cy.wait(1500);
     cy.getByCy(`${newRubricName}-row`).should('exist');
@@ -58,10 +55,10 @@ describe('Rubrics', () => {
     cy.getByCy(`nameI18n-${SECONDARY_LOCALE}`).clear().type(updatedRubricName);
     cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
     cy.getByCy(`shortDescriptionI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
-    cy.getByCy(`catalogueTitle-defaultTitleI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
-    cy.getByCy(`catalogueTitle-prefixI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
-    cy.getByCy(`catalogueTitle-keywordI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
-    cy.getByCy(`catalogueTitle-gender`).select(GENDER_HE);
+    cy.getByCy(`defaultTitleI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
+    cy.getByCy(`prefixI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
+    cy.getByCy(`keywordI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
+    cy.getByCy(`gender`).select(GENDER_HE);
     cy.getByCy('rubric-submit').click();
     cy.wait(1500);
     cy.visit(links.cms.rubrics.url);

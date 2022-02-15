@@ -2,10 +2,10 @@ import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import nookies from 'nookies';
 import { getDomain } from 'tldts';
-import { ONE_DAY, SESSION_COOKIE_KEY } from '../../../config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getRequestParams, getSessionRole } from '../../../lib/sessionHelpers';
-import { IpInfoInterface } from '../../../types/clientTypes';
+import { ONE_DAY, SESSION_COOKIE_KEY } from 'lib/config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
+import { IpInfoInterface } from 'types/clientTypes';
 import { COL_SESSION_LOGS } from '../../collectionNames';
 import {
   ObjectIdModel,

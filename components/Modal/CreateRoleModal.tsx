@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { useAppContext } from '../../context/appContext';
+import { useAppContext } from '../context/appContext';
 import { CreateRoleInput } from '../../generated/apolloComponents';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { createRoleSchema } from '../../validation/roleSchema';

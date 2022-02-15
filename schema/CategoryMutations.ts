@@ -8,7 +8,7 @@ import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   FILTER_SEPARATOR,
-} from '../config/common';
+} from '../lib/config/common';
 import {
   COL_ATTRIBUTES,
   COL_CATEGORIES,
@@ -16,7 +16,7 @@ import {
   COL_CONFIGS,
   COL_RUBRICS,
 } from '../db/collectionNames';
-import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import {
   AttributeModel,
   CategoryModel,

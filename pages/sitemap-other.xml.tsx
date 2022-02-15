@@ -1,3 +1,4 @@
+import { castConfigs } from 'db/cast/castConfigs';
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
 import { getDomain } from 'tldts';
@@ -6,12 +7,12 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   PAGE_STATE_PUBLISHED,
-} from '../config/common';
+} from '../lib/config/common';
 import { COL_BLOG_POSTS, COL_COMPANIES, COL_CONFIGS } from '../db/collectionNames';
 import { BlogPostModel, CompanyModel, ConfigModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
-import { castConfigs, getConfigBooleanValue } from '../lib/configsUtils';
-import { getProjectLinks } from '../lib/getProjectLinks';
+import { getConfigBooleanValue } from '../lib/configsUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 const SitemapXml: React.FC = () => {
   return <div />;

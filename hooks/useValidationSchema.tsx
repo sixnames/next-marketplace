@@ -1,7 +1,7 @@
 import * as React from 'react';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import { useLocaleContext } from '../context/localeContext';
+import { useLocaleContext } from '../components/context/localeContext';
 import { ResolverValidationSchema } from '../lib/sessionHelpers';
 import { GetValidationMessagesPayloadType } from '../pages/api/messages/validation';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';

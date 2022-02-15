@@ -1,24 +1,15 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import PromoDetails, {
-  PromoDetailsInterface,
-} from '../../../../../../../components/Promo/PromoDetails';
-import { COL_COMPANIES } from '../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-} from '../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
-import ConsolePromoLayout from '../../../../../../../layout/console/ConsolePromoLayout';
-import { getCmsCompanyLinks } from '../../../../../../../lib/linkUtils';
-import { getPromoSsr } from '../../../../../../../lib/promoUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../lib/ssrUtils';
+import PromoDetails, { PromoDetailsInterface } from 'components/Promo/PromoDetails';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getPromoSsr } from 'lib/promoUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface PromoDetailsPageInterface
   extends GetAppInitialDataPropsInterface,

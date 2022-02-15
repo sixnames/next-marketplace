@@ -7,7 +7,7 @@ import {
   TEXT_HORIZONTAL_ALIGN_OPTIONS,
   TEXT_HORIZONTAL_FLEX_OPTIONS,
   TEXT_VERTICAL_FLEX_OPTIONS,
-} from '../../config/common';
+} from '../../lib/config/common';
 import { CityInterface, PageInterface, PagesTemplateInterface } from '../../db/uiInterfaces';
 import { useUpdatePage } from '../../hooks/mutations/usePageMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';

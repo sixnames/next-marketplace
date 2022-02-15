@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_LOCALE, IMAGE_FALLBACK } from 'config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { DEFAULT_LOCALE, IMAGE_FALLBACK } from 'lib/config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -77,7 +77,7 @@ export async function createProduct({
       const { rubricId, ...values } = input;
       const rubricObjectId = new ObjectId(rubricId);
 
-      // get selected rubric
+      // get rubric
       const rubric = await rubricsCollection.findOne({ _id: rubricObjectId });
       if (!rubric) {
         mutationPayload = {
@@ -117,7 +117,7 @@ export async function createProduct({
         return;
       }
 
-      // create product
+      // create summary
       const itemId = await getNextItemId(COL_PRODUCT_SUMMARIES);
       const productId = new ObjectId();
       const { originalName, nameI18n } = trimProductName({
@@ -164,7 +164,7 @@ export async function createProduct({
         return;
       }
 
-      // create product facet
+      // create facet
       const createdProductFacetResult = await productFacetsCollection.insertOne({
         _id: createdSummary._id,
         itemId: createdSummary.itemId,

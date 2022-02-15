@@ -1,8 +1,9 @@
+import { castConfigs } from 'db/cast/castConfigs';
 import nodemailer from 'nodemailer';
 import { COL_CONFIGS } from '../../db/collectionNames';
 import { ConfigModel } from '../../db/dbModels';
 import { getDatabase } from '../../db/mongodb';
-import { castConfigs, getConfigStringValue } from '../configsUtils';
+import { getConfigStringValue } from '../configsUtils';
 import { getEmailTemplate } from './emailTemplate';
 
 export interface SendEmailInterface {

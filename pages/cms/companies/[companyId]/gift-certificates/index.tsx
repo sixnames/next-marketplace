@@ -1,4 +1,4 @@
-import { getCmsCompanyGiftCertificatesPageSsr } from '../../../../../db/dao/ssr/getCmsCompanyGiftCertificatesPageSsr';
+import { getCmsCompanyGiftCertificatesPageSsr } from 'db/ssr/company/getCmsCompanyGiftCertificatesPageSsr';
 import CmsCompanyGiftCertificatesPage from './[...filters]';
 
 export default CmsCompanyGiftCertificatesPage;

@@ -1,4 +1,4 @@
-import { GEO_POINT_TYPE } from '../config/common';
+import { GEO_POINT_TYPE } from '../lib/config/common';
 
 export const ADDRESS_COMPONENTS = [
   {

@@ -1,6 +1,6 @@
 import { addProductAsset } from 'db/dao/product/addProductAsset';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_POST } from 'config/common';
+import { REQUEST_METHOD_POST } from 'lib/config/common';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
 
 export const config = {

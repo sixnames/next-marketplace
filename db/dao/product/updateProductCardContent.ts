@@ -1,12 +1,12 @@
 import { getTextContents, Value } from '@react-page/editor';
 import { reactPageCellPlugins } from 'components/PageEditor';
-import { DEFAULT_LOCALE, TASK_STATE_IN_PROGRESS } from 'config/common';
-import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { DEFAULT_LOCALE, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
+import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import { COL_LANGUAGES } from 'db/collectionNames';
 import { getCitiesList } from 'db/dao/cities/getCitiesList';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { getDatabase } from 'db/mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { updateCitiesSeoContent } from 'lib/seoContentUniquenessUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { LanguageModel, ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';

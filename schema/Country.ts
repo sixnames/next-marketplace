@@ -1,7 +1,7 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { SORT_ASC } from '../config/common';
+import { SORT_ASC } from '../lib/config/common';
 import { COL_CITIES, COL_COUNTRIES } from '../db/collectionNames';
-import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import { CityModel, CountryModel, CountryPayloadModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';

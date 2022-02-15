@@ -1,10 +1,9 @@
 import * as Yup from 'yup';
-import { GENDER_ENUMS } from '../config/common';
-import { getFieldValidationMessage } from '../lib/getFieldValidationMessage';
-import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
-import { attributesGroupIdSchema } from './attributesGroupSchema';
+import { GENDER_ENUMS } from 'lib/config/common';
+import { getFieldValidationMessage } from 'validation/utils/getFieldValidationMessage';
+import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import { rubricVariantIdSchema } from './rubricVariantSchema';
-import { objectIdSchema, requiredStringTranslationSchema } from './schemaTemplates';
+import { objectIdSchema, requiredStringTranslationSchema } from 'validation/utils/schemaTemplates';
 
 export const rubricIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.rubrics.id' });
@@ -24,7 +23,6 @@ export const rubricCommonFieldsSchema = (args: ValidationSchemaArgsInterface) =>
       ...args,
       slug: 'validation.rubrics.name',
     }),
-    variantId: rubricVariantIdSchema(args),
     defaultTitleI18n: requiredStringTranslationSchema({
       ...args,
       slug: 'validation.rubrics.defaultTitle',
@@ -40,26 +38,29 @@ export const rubricCommonFieldsSchema = (args: ValidationSchemaArgsInterface) =>
 };
 
 export const createRubricSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object(rubricCommonFieldsSchema(args));
-};
-
-export const updateRubricSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
-    rubricId: rubricIdSchema(args),
+    variantId: rubricVariantIdSchema(args),
     ...rubricCommonFieldsSchema(args),
   });
 };
 
-export const addAttributesGroupToRubricSchema = (args: ValidationSchemaArgsInterface) => {
+export const updateRubricSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
-    rubricId: rubricIdSchema(args),
-    attributesGroupId: attributesGroupIdSchema(args),
+    _id: rubricIdSchema(args),
+    variantId: rubricVariantIdSchema(args),
+    ...rubricCommonFieldsSchema(args),
   });
 };
 
-export const deleteAttributesGroupFromRubricSchema = (args: ValidationSchemaArgsInterface) => {
+export const createEventRubricSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
-    rubricId: rubricIdSchema(args),
-    attributesGroupId: attributesGroupIdSchema(args),
+    ...rubricCommonFieldsSchema(args),
+  });
+};
+
+export const updateEventRubricSchema = (args: ValidationSchemaArgsInterface) => {
+  return Yup.object({
+    _id: rubricIdSchema(args),
+    ...rubricCommonFieldsSchema(args),
   });
 };

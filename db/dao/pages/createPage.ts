@@ -1,13 +1,13 @@
 import { ObjectId } from 'mongodb';
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING, PAGE_STATE_PUBLISHED } from '../../../config/common';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getNextItemId } from '../../../lib/itemIdUtils';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING, PAGE_STATE_PUBLISHED } from 'lib/config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getNextItemId } from 'lib/itemIdUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { createPageSchema } from '../../../validation/pagesSchema';
+} from 'lib/sessionHelpers';
+import { createPageSchema } from 'validation/pagesSchema';
 import {
   COL_PAGE_TEMPLATES,
   COL_PAGES,
@@ -17,7 +17,7 @@ import {
 import { PageModel, PagePayloadModel, PagesGroupModel, TranslationModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
-import { findDocumentByI18nField } from '../findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 
 export interface CreatePageInputInterface {
   nameI18n: TranslationModel;

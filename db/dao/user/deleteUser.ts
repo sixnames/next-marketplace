@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { COL_USERS } from '../../collectionNames';
 import { UserModel, UserPayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { CONFIRM_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
+import { CONFIRM_MODAL } from '../../lib/config/modalVariants';
+import { useAppContext } from '../context/appContext';
 import { TaskVariantInterface } from '../../db/uiInterfaces';
 import { useDeleteTaskVariant } from '../../hooks/mutations/useTaskMutations';
 import { getConsoleTaskVariantLinks } from '../../lib/linkUtils';

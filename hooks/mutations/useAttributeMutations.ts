@@ -2,7 +2,7 @@ import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-} from '../../config/common';
+} from '../../lib/config/common';
 import { CreateAttributeInputInterface } from '../../db/dao/attributes/createAttribute';
 import { DeleteAttributeInputInterface } from '../../db/dao/attributes/deleteAttribute';
 import { MoveAttributeInputInterface } from '../../db/dao/attributes/moveAttribute';

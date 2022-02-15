@@ -1,7 +1,7 @@
 import { useFormikContext } from 'formik';
 import * as React from 'react';
-import { PRODUCT_SEARCH_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
+import { PRODUCT_SEARCH_MODAL } from '../../lib/config/modalVariants';
+import { useAppContext } from '../context/appContext';
 import { CreateTaskInputInterface } from '../../db/dao/tasks/createTask';
 import { TaskVariantInterface } from '../../db/uiInterfaces';
 import { useUserSearchModal } from '../../hooks/useUserSearchModal';

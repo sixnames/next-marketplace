@@ -1,9 +1,10 @@
+import { castConfigs } from 'db/cast/castConfigs';
 import fetch from 'node-fetch';
 import qs from 'qs';
 import { COL_CONFIGS } from '../../db/collectionNames';
 import { ConfigModel } from '../../db/dbModels';
 import { getDatabase } from '../../db/mongodb';
-import { castConfigs, getConfigStringValue } from '../configsUtils';
+import { getConfigStringValue } from '../configsUtils';
 
 export interface SmsSenderInterface {
   text: string;

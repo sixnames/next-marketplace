@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { useAppContext } from '../../context/appContext';
-import { useSiteUserContext } from '../../context/siteUserContext';
+import { useAppContext } from '../context/appContext';
+import { useSiteUserContext } from '../context/siteUserContext';
 import { UpdateMyPasswordInputInterface } from '../../db/dao/user/updateMyPassword';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { updateMyPasswordSchema } from '../../validation/userSchema';

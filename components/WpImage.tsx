@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useAppContext } from '../context/appContext';
+import { useAppContext } from './context/appContext';
 
 interface WpImageInterface {
   url: string;

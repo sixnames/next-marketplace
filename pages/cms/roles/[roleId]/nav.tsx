@@ -2,33 +2,29 @@ import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import WpCheckbox from '../../../../components/FormElements/Checkbox/WpCheckbox';
-import Inner from '../../../../components/Inner';
-import WpTable, { WpTableColumn } from '../../../../components/WpTable';
-import WpTitle from '../../../../components/WpTitle';
-import { SORT_ASC, SORT_DESC } from '../../../../config/common';
-import { getConstantTranslation } from '../../../../config/constantTranslations';
-import { COL_NAV_ITEMS, COL_ROLES } from '../../../../db/collectionNames';
-import { getDatabase } from '../../../../db/mongodb';
+import WpCheckbox from 'components/FormElements/Checkbox/WpCheckbox';
+import Inner from 'components/Inner';
+import WpTable, { WpTableColumn } from 'components/WpTable';
+import WpTitle from 'components/WpTitle';
+import { SORT_ASC, SORT_DESC } from 'lib/config/common';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { COL_NAV_ITEMS, COL_ROLES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   NavGroupInterface,
   NavItemInterface,
   RoleInterface,
-} from '../../../../db/uiInterfaces';
-import { useUpdateRoleNavMutation } from '../../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
-import AppContentWrapper from '../../../../layout/AppContentWrapper';
-import AppSubNav from '../../../../layout/AppSubNav';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { getProjectLinks } from '../../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../../lib/i18n';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
-import { ClientNavItemInterface } from '../../../../types/clientTypes';
+} from 'db/uiInterfaces';
+import { useUpdateRoleNavMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface RoleNavConsumerInterface {
   role: RoleInterface;

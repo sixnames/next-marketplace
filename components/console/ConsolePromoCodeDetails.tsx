@@ -1,6 +1,6 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { useAppContext } from '../../context/appContext';
+import { useAppContext } from '../context/appContext';
 import { UpdatePromoCodeInputInterface } from '../../db/dao/promo/updatePromoCode';
 import { PromoCodeModel } from '../../db/dbModels';
 import { useUpdatePromoCode } from '../../hooks/mutations/usePromoMutations';

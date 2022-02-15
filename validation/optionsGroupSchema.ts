@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
-import { objectIdSchema, requiredStringTranslationSchema } from './schemaTemplates';
+import { objectIdSchema, requiredStringTranslationSchema } from 'validation/utils/schemaTemplates';
 
 // Options group schemas
 export const optionsGroupIdSchema = (args: ValidationSchemaArgsInterface) => {

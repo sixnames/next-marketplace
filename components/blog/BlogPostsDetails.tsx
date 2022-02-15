@@ -1,10 +1,10 @@
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { PAGE_STATE_OPTIONS, REQUEST_METHOD_PATCH } from '../../config/common';
-import { ATTRIBUTE_OPTIONS_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
-import { useNotificationsContext } from '../../context/notificationsContext';
+import { PAGE_STATE_OPTIONS, REQUEST_METHOD_PATCH } from '../../lib/config/common';
+import { ATTRIBUTE_OPTIONS_MODAL } from '../../lib/config/modalVariants';
+import { useAppContext } from '../context/appContext';
+import { useNotificationsContext } from '../context/notificationsContext';
 import { BlogAttributeInterface, BlogPostInterface } from '../../db/uiInterfaces';
 import {
   useDeleteBlogPostPreviewImage,

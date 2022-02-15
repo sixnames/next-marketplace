@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH } from '../../../config/common';
-import { cancelOrderProduct } from '../../../db/dao/orders/cancelOrderProduct';
-import { updateOrderProduct } from '../../../db/dao/orders/updateOrderProduct';
-import { sendApiRouteResponse, sendApiRouteWrongMethod } from '../../../lib/sessionHelpers';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH } from 'lib/config/common';
+import { cancelOrderProduct } from 'db/dao/orders/cancelOrderProduct';
+import { updateOrderProduct } from 'db/dao/orders/updateOrderProduct';
+import { sendApiRouteResponse, sendApiRouteWrongMethod } from 'lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_PATCH) {

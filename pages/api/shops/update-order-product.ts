@@ -1,15 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import {
-  COL_ORDER_PRODUCTS,
-  COL_ORDER_STATUSES,
-  COL_ORDERS,
-  COL_SHOPS,
-} from '../../../db/collectionNames';
-import { OrderProductModel, OrderStatusModel, ShopModel } from '../../../db/dbModels';
-import { getDatabase } from '../../../db/mongodb';
-import { SyncParamsInterface, SyncUpdateOrderProductInterface } from '../../../db/syncInterfaces';
-import { OrderInterface, OrderProductInterface } from '../../../db/uiInterfaces';
-import { noNaN } from '../../../lib/numbers';
+import { COL_ORDER_PRODUCTS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
+import { OrderProductModel, OrderStatusModel, ShopModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { SyncParamsInterface, SyncUpdateOrderProductInterface } from 'db/syncInterfaces';
+import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
+import { noNaN } from 'lib/numbers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'PATCH') {

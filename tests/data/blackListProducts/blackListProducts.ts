@@ -1,4 +1,4 @@
-import { BlackListProductModel } from '../../../db/dbModels';
+import { BlackListProductModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();

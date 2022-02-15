@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { CONFIRM_MODAL, CREATE_PROMO_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
+import { CONFIRM_MODAL, CREATE_PROMO_MODAL } from '../../lib/config/modalVariants';
+import { useAppContext } from '../context/appContext';
 import { CompanyInterface, PromoInterface } from '../../db/uiInterfaces';
 import { useDeletePromo } from '../../hooks/mutations/usePromoMutations';
 import ContentItemControls from '../button/ContentItemControls';

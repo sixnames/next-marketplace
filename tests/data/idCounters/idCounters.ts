@@ -15,6 +15,7 @@ import {
   COL_SUPPLIERS,
   COL_TASKS,
   COL_USERS,
+  COL_EVENT_SUMMARIES,
 } from 'db/collectionNames';
 import { IdCounterModel } from 'db/dbModels';
 
@@ -81,6 +82,10 @@ const idCounters: IdCounterModel[] = [
   },
   {
     collection: COL_TASKS,
+    counter: 999999,
+  },
+  {
+    collection: COL_EVENT_SUMMARIES,
     counter: 999999,
   },
 ];

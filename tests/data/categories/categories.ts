@@ -2,8 +2,8 @@ import {
   ASSETS_DIST_CATEGORIES,
   CATEGORY_SLUG_PREFIX,
   DEFAULT_COUNTERS_OBJECT,
-} from '../../../config/common';
-import { CategoryModel } from '../../../db/dbModels';
+} from 'lib/config/common';
+import { CategoryModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const categories: CategoryModel[] = [

@@ -2,32 +2,24 @@ import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import WpCheckbox from '../../../../components/FormElements/Checkbox/WpCheckbox';
-import FormikIndividualSearch from '../../../../components/FormElements/Search/FormikIndividualSearch';
-import Inner from '../../../../components/Inner';
-import WpTable, { WpTableColumn } from '../../../../components/WpTable';
-import WpTitle from '../../../../components/WpTitle';
-import { COL_ROLES } from '../../../../db/collectionNames';
-import { getDatabase } from '../../../../db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  RoleInterface,
-  RoleRuleInterface,
-} from '../../../../db/uiInterfaces';
-import { useUpdateRoleRuleMutation } from '../../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
-import AppContentWrapper from '../../../../layout/AppContentWrapper';
-import AppSubNav from '../../../../layout/AppSubNav';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { getProjectLinks } from '../../../../lib/getProjectLinks';
-import { getFieldStringLocale } from '../../../../lib/i18n';
-import { getRoleRulesAst } from '../../../../lib/roleRuleUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
-import { ClientNavItemInterface } from '../../../../types/clientTypes';
+import WpCheckbox from 'components/FormElements/Checkbox/WpCheckbox';
+import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
+import Inner from 'components/Inner';
+import WpTable, { WpTableColumn } from 'components/WpTable';
+import WpTitle from 'components/WpTitle';
+import { COL_ROLES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, RoleInterface, RoleRuleInterface } from 'db/uiInterfaces';
+import { useUpdateRoleRuleMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getRoleRulesAst } from 'lib/roleRuleUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface RoleRulesConsumerInterface {
   role: RoleInterface;

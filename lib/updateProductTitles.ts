@@ -1,4 +1,3 @@
-import addZero from 'add-zero';
 import { exec } from 'child_process';
 import { COL_LANGUAGES, COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
 import {
@@ -6,7 +5,7 @@ import {
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
-} from 'db/dao/constantPipelines';
+} from 'db/utils/constantPipelines';
 import {
   LanguageModel,
   ProductFacetModel,
@@ -23,12 +22,9 @@ import {
 } from 'lib/titleUtils';
 import { getTreeFromList } from 'lib/treeUtils';
 import { getProdDb } from 'tests/testUtils/getProdDb';
-import fs from 'fs';
-import path from 'path';
-import mkdirp from 'mkdirp';
 require('dotenv').config();
 
-async function getLogger(fileName: string) {
+/*async function getLogger(fileName: string) {
   const dirPath = path.join(process.cwd(), 'log');
   await mkdirp(dirPath);
   const logPath = path.join(dirPath, `${fileName}.txt`);
@@ -59,7 +55,7 @@ function getLogFileDateName() {
     2,
   )}_${addZero(minutes, 2)}`;
   return dateString;
-}
+}*/
 
 export async function updateProductTitles(match?: Record<any, any>) {
   const { db, client } = await getProdDb({
@@ -71,8 +67,6 @@ export async function updateProductTitles(match?: Record<any, any>) {
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const languages = await languagesCollection.find({}).toArray();
   const locales = languages.map(({ slug }) => slug);
-  const fileName = getLogFileDateName();
-  const logger = await getLogger(fileName);
 
   const aggregationMatch = match
     ? [
@@ -97,8 +91,8 @@ export async function updateProductTitles(match?: Record<any, any>) {
       },
     )
     .toArray();
-  logger(`\n\nTotal products count ${facets.length}\n`);
-  logger(`Match \n${JSON.stringify(match, null, 2)}\n`);
+  console.log(`\nTotal products count ${facets.length}\n`);
+  console.log(`Match \n${JSON.stringify(match, null, 2)}\n`);
 
   for await (const [index, facet] of facets.entries()) {
     const productAggregation = await productSummariesCollection
@@ -141,16 +135,15 @@ export async function updateProductTitles(match?: Record<any, any>) {
       .toArray();
     const summary = productAggregation[0];
     if (!summary) {
-      logger(`No summary ${facet._id}`);
-      logger(JSON.stringify(summary, null, 2));
+      console.log(`No summary ${facet._id}`);
       continue;
     }
 
     const { rubric, attributes, categories, titleCategorySlugs, originalName, gender, brand } =
       summary;
     if (!rubric) {
-      logger(`No rubric ${originalName}`);
-      logger(JSON.stringify(summary, null, 2));
+      console.log(`No rubric ${originalName}`);
+      console.log(JSON.stringify(summary, null, 2));
       continue;
     }
 
@@ -198,36 +191,30 @@ export async function updateProductTitles(match?: Record<any, any>) {
     await updateAlgoliaProducts({ _id: summary._id });
 
     const counter = index + 1;
-    if (counter % 10 === 0) {
-      logger(`${counter}`);
+    if (counter % 500 === 0) {
+      console.log(`${counter}`);
     }
   }
-  logger(`Done >>>>>>>>>>>>>>>>>>>>>>>>>>>>>`);
+  console.log(`Done >>>>>>>>>>>>>>>>>>>>>>>>>>>>>`);
   await client.close();
   return true;
 }
 
 export function execUpdateProductTitles(param: string) {
-  const fileName = getLogFileDateName();
-  getLogger(`${fileName}_execUpdateProductTitles_result`).then((logger) => {
-    exec(
-      `node -r esbuild-register db/dao/childProcess/updateProductTitlesInChildProcess.ts ${param}`,
-      (error, _stdout, stderr) => {
-        if (error) {
-          console.log(`error: ${error.message}`);
-          logger(`error: ${error.message}`);
-          return;
-        }
+  exec(
+    `node -r esbuild-register db/childProcess/updateProductTitlesInChildProcess.ts ${param}`,
+    (error, _stdout, stderr) => {
+      if (error) {
+        console.log(`error: ${error.message}`);
+        // return;
+      }
 
-        if (stderr) {
-          console.log(`stderr: ${stderr}`);
-          logger(`stderr: ${stderr}`);
-          return;
-        }
+      if (stderr) {
+        console.log(`stderr: ${stderr}`);
+        // return;
+      }
 
-        // console.log(`stdout:\n${_stdout}`);
-        // logger(`stdout:\n${stdout}`);
-      },
-    );
-  });
+      console.log(`stdout:\n${_stdout}`);
+    },
+  );
 }

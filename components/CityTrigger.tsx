@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useAppContext } from '../context/appContext';
-import { useConfigContext } from '../context/configContext';
+import { useAppContext } from './context/appContext';
+import { useConfigContext } from './context/configContext';
 import { HeadlessMenuGroupInterface } from './HeadlessMenuButton';
 import MenuButtonWithName from './MenuButtonWithName';
 

@@ -16,7 +16,6 @@ export const Category = objectType({
     t.objectId('parentId');
     t.boolean('replaceParentNameInCatalogueTitle');
     t.nonNull.json('views');
-    t.nonNull.json('priorities');
     t.nonNull.field('name', {
       type: 'String',
       resolve: async (source, _args, context) => {

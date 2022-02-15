@@ -7,10 +7,10 @@ import PageEditor from '../components/PageEditor';
 import Socials from '../components/Socials';
 import WpMap from '../components/WpMap';
 import WpTitle from '../components/WpTitle';
-import { useConfigContext } from '../context/configContext';
-import { useThemeContext } from '../context/themeContext';
+import { useConfigContext } from '../components/context/configContext';
+import { useThemeContext } from '../components/context/themeContext';
 import { AddressModel } from '../db/dbModels';
-import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import SiteLayout, { SiteLayoutProviderInterface } from '../components/layout/SiteLayout';
 import { phoneToReadable } from '../lib/phoneUtils';
 import { getSiteInitialData } from '../lib/ssrUtils';
 

@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { deleteUpload } from '../../../lib/assetUtils/assetUtils';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { deleteUpload } from 'lib/assetUtils/assetUtils';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { COL_BLOG_POSTS } from '../../collectionNames';
 import { BlogPostModel, BlogPostPayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

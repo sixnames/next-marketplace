@@ -1,11 +1,11 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { updatePromoSchema } from '../../../validation/promoSchema';
+} from 'lib/sessionHelpers';
+import { updatePromoSchema } from 'validation/promoSchema';
 import { COL_PROMO, COL_PROMO_CODES, COL_PROMO_PRODUCTS } from '../../collectionNames';
 import {
   DateModel,

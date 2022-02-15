@@ -1,7 +1,7 @@
 import { useFormikContext } from 'formik';
 import * as React from 'react';
-import { CONFIRM_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
+import { CONFIRM_MODAL } from '../../lib/config/modalVariants';
+import { useAppContext } from '../context/appContext';
 import { CreateProductInputInterface } from '../../db/dao/product/createProduct';
 import { useConstantOptions } from '../../hooks/useConstantOptions';
 import WpButton from '../button/WpButton';

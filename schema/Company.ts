@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { GEO_POINT_TYPE, IMAGE_FALLBACK } from '../config/common';
+import { GEO_POINT_TYPE, IMAGE_FALLBACK } from '../lib/config/common';
 import {
   COL_COMPANIES,
   COL_CONFIGS,
@@ -12,7 +12,7 @@ import {
   COL_SHOPS,
   COL_USERS,
 } from '../db/collectionNames';
-import { aggregatePagination } from '../db/dao/aggregatePagination';
+import { aggregatePagination } from 'db/utils/aggregatePagination';
 import {
   CompanyModel,
   CompanyPayloadModel,
@@ -30,7 +30,7 @@ import { getDatabase } from '../db/mongodb';
 import { getReadableAddress } from '../lib/addressUtils';
 import { deleteUpload } from '../lib/assetUtils/assetUtils';
 import { updateCompanyDomain } from '../lib/companyUtils';
-import { getConfigTemplates } from '../lib/getConfigTemplates';
+import { getConfigTemplates } from 'db/utils/getConfigTemplates';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { getNextItemId, getNextNumberItemId } from '../lib/itemIdUtils';
 import {

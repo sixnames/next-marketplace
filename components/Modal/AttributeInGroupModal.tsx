@@ -6,8 +6,8 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VIEW_VARIANT_LIST,
   DEFAULT_LOCALE,
-} from '../../config/common';
-import { useAppContext } from '../../context/appContext';
+} from '../../lib/config/common';
+import { useAppContext } from '../context/appContext';
 import { UpdateAttributeInputInterface } from '../../db/dao/attributes/updateAttribute';
 import { AttributeInterface, MetricInterface, OptionsGroupInterface } from '../../db/uiInterfaces';
 import { useConstantOptions } from '../../hooks/useConstantOptions';

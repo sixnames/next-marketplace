@@ -1,6 +1,6 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { COL_ORDER_STATUSES } from '../db/collectionNames';
-import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import { OrderStatusModel, OrderStatusPayloadModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';

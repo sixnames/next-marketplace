@@ -1,14 +1,14 @@
 import ConsoleRubricProductBrands from 'components/console/ConsoleRubricProductBrands';
-import { TASK_VARIANT_SLUG_PRODUCT_BRANDS } from 'config/constantSelects';
-import { getCompanyTaskSsr } from 'db/dao/ssr/getCompanyTaskSsr';
+import { TASK_VARIANT_SLUG_PRODUCT_BRANDS } from 'lib/config/constantSelects';
+import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import CmsTaskProductLayout, {
   CmsTaskProductLayoutInterface,
-} from 'layout/cms/CmsTaskProductLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/getProjectLinks';
+} from 'components/layout/cms/CmsTaskProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_MANUFACTURERS } from 'db/collectionNames';
 import { BrandCollectionModel, BrandModel, ManufacturerModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from '../../config/common';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from '../../lib/config/common';
 import { ConsoleShopLayoutInterface } from '../../db/uiInterfaces';
 import {
   UpdateShopInput,
@@ -10,7 +10,7 @@ import {
 } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import { phoneToRaw } from '../../lib/phoneUtils';
 import { updateShopSchema } from '../../validation/shopSchema';
 import WpButton from '../button/WpButton';

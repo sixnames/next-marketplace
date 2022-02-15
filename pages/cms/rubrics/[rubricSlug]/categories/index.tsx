@@ -1,34 +1,26 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ContentItemControls from '../../../../../components/button/ContentItemControls';
-import FixedButtons from '../../../../../components/button/FixedButtons';
-import WpButton from '../../../../../components/button/WpButton';
-import Inner from '../../../../../components/Inner';
-import { CreateCategoryModalInterface } from '../../../../../components/Modal/CreateCategoryModal';
-import RequestError from '../../../../../components/RequestError';
-import WpImage from '../../../../../components/WpImage';
-import { DEFAULT_LOCALE, SORT_ASC } from '../../../../../config/common';
-import { CONFIRM_MODAL, CREATE_CATEGORY_MODAL } from '../../../../../config/modalVariants';
-import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from '../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  CategoryInterface,
-  RubricInterface,
-} from '../../../../../db/uiInterfaces';
-import { useDeleteCategoryMutation } from '../../../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
-import CmsRubricLayout from '../../../../../layout/cms/CmsRubricLayout';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { sortObjectsByField } from '../../../../../lib/arrayUtils';
-import { getFieldStringLocale } from '../../../../../lib/i18n';
-import { getConsoleRubricLinks } from '../../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
-import { getTreeFromList } from '../../../../../lib/treeUtils';
+import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import Inner from 'components/Inner';
+import { CreateCategoryModalInterface } from 'components/Modal/CreateCategoryModal';
+import RequestError from 'components/RequestError';
+import WpImage from 'components/WpImage';
+import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
+import { CONFIRM_MODAL, CREATE_CATEGORY_MODAL } from 'lib/config/modalVariants';
+import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
+import { useDeleteCategoryMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 
 interface RubricCategoriesConsumerInterface {
   rubric: RubricInterface;

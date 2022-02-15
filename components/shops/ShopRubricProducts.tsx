@@ -1,9 +1,9 @@
-import { ROLE_SLUG_ADMIN } from 'config/common';
+import { ROLE_SLUG_ADMIN } from 'lib/config/common';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useUserContext } from 'context/userContext';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
+import { useUserContext } from 'components/context/userContext';
 import { ShopProductModel } from 'db/dbModels';
 import {
   ShopProductInterface,
@@ -14,7 +14,7 @@ import { useDeleteProductFromShopMutation } from 'generated/apolloComponents';
 import { useUpdateManyShopProducts } from 'hooks/mutations/useShopProductMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getNumWord } from 'lib/i18n';
 import { getCmsCompanyLinks, getConsoleShopLinks } from 'lib/linkUtils';

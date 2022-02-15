@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { SORT_ASC, SORT_DESC } from '../config/common';
+import { SORT_ASC, SORT_DESC } from './config/common';
 import {
   COL_CITIES,
   COL_PAGE_TEMPLATES,

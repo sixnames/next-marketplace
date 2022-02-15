@@ -3,30 +3,22 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import ConsoleGiftCertificateDetails, {
   ConsoleGiftCertificateDetailsInterface,
-} from '../../../../../../components/console/ConsoleGiftCertificateDetails';
-import Inner from '../../../../../../components/Inner';
-import {
-  COL_COMPANIES,
-  COL_GIFT_CERTIFICATES,
-  COL_USERS,
-} from '../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../db/mongodb';
+} from 'components/console/ConsoleGiftCertificateDetails';
+import Inner from 'components/Inner';
+import { COL_COMPANIES, COL_GIFT_CERTIFICATES, COL_USERS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   GiftCertificateInterface,
-} from '../../../../../../db/uiInterfaces';
-import CmsCompanyLayout from '../../../../../../layout/cms/CmsCompanyLayout';
-import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from '../../../../../../lib/i18n';
-import { getCmsCompanyLinks } from '../../../../../../lib/linkUtils';
-import { getFullName } from '../../../../../../lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from '../../../../../../lib/phoneUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../lib/ssrUtils';
+} from 'db/uiInterfaces';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getFullName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface GiftCertificateDetailsConsumerInterface extends ConsoleGiftCertificateDetailsInterface {}
 

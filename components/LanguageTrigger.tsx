@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useLocaleContext } from '../context/localeContext';
+import { useLocaleContext } from './context/localeContext';
 import { HeadlessMenuGroupInterface } from './HeadlessMenuButton';
 import MenuButtonWithName from './MenuButtonWithName';
 

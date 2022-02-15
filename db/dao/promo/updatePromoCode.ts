@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { updatePromoCodeSchema } from '../../../validation/promoSchema';
+} from 'lib/sessionHelpers';
+import { updatePromoCodeSchema } from 'validation/promoSchema';
 import { COL_PROMO_CODES } from '../../collectionNames';
 import { PromoCodeModel, PromoCodePayloadModel, TranslationModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

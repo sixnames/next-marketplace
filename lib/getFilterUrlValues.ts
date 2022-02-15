@@ -13,8 +13,8 @@ import {
   FILTER_SEPARATOR,
   SORT_BY_KEY,
   SORT_DIR_KEY,
-} from '../config/common';
-import { noImageStage } from '../db/dao/constantPipelines';
+} from './config/common';
+import { noImageStage } from 'db/utils/constantPipelines';
 import { noNaN } from './numbers';
 
 export interface GetFilterUrlValuesInterface {

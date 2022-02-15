@@ -2,8 +2,8 @@ import {
   OPTIONS_GROUP_VARIANT_COLOR,
   OPTIONS_GROUP_VARIANT_ICON,
   OPTIONS_GROUP_VARIANT_TEXT,
-} from '../../../config/common';
-import { OptionsGroupModel, OptionsGroupVariantModel } from '../../../db/dbModels';
+} from 'lib/config/common';
+import { OptionsGroupModel, OptionsGroupVariantModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const optionsGroups: OptionsGroupModel[] = [

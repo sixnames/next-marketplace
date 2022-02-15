@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { DEFAULT_LOCALE } from '../../config/common';
-import { useAppContext } from '../../context/appContext';
+import { DEFAULT_LOCALE } from '../../lib/config/common';
+import { useAppContext } from '../context/appContext';
 import { CreatePromoInputInterface } from '../../db/dao/promo/createPromo';
 import { CompanyInterface } from '../../db/uiInterfaces';
 import { useCreatePromo } from '../../hooks/mutations/usePromoMutations';

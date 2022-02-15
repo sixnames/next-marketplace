@@ -9,8 +9,8 @@ import {
   FILTER_SEPARATOR,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   SORT_DESC,
-} from 'config/common';
-import { getPriceAttribute } from 'config/constantAttributes';
+} from 'lib/config/common';
+import { getPriceAttribute } from 'lib/config/constantAttributes';
 import {
   COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,
@@ -43,7 +43,7 @@ import {
   SeoContentInterface,
 } from 'db/uiInterfaces';
 import { castUrlFilters } from './castUrlFilters';
-import { getProjectLinks } from './getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from './i18n';
 import { sortStringArray } from './stringUtils';
 import { getTreeFromList, getTreeLeaves } from './treeUtils';

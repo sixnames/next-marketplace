@@ -1,4 +1,4 @@
-import { OrderCustomerModel } from '../../../db/dbModels';
+import { OrderCustomerModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const orderCustomers: OrderCustomerModel[] = [

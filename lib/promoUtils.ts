@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { SORT_DESC } from '../config/common';
+import { SORT_DESC } from './config/common';
 import { COL_PROMO } from '../db/collectionNames';
 import { getDatabase } from '../db/mongodb';
 import { PromoInterface } from '../db/uiInterfaces';

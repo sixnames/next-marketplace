@@ -3,20 +3,16 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import ConsoleTaskVariantsList, {
   ConsoleTaskVariantsListInterface,
-} from '../../../../../components/console/ConsoleTaskVariantsList';
-import Inner from '../../../../../components/Inner';
-import { COL_COMPANIES } from '../../../../../db/collectionNames';
-import { getCompanyTaskVariantsListSsr } from '../../../../../db/dao/ssr/getCompanyTaskVariantsListSsr';
-import { getDatabase } from '../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
-import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
-import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+} from 'components/console/ConsoleTaskVariantsList';
+import Inner from 'components/Inner';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Типы задач';
 interface TaskVariantsListConsumerInterface extends ConsoleTaskVariantsListInterface {

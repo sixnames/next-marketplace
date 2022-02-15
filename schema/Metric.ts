@@ -1,21 +1,16 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { SORT_ASC } from '../config/common';
-import { COL_ATTRIBUTES, COL_METRICS, COL_PRODUCT_ATTRIBUTES } from '../db/collectionNames';
-import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
-import {
-  AttributeModel,
-  MetricModel,
-  MetricPayloadModel,
-  ProductSummaryAttributeModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { SORT_ASC } from 'lib/config/common';
+import { COL_ATTRIBUTES, COL_METRICS } from 'db/collectionNames';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
+import { AttributeModel, MetricModel, MetricPayloadModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
-import { createMetricSchema, updateMetricSchema } from '../validation/metricSchema';
+} from 'lib/sessionHelpers';
+import { createMetricSchema, updateMetricSchema } from 'validation/metricSchema';
 
 export const Metric = objectType({
   name: 'Metric',
@@ -171,8 +166,6 @@ export const MetricMutations = extendType({
         const { db, client } = await getDatabase();
         const metricsCollection = db.collection<MetricModel>(COL_METRICS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const productAttributesCollection =
-          db.collection<ProductSummaryAttributeModel>(COL_PRODUCT_ATTRIBUTES);
 
         const session = client.startSession();
 
@@ -265,20 +258,7 @@ export const MetricMutations = extendType({
                 },
               },
             );
-
-            // Update product attributes metric
-            const updatedProductAttributesResult = await productAttributesCollection.updateMany(
-              { 'metric._id': metricId },
-              {
-                $set: {
-                  metric: updatedMetric,
-                },
-              },
-            );
-            if (
-              !updatedAttributesResult.acknowledged ||
-              !updatedProductAttributesResult.acknowledged
-            ) {
+            if (!updatedAttributesResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('metrics.update.error'),

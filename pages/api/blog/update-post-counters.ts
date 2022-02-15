@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_POST } from '../../../config/common';
-import { updateBlogPostCounters } from '../../../db/dao/blog/updateBlogPostCounters';
-import { sendApiRouteResponse } from '../../../lib/sessionHelpers';
+import { REQUEST_METHOD_POST } from 'lib/config/common';
+import { updateBlogPostCounters } from 'db/dao/blog/updateBlogPostCounters';
+import { sendApiRouteResponse } from 'lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_POST) {

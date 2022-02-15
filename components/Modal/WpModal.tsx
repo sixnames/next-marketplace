@@ -56,7 +56,7 @@ import {
   USERS_SEARCH_MODAL,
   CREATE_PROMO_CODE_MODAL,
   TASK_VARIANT_PRICE_MODAL,
-} from '../../config/modalVariants';
+} from '../../lib/config/modalVariants';
 import Spinner from '../Spinner';
 
 const AdultModal = dynamic(() => import('./AdultModal'));

@@ -1,17 +1,17 @@
 import { Form, Formik, useFormikContext } from 'formik';
 import { get } from 'lodash';
 import * as React from 'react';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK } from '../../config/common';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK } from '../../lib/config/common';
 import {
   DELIVERY_VARIANT_OPTIONS,
   getConstantOptionName,
   PAYMENT_VARIANT_OPTIONS,
-} from '../../config/constantSelects';
-import { CONFIRM_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
-import { useLocaleContext } from '../../context/localeContext';
-import { useNotificationsContext } from '../../context/notificationsContext';
-import { useUserContext } from '../../context/userContext';
+} from '../../lib/config/constantSelects';
+import { CONFIRM_MODAL } from '../../lib/config/modalVariants';
+import { useAppContext } from '../context/appContext';
+import { useLocaleContext } from '../context/localeContext';
+import { useNotificationsContext } from '../context/notificationsContext';
+import { useUserContext } from '../context/userContext';
 import { OrderInterface, OrderProductInterface, OrderStatusInterface } from '../../db/uiInterfaces';
 import {
   useCancelOrderProduct,

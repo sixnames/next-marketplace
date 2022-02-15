@@ -2,33 +2,29 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import Head from 'next/head';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ContentItemControls from '../../../components/button/ContentItemControls';
-import FixedButtons from '../../../components/button/FixedButtons';
-import WpButton from '../../../components/button/WpButton';
-import Inner from '../../../components/Inner';
-import { AttributesGroupModalInterface } from '../../../components/Modal/AttributesGroupModal';
-import WpTable, { WpTableColumn } from '../../../components/WpTable';
-import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_LOCALE, SORT_ASC } from '../../../config/common';
-import { ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from '../../../config/modalVariants';
-import { COL_ATTRIBUTES_GROUPS } from '../../../db/collectionNames';
-import { getDatabase } from '../../../db/mongodb';
-import { AttributesGroupInterface } from '../../../db/uiInterfaces';
+import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import Inner from 'components/Inner';
+import { AttributesGroupModalInterface } from 'components/Modal/AttributesGroupModal';
+import WpTable, { WpTableColumn } from 'components/WpTable';
+import WpTitle from 'components/WpTitle';
+import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
+import { ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
+import { COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { AttributesGroupInterface } from 'db/uiInterfaces';
 import {
   useCreateAttributesGroupMutation,
   useDeleteAttributesGroupMutation,
-} from '../../../generated/apolloComponents';
-import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
-import AppContentWrapper from '../../../layout/AppContentWrapper';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getCmsLinks } from '../../../lib/linkUtils';
-import { noNaN } from '../../../lib/numbers';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../lib/ssrUtils';
-import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+} from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getCmsLinks } from 'lib/linkUtils';
+import { noNaN } from 'lib/numbers';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 const pageTitle = `Группы атрибутов`;
 

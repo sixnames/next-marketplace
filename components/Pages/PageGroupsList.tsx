@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from '../../config/modalVariants';
+import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from '../../lib/config/modalVariants';
 import {
   CompanyInterface,
   PagesGroupInterface,

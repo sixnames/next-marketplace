@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_GET, REQUEST_METHOD_POST, SORT_ASC } from '../../../config/common';
-import { COL_BLACKLIST_PRODUCTS, COL_SHOPS } from '../../../db/collectionNames';
-import { BlackListProductItemModel, BlackListProductModel, ShopModel } from '../../../db/dbModels';
-import { getDatabase } from '../../../db/mongodb';
-import { SyncBlackListProductInterface, SyncParamsInterface } from '../../../db/syncInterfaces';
-import { alwaysString } from '../../../lib/arrayUtils';
-import { noNaN } from '../../../lib/numbers';
+import { REQUEST_METHOD_GET, REQUEST_METHOD_POST, SORT_ASC } from 'lib/config/common';
+import { COL_BLACKLIST_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { BlackListProductItemModel, BlackListProductModel, ShopModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { SyncBlackListProductInterface, SyncParamsInterface } from 'db/syncInterfaces';
+import { alwaysString } from 'lib/arrayUtils';
+import { noNaN } from 'lib/numbers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {

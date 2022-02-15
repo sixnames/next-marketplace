@@ -2,22 +2,18 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ConsoleRubricProductVariants from 'components/console/ConsoleRubricProductVariants';
-import { COL_COMPANIES } from '../../../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../../../db/mongodb';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   ProductSummaryInterface,
-} from '../../../../../../../../../db/uiInterfaces';
-import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
-import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
-import { getFullProductSummary } from '../../../../../../../../../lib/productUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../../../lib/ssrUtils';
+} from 'db/uiInterfaces';
+import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getFullProductSummary } from 'lib/productUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ProductConnectionsPropsInterface {
   product: ProductSummaryInterface;

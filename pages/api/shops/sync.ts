@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_POST } from 'config/common';
+import { REQUEST_METHOD_POST } from 'lib/config/common';
 import {
   COL_BLACKLIST_PRODUCTS,
   COL_NOT_SYNCED_PRODUCTS,
@@ -23,7 +23,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from 'db/syncInterfaces';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { noNaN } from 'lib/numbers';
 import { castSummaryToShopProduct } from 'lib/productUtils';

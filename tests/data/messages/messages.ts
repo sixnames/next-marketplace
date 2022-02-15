@@ -1,5 +1,5 @@
-import { MessageBaseInterface } from '../../../db/uiInterfaces';
-import { MessageModel } from '../../../db/dbModels';
+import { MessageBaseInterface } from 'db/uiInterfaces';
+import { MessageModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import { pageGroupsMessages } from '../../apiMessages/pagesGroupsMessages';
 import { pagesMessages } from '../../apiMessages/pagesMessages';
@@ -37,6 +37,7 @@ import { promoMessages } from '../../apiMessages/promoMessages';
 import { seoContentMessages } from '../../apiMessages/seoContentMessages';
 import { giftCertificateMessages } from '../../apiMessages/giftCertificateMessages';
 import { taskMessages } from '../../apiMessages/taskMessages';
+import { eventMessages } from '../../apiMessages/eventMessages';
 
 interface GenerateMessagesForGroupInterface {
   initialMessages: MessageBaseInterface[];
@@ -130,6 +131,10 @@ const config: GenerateMessagesForGroupInterface[] = [
   {
     initialMessages: productsMessages,
     groupName: 'Товары',
+  },
+  {
+    initialMessages: eventMessages,
+    groupName: 'Мероприятия',
   },
   {
     initialMessages: metricsMessages,

@@ -1,19 +1,10 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import {
-  COL_ATTRIBUTES,
-  COL_ATTRIBUTES_GROUPS,
-  COL_PRODUCT_ATTRIBUTES,
-} from '../../collectionNames';
-import {
-  AttributeModel,
-  AttributePayloadModel,
-  AttributesGroupModel,
-  ProductSummaryAttributeModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
+import { AttributeModel, AttributePayloadModel, AttributesGroupModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface DeleteAttributeInputInterface {
   attributeId: string;
@@ -26,8 +17,6 @@ export async function deleteAttribute({
 }: DaoPropsInterface<DeleteAttributeInputInterface>): Promise<AttributePayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productAttributesCollection =
-    db.collection<ProductSummaryAttributeModel>(COL_PRODUCT_ATTRIBUTES);
   const attributesGroupCollection = db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
   const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
 
@@ -81,19 +70,6 @@ export async function deleteAttribute({
         _id: attributeId,
       });
       if (!attribute) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
-      // delete product attributes
-      const removedProductAttributes = await productAttributesCollection.deleteMany({
-        attributeId,
-      });
-      if (!removedProductAttributes.acknowledged) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),

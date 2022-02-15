@@ -1,9 +1,9 @@
-import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'config/common';
-import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
+import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {

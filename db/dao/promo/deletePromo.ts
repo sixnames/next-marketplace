@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
-import { deleteUpload } from '../../../lib/assetUtils/assetUtils';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { deleteUpload } from 'lib/assetUtils/assetUtils';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { COL_PROMO, COL_PROMO_CODES, COL_PROMO_PRODUCTS } from '../../collectionNames';
 import { PromoCodeModel, PromoModel, PromoPayloadModel, PromoProductModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

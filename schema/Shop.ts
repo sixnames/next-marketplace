@@ -1,6 +1,6 @@
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import generator from 'generate-password';
-import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from '../config/common';
+import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from '../lib/config/common';
 import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
 import { ProductSummaryModel, ShopModel, ShopPayloadModel, ShopProductModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';

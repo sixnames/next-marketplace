@@ -6,8 +6,8 @@ import {
   Droppable,
   resetServerContext,
 } from 'react-beautiful-dnd';
-import { CONFIRM_MODAL } from '../config/modalVariants';
-import { useAppContext } from '../context/appContext';
+import { CONFIRM_MODAL } from '../lib/config/modalVariants';
+import { useAppContext } from './context/appContext';
 import ButtonCross from './button/ButtonCross';
 import InputLine from './FormElements/Input/InputLine';
 import { ConfirmModalInterface } from './Modal/ConfirmModal';

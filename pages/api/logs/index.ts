@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_POST } from '../../../config/common';
-import { setSessionLog } from '../../../db/dao/sessionLogs/setSessionLog';
-import { sendApiRouteResponse } from '../../../lib/sessionHelpers';
+import { REQUEST_METHOD_POST } from 'lib/config/common';
+import { setSessionLog } from 'db/dao/sessionLogs/setSessionLog';
+import { sendApiRouteResponse } from 'lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // create

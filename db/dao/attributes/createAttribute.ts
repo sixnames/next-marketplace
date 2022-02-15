@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { getNextNumberItemId } from '../../../lib/itemIdUtils';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getNextNumberItemId } from 'lib/itemIdUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../../../lib/sessionHelpers';
-import { addAttributeToGroupSchema } from '../../../validation/attributesGroupSchema';
+} from 'lib/sessionHelpers';
+import { addAttributeToGroupSchema } from 'validation/attributesGroupSchema';
 import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_METRICS } from '../../collectionNames';
 import {
   AttributeModel,
@@ -20,7 +20,7 @@ import {
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
-import { findDocumentByI18nField } from '../findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 
 export interface CreateAttributeInputInterface {
   attributesGroupId: string;

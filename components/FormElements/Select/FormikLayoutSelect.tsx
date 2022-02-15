@@ -1,6 +1,6 @@
 import { Field, FieldProps } from 'formik';
 import * as React from 'react';
-import { LayoutOptionsType } from '../../../config/constantSelects';
+import { LayoutOptionsType } from 'lib/config/constantSelects';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
 
 interface FormikLayoutSelectInterface extends InputLinePropsInterface {

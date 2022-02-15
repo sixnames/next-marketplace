@@ -1,4 +1,4 @@
-import { UserCategoryModel } from '../../../db/dbModels';
+import { UserCategoryModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const userCategories: UserCategoryModel[] = [

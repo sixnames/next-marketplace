@@ -4,16 +4,19 @@ import {
   PAGE_STATE_PUBLISHED,
   ROLE_SLUG_ADMIN,
   SORT_ASC,
-} from 'config/common';
+} from 'lib/config/common';
 import { COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
-import { getCatalogueNavRubrics } from 'db/dao/ssr/getCatalogueNavRubrics';
+import { getCatalogueNavRubrics } from 'db/ssr/catalogue/getCatalogueNavRubrics';
 import { getPageSessionUser, SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface, PageInterface, PagesGroupInterface } from 'db/uiInterfaces';
-import { SiteLayoutCatalogueCreatedPages, SiteLayoutProviderInterface } from 'layout/SiteLayout';
+import {
+  SiteLayoutCatalogueCreatedPages,
+  SiteLayoutProviderInterface,
+} from 'components/layout/SiteLayout';
 import { PagePropsInterface } from 'pages/_app';
 import { getPageCompanySsr } from './getPageCompanySsr';
-import { getProjectLinks } from './getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getI18nLocaleValue } from './i18n';
 
 const links = getProjectLinks();

@@ -2,8 +2,8 @@ import { Form, Formik } from 'formik';
 import { alwaysString } from 'lib/arrayUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
+import { ATTRIBUTE_OPTIONS_MODAL } from 'lib/config/modalVariants';
+import { useAppContext } from 'components/context/appContext';
 import {
   OptionInterface,
   ProductAttributeInterface,

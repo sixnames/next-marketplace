@@ -1,13 +1,11 @@
 import { NextPage } from 'next';
 import * as React from 'react';
-import ShopSyncErrors, {
-  ShopSyncErrorsInterface,
-} from '../../../../../../../../components/shops/ShopSyncErrors';
-import { getCmsCompanyShopSyncErrorsPageSsr } from '../../../../../../../../db/dao/ssr/getCmsCompanyShopSyncErrorsPageSsr';
-import { AppContentWrapperBreadCrumbs } from '../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../../../../lib/linkUtils';
-import { GetAppInitialDataPropsInterface } from '../../../../../../../../lib/ssrUtils';
+import ShopSyncErrors, { ShopSyncErrorsInterface } from 'components/shops/ShopSyncErrors';
+import { getCmsCompanyShopSyncErrorsPageSsr } from 'db/ssr/shops/getCmsCompanyShopSyncErrorsPageSsr';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 export interface CmsCompanyShopSyncErrorsPageInterface
   extends GetAppInitialDataPropsInterface,

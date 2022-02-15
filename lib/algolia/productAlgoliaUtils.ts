@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import addZero from 'add-zero';
-import { HITS_PER_PAGE, ID_COUNTER_DIGITS } from 'config/common';
+import { HITS_PER_PAGE, ID_COUNTER_DIGITS } from 'lib/config/common';
 import { COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
 import { ObjectIdModel, ProductSummaryModel, TranslationModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

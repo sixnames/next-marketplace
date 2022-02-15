@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, SECONDARY_LOCALE } from '../../config/common';
+import { DEFAULT_LOCALE, SECONDARY_LOCALE } from '../../lib/config/common';
 import { MessageBaseInterface } from '../../db/uiInterfaces';
 
 export const attributesGroupsMessages: MessageBaseInterface[] = [

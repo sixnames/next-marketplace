@@ -6,7 +6,7 @@ import {
   requiredNumberSchema,
   requiredStringSchema,
   requiredStringTranslationSchema,
-} from './schemaTemplates';
+} from 'validation/utils/schemaTemplates';
 
 export const promoIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({

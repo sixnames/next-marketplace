@@ -11,13 +11,13 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   DEFAULT_LOCALE,
-} from '../../../config/common';
+} from 'lib/config/common';
 import {
   AttributeModel,
   AttributePositionInTitleModel,
   AttributeVariantModel,
   AttributeViewVariantModel,
-} from '../../../db/dbModels';
+} from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const booleans = {

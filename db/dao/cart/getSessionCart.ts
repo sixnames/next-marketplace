@@ -1,13 +1,13 @@
 import { ObjectId } from 'mongodb';
 import nookies from 'nookies';
-import { CART_COOKIE_KEY } from '../../../config/common';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { noNaN } from '../../../lib/numbers';
-import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
-import { countDiscountedPrice } from '../../../lib/priceUtils';
-import { getRequestParams } from '../../../lib/sessionHelpers';
-import { getUpdatedShopProductPrices } from '../../../lib/shopUtils';
-import { NexusContext } from '../../../types/apiContextTypes';
+import { CART_COOKIE_KEY } from 'lib/config/common';
+import { getFieldStringLocale } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { countDiscountedPrice } from 'lib/priceUtils';
+import { getRequestParams } from 'lib/sessionHelpers';
+import { getUpdatedShopProductPrices } from 'lib/shopUtils';
+import { NexusContext } from 'types/apiContextTypes';
 import {
   COL_CARTS,
   COL_GIFT_CERTIFICATES,
@@ -40,7 +40,7 @@ import {
   productAttributesPipeline,
   productCategoriesPipeline,
   summaryPipeline,
-} from '../constantPipelines';
+} from 'db/utils/constantPipelines';
 import { getPageSessionUser } from '../user/getPageSessionUser';
 
 export interface GetSessionCartInterface {

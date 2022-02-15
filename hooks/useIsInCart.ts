@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useSiteContext } from '../context/siteContext';
+import { useSiteContext } from '../components/context/siteContext';
 import { ObjectIdModel } from '../db/dbModels';
 import { CartProductInterface } from '../db/uiInterfaces';
 import { alwaysArray } from '../lib/arrayUtils';

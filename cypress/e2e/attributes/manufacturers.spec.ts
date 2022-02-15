@@ -1,5 +1,5 @@
-import { DEFAULT_LOCALE } from 'config/common';
-import { getProjectLinks } from '../../../lib/getProjectLinks';
+import { DEFAULT_LOCALE } from 'lib/config/common';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Manufacturers', () => {
   const links = getProjectLinks();

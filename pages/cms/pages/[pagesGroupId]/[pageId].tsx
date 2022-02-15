@@ -1,18 +1,14 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Inner from '../../../../components/Inner';
-import PageDetails, { PageDetailsInterface } from '../../../../components/Pages/PageDetails';
-import WpTitle from '../../../../components/WpTitle';
-import { AppContentWrapperBreadCrumbs } from '../../../../db/uiInterfaces';
-import AppContentWrapper from '../../../../layout/AppContentWrapper';
-import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { getProjectLinks } from '../../../../lib/getProjectLinks';
-import { getPageSsr } from '../../../../lib/pageUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
+import Inner from 'components/Inner';
+import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
+import WpTitle from 'components/WpTitle';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { getPageSsr } from 'lib/pageUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 export interface PageDetailsPageInterface
   extends GetAppInitialDataPropsInterface,

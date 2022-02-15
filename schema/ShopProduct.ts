@@ -1,5 +1,5 @@
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { SUPPLIER_PRICE_VARIANT_ENUMS } from '../config/common';
+import { SUPPLIER_PRICE_VARIANT_ENUMS } from '../lib/config/common';
 import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,

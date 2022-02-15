@@ -2,26 +2,18 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ConsoleSeoContentsList, {
   ConsoleSeoContentsListInterface,
-} from '../../../../../../components/console/ConsoleSeoContentsList';
-import Inner from '../../../../../../components/Inner';
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from '../../../../../../config/common';
-import { COL_SEO_CONTENTS } from '../../../../../../db/collectionNames';
-import { getConsoleRubricDetails } from '../../../../../../db/dao/rubrics/getConsoleRubricDetails';
-import { SeoContentModel } from '../../../../../../db/dbModels';
-import { getDatabase } from '../../../../../../db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-  RubricInterface,
-} from '../../../../../../db/uiInterfaces';
-import CmsRubricLayout from '../../../../../../layout/cms/CmsRubricLayout';
-import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
-import {
-  castDbData,
-  GetAppInitialDataPropsInterface,
-  getConsoleInitialData,
-} from '../../../../../../lib/ssrUtils';
+} from 'components/console/ConsoleSeoContentsList';
+import Inner from 'components/Inner';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'lib/config/common';
+import { COL_SEO_CONTENTS } from 'db/collectionNames';
+import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
+import { SeoContentModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface RubricDetailsInterface extends ConsoleSeoContentsListInterface {
   rubric: RubricInterface;

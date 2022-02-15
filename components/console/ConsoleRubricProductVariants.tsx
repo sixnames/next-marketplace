@@ -2,7 +2,11 @@ import { alwaysString } from 'lib/arrayUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { FILTER_SEPARATOR } from 'lib/config/common';
-import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'lib/config/modalVariants';
+import {
+  CONFIRM_MODAL,
+  CREATE_CONNECTION_MODAL,
+  PRODUCT_SEARCH_MODAL,
+} from 'lib/config/modalVariants';
 import { useAppContext } from 'components/context/appContext';
 import { useNotificationsContext } from 'components/context/notificationsContext';
 import {

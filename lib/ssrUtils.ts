@@ -10,7 +10,10 @@ import { getCatalogueNavRubrics } from 'db/ssr/catalogue/getCatalogueNavRubrics'
 import { getPageSessionUser, SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface, PageInterface, PagesGroupInterface } from 'db/uiInterfaces';
-import { SiteLayoutCatalogueCreatedPages, SiteLayoutProviderInterface } from 'components/layout/SiteLayout';
+import {
+  SiteLayoutCatalogueCreatedPages,
+  SiteLayoutProviderInterface,
+} from 'components/layout/SiteLayout';
 import { PagePropsInterface } from 'pages/_app';
 import { getPageCompanySsr } from './getPageCompanySsr';
 import { getProjectLinks } from 'lib/links/getProjectLinks';

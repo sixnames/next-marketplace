@@ -6,7 +6,9 @@ import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, PromoInterface, RubricInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import CompanyRubricsList, { CompanyRubricsListInterface } from 'components/layout/CompanyRubricsList';
+import CompanyRubricsList, {
+  CompanyRubricsListInterface,
+} from 'components/layout/CompanyRubricsList';
 import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getPromoSsr } from 'lib/promoUtils';

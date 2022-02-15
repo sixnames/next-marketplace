@@ -1,10 +1,7 @@
 import dynamic from 'next/dynamic';
 import * as React from 'react';
 import WpIcon from 'components/WpIcon';
-import {
-  CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE,
-  DEFAULT_LAYOUT,
-} from 'lib/config/constantSelects';
+import { CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE, DEFAULT_LAYOUT } from 'lib/config/constantSelects';
 import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
 
 export interface CatalogueFilterAttributePropsInterface {
@@ -38,8 +35,12 @@ interface CatalogueFilterProviderInterface extends CatalogueFilterInterface {
   filterLayoutVariant: string;
 }
 
-const CatalogueFilterDefault = dynamic(() => import('components/layout/catalogue/CatalogueFilterDefault'));
-const CatalogueFilterCheckboxTree = dynamic(() => import('components/layout/catalogue/CatalogueFilterCheckboxTree'));
+const CatalogueFilterDefault = dynamic(
+  () => import('components/layout/catalogue/CatalogueFilterDefault'),
+);
+const CatalogueFilterCheckboxTree = dynamic(
+  () => import('components/layout/catalogue/CatalogueFilterCheckboxTree'),
+);
 
 const CatalogueFilter: React.FC<CatalogueFilterProviderInterface> = (props) => {
   const { filterLayoutVariant, isFilterVisible, catalogueCounterString, hideFilterHandler } = props;

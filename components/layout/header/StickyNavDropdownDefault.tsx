@@ -4,7 +4,10 @@ import WpLink from 'components/Link/WpLink';
 import { FILTER_SEPARATOR } from 'lib/config/common';
 import { useConfigContext } from 'components/context/configContext';
 import { noNaN } from 'lib/numbers';
-import { StickyNavAttributeInterface, StickyNavDropdownInterface } from 'components/layout/header/StickyNav';
+import {
+  StickyNavAttributeInterface,
+  StickyNavDropdownInterface,
+} from 'components/layout/header/StickyNav';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,

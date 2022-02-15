@@ -1,4 +1,8 @@
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from 'lib/config/common';
 import { CreateBrandInputInterface } from 'db/dao/brands/createBrand';
 import { CreateBrandCollectionInputInterface } from 'db/dao/brands/createBrandCollection';
 import { DeleteBrandInputInterface } from 'db/dao/brands/deleteBrand';

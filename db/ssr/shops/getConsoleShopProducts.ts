@@ -1,6 +1,11 @@
 import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
-import { DEFAULT_CITY, DEFAULT_CURRENCY, GENDER_HE, PAGINATION_DEFAULT_LIMIT } from 'lib/config/common';
+import {
+  DEFAULT_CITY,
+  DEFAULT_CURRENCY,
+  GENDER_HE,
+  PAGINATION_DEFAULT_LIMIT,
+} from 'lib/config/common';
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,

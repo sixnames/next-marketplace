@@ -1,4 +1,8 @@
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from 'lib/config/common';
 import { CreatePageInputInterface } from 'db/dao/pages/createPage';
 import { CreatePagesGroupInputInterface } from 'db/dao/pages/createPagesGroup';
 import { DeletePageInputInterface } from 'db/dao/pages/deletePage';

@@ -6,7 +6,10 @@ import {
   ORDER_DELIVERY_VARIANT_COURIER,
   ORDER_PAYMENT_VARIANT_RECEIPT,
 } from '../../lib/config/common';
-import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from '../../lib/config/constantSelects';
+import {
+  DELIVERY_VARIANT_OPTIONS,
+  PAYMENT_VARIANT_OPTIONS,
+} from '../../lib/config/constantSelects';
 import { MAP_MODAL, ORDER_DELIVERY_ADDRESS_MODAL } from '../../lib/config/modalVariants';
 import { useAppContext } from '../context/appContext';
 import { useConfigContext } from '../context/configContext';

@@ -1,5 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from 'lib/config/common';
 import { deleteTaskVariant } from 'db/dao/tasks/deleteTaskVariant';
 import { updateTaskVariant } from 'db/dao/tasks/updateTaskVariant';
 import { createTaskVariant } from 'db/dao/tasks/createTaskVariant';

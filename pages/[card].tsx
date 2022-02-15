@@ -23,7 +23,9 @@ import {
 } from '../types/seoSchemaTypes';
 
 const CardDefaultLayout = dynamic(() => import('../components/layout/card/CardDefaultLayout'));
-const CardHalfColumnsLayout = dynamic(() => import('../components/layout/card/CardHalfColumnsLayout'));
+const CardHalfColumnsLayout = dynamic(
+  () => import('../components/layout/card/CardHalfColumnsLayout'),
+);
 
 const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
   const sessionUser = useSiteUserContext();

@@ -1,4 +1,8 @@
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from 'lib/config/common';
 import { AddAttributesGroupToEventRubricInputInterface } from 'db/dao/eventRubrics/addAttributesGroupToEventRubric';
 import { CreateEventRubricInputInterface } from 'db/dao/eventRubrics/createEventRubric';
 import { DeleteAttributesGroupFromEventRubricInputInterface } from 'db/dao/eventRubrics/deleteAttributesGroupFromEventRubric';

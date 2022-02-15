@@ -1,5 +1,8 @@
 import { ObjectId } from 'mongodb';
-import { CATALOGUE_SEO_TEXT_POSITION_BOTTOM, CATALOGUE_SEO_TEXT_POSITION_TOP } from 'lib/config/common';
+import {
+  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+  CATALOGUE_SEO_TEXT_POSITION_TOP,
+} from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCategoryAllSeoContents } from 'lib/seoContentUtils';
 import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';

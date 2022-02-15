@@ -8,11 +8,7 @@ import WpBreadcrumbs from 'components/WpBreadcrumbs';
 import WpIcon from 'components/WpIcon';
 import WpImage from 'components/WpImage';
 import WpTitle from 'components/WpTitle';
-import {
-  FILTER_BRAND_COLLECTION_KEY,
-  FILTER_BRAND_KEY,
-  FILTER_SEPARATOR,
-} from 'lib/config/common';
+import { FILTER_BRAND_COLLECTION_KEY, FILTER_BRAND_KEY, FILTER_SEPARATOR } from 'lib/config/common';
 import { useConfigContext } from 'components/context/configContext';
 import { CardLayoutInterface } from 'db/uiInterfaces';
 import useCardData from 'hooks/useCardData';

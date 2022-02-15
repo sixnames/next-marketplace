@@ -3,7 +3,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import CompanyRubricDetails, {
   CompanyRubricDetailsInterface,
 } from 'components/company/CompanyRubricDetails';
-import { CATALOGUE_SEO_TEXT_POSITION_BOTTOM, CATALOGUE_SEO_TEXT_POSITION_TOP } from 'lib/config/common';
+import {
+  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+  CATALOGUE_SEO_TEXT_POSITION_TOP,
+} from 'lib/config/common';
 import { COL_RUBRICS } from 'db/collectionNames';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

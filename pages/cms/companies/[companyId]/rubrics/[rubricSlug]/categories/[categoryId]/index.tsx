@@ -4,7 +4,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import CompanyRubricCategoryDetails, {
   CompanyRubricCategoryDetailsInterface,
 } from 'components/company/CompanyRubricCategoryDetails';
-import { CATALOGUE_SEO_TEXT_POSITION_BOTTOM, CATALOGUE_SEO_TEXT_POSITION_TOP } from 'lib/config/common';
+import {
+  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+  CATALOGUE_SEO_TEXT_POSITION_TOP,
+} from 'lib/config/common';
 import { COL_CATEGORIES, COL_COMPANIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CategoryInterface, CompanyInterface } from 'db/uiInterfaces';

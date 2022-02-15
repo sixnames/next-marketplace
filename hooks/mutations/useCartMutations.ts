@@ -1,5 +1,9 @@
 import { useRouter } from 'next/router';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from 'lib/config/common';
 import { useNotificationsContext } from 'components/context/notificationsContext';
 import { AddCartProductInputInterface } from 'db/dao/cart/addCartProduct';
 import { DeleteCartProductInputInterface } from 'db/dao/cart/deleteCartProduct';

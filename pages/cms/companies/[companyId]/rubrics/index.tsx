@@ -12,7 +12,9 @@ import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
-import CompanyRubricsList, { CompanyRubricsListInterface } from 'components/layout/CompanyRubricsList';
+import CompanyRubricsList, {
+  CompanyRubricsListInterface,
+} from 'components/layout/CompanyRubricsList';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';

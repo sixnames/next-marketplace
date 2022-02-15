@@ -6,7 +6,9 @@ import Inner from 'components/Inner';
 import { CONFIG_GROUP_UI, DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getConfigRubrics } from 'db/ssr/rubrics/getConfigRubrics';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import ConsoleConfigsLayout, { ConfigPageInterface } from 'components/layout/console/ConsoleConfigsLayout';
+import ConsoleConfigsLayout, {
+  ConfigPageInterface,
+} from 'components/layout/console/ConsoleConfigsLayout';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const ConfigConsumer: React.FC<ConfigPageInterface> = ({

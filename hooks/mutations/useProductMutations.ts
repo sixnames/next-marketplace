@@ -1,6 +1,10 @@
 import { useRouter } from 'next/router';
 import { BarcodeIntersectsModalInterface } from 'components/Modal/BarcodeIntersectsModal';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from 'lib/config/common';
 import { BARCODE_INTERSECTS_MODAL } from 'lib/config/modalVariants';
 import { useAppContext } from 'components/context/appContext';
 import { useNotificationsContext } from 'components/context/notificationsContext';

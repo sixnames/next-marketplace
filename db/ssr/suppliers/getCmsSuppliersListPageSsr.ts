@@ -1,5 +1,11 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { CMS_BRANDS_LIMIT, DEFAULT_LOCALE, DEFAULT_PAGE, SORT_ASC, SORT_DESC } from 'lib/config/common';
+import {
+  CMS_BRANDS_LIMIT,
+  DEFAULT_LOCALE,
+  DEFAULT_PAGE,
+  SORT_ASC,
+  SORT_DESC,
+} from 'lib/config/common';
 import { ISO_LANGUAGES } from 'lib/config/constantSelects';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';

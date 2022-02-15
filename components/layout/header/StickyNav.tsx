@@ -48,11 +48,17 @@ export interface StickyNavDropdownGlobalInterface extends StickyNavDropdownInter
   catalogueNavLayout: string;
 }
 
-const StickyNavDropdownDefault = dynamic(() => import('components/layout/header/StickyNavDropdownDefault'));
+const StickyNavDropdownDefault = dynamic(
+  () => import('components/layout/header/StickyNavDropdownDefault'),
+);
 
-const StickyNavDropdownOptionsOnly = dynamic(() => import('components/layout/header/StickyNavDropdownOptionsOnly'));
+const StickyNavDropdownOptionsOnly = dynamic(
+  () => import('components/layout/header/StickyNavDropdownOptionsOnly'),
+);
 
-const StickyNavDropdownWithCategories = dynamic(() => import('components/layout/header/StickyNavDropdownWithCategories'));
+const StickyNavDropdownWithCategories = dynamic(
+  () => import('components/layout/header/StickyNavDropdownWithCategories'),
+);
 
 const StickyNavDropdownWithoutSubCategories = dynamic(
   () => import('components/layout/header/StickyNavDropdownWithoutSubCategories'),

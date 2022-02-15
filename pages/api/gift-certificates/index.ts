@@ -1,5 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from 'lib/config/common';
 import { createGiftCertificate } from 'db/dao/giftCertificate/createGiftCertificate';
 import { deleteGiftCertificate } from 'db/dao/giftCertificate/deleteGiftCertificate';
 import { updateGiftCertificate } from 'db/dao/giftCertificate/updateGiftCertificate';

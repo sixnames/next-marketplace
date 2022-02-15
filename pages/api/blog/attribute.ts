@@ -1,5 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from 'lib/config/common';
 import { createBlogAttribute } from 'db/dao/blog/createBlogAttribute';
 import { deleteBlogAttribute } from 'db/dao/blog/deleteBlogAttribute';
 import { updateBlogAttribute } from 'db/dao/blog/updateBlogAttribute';

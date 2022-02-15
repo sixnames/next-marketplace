@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
 import { SUPPLIER_PRICE_VARIANT_CHARGE } from '../../lib/config/common';
-import { getConstantOptions, SUPPLIER_PRICE_VARIANT_OPTIONS } from '../../lib/config/constantSelects';
+import {
+  getConstantOptions,
+  SUPPLIER_PRICE_VARIANT_OPTIONS,
+} from '../../lib/config/constantSelects';
 import { useLocaleContext } from '../context/localeContext';
 import { ShopProductInterface, SupplierProductInterface } from '../../db/uiInterfaces';
 import {

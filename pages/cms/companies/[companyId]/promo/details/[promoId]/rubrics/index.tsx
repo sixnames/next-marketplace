@@ -12,7 +12,9 @@ import {
   RubricInterface,
 } from 'db/uiInterfaces';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import CompanyRubricsList, { CompanyRubricsListInterface } from 'components/layout/CompanyRubricsList';
+import CompanyRubricsList, {
+  CompanyRubricsListInterface,
+} from 'components/layout/CompanyRubricsList';
 import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getPromoSsr } from 'lib/promoUtils';

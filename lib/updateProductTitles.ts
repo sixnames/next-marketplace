@@ -202,7 +202,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
 
 export function execUpdateProductTitles(param: string) {
   exec(
-    `node -r esbuild-register db/dao/childProcess/updateProductTitlesInChildProcess.ts ${param}`,
+    `node -r esbuild-register db/childProcess/updateProductTitlesInChildProcess.ts ${param}`,
     (error, _stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`);

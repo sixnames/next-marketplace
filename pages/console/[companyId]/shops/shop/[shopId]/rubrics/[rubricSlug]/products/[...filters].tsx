@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import * as React from 'react';
 import ShopRubricProducts from 'components/shops/ShopRubricProducts';
-import { getConsoleShopProductsListPageSsr } from 'db/dao/ssr/getConsoleShopProductsListPageSsr';
+import { getConsoleShopProductsListPageSsr } from 'db/ssr/shops/getConsoleShopProductsListPageSsr';
 import { AppContentWrapperBreadCrumbs, ShopRubricProductsInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';

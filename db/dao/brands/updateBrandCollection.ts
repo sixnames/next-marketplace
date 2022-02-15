@@ -1,5 +1,5 @@
 import { COL_BRAND_COLLECTIONS } from 'db/collectionNames';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import {
   BrandBaseModel,
   BrandCollectionModel,

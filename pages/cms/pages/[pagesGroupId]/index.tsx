@@ -9,7 +9,7 @@ import { AppContentWrapperBreadCrumbs, CityInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { sortObjectsByField } from 'lib/arrayUtils';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getPagesListSsr } from 'lib/pageUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

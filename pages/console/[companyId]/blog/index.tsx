@@ -3,7 +3,7 @@ import * as React from 'react';
 import BlogPostsList from 'components/blog/BlogPostsList';
 import Inner from 'components/Inner';
 import WpTitle from 'components/WpTitle';
-import { getBlogPostsList } from 'db/dao/blog/getBlogPostsList';
+import { getBlogPostsList } from 'db/ssr/blog/getBlogPostsList';
 import { BlogPostInterface, CompanyInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

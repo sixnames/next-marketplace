@@ -6,7 +6,7 @@ import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getPageSsr } from 'lib/pageUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

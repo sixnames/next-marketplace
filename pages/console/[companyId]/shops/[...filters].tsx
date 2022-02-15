@@ -15,7 +15,7 @@ import TableRowImage from 'components/TableRowImage';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
 import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modalVariants';
-import { getConsoleShopsListPageSsr } from 'db/dao/ssr/getConsoleShopsListPageSsr';
+import { getConsoleShopsListPageSsr } from 'db/ssr/shops/getConsoleShopsListPageSsr';
 import { AppPaginationInterface, CompanyInterface, ShopInterface } from 'db/uiInterfaces';
 import { useDeleteShopFromCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';

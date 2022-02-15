@@ -3,7 +3,7 @@ import {
   objectIdSchema,
   requiredNumberSchema,
   requiredStringSchema,
-} from 'validation/schemaTemplates';
+} from 'validation/utils/schemaTemplates';
 import * as Yup from 'yup';
 
 export const eventIdSchema = (args: ValidationSchemaArgsInterface) => {

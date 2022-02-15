@@ -1,4 +1,4 @@
-import { getConsoleRubricProductsListPageSsr } from 'db/dao/ssr/getConsoleRubricProductsListPageSsr';
+import { getConsoleRubricProductsListPageSsr } from 'db/ssr/rubrics/getConsoleRubricProductsListPageSsr';
 import ConsoleRubricProductsListPage from './[...filters]';
 
 export const getServerSideProps = getConsoleRubricProductsListPageSsr;

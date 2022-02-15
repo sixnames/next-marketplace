@@ -40,7 +40,7 @@ import {
   productAttributesPipeline,
   productCategoriesPipeline,
   summaryPipeline,
-} from '../constantPipelines';
+} from 'db/utils/constantPipelines';
 import { getPageSessionUser } from '../user/getPageSessionUser';
 
 export interface GetSessionCartInterface {

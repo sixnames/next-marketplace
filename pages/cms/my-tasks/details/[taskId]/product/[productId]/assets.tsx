@@ -1,11 +1,11 @@
 import ConsoleRubricProductAssets from 'components/console/ConsoleRubricProductAssets';
 import { TASK_VARIANT_SLUG_PRODUCT_ASSETS } from 'config/constantSelects';
-import { getCompanyTaskSsr } from 'db/dao/ssr/getCompanyTaskSsr';
+import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import CmsTaskProductLayout, {
   CmsTaskProductLayoutInterface,
 } from 'layout/cms/CmsTaskProductLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';

@@ -14,7 +14,7 @@ import Spinner from 'components/Spinner';
 import TableRowImage from 'components/TableRowImage';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modalVariants';
-import { getCmsCompanyShopsPageSsr } from 'db/dao/ssr/getCmsCompanyShopsPageSsr';
+import { getCmsCompanyShopsPageSsr } from 'db/ssr/shops/getCmsCompanyShopsPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   AppPaginationInterface,

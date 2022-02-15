@@ -1,6 +1,6 @@
 import { COL_BRANDS } from 'db/collectionNames';
 import { CreateBrandInputInterface } from 'db/dao/brands/createBrand';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import { BrandModel, BrandPayloadModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';

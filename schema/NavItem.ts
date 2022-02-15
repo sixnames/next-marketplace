@@ -1,7 +1,7 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { SORT_ASC } from '../config/common';
 import { COL_NAV_ITEMS } from '../db/collectionNames';
-import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import { NavItemModel, NavItemPayloadModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';

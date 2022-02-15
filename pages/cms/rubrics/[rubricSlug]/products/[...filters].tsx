@@ -16,7 +16,7 @@ import Spinner from 'components/Spinner';
 import TableRowImage from 'components/TableRowImage';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
-import { getCmsRubricProductsListPageSsr } from 'db/dao/ssr/getCmsRubricProductsListPageSsr';
+import { getCmsRubricProductsListPageSsr } from 'db/ssr/products/getCmsRubricProductsListPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   ConsoleRubricProductsInterface,

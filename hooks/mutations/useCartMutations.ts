@@ -7,7 +7,7 @@ import { RepeatOrderInputInterface } from 'db/dao/cart/repeatOrder';
 import { UpdateCartProductInputInterface } from 'db/dao/cart/updateCartProduct';
 import { MakeAnOrderInputInterface, MakeAnOrderPayloadModel } from 'db/dao/orders/makeAnOrder';
 import { CartPayloadModel } from 'db/dbModels';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { useMutationHandler } from './useFetch';
 
 export const cartApiRouteBasePath = '/api/cart';

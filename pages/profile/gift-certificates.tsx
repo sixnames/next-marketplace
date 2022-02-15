@@ -12,7 +12,7 @@ import { getDatabase } from '../../db/mongodb';
 import { GiftCertificateInterface } from '../../db/uiInterfaces';
 import ProfileLayout from '../../layout/ProfileLayout/ProfileLayout';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../layout/SiteLayout';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale, getNumWord } from '../../lib/i18n';
 import { castDbData, getSiteInitialData } from '../../lib/ssrUtils';
 

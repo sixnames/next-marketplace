@@ -1,6 +1,6 @@
 import { COL_EVENT_RUBRICS } from 'db/collectionNames';
 import { CreateEventRubricInputInterface } from 'db/dao/eventRubrics/createEventRubric';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import { EventRubricModel, EventRubricPayloadModel, JSONObjectModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';

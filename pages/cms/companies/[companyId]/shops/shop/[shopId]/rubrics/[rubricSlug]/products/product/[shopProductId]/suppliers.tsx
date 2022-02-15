@@ -12,7 +12,7 @@ import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface, SupplierInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getConsoleShopProduct } from 'lib/productUtils';

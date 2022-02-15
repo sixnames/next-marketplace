@@ -9,7 +9,7 @@ import {
   ShopAddProductsSetStepHandler,
   ShopAddProductsStepType,
 } from 'components/shops/ShopAddProducts';
-import { getCompanyShopAddProductsListPageSsr } from 'db/dao/ssr/getCompanyShopAddProductsListPageSsr';
+import { getCompanyShopAddProductsListPageSsr } from 'db/ssr/shops/getCompanyShopAddProductsListPageSsr';
 import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';

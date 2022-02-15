@@ -22,7 +22,7 @@ import {
 import { useDeleteUserCategory } from 'hooks/mutations/useUserCategoryMutations';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

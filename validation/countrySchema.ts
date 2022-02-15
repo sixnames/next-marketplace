@@ -4,7 +4,7 @@ import {
   objectIdSchema,
   requiredStringSchema,
   requiredStringTranslationSchema,
-} from './schemaTemplates';
+} from 'validation/utils/schemaTemplates';
 
 const minCurrencyLength = 1;
 const minCityKeyLength = 1;

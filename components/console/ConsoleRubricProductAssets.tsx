@@ -1,5 +1,5 @@
 import { REQUEST_METHOD_POST } from 'config/common';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ProductSummaryInterface } from 'db/uiInterfaces';

@@ -4,11 +4,11 @@ import ConsoleOrderDetails, {
   CmsOrderDetailsBaseInterface,
 } from 'components/order/ConsoleOrderDetails';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
-import { getConsoleOrder } from 'db/dao/orders/getConsoleOrder';
+import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface OrderPageConsumerInterface extends CmsOrderDetailsBaseInterface {}

@@ -10,7 +10,7 @@ import {
   SyncShopProductsResponseInterface,
   SyncUpdateOrderProductInterface,
 } from 'db/syncInterfaces';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 
 const validRequestParamsA = 'token=000001';

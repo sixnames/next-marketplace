@@ -1,9 +1,9 @@
 import * as Yup from 'yup';
 import { GENDER_ENUMS } from 'config/common';
-import { getFieldValidationMessage } from 'lib/getFieldValidationMessage';
+import { getFieldValidationMessage } from 'validation/utils/getFieldValidationMessage';
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import { rubricVariantIdSchema } from './rubricVariantSchema';
-import { objectIdSchema, requiredStringTranslationSchema } from './schemaTemplates';
+import { objectIdSchema, requiredStringTranslationSchema } from 'validation/utils/schemaTemplates';
 
 export const rubricIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.rubrics.id' });

@@ -12,7 +12,7 @@ import { UserContextProvider, useUserContext } from '../../context/userContext';
 import { SessionUserPayloadInterface } from '../../db/dao/user/getPageSessionUser';
 import { CompanyInterface } from '../../db/uiInterfaces';
 import useCompact from '../../hooks/useCompact';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import Meta from '../Meta';
 import CmsNav from './CmsNav';
 

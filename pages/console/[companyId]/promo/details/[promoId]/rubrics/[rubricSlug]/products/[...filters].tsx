@@ -2,7 +2,7 @@ import * as React from 'react';
 import ConsolePromoProducts, {
   ConsolePromoProductsInterface,
 } from 'components/console/ConsolePromoProducts';
-import { getConsolePromoProductsListPageSsr } from 'db/dao/ssr/getConsolePromoProductsListPageSsr';
+import { getConsolePromoProductsListPageSsr } from 'db/ssr/company/getConsolePromoProductsListPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';

@@ -1,6 +1,6 @@
 import { getSession } from 'next-auth/react';
 import { ROLE_SLUG_ADMIN, NAV_GROUP_CMS, NAV_GROUP_CONSOLE, SORT_ASC } from 'config/common';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { NexusContext } from 'types/apiContextTypes';
 import { COL_COMPANIES, COL_NAV_ITEMS, COL_ROLES, COL_USERS } from 'db/collectionNames';

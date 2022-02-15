@@ -26,7 +26,7 @@ import {
   RubricModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { castCatalogueParamToObject } from 'lib/catalogueUtils';
+import { castCatalogueParamToObject } from 'db/utils/catalogueUtils';
 import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 
 export const CatalogueAdditionalOptionsInput = inputObjectType({

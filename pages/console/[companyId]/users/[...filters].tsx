@@ -9,7 +9,7 @@ import WpLink from 'components/Link/WpLink';
 import Pager from 'components/Pager';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { getConsoleCustomersPageSsr } from 'db/dao/ssr/getConsoleCustomersPageSsr';
+import { getConsoleCustomersPageSsr } from 'db/ssr/users/getConsoleCustomersPageSsr';
 import { AppPaginationInterface, UserInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

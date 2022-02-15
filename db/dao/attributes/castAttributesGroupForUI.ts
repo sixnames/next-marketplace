@@ -2,7 +2,7 @@ import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { GenderModel } from '../../dbModels';
 import { AttributeInterface, AttributesGroupInterface } from '../../uiInterfaces';
-import { castOptionForUI } from '../options/castOptionForUI';
+import { castOptionForUI } from 'db/cast/castOptionForUI';
 
 interface CastAttributeForUI {
   attribute: AttributeInterface;

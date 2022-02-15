@@ -15,7 +15,7 @@ import Pager from 'components/Pager';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
 import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'config/modalVariants';
-import { getCmsBrandsListPageSsr } from 'db/dao/ssr/getCmsBrandsListPageSsr';
+import { getCmsBrandsListPageSsr } from 'db/ssr/brands/getCmsBrandsListPageSsr';
 import { AppPaginationInterface, BrandInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

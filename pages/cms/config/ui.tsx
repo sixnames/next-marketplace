@@ -1,12 +1,12 @@
+import { getConfigPageData } from 'db/ssr/configs/getConfigPageData';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
 import { CONFIG_GROUP_UI, DEFAULT_COMPANY_SLUG } from 'config/common';
-import { getConfigRubrics } from 'db/dao/configs/getConfigRubrics';
+import { getConfigRubrics } from 'db/ssr/rubrics/getConfigRubrics';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleConfigsLayout, { ConfigPageInterface } from 'layout/console/ConsoleConfigsLayout';
-import { getConfigPageData } from 'lib/configsUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const ConfigConsumer: React.FC<ConfigPageInterface> = ({

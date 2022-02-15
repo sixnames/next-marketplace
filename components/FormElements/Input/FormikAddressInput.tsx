@@ -1,7 +1,7 @@
+import { GeocodeResultInterface, ReverseGeocodePayload } from 'lib/addressUtils';
 import * as React from 'react';
 import { get } from 'lodash';
 import { useLocaleContext } from 'context/localeContext';
-import { GeocodeResultInterface, ReverseGeocodePayload } from 'lib/geocode';
 import Spinner from '../../Spinner';
 import WpInput, { WpInputPropsInterface } from './WpInput';
 import { Field, FieldProps } from 'formik';

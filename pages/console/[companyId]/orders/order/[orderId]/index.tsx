@@ -11,7 +11,7 @@ import ConsoleOrderDetails, {
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
-import { getConsoleOrder } from 'db/dao/orders/getConsoleOrder';
+import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/useOrderMutations';
 import AppContentWrapper from 'layout/AppContentWrapper';

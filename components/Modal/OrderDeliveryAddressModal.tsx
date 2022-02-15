@@ -6,8 +6,11 @@ import { DATE_FORMAT_FULL, GEO_POINT_TYPE, MAP_DEFAULT_CENTER } from '../../conf
 import { useAppContext } from '../../context/appContext';
 import { useLocaleContext } from '../../context/localeContext';
 import { AddressModel, CoordinatesModel, OrderDeliveryInfoModel } from '../../db/dbModels';
-import { getReadableAddress } from '../../lib/addressUtils';
-import { GeocodeResultInterface, ReverseGeocodePayload } from '../../lib/geocode';
+import {
+  GeocodeResultInterface,
+  getReadableAddress,
+  ReverseGeocodePayload,
+} from '../../lib/addressUtils';
 import ControlButton from '../button/ControlButton';
 import WpButton from '../button/WpButton';
 import FormikAddressInput from '../FormElements/Input/FormikAddressInput';

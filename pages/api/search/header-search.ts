@@ -11,7 +11,7 @@ import {
   ignoreNoImageStage,
   shopProductsGroupPipeline,
   summaryPipeline,
-} from 'db/dao/constantPipelines';
+} from 'db/utils/constantPipelines';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ShopProductInterface } from 'db/uiInterfaces';

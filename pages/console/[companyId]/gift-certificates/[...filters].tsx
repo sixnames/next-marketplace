@@ -5,7 +5,7 @@ import ConsoleGiftCertificatesList, {
 } from 'components/console/ConsoleGiftCertificatesList';
 import Inner from 'components/Inner';
 import WpTitle from 'components/WpTitle';
-import { getConsoleGiftCertificatesPageSsr } from 'db/dao/ssr/getConsoleGiftCertificatesPageSsr';
+import { getConsoleGiftCertificatesPageSsr } from 'db/ssr/company/getConsoleGiftCertificatesPageSsr';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';

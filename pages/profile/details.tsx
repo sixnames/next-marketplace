@@ -23,7 +23,7 @@ import useValidationSchema from '../../hooks/useValidationSchema';
 import ProfileLayout from '../../layout/ProfileLayout/ProfileLayout';
 import RowWithGap from '../../layout/RowWithGap/RowWithGap';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../layout/SiteLayout';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { phoneToRaw } from '../../lib/phoneUtils';
 import { getSiteInitialData } from '../../lib/ssrUtils';
 import { updateMyProfileSchema } from '../../validation/userSchema';

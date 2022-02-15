@@ -1,4 +1,4 @@
-import { getConsoleShopAddProductsListPageSsr } from 'db/dao/ssr/getConsoleShopAddProductsListPageSsr';
+import { getConsoleShopAddProductsListPageSsr } from 'db/ssr/shops/getConsoleShopAddProductsListPageSsr';
 import ConsoleShopAddProductsListPage from './[...filters]';
 
 export const getServerSideProps = getConsoleShopAddProductsListPageSsr;

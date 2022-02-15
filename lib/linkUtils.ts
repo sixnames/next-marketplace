@@ -1,5 +1,5 @@
 import { ObjectIdModel } from 'db/dbModels';
-import { getProjectLinks } from './getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 const links = getProjectLinks();
 const routeCms = links.cms.url;

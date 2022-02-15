@@ -1,3 +1,4 @@
+import { getConfigPageData } from 'db/ssr/configs/getConfigPageData';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
@@ -7,7 +8,6 @@ import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces'
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { ConfigPageInterface } from 'layout/console/ConsoleConfigsLayout';
-import { getConfigPageData } from 'lib/configsUtils';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

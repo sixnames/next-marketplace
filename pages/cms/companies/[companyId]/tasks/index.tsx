@@ -4,7 +4,7 @@ import * as React from 'react';
 import ConsoleTasksList, { ConsoleTasksListInterface } from 'components/console/ConsoleTasksList';
 import Inner from 'components/Inner';
 import { COL_COMPANIES } from 'db/collectionNames';
-import { getCompanyTasksListSsr } from 'db/dao/ssr/getCompanyTasksListSsr';
+import { getCompanyTasksListSsr } from 'db/ssr/company/getCompanyTasksListSsr';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';

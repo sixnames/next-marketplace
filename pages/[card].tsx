@@ -11,7 +11,7 @@ import { useLocaleContext } from '../context/localeContext';
 import { useSiteUserContext } from '../context/siteUserContext';
 import { CardLayoutInterface, InitialCardDataInterface } from '../db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
-import { getCardData } from '../lib/cardUtils';
+import { getCardData } from 'db/utils/cardUtils';
 import { getConsoleRubricLinks } from '../lib/linkUtils';
 import { noNaN } from '../lib/numbers';
 import { castDbData, getSiteInitialData } from '../lib/ssrUtils';

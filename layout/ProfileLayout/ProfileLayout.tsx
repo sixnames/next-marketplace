@@ -6,7 +6,7 @@ import Inner from '../../components/Inner';
 import WpBreadcrumbs from '../../components/WpBreadcrumbs';
 import WpTitle from '../../components/WpTitle';
 import { useSiteUserContext } from '../../context/siteUserContext';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 interface ProfileLayoutInterface {
   testId?: string;

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getConsoleCompanyLinks } from '../../lib/linkUtils';
 import { noNaN } from '../../lib/numbers';
 import { getConsoleMainPageData, GetConsoleMainPageDataPropsInterface } from '../../lib/ssrUtils';

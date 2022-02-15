@@ -15,7 +15,7 @@ import { useCreateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { createCompanyClientSchema } from 'validation/companySchema';

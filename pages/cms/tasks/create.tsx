@@ -2,7 +2,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import CreateTaskForm, { CreateTaskFormInterface } from 'components/console/CreateTaskForm';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
-import { getCompanyTaskVariantsListSsr } from 'db/dao/ssr/getCompanyTaskVariantsListSsr';
+import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

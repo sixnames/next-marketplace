@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import { COL_COMPANIES, COL_PROMO_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
-import { castRubricForUI } from 'db/dao/ssr/castRubricForUI';
+import { castRubricForUI } from 'db/cast/castRubricForUI';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {

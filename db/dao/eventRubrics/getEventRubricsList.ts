@@ -4,7 +4,7 @@ import { sortObjectsByField } from 'lib/arrayUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface, EventRubricInterface } from 'db/uiInterfaces';
-import { castEventRubricForUI } from 'db/dao/ssr/castRubricForUI';
+import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 
 export interface GetRubricsListInputInterface {}
 

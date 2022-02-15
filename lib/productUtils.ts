@@ -11,7 +11,7 @@ import {
   shopProductShopPipeline,
   shopProductSupplierProductsPipeline,
   summaryPipeline,
-} from 'db/dao/constantPipelines';
+} from 'db/utils/constantPipelines';
 import {
   ObjectIdModel,
   OptionModel,

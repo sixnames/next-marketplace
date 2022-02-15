@@ -24,7 +24,7 @@ import { useThemeContext } from '../../context/themeContext';
 import { PagesGroupInterface } from '../../db/uiInterfaces';
 import { useShopMarker } from '../../hooks/useShopMarker';
 import useSignOut from '../../hooks/useSignOut';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { noNaN } from '../../lib/numbers';
 import { phoneToRaw, phoneToReadable } from '../../lib/phoneUtils';
 import LayoutCard from '../LayoutCard';

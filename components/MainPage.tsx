@@ -5,7 +5,7 @@ import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
 import ProductSnippetGridBigImage from '../layout/snippet/ProductSnippetGridBigImage';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { MainPageInterface } from 'lib/mainPageUtils';
 import HorizontalScroll from './HorizontalScroll';
 import Inner from './Inner';

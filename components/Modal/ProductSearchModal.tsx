@@ -2,7 +2,7 @@ import * as React from 'react';
 import useSWR from 'swr';
 import qs from 'qs';
 import { DEFAULT_PAGE } from '../../config/common';
-import { GetRubricProductsListInputInterface } from '../../db/dao/ssr/getRubricProductsList';
+import { GetRubricProductsListInputInterface } from 'db/ssr/rubrics/getRubricProductsList';
 import {
   ConsoleRubricProductsInterface,
   ProductSummaryInterface,

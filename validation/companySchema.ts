@@ -5,7 +5,7 @@ import {
   notRequiredDomainSchema,
   objectIdSchema,
   requiredStringSchema,
-} from './schemaTemplates';
+} from 'validation/utils/schemaTemplates';
 import { shopFieldsSchema, shopIdSchema } from './shopSchema';
 
 export const companyIdSchema = (args: ValidationSchemaArgsInterface) => {

@@ -7,7 +7,7 @@ import WpBreadcrumbs from '../../components/WpBreadcrumbs';
 import WpTitle from '../../components/WpTitle';
 import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from '../../config/common';
 import { alwaysArray, alwaysString } from '../../lib/arrayUtils';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { sortStringArray } from '../../lib/stringUtils';
 
 const minCategoriesCount = 1;

@@ -16,7 +16,7 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface, OrderInterface, OrderInterfacePayloadModel } from 'db/uiInterfaces';
-import { getConsoleOrder } from './getConsoleOrder';
+import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
 
 export interface UpdateOrderInterface {
   order: OrderInterface;

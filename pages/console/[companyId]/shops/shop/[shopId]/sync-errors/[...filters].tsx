@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import * as React from 'react';
 import ShopSyncErrors, { ShopSyncErrorsInterface } from 'components/shops/ShopSyncErrors';
-import { getConsoleShopSyncErrorsListPageSsr } from 'db/dao/ssr/getConsoleShopSyncErrorsListPageSsr';
+import { getConsoleShopSyncErrorsListPageSsr } from 'db/ssr/shops/getConsoleShopSyncErrorsListPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';

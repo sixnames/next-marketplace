@@ -1,8 +1,8 @@
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
 import { COL_MANUFACTURERS, COL_PRODUCT_FACETS } from '../db/collectionNames';
-import { aggregatePagination } from '../db/dao/aggregatePagination';
-import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import { aggregatePagination } from 'db/utils/aggregatePagination';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import {
   ManufacturerModel,
   ManufacturerPayloadModel,

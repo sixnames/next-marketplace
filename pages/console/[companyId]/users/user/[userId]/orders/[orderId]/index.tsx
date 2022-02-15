@@ -6,7 +6,7 @@ import ConsoleOrderDetails, {
 } from 'components/order/ConsoleOrderDetails';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
-import { getConsoleOrder } from 'db/dao/orders/getConsoleOrder';
+import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface, UserInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

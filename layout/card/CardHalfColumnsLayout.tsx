@@ -16,7 +16,7 @@ import {
 import { useConfigContext } from '../../context/configContext';
 import { CardLayoutInterface } from '../../db/uiInterfaces';
 import useCardData from '../../hooks/useCardData';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { noNaN } from '../../lib/numbers';
 import ProductAddToCartButton from '../snippet/ProductAddToCartButton';
 import CardControls from './CardControls';

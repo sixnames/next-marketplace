@@ -1,4 +1,5 @@
 import { getTextContents, Value } from '@react-page/editor';
+import { castConfigs } from 'db/cast/castConfigs';
 import { ObjectId } from 'mongodb';
 import fetch from 'node-fetch';
 import qs from 'qs';
@@ -20,7 +21,7 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SeoContentCitiesInterface } from 'db/uiInterfaces';
-import { castConfigs, getConfigStringValue } from './configsUtils';
+import { getConfigStringValue } from './configsUtils';
 
 interface CheckSeoContentUniquenessInterface {
   text?: string | null;

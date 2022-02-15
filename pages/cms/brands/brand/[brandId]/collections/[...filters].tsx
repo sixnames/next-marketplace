@@ -14,7 +14,7 @@ import Pager from 'components/Pager';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
 import { BRAND_COLLECTION_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
-import { getCmsBrandCollectionsPageSsr } from 'db/dao/ssr/getCmsBrandCollectionsPageSsr';
+import { getCmsBrandCollectionsPageSsr } from 'db/ssr/brands/getCmsBrandCollectionsPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   AppPaginationInterface,
@@ -25,7 +25,7 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { createBrandCollectionSchema, updateCollectionInBrandSchema } from 'validation/brandSchema';
 

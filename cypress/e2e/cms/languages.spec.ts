@@ -1,5 +1,5 @@
 import { ISO_LANGUAGES } from 'config/constantSelects';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Languages', () => {
   const links = getProjectLinks();

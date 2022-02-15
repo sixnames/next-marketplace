@@ -4,7 +4,7 @@ import CompanyRubricProductsList, {
   CompanyRubricProductsListInterface,
 } from 'components/company/CompanyRubricProductsList';
 import RequestError from 'components/RequestError';
-import { getCmsCompanyRubricProductsPageSsr } from 'db/dao/ssr/getCmsCompanyRubricProductsPageSsr';
+import { getCmsCompanyRubricProductsPageSsr } from 'db/ssr/company/getCmsCompanyRubricProductsPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

@@ -15,7 +15,7 @@ import { useConfigContext } from '../../context/configContext';
 import { useLocaleContext } from '../../context/localeContext';
 import { PagesGroupInterface } from '../../db/uiInterfaces';
 import { useShopMarker } from '../../hooks/useShopMarker';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { phoneToRaw, phoneToReadable } from '../../lib/phoneUtils';
 
 const links = getProjectLinks();

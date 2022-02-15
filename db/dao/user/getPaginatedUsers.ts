@@ -12,7 +12,7 @@ import {
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface, UserInterface } from '../../uiInterfaces';
-import { castPaginationInput } from '../aggregatePagination';
+import { castPaginationInput } from 'db/utils/aggregatePagination';
 
 export async function getPaginatedUsers({
   context,

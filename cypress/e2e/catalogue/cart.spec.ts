@@ -1,5 +1,5 @@
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Cart', () => {
   const wineLinks = getProjectLinks({

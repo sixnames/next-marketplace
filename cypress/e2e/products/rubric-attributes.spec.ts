@@ -1,4 +1,4 @@
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Rubric attributes', () => {
   const links = getProjectLinks();

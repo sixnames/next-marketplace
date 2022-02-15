@@ -1,7 +1,7 @@
 import { arg, extendType, nonNull, objectType, stringArg } from 'nexus';
 import { SORT_DESC } from '../config/common';
 import { COL_CITIES } from '../db/collectionNames';
-import { aggregatePagination } from '../db/dao/aggregatePagination';
+import { aggregatePagination } from 'db/utils/aggregatePagination';
 import { CitiesPaginationPayloadModel, CityModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import { getRequestParams } from '../lib/sessionHelpers';

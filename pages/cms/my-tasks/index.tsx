@@ -3,10 +3,10 @@ import ConsoleMyTasksList, {
 } from 'components/console/ConsoleMyTasksList';
 import Inner from 'components/Inner';
 import WpTitle from 'components/WpTitle';
-import { getMyTasksListSsr } from 'db/dao/ssr/getMyTasksListSsr';
+import { getMyTasksListSsr } from 'db/ssr/tasks/getMyTasksListSsr';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

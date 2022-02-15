@@ -9,8 +9,8 @@ import WpTable, { WpTableColumn } from 'components/WpTable';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useLocaleContext } from 'context/localeContext';
 import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
-import { castCategoryForUI } from 'db/dao/category/castCategoryForUI';
-import { rubricAttributeGroupsPipeline } from 'db/dao/constantPipelines';
+import { castCategoryForUI } from 'db/cast/castCategoryForUI';
+import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,

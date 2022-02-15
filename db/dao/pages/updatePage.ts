@@ -21,7 +21,7 @@ import {
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
-import { findDocumentByI18nField } from '../findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 
 export interface UpdatePageInputInterface {
   _id: string;

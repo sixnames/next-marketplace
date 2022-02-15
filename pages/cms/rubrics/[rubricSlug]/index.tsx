@@ -10,7 +10,7 @@ import Inner from 'components/Inner';
 import SeoContentEditor from 'components/SeoContentEditor';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
-import { getConsoleRubricDetails } from 'db/dao/ssr/getConsoleRubricDetails';
+import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
 import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,

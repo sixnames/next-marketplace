@@ -1,3 +1,4 @@
+import { getConfigPageData } from 'db/ssr/configs/getConfigPageData';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -8,7 +9,6 @@ import { ConfigModel } from 'db/dbModels';
 import { CompanyInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
-import { getConfigPageData } from 'lib/configsUtils';
 import {
   castDbData,
   getConsoleInitialData,

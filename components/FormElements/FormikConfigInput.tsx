@@ -29,10 +29,9 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { getReadableAddress } from 'lib/addressUtils';
+import { GeocodeResultInterface, getReadableAddress } from 'lib/addressUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getEditorDefaultValue } from 'lib/editorUtils';
-import { GeocodeResultInterface } from 'lib/geocode';
 import { noNaN } from 'lib/numbers';
 import { InputType } from 'types/clientTypes';
 import { updateConfigSchema } from 'validation/configSchema';

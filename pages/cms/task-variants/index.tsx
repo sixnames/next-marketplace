@@ -6,7 +6,7 @@ import ConsoleTaskVariantsList, {
 import Inner from 'components/Inner';
 import WpTitle from 'components/WpTitle';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
-import { getCompanyTaskVariantsListSsr } from 'db/dao/ssr/getCompanyTaskVariantsListSsr';
+import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getCmsLinks } from 'lib/linkUtils';

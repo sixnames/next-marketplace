@@ -2,7 +2,7 @@ import * as React from 'react';
 import TagLink from '../../components/Link/TagLink';
 import { FILTER_SEPARATOR } from '../../config/common';
 import { ProductAttributeInterface } from '../../db/uiInterfaces';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 interface CardIconFeaturesInterface {
   iconFeatures: ProductAttributeInterface[];

@@ -29,7 +29,7 @@ import ProductSnippetGrid from '../layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from '../layout/snippet/ProductSnippetRow';
 import { alwaysArray } from '../lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from '../lib/catalogueHelpers';
-import { getProjectLinks } from '../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getNumWord } from '../lib/i18n';
 import { CatalogueApiInputInterface } from '../pages/api/catalogue/[...filters]';
 import WpButton from './button/WpButton';

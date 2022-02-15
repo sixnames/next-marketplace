@@ -1,4 +1,5 @@
 import { Disclosure } from '@headlessui/react';
+import { castOrderStatus } from 'db/cast/castOrderStatus';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -23,15 +24,14 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from '../../db/collectionNames';
-import { summaryPipeline } from '../../db/dao/constantPipelines';
-import { castOrderStatus } from '../../db/dao/orders/getConsoleOrder';
+import { summaryPipeline } from 'db/utils/constantPipelines';
 import { getPageSessionUser } from '../../db/dao/user/getPageSessionUser';
 import { OrderModel } from '../../db/dbModels';
 import { getDatabase } from '../../db/mongodb';
 import { OrderInterface, OrderProductInterface } from '../../db/uiInterfaces';
 import ProfileLayout from '../../layout/ProfileLayout/ProfileLayout';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../layout/SiteLayout';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from '../../lib/i18n';
 import { noNaN } from '../../lib/numbers';
 import { castDbData, getSiteInitialData } from '../../lib/ssrUtils';

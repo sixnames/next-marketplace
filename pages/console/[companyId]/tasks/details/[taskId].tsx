@@ -1,8 +1,8 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import UpdateTaskForm, { UpdateTaskFormInterface } from 'components/console/UpdateTaskForm';
-import { getCompanyTaskSsr } from 'db/dao/ssr/getCompanyTaskSsr';
-import { getCompanyTaskVariantsListSsr } from 'db/dao/ssr/getCompanyTaskVariantsListSsr';
+import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
+import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

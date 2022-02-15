@@ -9,7 +9,7 @@ import { COL_PAGES_GROUP, COL_PAGES_GROUP_TEMPLATES } from '../../collectionName
 import { PagesGroupModel, PagesGroupPayloadModel, TranslationModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
-import { findDocumentByI18nField } from '../findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 
 export interface CreatePagesGroupInputInterface {
   nameI18n: TranslationModel;

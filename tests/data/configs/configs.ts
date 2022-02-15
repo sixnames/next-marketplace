@@ -1,5 +1,5 @@
 import { MOCK_ADDRESS_A, MOCK_ADDRESS_B } from '../../mocks';
-import { getConfigTemplates } from 'lib/getConfigTemplates';
+import { getConfigTemplates } from 'db/utils/getConfigTemplates';
 import { ASSETS_DIST_CONFIGS, DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR } from 'config/common';
 import categories from '../categories/categories';
 import rubrics from '../rubrics/rubrics';

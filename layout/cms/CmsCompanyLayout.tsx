@@ -1,4 +1,4 @@
-import { getCmsCompanyLinks } from 'lib/getProjectLinks';
+import { getCmsCompanyLinks } from 'lib/links/getProjectLinks';
 import Head from 'next/head';
 import * as React from 'react';
 import Inner from '../../components/Inner';

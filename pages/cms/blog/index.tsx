@@ -4,7 +4,7 @@ import BlogPostsList from 'components/blog/BlogPostsList';
 import Inner from 'components/Inner';
 import WpTitle from 'components/WpTitle';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
-import { getBlogPostsList } from 'db/dao/blog/getBlogPostsList';
+import { getBlogPostsList } from 'db/ssr/blog/getBlogPostsList';
 import { BlogPostInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';

@@ -18,8 +18,8 @@ import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import { COL_ATTRIBUTES_GROUPS, COL_RUBRICS } from 'db/collectionNames';
-import { rubricAttributeGroupsPipeline } from 'db/dao/constantPipelines';
-import { castRubricForUI } from 'db/dao/ssr/castRubricForUI';
+import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
+import { castRubricForUI } from 'db/cast/castRubricForUI';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {

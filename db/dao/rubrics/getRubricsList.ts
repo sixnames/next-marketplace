@@ -4,7 +4,7 @@ import { getRequestParams } from 'lib/sessionHelpers';
 import { COL_RUBRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface, RubricInterface } from 'db/uiInterfaces';
-import { castRubricForUI } from 'db/dao/ssr/castRubricForUI';
+import { castRubricForUI } from 'db/cast/castRubricForUI';
 
 export interface GetRubricsListInputInterface {}
 

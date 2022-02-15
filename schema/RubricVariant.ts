@@ -6,7 +6,7 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from '../db/collectionNames';
-import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import {
   ProductFacetModel,
   RubricModel,

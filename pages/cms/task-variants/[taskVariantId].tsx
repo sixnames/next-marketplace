@@ -3,7 +3,7 @@ import * as React from 'react';
 import UpdateTaskVariantForm, {
   UpdateTaskVariantFormInterface,
 } from 'components/console/UpdateTaskVariantForm';
-import { getCompanyTaskVariantSsr } from 'db/dao/ssr/getCompanyTaskVariantSsr';
+import { getCompanyTaskVariantSsr } from 'db/ssr/company/getCompanyTaskVariantSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

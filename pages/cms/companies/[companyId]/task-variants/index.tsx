@@ -6,7 +6,7 @@ import ConsoleTaskVariantsList, {
 } from 'components/console/ConsoleTaskVariantsList';
 import Inner from 'components/Inner';
 import { COL_COMPANIES } from 'db/collectionNames';
-import { getCompanyTaskVariantsListSsr } from 'db/dao/ssr/getCompanyTaskVariantsListSsr';
+import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';

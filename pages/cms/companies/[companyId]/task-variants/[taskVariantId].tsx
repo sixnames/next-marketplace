@@ -5,7 +5,7 @@ import UpdateTaskVariantForm, {
   UpdateTaskVariantFormInterface,
 } from 'components/console/UpdateTaskVariantForm';
 import { COL_COMPANIES } from 'db/collectionNames';
-import { getCompanyTaskVariantSsr } from 'db/dao/ssr/getCompanyTaskVariantSsr';
+import { getCompanyTaskVariantSsr } from 'db/ssr/company/getCompanyTaskVariantSsr';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';

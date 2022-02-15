@@ -17,7 +17,7 @@ import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, OrderInterface, UserInterface } from 'db/uiInterfaces';
 import CmsUserLayout from 'layout/cms/CmsUserLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

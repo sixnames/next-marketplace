@@ -1,6 +1,6 @@
 import { ROLE_SLUG_ADMIN, SORT_DESC } from 'config/common';
 import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { ignoreNoImageStage } from 'db/dao/constantPipelines';
+import { ignoreNoImageStage } from 'db/utils/constantPipelines';
 import { ProductSummaryModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import xlsx, { IJsonSheet, ISettings } from 'json-as-xlsx';

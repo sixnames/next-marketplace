@@ -11,7 +11,7 @@ import {
   ignoreNoImageStage,
   shopProductsGroupPipeline,
   summaryPipeline,
-} from '../db/dao/constantPipelines';
+} from 'db/utils/constantPipelines';
 import { getDatabase } from '../db/mongodb';
 import {
   CompanyInterface,
@@ -24,7 +24,7 @@ import {
   ShopProductInterface,
   TopFilterInterface,
 } from '../db/uiInterfaces';
-import { getProjectLinks } from './getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from './i18n';
 import { noNaN } from './numbers';
 import { phoneToRaw, phoneToReadable } from './phoneUtils';

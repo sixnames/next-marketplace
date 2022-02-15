@@ -1,5 +1,5 @@
 import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Pages', () => {
   const links = getProjectLinks();

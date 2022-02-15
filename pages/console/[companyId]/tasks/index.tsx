@@ -3,7 +3,7 @@ import * as React from 'react';
 import ConsoleTasksList, { ConsoleTasksListInterface } from 'components/console/ConsoleTasksList';
 import Inner from 'components/Inner';
 import WpTitle from 'components/WpTitle';
-import { getCompanyTasksListSsr } from 'db/dao/ssr/getCompanyTasksListSsr';
+import { getCompanyTasksListSsr } from 'db/ssr/company/getCompanyTasksListSsr';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';

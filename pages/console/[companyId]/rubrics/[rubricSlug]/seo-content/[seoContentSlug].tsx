@@ -5,7 +5,7 @@ import ConsoleSeoContentDetails, {
 } from 'components/console/ConsoleSeoContentDetails';
 import Inner from 'components/Inner';
 import { CATALOGUE_SEO_TEXT_POSITION_TOP } from 'config/common';
-import { getConsoleRubricDetails } from 'db/dao/ssr/getConsoleRubricDetails';
+import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
 import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

@@ -9,7 +9,7 @@ import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
 import Inner from 'components/Inner';
 import SeoContentEditor from 'components/SeoContentEditor';
 import { DEFAULT_COMPANY_SLUG, GENDER_ENUMS } from 'config/common';
-import { getConsoleCategoryDetails } from 'db/dao/category/getConsoleCategoryDetails';
+import { getConsoleCategoryDetails } from 'db/ssr/categories/getConsoleCategoryDetails';
 import { OptionVariantsModel } from 'db/dbModels';
 import {
   AppContentWrapperBreadCrumbs,

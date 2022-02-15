@@ -5,7 +5,7 @@ import {
   notRequiredUrlSchema,
   objectIdSchema,
   requiredStringTranslationSchema,
-} from './schemaTemplates';
+} from 'validation/utils/schemaTemplates';
 
 export const supplierIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.suppliers.id' });

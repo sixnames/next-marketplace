@@ -3,7 +3,7 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ConsoleRubricProductAttributes from 'components/console/ConsoleRubricProductAttributes';
 import { COL_COMPANIES } from 'db/collectionNames';
-import { getCmsProductAttributesPageSsr } from 'db/dao/ssr/getCmsProductAttributesPageSsr';
+import { getCmsProductAttributesPageSsr } from 'db/ssr/products/getCmsProductAttributesPageSsr';
 import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,

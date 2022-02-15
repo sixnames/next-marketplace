@@ -5,7 +5,7 @@ import ConsoleTaskVariantsList, {
 } from 'components/console/ConsoleTaskVariantsList';
 import Inner from 'components/Inner';
 import WpTitle from 'components/WpTitle';
-import { getCompanyTaskVariantsListSsr } from 'db/dao/ssr/getCompanyTaskVariantsListSsr';
+import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';

@@ -12,7 +12,7 @@ import WpLink from 'components/Link/WpLink';
 import Pager from 'components/Pager';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/orders/getConsoleOrders';
+import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/ssr/orders/getConsoleOrders';
 import { OrderInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

@@ -5,7 +5,7 @@ import * as React from 'react';
 import BlogPostsDetails from 'components/blog/BlogPostsDetails';
 import Inner from 'components/Inner';
 import { COL_COMPANIES } from 'db/collectionNames';
-import { getBlogPost } from 'db/dao/blog/getBlogPost';
+import { getBlogPost } from 'db/ssr/blog/getBlogPost';
 import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,

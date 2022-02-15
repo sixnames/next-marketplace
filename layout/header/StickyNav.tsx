@@ -13,7 +13,7 @@ import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { useThemeContext } from 'context/themeContext';
 import { AttributeInterface, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 interface AttributeStylesInterface {
   attributeLinkStyle: React.CSSProperties;

@@ -2,12 +2,12 @@ import ConsoleRubricProductEditor, {
   ConsoleRubricProductEditorInterface,
 } from 'components/console/ConsoleRubricProductEditor';
 import { TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT } from 'config/constantSelects';
-import { getCompanyTaskSsr } from 'db/dao/ssr/getCompanyTaskSsr';
+import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import CmsTaskProductLayout, {
   CmsTaskProductLayoutInterface,
 } from 'layout/cms/CmsTaskProductLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';

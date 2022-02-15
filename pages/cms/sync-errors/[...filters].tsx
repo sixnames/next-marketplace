@@ -3,7 +3,7 @@ import * as React from 'react';
 import Inner from 'components/Inner';
 import SyncErrorsList, { SyncErrorsListInterface } from 'components/SyncErrorsList';
 import WpTitle from 'components/WpTitle';
-import { getCmsSyncErrorsPageSsr } from 'db/dao/ssr/getCmsSyncErrorsPageSsr';
+import { getCmsSyncErrorsPageSsr } from 'db/ssr/shops/getCmsSyncErrorsPageSsr';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

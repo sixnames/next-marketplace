@@ -10,7 +10,7 @@ import Spinner from '../../components/Spinner';
 import { REQUEST_METHOD_POST } from '../../config/common';
 import { useSiteContext } from '../../context/siteContext';
 import { ShopProductInterface } from '../../db/uiInterfaces';
-import { getProjectLinks } from '../../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import {
   HeaderSearchInputInterface,
   HeaderSearchPayloadInterface,

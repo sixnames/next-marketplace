@@ -4,7 +4,7 @@ import ConsoleGiftCertificatesList, {
   ConsoleGiftCertificatesListInterface,
 } from 'components/console/ConsoleGiftCertificatesList';
 import Inner from 'components/Inner';
-import { getCmsCompanyGiftCertificatesPageSsr } from 'db/dao/ssr/getCmsCompanyGiftCertificatesPageSsr';
+import { getCmsCompanyGiftCertificatesPageSsr } from 'db/ssr/company/getCmsCompanyGiftCertificatesPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

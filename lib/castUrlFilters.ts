@@ -4,8 +4,8 @@ import {
   SORT_ASC,
   SORT_DESC,
   SORT_DESC_STR,
-} from '../config/common';
-import { ObjectIdModel } from '../db/dbModels';
+} from 'config/common';
+import { ObjectIdModel } from 'db/dbModels';
 import { getAlgoliaProductsSearch } from './algolia/productAlgoliaUtils';
 import { alwaysString } from './arrayUtils';
 import {

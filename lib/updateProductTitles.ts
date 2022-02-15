@@ -5,7 +5,7 @@ import {
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
-} from 'db/dao/constantPipelines';
+} from 'db/utils/constantPipelines';
 import {
   LanguageModel,
   ProductFacetModel,

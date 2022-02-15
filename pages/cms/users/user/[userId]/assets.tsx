@@ -11,7 +11,7 @@ import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsUserLayout from 'layout/cms/CmsUserLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

@@ -5,7 +5,7 @@ import parse from 'html-react-parser';
 import { useConfigContext } from '../context/configContext';
 import { alwaysArray } from '../lib/arrayUtils';
 import { getFilterUrlValues } from '../lib/getFilterUrlValues';
-import { getProjectLinks } from '../lib/getProjectLinks';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 export interface MetaInterface {
   title?: string;

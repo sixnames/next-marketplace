@@ -1,4 +1,4 @@
-import { KEY_CODES } from 'config/common';
+import { KEY_CODES } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Tasks', () => {

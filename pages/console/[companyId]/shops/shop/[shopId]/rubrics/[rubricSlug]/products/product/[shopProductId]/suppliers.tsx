@@ -5,12 +5,12 @@ import CompanyProductSuppliers, {
 } from 'components/company/CompanyProductSuppliers';
 import { SelectOptionInterface } from 'components/FormElements/Select/Select';
 import RequestError from 'components/RequestError';
-import { SORT_ASC } from 'config/common';
+import { SORT_ASC } from 'lib/config/common';
 import { COL_SUPPLIERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, SupplierInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import ConsoleShopProductLayout from 'components/layout/console/ConsoleShopProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getConsoleShopProduct } from 'lib/productUtils';

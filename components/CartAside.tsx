@@ -1,9 +1,9 @@
 import { useFormikContext } from 'formik';
 import * as React from 'react';
-import { DEFAULT_COMPANY_SLUG } from '../config/common';
-import { useConfigContext } from '../context/configContext';
+import { DEFAULT_COMPANY_SLUG } from '../lib/config/common';
+import { useConfigContext } from './context/configContext';
 import { MakeAnOrderInputInterface } from '../db/dao/orders/makeAnOrder';
-import LayoutCard from '../layout/LayoutCard';
+import LayoutCard from './layout/LayoutCard';
 import { noNaN } from '../lib/numbers';
 import { MakeOrderFormInterface, scrollToCartErrors } from '../pages/cart';
 import WpButton from './button/WpButton';

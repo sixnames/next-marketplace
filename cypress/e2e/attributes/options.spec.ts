@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, GENDER_HE, GENDER_IT, GENDER_SHE } from 'config/common';
+import { DEFAULT_LOCALE, GENDER_HE, GENDER_IT, GENDER_SHE } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Options', () => {

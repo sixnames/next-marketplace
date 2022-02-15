@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { FILTER_SEPARATOR } from 'config/common';
+import { FILTER_SEPARATOR } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';

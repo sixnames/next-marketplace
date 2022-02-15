@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { DEFAULT_COMPANY_SLUG, SORT_DESC } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, SORT_DESC } from 'lib/config/common';
 import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   ignoreNoImageStage,

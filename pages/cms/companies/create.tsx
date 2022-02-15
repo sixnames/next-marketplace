@@ -14,12 +14,12 @@ import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { useCreateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { createCompanyClientSchema } from 'validation/companySchema';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 const pageTitle = 'Создание компании';
 

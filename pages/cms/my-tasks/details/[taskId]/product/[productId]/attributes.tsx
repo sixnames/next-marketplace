@@ -1,10 +1,10 @@
 import ConsoleRubricProductAttributes from 'components/console/ConsoleRubricProductAttributes';
-import { TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES } from 'config/constantSelects';
+import { TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES } from 'lib/config/constantSelects';
 import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import CmsTaskProductLayout, {
   CmsTaskProductLayoutInterface,
-} from 'layout/cms/CmsTaskProductLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+} from 'components/layout/cms/CmsTaskProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';

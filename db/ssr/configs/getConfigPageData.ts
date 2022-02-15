@@ -1,4 +1,4 @@
-import { CONFIG_VARIANT_ASSET, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'config/common';
+import { CONFIG_VARIANT_ASSET, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'lib/config/common';
 import { COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
 import { ConfigModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

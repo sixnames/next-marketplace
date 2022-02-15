@@ -12,9 +12,9 @@ import {
   FILTER_SEPARATOR,
   GENDER_PLURAL,
   SORT_DESC,
-} from 'config/common';
-import { DEFAULT_LAYOUT } from 'config/constantSelects';
-import { getConstantTranslation } from 'config/constantTranslations';
+} from 'lib/config/common';
+import { DEFAULT_LAYOUT } from 'lib/config/constantSelects';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
 import {
   COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,

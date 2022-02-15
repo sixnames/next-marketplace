@@ -6,8 +6,8 @@ import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails'
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getPageSsr } from 'lib/pageUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_DIFF } from 'config/common';
+import { DEFAULT_DIFF } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { countDiscountedPrice } from 'lib/priceUtils';

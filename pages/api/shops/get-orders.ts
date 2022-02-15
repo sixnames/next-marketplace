@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ORDER_DELIVERY_VARIANT_COURIER } from 'config/common';
+import { ORDER_DELIVERY_VARIANT_COURIER } from 'lib/config/common';
 import {
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,

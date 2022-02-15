@@ -1,5 +1,5 @@
 import { hash } from 'bcryptjs';
-import { ROLE_SLUG_GUEST } from 'config/common';
+import { ROLE_SLUG_GUEST } from 'lib/config/common';
 import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';

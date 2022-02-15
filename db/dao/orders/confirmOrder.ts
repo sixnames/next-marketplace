@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_DIFF, SORT_ASC } from 'config/common';
+import { DEFAULT_DIFF, SORT_ASC } from 'lib/config/common';
 import { sendOrderConfirmedEmail } from 'lib/email/sendOrderConfirmedEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';

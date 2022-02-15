@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { EMPTY_OBJECT_AS_STRING } from 'config/common';
+import { EMPTY_OBJECT_AS_STRING } from 'lib/config/common';
 import { COL_SEO_CONTENTS } from 'db/collectionNames';
 import {
   SeoContentModel,

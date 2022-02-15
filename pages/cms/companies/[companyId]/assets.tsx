@@ -9,8 +9,8 @@ import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

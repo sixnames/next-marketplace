@@ -2,7 +2,7 @@ import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { NextApiRequest, NextApiResponse } from 'next';
 import bcrypt from 'bcryptjs';
-import { ISR_ONE_WEEK } from 'config/common';
+import { ISR_ONE_WEEK } from 'lib/config/common';
 import { COL_USERS } from 'db/collectionNames';
 import { UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

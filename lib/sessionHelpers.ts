@@ -15,7 +15,7 @@ import {
   ROLE_SLUG_ADMIN,
   ROLE_SLUG_GUEST,
   SECONDARY_LOCALE,
-} from 'config/common';
+} from 'lib/config/common';
 import { COL_ROLE_RULES, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { RoleModel, RoleRuleModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

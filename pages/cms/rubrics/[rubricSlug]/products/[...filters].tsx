@@ -15,7 +15,7 @@ import { SeoTextCitiesInfoList } from 'components/SeoTextLocalesInfoList';
 import Spinner from 'components/Spinner';
 import TableRowImage from 'components/TableRowImage';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
+import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'lib/config/modalVariants';
 import { getCmsRubricProductsListPageSsr } from 'db/ssr/products/getCmsRubricProductsListPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
@@ -25,8 +25,8 @@ import {
 import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getNumWord } from 'lib/i18n';
 import { getConsoleRubricLinks } from 'lib/linkUtils';

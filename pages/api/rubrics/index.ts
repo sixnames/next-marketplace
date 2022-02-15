@@ -8,7 +8,7 @@ import {
   REQUEST_METHOD_GET,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-} from 'config/common';
+} from 'lib/config/common';
 import { getRubricsList } from 'db/dao/rubrics/getRubricsList';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {

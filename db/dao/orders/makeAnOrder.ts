@@ -8,7 +8,7 @@ import {
   ORDER_DELIVERY_VARIANT_PICKUP,
   ORDER_PAYMENT_VARIANT_RECEIPT,
   ROLE_SLUG_GUEST,
-} from 'config/common';
+} from 'lib/config/common';
 import { sendOrderCreatedEmail } from 'lib/email/sendOrderCreatedEmail';
 import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';

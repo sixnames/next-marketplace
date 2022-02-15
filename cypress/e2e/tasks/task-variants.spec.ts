@@ -6,7 +6,7 @@ import {
   TASK_PRICE_TARGET_FIELD,
   TASK_PRICE_TARGET_SYMBOL,
   TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
-} from 'config/constantSelects';
+} from 'lib/config/constantSelects';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Task variants', () => {

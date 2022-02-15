@@ -1,5 +1,5 @@
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
-import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
+import { DEFAULT_COUNTERS_OBJECT } from '../lib/config/common';
 import { COL_SUPPLIER_PRODUCTS, COL_SUPPLIERS } from '../db/collectionNames';
 import { aggregatePagination } from 'db/utils/aggregatePagination';
 import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';

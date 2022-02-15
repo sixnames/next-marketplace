@@ -9,7 +9,7 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   REQUEST_METHOD_POST,
-} from 'config/common';
+} from 'lib/config/common';
 import { COL_COMPANIES, COL_CONFIGS, COL_LANGUAGES, COL_SEO_CONTENTS } from 'db/collectionNames';
 import { getCitiesList } from 'db/dao/cities/getCitiesList';
 import {

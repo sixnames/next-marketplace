@@ -6,13 +6,13 @@ import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
 import { COL_CITIES, COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CityInterface, CompanyInterface } from 'db/uiInterfaces';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getPagesListSsr } from 'lib/pageUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 interface PagesListPageInterface
   extends GetAppInitialDataPropsInterface,

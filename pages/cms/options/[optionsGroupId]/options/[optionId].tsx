@@ -10,7 +10,7 @@ import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import OptionMainFields from 'components/FormTemplates/OptionMainFields';
 import Inner from 'components/Inner';
 import WpTitle from 'components/WpTitle';
-import { GENDER_ENUMS } from 'config/common';
+import { GENDER_ENUMS } from 'lib/config/common';
 import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { OptionVariantsModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -22,8 +22,8 @@ import {
   useUpdateOptionInGroupMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

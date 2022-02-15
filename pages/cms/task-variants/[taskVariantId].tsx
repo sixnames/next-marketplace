@@ -5,8 +5,8 @@ import UpdateTaskVariantForm, {
 } from 'components/console/UpdateTaskVariantForm';
 import { getCompanyTaskVariantSsr } from 'db/ssr/company/getCompanyTaskVariantSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsLinks, getConsoleTaskVariantLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

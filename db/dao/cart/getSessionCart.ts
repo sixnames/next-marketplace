@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import nookies from 'nookies';
-import { CART_COOKIE_KEY } from 'config/common';
+import { CART_COOKIE_KEY } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';

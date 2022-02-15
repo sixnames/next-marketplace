@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getApiResolverValidationSchema,

@@ -7,8 +7,8 @@ import { COL_COMPANIES } from 'db/collectionNames';
 import { getBlogPostsList } from 'db/ssr/blog/getBlogPostsList';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, BlogPostInterface, CompanyInterface } from 'db/uiInterfaces';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

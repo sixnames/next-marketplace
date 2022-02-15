@@ -1,6 +1,6 @@
 import * as React from 'react';
 import NumberFormat from 'react-number-format';
-import { useLocaleContext } from '../context/localeContext';
+import { useLocaleContext } from './context/localeContext';
 import { noNaN } from '../lib/numbers';
 
 interface CurrencyInterface {

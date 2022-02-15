@@ -1,4 +1,4 @@
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -10,8 +10,8 @@ import {
   CompanyInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
-import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

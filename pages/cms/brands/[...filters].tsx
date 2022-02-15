@@ -1,4 +1,4 @@
-import { useAppContext } from 'context/appContext';
+import { useAppContext } from 'components/context/appContext';
 import { useDeleteBrand } from 'hooks/mutations/useBrandMutations';
 import { NextPage } from 'next';
 import Head from 'next/head';
@@ -14,11 +14,11 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager from 'components/Pager';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'config/modalVariants';
+import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'lib/config/modalVariants';
 import { getCmsBrandsListPageSsr } from 'db/ssr/brands/getCmsBrandsListPageSsr';
 import { AppPaginationInterface, BrandInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 export type CmsBrandsListConsumerInterface = AppPaginationInterface<BrandInterface>;

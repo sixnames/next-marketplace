@@ -17,7 +17,7 @@ import {
   DEFAULT_LOCALE,
   MAIN_BANNER_AUTOPLAY_SPEED,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
-} from 'config/common';
+} from 'lib/config/common';
 import { ConfigModel } from 'db/dbModels';
 import { ObjectId } from 'mongodb';
 

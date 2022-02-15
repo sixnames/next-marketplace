@@ -3,10 +3,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import * as React from 'react';
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
-import { CONFIG_GROUP_UI, DEFAULT_COMPANY_SLUG } from 'config/common';
+import { CONFIG_GROUP_UI, DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getConfigRubrics } from 'db/ssr/rubrics/getConfigRubrics';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsoleConfigsLayout, { ConfigPageInterface } from 'layout/console/ConsoleConfigsLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import ConsoleConfigsLayout, { ConfigPageInterface } from 'components/layout/console/ConsoleConfigsLayout';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const ConfigConsumer: React.FC<ConfigPageInterface> = ({

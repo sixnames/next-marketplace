@@ -3,11 +3,11 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import ConsoleOrderDetails, {
   CmsOrderDetailsBaseInterface,
 } from 'components/order/ConsoleOrderDetails';
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

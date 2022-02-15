@@ -4,8 +4,8 @@ import Inner from 'components/Inner';
 import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
 import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getPageSsr } from 'lib/pageUtils';
 import {

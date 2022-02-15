@@ -3,7 +3,7 @@ import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-} from '../../config/common';
+} from '../../lib/config/common';
 import { AddPromoProductsInputInterface } from '../../db/dao/promo/addPromoProducts';
 import {
   CheckPromoCodeAvailabilityInputInterface,

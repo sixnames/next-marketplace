@@ -10,9 +10,9 @@ import { NavItemModalInterface } from '../../components/Modal/NavItemModal';
 import WpIcon from '../../components/WpIcon';
 import WpTable, { WpTableColumn } from '../../components/WpTable';
 import WpTitle from '../../components/WpTitle';
-import { SORT_ASC, SORT_DESC } from '../../config/common';
-import { getConstantTranslation } from '../../config/constantTranslations';
-import { CONFIRM_MODAL, NAV_ITEM_MODAL } from '../../config/modalVariants';
+import { SORT_ASC, SORT_DESC } from '../../lib/config/common';
+import { getConstantTranslation } from '../../lib/config/constantTranslations';
+import { CONFIRM_MODAL, NAV_ITEM_MODAL } from '../../lib/config/modalVariants';
 import { COL_NAV_ITEMS } from '../../db/collectionNames';
 import { getDatabase } from '../../db/mongodb';
 import { NavGroupInterface, NavItemInterface } from '../../db/uiInterfaces';
@@ -24,8 +24,8 @@ import {
   useUpdateNavItemMutation,
 } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import AppContentWrapper from '../../layout/AppContentWrapper';
-import ConsoleLayout from '../../layout/cms/ConsoleLayout';
+import AppContentWrapper from '../../components/layout/AppContentWrapper';
+import ConsoleLayout from '../../components/layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from '../../lib/i18n';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from '../../lib/ssrUtils';
 

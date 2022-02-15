@@ -1,4 +1,4 @@
-import { SORT_DESC } from 'config/common';
+import { SORT_DESC } from 'lib/config/common';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { COL_RUBRICS } from 'db/collectionNames';

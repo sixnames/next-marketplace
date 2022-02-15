@@ -1,4 +1,4 @@
-import { SORT_ASC } from 'config/common';
+import { SORT_ASC } from 'lib/config/common';
 import { COL_CITIES } from 'db/collectionNames';
 import { CityModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

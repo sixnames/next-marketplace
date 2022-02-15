@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { OPTIONS_GROUP_VARIANT_TEXT } from '../../config/common';
-import { useAppContext } from '../../context/appContext';
+import { OPTIONS_GROUP_VARIANT_TEXT } from '../../lib/config/common';
+import { useAppContext } from '../context/appContext';
 import { CreateOptionsGroupInput, OptionsGroupVariant } from '../../generated/apolloComponents';
 import { useConstantOptions } from '../../hooks/useConstantOptions';
 import useValidationSchema from '../../hooks/useValidationSchema';

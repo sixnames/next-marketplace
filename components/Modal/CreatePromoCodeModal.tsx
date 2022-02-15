@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { DEFAULT_LOCALE } from '../../config/common';
+import { DEFAULT_LOCALE } from '../../lib/config/common';
 import { CreatePromoCodeInputInterface } from '../../db/dao/promo/createPromoCode';
 import { useCreatePromoCode } from '../../hooks/mutations/usePromoMutations';
 import useValidationSchema from '../../hooks/useValidationSchema';

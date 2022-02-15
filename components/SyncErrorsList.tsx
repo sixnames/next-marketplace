@@ -2,8 +2,8 @@ import * as React from 'react';
 import {
   CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
   PRODUCT_SEARCH_MODAL,
-} from '../config/modalVariants';
-import { useAppContext } from '../context/appContext';
+} from '../lib/config/modalVariants';
+import { useAppContext } from './context/appContext';
 import { AppPaginationInterface, NotSyncedProductInterface } from '../db/uiInterfaces';
 import { useUpdateProductWithSyncError } from '../hooks/mutations/useProductMutations';
 import { getNumWord } from '../lib/i18n';

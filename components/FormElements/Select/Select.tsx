@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useLocaleContext } from 'context/localeContext';
+import { useLocaleContext } from 'components/context/localeContext';
 import { TranslationModel } from 'db/dbModels';
 import { getFieldStringLocale } from 'lib/i18n';
 import { InputTheme, OnOffType } from 'types/clientTypes';

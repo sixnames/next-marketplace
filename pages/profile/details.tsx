@@ -10,8 +10,8 @@ import { UpdateMyPasswordModalInterface } from '../../components/Modal/UpdateMyP
 import RequestError from '../../components/RequestError';
 import StringButton from '../../components/StringButton';
 import WpTitle from '../../components/WpTitle';
-import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from '../../config/modalVariants';
-import { useSiteUserContext } from '../../context/siteUserContext';
+import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from '../../lib/config/modalVariants';
+import { useSiteUserContext } from '../../components/context/siteUserContext';
 import { getPageSessionUser } from '../../db/dao/user/getPageSessionUser';
 import { UpdateMyProfileInputInterface } from '../../db/dao/user/updateMyProfile';
 import {
@@ -20,9 +20,9 @@ import {
 } from '../../hooks/mutations/useUserMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import ProfileLayout from '../../layout/ProfileLayout/ProfileLayout';
-import RowWithGap from '../../layout/RowWithGap/RowWithGap';
-import SiteLayout, { SiteLayoutProviderInterface } from '../../layout/SiteLayout';
+import ProfileLayout from '../../components/layout/ProfileLayout/ProfileLayout';
+import RowWithGap from '../../components/layout/RowWithGap/RowWithGap';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { phoneToRaw } from '../../lib/phoneUtils';
 import { getSiteInitialData } from '../../lib/ssrUtils';

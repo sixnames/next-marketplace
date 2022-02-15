@@ -14,11 +14,11 @@ import {
   DEFAULT_LOCALE,
   FILTER_SEPARATOR,
   GEO_POINT_TYPE,
-} from 'config/common';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
-import { useLocaleContext } from 'context/localeContext';
+} from 'lib/config/common';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
+import { useAppContext } from 'components/context/appContext';
+import { useConfigContext } from 'components/context/configContext';
+import { useLocaleContext } from 'components/context/localeContext';
 import { AddressModel, ConfigModel, JSONObjectModel, TranslationModel } from 'db/dbModels';
 import { CategoryInterface, RubricInterface } from 'db/uiInterfaces';
 import {

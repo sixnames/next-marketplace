@@ -1,4 +1,4 @@
-import { REQUEST_METHOD_POST } from 'config/common';
+import { REQUEST_METHOD_POST } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { useRouter } from 'next/router';
 import * as React from 'react';

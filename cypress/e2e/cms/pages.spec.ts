@@ -1,4 +1,4 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_CITY, DEFAULT_LOCALE } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Pages', () => {

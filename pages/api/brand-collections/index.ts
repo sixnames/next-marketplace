@@ -2,7 +2,7 @@ import { createBrandCollection } from 'db/dao/brands/createBrandCollection';
 import { deleteBrandCollection } from 'db/dao/brands/deleteBrandCollection';
 import { updateBrandCollection } from 'db/dao/brands/updateBrandCollection';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {

@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useUserContext } from '../../context/userContext';
+import { useUserContext } from '../context/userContext';
 import {
   AppContentWrapperBreadCrumbs,
   CatalogueFilterAttributeInterface,
@@ -16,7 +16,7 @@ import {
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { useReloadListener } from '../../hooks/useReloadListener';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import { alwaysArray } from '../../lib/arrayUtils';
 import { getNumWord } from '../../lib/i18n';
 import { getCmsCompanyLinks, getConsoleRubricLinks } from '../../lib/linkUtils';

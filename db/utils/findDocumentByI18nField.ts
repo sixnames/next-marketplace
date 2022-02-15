@@ -1,4 +1,4 @@
-import { LOCALES } from 'config/common';
+import { LOCALES } from 'lib/config/common';
 import { getDatabase } from 'db/mongodb';
 
 export interface FindDocumentByI18nFieldInterface {

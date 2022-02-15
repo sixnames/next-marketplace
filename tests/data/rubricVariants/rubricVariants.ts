@@ -5,8 +5,8 @@ import {
   GRID_SNIPPET_LAYOUT_BIG_IMAGE,
   NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
   ROW_SNIPPET_LAYOUT_BIG_IMAGE,
-} from 'config/constantSelects';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
+} from 'lib/config/constantSelects';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, SECONDARY_LOCALE } from 'lib/config/common';
 import { RubricVariantModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 

@@ -4,11 +4,11 @@ import ConsoleSeoContentDetails, {
   ConsoleSeoContentDetailsInterface,
 } from 'components/console/ConsoleSeoContentDetails';
 import Inner from 'components/Inner';
-import { CATALOGUE_SEO_TEXT_POSITION_TOP } from 'config/common';
+import { CATALOGUE_SEO_TEXT_POSITION_TOP } from 'lib/config/common';
 import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
 import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { alwaysString } from 'lib/arrayUtils';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getSeoContentBySlug } from 'lib/seoContentUtils';

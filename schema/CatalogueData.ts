@@ -6,7 +6,7 @@ import {
   FILTER_CATEGORY_KEY,
   FILTER_MANUFACTURER_KEY,
   VIEWS_COUNTER_STEP,
-} from 'config/common';
+} from 'lib/config/common';
 import {
   COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,

@@ -6,8 +6,8 @@ import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload'
 import Inner from 'components/Inner';
 import { CompanyInterface } from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import ConsoleCompanyLayout from 'components/layout/console/ConsoleCompanyLayout';
 import {
   castDbData,
   getConsoleInitialData,

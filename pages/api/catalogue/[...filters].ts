@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { CATALOGUE_PRODUCTS_LIMIT, CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES } from 'config/common';
+import { CATALOGUE_PRODUCTS_LIMIT, CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES } from 'lib/config/common';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueData } from 'db/utils/catalogueUtils';
 import { getProjectLinks } from 'lib/links/getProjectLinks';

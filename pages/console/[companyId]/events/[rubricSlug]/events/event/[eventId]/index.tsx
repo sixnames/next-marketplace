@@ -9,11 +9,11 @@ import {
   CompanyInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
-import CmsProductLayout from 'layout/cms/CmsProductLayout';
+import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getFullProductSummary } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 interface ProductDetailsInterface {
   product: ProductSummaryInterface;

@@ -2,7 +2,7 @@ import { addAttributesGroupToRubric } from 'db/dao/rubrics/addAttributesGroupToR
 import { deleteAttributesGroupFromRubric } from 'db/dao/rubrics/deleteAttributesGroupFromRubric';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from 'config/common';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from 'lib/config/common';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // add

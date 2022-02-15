@@ -1,4 +1,4 @@
-import { FILTER_PAGE_KEY, FILTER_SEPARATOR, VIEWS_COUNTER_STEP } from 'config/common';
+import { FILTER_PAGE_KEY, FILTER_SEPARATOR, VIEWS_COUNTER_STEP } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { COL_BLOG_ATTRIBUTES, COL_OPTIONS } from '../../collectionNames';

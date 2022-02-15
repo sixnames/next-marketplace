@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { QUERY_DATA_LAYOUT_PAGE } from '../config/common';
+import { QUERY_DATA_LAYOUT_PAGE } from '../lib/config/common';
 import { noNaN } from '../lib/numbers';
 import { ObjectType } from '../types/clientTypes';
 import useRouterQuery from './useRouterQuery';

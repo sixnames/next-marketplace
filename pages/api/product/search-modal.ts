@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import qs from 'qs';
-import { REQUEST_METHOD_GET } from 'config/common';
+import { REQUEST_METHOD_GET } from 'lib/config/common';
 import {
   getRubricProductsList,
   GetRubricProductsListInputInterface,

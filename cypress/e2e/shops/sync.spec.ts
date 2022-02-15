@@ -1,4 +1,4 @@
-import { REQUEST_METHOD_GET, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
+import { REQUEST_METHOD_GET, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import {
   SyncBlackListProductInterface,

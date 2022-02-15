@@ -19,8 +19,8 @@ import {
   RubricInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';

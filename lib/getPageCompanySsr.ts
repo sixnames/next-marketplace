@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from 'next';
 import { getDomain } from 'tldts';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from '../config/common';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from './config/common';
 import { COL_CITIES } from '../db/collectionNames';
 import { getSsrDomainCompany } from 'db/ssr/company/getSsrDomainCompany';
 import { CityModel } from '../db/dbModels';

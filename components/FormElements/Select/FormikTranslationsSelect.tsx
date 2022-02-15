@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useLocaleContext } from 'context/localeContext';
+import { useLocaleContext } from 'components/context/localeContext';
 import { TranslationModel } from 'db/dbModels';
 import WpAccordion from '../../WpAccordion';
 import WpIcon from '../../WpIcon';

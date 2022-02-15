@@ -8,8 +8,8 @@ import {
   GENDER_IT,
   FILTER_PRICE_KEY,
   FILTER_CATEGORY_KEY,
-} from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
+} from 'lib/config/common';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
 import { GenderModel } from 'db/dbModels';
 import {
   AttributeInterface,

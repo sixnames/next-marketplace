@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { REQUEST_METHOD_POST } from '../../config/common';
-import { useAppContext } from '../../context/appContext';
+import { REQUEST_METHOD_POST } from '../../lib/config/common';
+import { useAppContext } from '../../components/context/appContext';
 import {
   SessionLogAddToCartEventInputModel,
   SessionNavLogEventInputModel,

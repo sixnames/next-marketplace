@@ -8,7 +8,7 @@ import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   FILTER_SEPARATOR,
-} from '../config/common';
+} from '../lib/config/common';
 import {
   COL_ATTRIBUTES,
   COL_CATEGORIES,

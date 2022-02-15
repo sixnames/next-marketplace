@@ -5,7 +5,7 @@ import {
   HEADER_SEARCH_PRODUCTS_LIMIT,
   REQUEST_METHOD_POST,
   SORT_DESC,
-} from 'config/common';
+} from 'lib/config/common';
 import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   ignoreNoImageStage,

@@ -4,8 +4,8 @@ import Inner from 'components/Inner';
 import SyncErrorsList, { SyncErrorsListInterface } from 'components/SyncErrorsList';
 import WpTitle from 'components/WpTitle';
 import { getCmsSyncErrorsPageSsr } from 'db/ssr/shops/getCmsSyncErrorsPageSsr';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Ошибки синхронизации';

@@ -6,8 +6,8 @@ import CompanyRubricProductsList, {
 import RequestError from 'components/RequestError';
 import { getCmsCompanyRubricProductsPageSsr } from 'db/ssr/company/getCmsCompanyRubricProductsPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

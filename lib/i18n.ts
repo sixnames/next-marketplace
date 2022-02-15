@@ -1,6 +1,6 @@
 import { TranslationModel } from '../db/dbModels';
 import trim from 'trim';
-import { DEFAULT_CITY, DEFAULT_LOCALE, SECONDARY_LOCALE } from '../config/common';
+import { DEFAULT_CITY, DEFAULT_LOCALE, SECONDARY_LOCALE } from './config/common';
 
 export function getI18nLocaleValue<T>(i18nField: Record<string, T>, locale: string): T {
   let translation: T = i18nField[locale];

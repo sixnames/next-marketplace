@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
-import { DEFAULT_CITY, GENDER_HE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
+import { DEFAULT_CITY, GENDER_HE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'lib/config/common';
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
   getCommonFilterAttribute,
   getPriceAttribute,
-} from 'config/constantAttributes';
+} from 'lib/config/constantAttributes';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
 import { getCatalogueAttributes } from 'db/utils/catalogueUtils';

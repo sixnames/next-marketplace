@@ -10,9 +10,9 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { SetUserCategoryModalInterface } from 'components/Modal/SetUserCategoryModal';
 import Percent from 'components/Percent';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import { SORT_ASC } from 'config/common';
-import { CONFIRM_MODAL, SET_USER_CATEGORY_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
+import { SORT_ASC } from 'lib/config/common';
+import { CONFIRM_MODAL, SET_USER_CATEGORY_MODAL } from 'lib/config/modalVariants';
+import { useAppContext } from 'components/context/appContext';
 import { COL_COMPANIES, COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -22,8 +22,8 @@ import {
   UserInterface,
 } from 'db/uiInterfaces';
 import { useSetUserCategoryMutation } from 'hooks/mutations/useUserMutations';
-import CmsUserLayout from 'layout/cms/CmsUserLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsUserLayout from 'components/layout/cms/CmsUserLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';

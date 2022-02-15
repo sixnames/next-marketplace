@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { PAGE_STATE_DRAFT } from '../../config/common';
-import { BLOG_POST_MODAL, CONFIRM_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
+import { PAGE_STATE_DRAFT } from '../../lib/config/common';
+import { BLOG_POST_MODAL, CONFIRM_MODAL } from '../../lib/config/modalVariants';
+import { useAppContext } from '../context/appContext';
 import { BlogPostInterface } from '../../db/uiInterfaces';
 import { useDeleteBlogPost } from '../../hooks/mutations/useBlogMutations';
 import { getConsoleBlogLinks } from '../../lib/linkUtils';

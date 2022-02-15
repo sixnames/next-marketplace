@@ -1,5 +1,5 @@
-import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'config/common';
-import { getTaskVariantSlugByRule } from 'config/constantSelects';
+import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
+import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {

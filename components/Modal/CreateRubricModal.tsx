@@ -1,9 +1,9 @@
-import { GENDER_IT } from 'config/common';
+import { GENDER_IT } from 'lib/config/common';
 import { CreateRubricInputInterface } from 'db/dao/rubrics/createRubric';
 import { useCreateRubric } from 'hooks/mutations/useRubricMutations';
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { useAppContext } from 'context/appContext';
+import { useAppContext } from 'components/context/appContext';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { createRubricSchema } from 'validation/rubricSchema';
 import WpButton from '../button/WpButton';

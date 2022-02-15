@@ -8,7 +8,7 @@ import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
 import Inner from 'components/Inner';
 import SeoContentEditor from 'components/SeoContentEditor';
-import { DEFAULT_COMPANY_SLUG, GENDER_ENUMS } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, GENDER_ENUMS } from 'lib/config/common';
 import { getConsoleCategoryDetails } from 'db/ssr/categories/getConsoleCategoryDetails';
 import { OptionVariantsModel } from 'db/dbModels';
 import {
@@ -19,8 +19,8 @@ import {
 import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsCategoryLayout from 'components/layout/cms/CmsCategoryLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { updateCategorySchema } from 'validation/categorySchema';

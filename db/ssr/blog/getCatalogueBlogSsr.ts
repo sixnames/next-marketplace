@@ -6,7 +6,7 @@ import {
   FILTER_SEPARATOR,
   PAGE_STATE_PUBLISHED,
   SORT_DESC,
-} from 'config/common';
+} from 'lib/config/common';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
 import { castCatalogueParamToObject } from 'db/utils/catalogueUtils';

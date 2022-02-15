@@ -8,7 +8,7 @@ import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 interface CompanyShopInterface
   extends GetAppInitialDataPropsInterface,

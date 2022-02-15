@@ -5,7 +5,7 @@ import {
   DEFAULT_LOCALE,
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_POST,
-} from '../../config/common';
+} from '../../lib/config/common';
 import { ConfigModel } from '../../db/dbModels';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import WpNotification from '../WpNotification';

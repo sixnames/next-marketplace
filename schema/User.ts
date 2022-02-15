@@ -1,5 +1,5 @@
 import { objectType } from 'nexus';
-import { ROLE_SLUG_GUEST } from '../config/common';
+import { ROLE_SLUG_GUEST } from '../lib/config/common';
 import { COL_ROLES } from '../db/collectionNames';
 import { FormattedPhoneModel, RoleModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';

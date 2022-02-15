@@ -11,8 +11,8 @@ import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
 import { getConsoleCustomersPageSsr } from 'db/ssr/users/getConsoleCustomersPageSsr';
 import { AppPaginationInterface, UserInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
 
 export interface ConsoleCustomersPageConsumerInterface

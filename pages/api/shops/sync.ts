@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_POST } from 'config/common';
+import { REQUEST_METHOD_POST } from 'lib/config/common';
 import {
   COL_BLACKLIST_PRODUCTS,
   COL_NOT_SYNCED_PRODUCTS,

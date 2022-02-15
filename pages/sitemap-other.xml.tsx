@@ -7,7 +7,7 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   PAGE_STATE_PUBLISHED,
-} from '../config/common';
+} from '../lib/config/common';
 import { COL_BLOG_POSTS, COL_COMPANIES, COL_CONFIGS } from '../db/collectionNames';
 import { BlogPostModel, CompanyModel, ConfigModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';

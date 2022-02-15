@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_SHOPS, REQUEST_METHOD_DELETE } from 'config/common';
+import { ASSETS_DIST_SHOPS, REQUEST_METHOD_DELETE } from 'lib/config/common';
 import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

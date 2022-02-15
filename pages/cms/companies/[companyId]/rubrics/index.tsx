@@ -11,11 +11,11 @@ import { castRubricForUI } from 'db/cast/castRubricForUI';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import CompanyRubricsList, { CompanyRubricsListInterface } from 'components/layout/CompanyRubricsList';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 

@@ -7,7 +7,7 @@ import {
   useUpdateShopAssetIndexMutation,
 } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import { alwaysArray } from '../../lib/arrayUtils';
 import AssetsManager from '../AssetsManager';
 import FormikImageUpload from '../FormElements/Upload/FormikImageUpload';

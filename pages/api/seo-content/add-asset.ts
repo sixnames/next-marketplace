@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_SEO_TEXTS } from 'config/common';
+import { ASSETS_DIST_SEO_TEXTS } from 'lib/config/common';
 import { storeUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 

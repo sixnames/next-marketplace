@@ -7,9 +7,9 @@ import { COL_RUBRIC_VARIANTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collecti
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import CompanyRubricsList, { CompanyRubricsListInterface } from 'components/layout/CompanyRubricsList';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import {

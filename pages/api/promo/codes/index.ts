@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
 import { createPromoCode } from 'db/dao/promo/createPromoCode';
 import { deletePromoCode } from 'db/dao/promo/deletePromoCode';
 import { updatePromoCode } from 'db/dao/promo/updatePromoCode';

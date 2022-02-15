@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_DIFF } from 'config/common';
+import { DEFAULT_DIFF } from 'lib/config/common';
 import { sendOrderCanceledEmail } from 'lib/email/sendOrderCanceledEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';

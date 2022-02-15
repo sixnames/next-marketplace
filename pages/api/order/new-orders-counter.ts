@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_GET } from 'config/common';
+import { REQUEST_METHOD_GET } from 'lib/config/common';
 import { getNewOrdersCounter } from 'db/dao/orders/getNewOrdersCounter';
 import { parseApiParams } from 'lib/qsUtils';
 import { sendApiRouteResponse, sendApiRouteWrongMethod } from 'lib/sessionHelpers';

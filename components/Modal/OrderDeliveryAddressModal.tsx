@@ -2,9 +2,9 @@ import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 import { Form, Formik } from 'formik';
 import fetch from 'node-fetch';
 import * as React from 'react';
-import { DATE_FORMAT_FULL, GEO_POINT_TYPE, MAP_DEFAULT_CENTER } from '../../config/common';
-import { useAppContext } from '../../context/appContext';
-import { useLocaleContext } from '../../context/localeContext';
+import { DATE_FORMAT_FULL, GEO_POINT_TYPE, MAP_DEFAULT_CENTER } from '../../lib/config/common';
+import { useAppContext } from '../context/appContext';
+import { useLocaleContext } from '../context/localeContext';
 import { AddressModel, CoordinatesModel, OrderDeliveryInfoModel } from '../../db/dbModels';
 import {
   GeocodeResultInterface,

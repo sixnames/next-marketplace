@@ -1,4 +1,4 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import { BrandBaseModel, BrandCollectionModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 

@@ -6,7 +6,7 @@ import {
   OPTIONS_GROUP_VARIANT_COLOR,
   OPTIONS_GROUP_VARIANT_ENUMS,
   SORT_ASC,
-} from '../config/common';
+} from '../lib/config/common';
 import {
   COL_ATTRIBUTES,
   COL_OPTIONS,

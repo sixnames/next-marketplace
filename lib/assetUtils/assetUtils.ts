@@ -24,7 +24,7 @@ import {
   ASSETS_DIST_PRODUCTS,
   IMAGE_FALLBACK,
   IMAGE_FALLBACK_BOTTLE,
-} from '../../config/common';
+} from '../config/common';
 import { alwaysArray } from '../arrayUtils';
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);

@@ -7,7 +7,7 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_COMPANY_SLUG,
   SORT_DESC,
-} from 'config/common';
+} from 'lib/config/common';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';

@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_USERS } from 'config/common';
+import { ASSETS_DIST_USERS } from 'lib/config/common';
 import { COL_USERS } from 'db/collectionNames';
 import { UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

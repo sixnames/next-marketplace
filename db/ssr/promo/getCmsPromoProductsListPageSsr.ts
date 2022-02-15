@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_CURRENCY } from 'config/common';
+import { DEFAULT_CURRENCY } from 'lib/config/common';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getPromoSsr } from 'lib/promoUtils';

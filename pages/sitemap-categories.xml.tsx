@@ -11,7 +11,7 @@ import {
   DEFAULT_LOCALE,
   FILTER_CATEGORY_KEY,
   FILTER_SEPARATOR,
-} from 'config/common';
+} from 'lib/config/common';
 import { COL_COMPANIES, COL_CONFIGS, COL_RUBRICS, COL_SEO_CONTENTS } from 'db/collectionNames';
 import { CompanyModel, ConfigModel, RubricModel, SeoContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

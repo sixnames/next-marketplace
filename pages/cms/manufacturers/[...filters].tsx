@@ -11,14 +11,14 @@ import { ManufacturerModalInterface } from 'components/Modal/ManufacturerModal';
 import Pager from 'components/Pager';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { CONFIRM_MODAL, MANUFACTURER_MODAL } from 'config/modalVariants';
+import { CONFIRM_MODAL, MANUFACTURER_MODAL } from 'lib/config/modalVariants';
 import { getCmsManufacturersListPageSsr } from 'db/ssr/manufacturers/getCmsManufacturersListPageSsr';
 import { AppPaginationInterface, ManufacturerInterface } from 'db/uiInterfaces';
 import { useDeleteManufacturerMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { createManufacturerSchema, updateManufacturerSchema } from 'validation/manufacturerSchema';
 

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useAppContext } from '../../context/appContext';
-import { useNotificationsContext } from '../../context/notificationsContext';
+import { useAppContext } from '../../components/context/appContext';
+import { useNotificationsContext } from '../../components/context/notificationsContext';
 import { PayloadModel } from '../../db/dbModels';
 
 export interface UseFetchInterface<T> {

@@ -1,4 +1,4 @@
-import { ASSETS_DIST_COMPANIES } from 'config/common';
+import { ASSETS_DIST_COMPANIES } from 'lib/config/common';
 import { CompanyModel } from 'db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 

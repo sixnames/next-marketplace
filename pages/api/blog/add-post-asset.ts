@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_PATCH } from 'config/common';
+import { REQUEST_METHOD_PATCH } from 'lib/config/common';
 import { uploadPostAsset } from 'db/dao/blog/uploadPostAsset';
 
 export const config = {

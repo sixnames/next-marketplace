@@ -1,4 +1,4 @@
-import { useAppContext } from 'context/appContext';
+import { useAppContext } from 'components/context/appContext';
 import { useDeleteBrandCollection } from 'hooks/mutations/useBrandMutations';
 import { NextPage } from 'next';
 import Head from 'next/head';
@@ -13,7 +13,7 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager from 'components/Pager';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { BRAND_COLLECTION_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
+import { BRAND_COLLECTION_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getCmsBrandCollectionsPageSsr } from 'db/ssr/brands/getCmsBrandCollectionsPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
@@ -22,9 +22,9 @@ import {
   BrandInterface,
 } from 'db/uiInterfaces';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { createBrandCollectionSchema, updateCollectionInBrandSchema } from 'validation/brandSchema';

@@ -14,7 +14,7 @@ import { CreateUserModalInterface } from 'components/Modal/CreateUserModal';
 import Pager from 'components/Pager';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'config/modalVariants';
+import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'lib/config/modalVariants';
 import { getCmsUsersListPageSsr } from 'db/ssr/users/getCmsUsersListPageSsr';
 import {
   AppPaginationInterface,
@@ -24,8 +24,8 @@ import {
 } from 'db/uiInterfaces';
 import { useDeleteUserMutation } from 'hooks/mutations/useUserMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface UsersConsumerFiltersInterface {

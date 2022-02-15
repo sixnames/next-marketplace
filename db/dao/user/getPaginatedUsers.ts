@@ -1,4 +1,4 @@
-import { DEFAULT_PAGE, SORT_BY_ID_DIRECTION } from 'config/common';
+import { DEFAULT_PAGE, SORT_BY_ID_DIRECTION } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';

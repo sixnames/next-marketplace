@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_LOCALE } from 'lib/config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 

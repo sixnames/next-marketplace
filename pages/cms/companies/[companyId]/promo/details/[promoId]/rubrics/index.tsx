@@ -11,9 +11,9 @@ import {
   PromoInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
-import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import CompanyRubricsList, { CompanyRubricsListInterface } from 'components/layout/CompanyRubricsList';
+import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

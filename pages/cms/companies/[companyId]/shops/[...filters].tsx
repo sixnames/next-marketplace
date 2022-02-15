@@ -13,7 +13,7 @@ import Pager from 'components/Pager';
 import Spinner from 'components/Spinner';
 import TableRowImage from 'components/TableRowImage';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modalVariants';
+import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'lib/config/modalVariants';
 import { getCmsCompanyShopsPageSsr } from 'db/ssr/shops/getCmsCompanyShopsPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
@@ -24,8 +24,8 @@ import {
 import { useDeleteShopFromCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getNumWord } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { noNaN } from 'lib/numbers';

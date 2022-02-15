@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_GET, REQUEST_METHOD_POST, SORT_ASC } from 'config/common';
+import { REQUEST_METHOD_GET, REQUEST_METHOD_POST, SORT_ASC } from 'lib/config/common';
 import { COL_BLACKLIST_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { BlackListProductItemModel, BlackListProductModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

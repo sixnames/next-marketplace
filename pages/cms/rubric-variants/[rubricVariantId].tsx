@@ -19,7 +19,7 @@ import {
   GRID_SNIPPET_LAYOUT_OPTIONS,
   NAV_DROPDOWN_LAYOUT_OPTIONS,
   ROW_SNIPPET_LAYOUT_OPTIONS,
-} from 'config/constantSelects';
+} from 'lib/config/constantSelects';
 import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, RubricVariantInterface } from 'db/uiInterfaces';
@@ -29,8 +29,8 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

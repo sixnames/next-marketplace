@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_PATCH } from 'config/common';
+import { REQUEST_METHOD_PATCH } from 'lib/config/common';
 import { moveAttribute } from 'db/dao/attributes/moveAttribute';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';

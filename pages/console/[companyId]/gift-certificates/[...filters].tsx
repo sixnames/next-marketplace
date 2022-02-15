@@ -6,8 +6,8 @@ import ConsoleGiftCertificatesList, {
 import Inner from 'components/Inner';
 import WpTitle from 'components/WpTitle';
 import { getConsoleGiftCertificatesPageSsr } from 'db/ssr/company/getConsoleGiftCertificatesPageSsr';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

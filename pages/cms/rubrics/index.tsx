@@ -1,4 +1,4 @@
-import { useAppContext } from 'context/appContext';
+import { useAppContext } from 'components/context/appContext';
 import { useDeleteRubric } from 'hooks/mutations/useRubricMutations';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -12,8 +12,8 @@ import Inner from 'components/Inner';
 import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
-import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'config/modalVariants';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'lib/config/modalVariants';
 import {
   COL_PRODUCT_FACETS,
   COL_RUBRIC_VARIANTS,
@@ -23,8 +23,8 @@ import {
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface, RubricVariantInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleRubricLinks } from 'lib/linkUtils';

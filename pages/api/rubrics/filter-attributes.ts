@@ -1,7 +1,7 @@
 import { toggleAttributeInRubricFilter } from 'db/dao/rubrics/toggleAttributeInRubricFilter';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_PATCH } from 'config/common';
+import { REQUEST_METHOD_PATCH } from 'lib/config/common';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // update

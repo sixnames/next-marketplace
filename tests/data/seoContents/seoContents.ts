@@ -4,7 +4,7 @@ import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
-} from 'config/common';
+} from 'lib/config/common';
 import { SeoContentModel, TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import { getConstructorContentFromText } from 'lib/stringUtils';
 

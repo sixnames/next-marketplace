@@ -6,7 +6,7 @@ import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { RubricModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { noNaN } from 'lib/numbers';

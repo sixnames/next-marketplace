@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_LOCALE } from 'lib/config/common';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { summaryPipeline } from 'db/utils/constantPipelines';
 import { ObjectIdModel, ProductSummaryModel, ShopModel } from 'db/dbModels';

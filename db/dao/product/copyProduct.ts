@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { IMAGE_FALLBACK } from 'config/common';
+import { IMAGE_FALLBACK } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { castSummaryToFacet } from 'lib/productUtils';

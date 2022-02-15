@@ -1,7 +1,7 @@
 import { hash } from 'bcryptjs';
 import generator from 'generate-password';
 import { ObjectId } from 'mongodb';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'lib/config/common';
 import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';

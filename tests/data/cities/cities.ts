@@ -1,4 +1,4 @@
-import { DEFAULT_CITY, DEFAULT_CURRENCY } from 'config/common';
+import { DEFAULT_CITY, DEFAULT_CURRENCY } from 'lib/config/common';
 import { CityModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 

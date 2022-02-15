@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_PATCH } from 'config/common';
+import { REQUEST_METHOD_PATCH } from 'lib/config/common';
 import { updateSeoContent } from 'db/dao/seo-content/updateSeoContent';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
 

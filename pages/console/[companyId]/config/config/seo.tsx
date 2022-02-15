@@ -4,11 +4,11 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
-import { CONFIG_GROUP_SEO } from 'config/common';
+import { CONFIG_GROUP_SEO } from 'lib/config/common';
 import { ConfigModel } from 'db/dbModels';
 import { CompanyInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import ConsoleCompanyLayout from 'components/layout/console/ConsoleCompanyLayout';
 import {
   castDbData,
   getConsoleInitialData,

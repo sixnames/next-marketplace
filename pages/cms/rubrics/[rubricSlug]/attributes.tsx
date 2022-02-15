@@ -1,4 +1,4 @@
-import { useAppContext } from 'context/appContext';
+import { useAppContext } from 'components/context/appContext';
 import {
   useDeleteAttributesGroupFromRubric,
   useToggleAttributeInRubricFilter,
@@ -14,9 +14,9 @@ import Inner from 'components/Inner';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
 import WpAccordion from 'components/WpAccordion';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
-import { useLocaleContext } from 'context/localeContext';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
+import { useLocaleContext } from 'components/context/localeContext';
 import { COL_ATTRIBUTES_GROUPS, COL_RUBRICS } from 'db/collectionNames';
 import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { castRubricForUI } from 'db/cast/castRubricForUI';
@@ -28,8 +28,8 @@ import {
   AttributesGroupInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleRubricLinks } from 'lib/linkUtils';

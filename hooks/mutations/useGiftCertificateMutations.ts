@@ -3,9 +3,9 @@ import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-} from '../../config/common';
-import { INFO_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
+} from '../../lib/config/common';
+import { INFO_MODAL } from '../../lib/config/modalVariants';
+import { useAppContext } from '../../components/context/appContext';
 import { CheckGiftCertificateAvailabilityInputInterface } from '../../db/dao/giftCertificate/checkGiftCertificateAvailability';
 import { CreateGiftCertificateInputInterface } from '../../db/dao/giftCertificate/createGiftCertificate';
 import { DeleteGiftCertificateInputInterface } from '../../db/dao/giftCertificate/deleteGiftCertificate';

@@ -1,4 +1,4 @@
-import { SORT_ASC } from 'config/common';
+import { SORT_ASC } from 'lib/config/common';
 import { castOrderStatus } from 'db/cast/castOrderStatus';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';

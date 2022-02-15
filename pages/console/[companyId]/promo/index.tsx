@@ -4,8 +4,8 @@ import Inner from 'components/Inner';
 import PromoList, { PromoListInterface } from 'components/Promo/PromoList';
 import WpTitle from 'components/WpTitle';
 import { CompanyInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getPromoListSsr } from 'lib/promoUtils';
 import {

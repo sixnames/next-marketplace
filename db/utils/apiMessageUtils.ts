@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_LOCALE } from 'lib/config/common';
 import { COL_MESSAGES } from 'db/collectionNames';
 import { MessageModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

@@ -1,4 +1,4 @@
-import { DEFAULT_DIFF } from 'config/common';
+import { DEFAULT_DIFF } from 'lib/config/common';
 import { OrderLogModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 

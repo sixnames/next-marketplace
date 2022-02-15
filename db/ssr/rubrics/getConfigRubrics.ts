@@ -1,4 +1,4 @@
-import { SORT_DESC } from 'config/common';
+import { SORT_DESC } from 'lib/config/common';
 import { castRubricForUI } from 'db/cast/castRubricForUI';
 import { getTreeFromList } from 'lib/treeUtils';
 import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';

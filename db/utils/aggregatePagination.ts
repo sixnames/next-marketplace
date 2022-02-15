@@ -5,7 +5,7 @@ import {
   SORT_BY_CREATED_AT,
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
-} from 'config/common';
+} from 'lib/config/common';
 import { PaginationInputModel, PaginationPayloadType } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 

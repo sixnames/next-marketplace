@@ -3,7 +3,7 @@ import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-} from '../../config/common';
+} from '../../lib/config/common';
 import { CreateTaskInputInterface } from '../../db/dao/tasks/createTask';
 import { DeleteTaskInputInterface } from '../../db/dao/tasks/deleteTask';
 import { DeleteTaskVariantInputInterface } from '../../db/dao/tasks/deleteTaskVariant';

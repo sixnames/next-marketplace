@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_OPTIONS } from 'config/common';
+import { ASSETS_DIST_OPTIONS } from 'lib/config/common';
 import { COL_OPTIONS } from 'db/collectionNames';
 import { OptionModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

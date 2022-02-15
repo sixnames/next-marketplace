@@ -9,8 +9,8 @@ import Inner from 'components/Inner';
 import { RubricVariantModalInterface } from 'components/Modal/RubricVariantModal';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { DEFAULT_COMPANY_SLUG, SORT_DESC } from 'config/common';
-import { CONFIRM_MODAL, RUBRIC_VARIANT_MODAL } from 'config/modalVariants';
+import { DEFAULT_COMPANY_SLUG, SORT_DESC } from 'lib/config/common';
+import { CONFIRM_MODAL, RUBRIC_VARIANT_MODAL } from 'lib/config/modalVariants';
 import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { RubricVariantInterface } from 'db/uiInterfaces';
@@ -19,8 +19,8 @@ import {
   useDeleteRubricVariantMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

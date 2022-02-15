@@ -1,5 +1,5 @@
-import { useAppContext } from 'context/appContext';
-import { useNotificationsContext } from 'context/notificationsContext';
+import { useAppContext } from 'components/context/appContext';
+import { useNotificationsContext } from 'components/context/notificationsContext';
 import { UpdateBrandInputInterface } from 'db/dao/brands/updateBrand';
 import { Form, Formik } from 'formik';
 import { useUpdateBrand } from 'hooks/mutations/useBrandMutations';
@@ -14,18 +14,18 @@ import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import BrandMainFields from 'components/FormTemplates/BrandMainFields';
 import Inner from 'components/Inner';
 import WpTitle from 'components/WpTitle';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from 'config/common';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from 'lib/config/common';
 import { COL_BRANDS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, BrandInterface } from 'db/uiInterfaces';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { updateBrandSchema } from 'validation/brandSchema';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 interface BrandDetailsConsumerInterface {
   brand: BrandInterface;

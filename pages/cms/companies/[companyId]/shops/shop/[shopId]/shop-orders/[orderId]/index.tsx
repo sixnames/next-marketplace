@@ -2,12 +2,12 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ShopOrder, { ShopOrderInterface } from 'components/shops/ShopOrder';
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { COL_COMPANIES, COL_SHOPS } from 'db/collectionNames';
 import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, ShopInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

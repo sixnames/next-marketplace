@@ -11,14 +11,14 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { MoveAttributeModalInterface } from 'components/Modal/MoveAttributeModal';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
-import { getBooleanTranslation, getConstantTranslation } from 'config/constantTranslations';
+import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
+import { getBooleanTranslation, getConstantTranslation } from 'lib/config/constantTranslations';
 import {
   ATTRIBUTE_IN_GROUP_MODAL,
   CONFIRM_MODAL,
   MOVE_ATTRIBUTE_MODAL,
-} from 'config/modalVariants';
-import { useLocaleContext } from 'context/localeContext';
+} from 'lib/config/modalVariants';
+import { useLocaleContext } from 'components/context/localeContext';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
@@ -40,9 +40,9 @@ import {
   useUpdateAttributeMutation,
 } from 'hooks/mutations/useAttributeMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsLinks } from 'lib/linkUtils';

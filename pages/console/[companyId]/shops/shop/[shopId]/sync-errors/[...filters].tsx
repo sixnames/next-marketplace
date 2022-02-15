@@ -3,7 +3,7 @@ import * as React from 'react';
 import ShopSyncErrors, { ShopSyncErrorsInterface } from 'components/shops/ShopSyncErrors';
 import { getConsoleShopSyncErrorsListPageSsr } from 'db/ssr/shops/getConsoleShopSyncErrorsListPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
 

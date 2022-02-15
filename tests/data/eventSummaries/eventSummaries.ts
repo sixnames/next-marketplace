@@ -11,7 +11,7 @@ import {
   GENDER_IT,
   GEO_POINT_TYPE,
   ID_COUNTER_DIGITS,
-} from 'config/common';
+} from 'lib/config/common';
 import {
   EventSummaryModel,
   ObjectIdModel,

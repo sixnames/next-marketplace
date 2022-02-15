@@ -3,7 +3,7 @@ import * as React from 'react';
 import ShopRubricProducts from 'components/shops/ShopRubricProducts';
 import { getCmsCompanyShopProductsListPageSsr } from 'db/ssr/shops/getCmsCompanyShopProductsListPageSsr';
 import { AppContentWrapperBreadCrumbs, ShopRubricProductsInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_PAGE, SORT_DESC } from 'config/common';
+import { DEFAULT_PAGE, SORT_DESC } from 'lib/config/common';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
 import { getProjectLinks } from 'lib/links/getProjectLinks';

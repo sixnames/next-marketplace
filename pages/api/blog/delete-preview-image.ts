@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_DELETE } from 'config/common';
+import { REQUEST_METHOD_DELETE } from 'lib/config/common';
 import { deletePostPreviewImage } from 'db/dao/blog/deletePostPreviewImage';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {

@@ -1,4 +1,4 @@
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
 import { AddAttributesGroupToRubricInputInterface } from 'db/dao/rubrics/addAttributesGroupToRubric';
 import { CreateRubricInputInterface } from 'db/dao/rubrics/createRubric';
 import { DeleteAttributesGroupFromRubricInputInterface } from 'db/dao/rubrics/deleteAttributesGroupFromRubric';

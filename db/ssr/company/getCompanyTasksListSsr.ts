@@ -1,4 +1,4 @@
-import { SORT_ASC } from 'config/common';
+import { SORT_ASC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';

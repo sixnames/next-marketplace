@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_GET } from 'config/common';
+import { REQUEST_METHOD_GET } from 'lib/config/common';
 import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { getRequestParams } from 'lib/sessionHelpers';
 

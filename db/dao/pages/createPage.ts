@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING, PAGE_STATE_PUBLISHED } from 'config/common';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING, PAGE_STATE_PUBLISHED } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import {

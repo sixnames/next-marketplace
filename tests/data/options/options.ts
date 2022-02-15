@@ -1,4 +1,4 @@
-import { DEFAULT_COUNTERS_OBJECT, ID_COUNTER_DIGITS } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT, ID_COUNTER_DIGITS } from 'lib/config/common';
 import { OptionModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 const addZero = require('add-zero');

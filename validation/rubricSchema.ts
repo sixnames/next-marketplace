@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { GENDER_ENUMS } from 'config/common';
+import { GENDER_ENUMS } from 'lib/config/common';
 import { getFieldValidationMessage } from 'validation/utils/getFieldValidationMessage';
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import { rubricVariantIdSchema } from './rubricVariantSchema';

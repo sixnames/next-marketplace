@@ -3,8 +3,8 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import CompanyProductDetails from 'components/company/CompanyProductDetails';
 import RequestError from 'components/RequestError';
 import { AppContentWrapperBreadCrumbs, ShopProductInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import ConsoleShopProductLayout from 'components/layout/console/ConsoleShopProductLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getConsoleShopProduct } from 'lib/productUtils';
 import {

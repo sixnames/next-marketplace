@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useThemeContext } from '../context/themeContext';
+import { useThemeContext } from './context/themeContext';
 import { ShopInterface } from '../db/uiInterfaces';
 import { Coordinates } from '../generated/apolloComponents';
-import LayoutCard from '../layout/LayoutCard';
+import LayoutCard from './layout/LayoutCard';
 import LinkPhone from './Link/LinkPhone';
 import WpImage from './WpImage';
 import WpMap from './WpMap';

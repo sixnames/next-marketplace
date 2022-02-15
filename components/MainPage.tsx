@@ -1,10 +1,10 @@
 import * as React from 'react';
 import ImageGallery, { ReactImageGalleryItem } from 'react-image-gallery';
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'config/common';
-import { useConfigContext } from 'context/configContext';
-import { useSiteContext } from 'context/siteContext';
-import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
-import ProductSnippetGridBigImage from '../layout/snippet/ProductSnippetGridBigImage';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'lib/config/common';
+import { useConfigContext } from 'components/context/configContext';
+import { useSiteContext } from 'components/context/siteContext';
+import SiteLayout, { SiteLayoutProviderInterface } from './layout/SiteLayout';
+import ProductSnippetGridBigImage from './layout/snippet/ProductSnippetGridBigImage';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { MainPageInterface } from 'lib/mainPageUtils';
 import HorizontalScroll from './HorizontalScroll';

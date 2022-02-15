@@ -3,8 +3,8 @@ import * as React from 'react';
 import ConsoleRubricProductAttributes from 'components/console/ConsoleRubricProductAttributes';
 import { getCmsProductAttributesPageSsr } from 'db/ssr/products/getCmsProductAttributesPageSsr';
 import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
-import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

@@ -17,18 +17,18 @@ import {
   SORT_BY_KEY,
   SORT_DIR_KEY,
   ZERO_PAGE_FILTER,
-} from 'config/common';
+} from 'lib/config/common';
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
   getPriceAttribute,
   getRubricFilterAttribute,
-} from 'config/constantAttributes';
+} from 'lib/config/constantAttributes';
 import {
   DEFAULT_LAYOUT,
   GRID_SNIPPET_LAYOUT_BIG_IMAGE,
   ROW_SNIPPET_LAYOUT_BIG_IMAGE,
-} from 'config/constantSelects';
+} from 'lib/config/constantSelects';
 import { COL_RUBRIC_VARIANTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   ignoreNoImageStage,

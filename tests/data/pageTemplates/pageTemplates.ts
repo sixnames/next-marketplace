@@ -6,7 +6,7 @@ import {
   PAGE_EDITOR_DEFAULT_VALUE,
   PAGE_STATE_DRAFT,
   PAGE_STATE_PUBLISHED,
-} from 'config/common';
+} from 'lib/config/common';
 import { PagesTemplateModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 

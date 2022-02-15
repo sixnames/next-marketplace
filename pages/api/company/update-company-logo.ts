@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_COMPANIES, ASSETS_LOGO_WIDTH } from 'config/common';
+import { ASSETS_DIST_COMPANIES, ASSETS_LOGO_WIDTH } from 'lib/config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { CompanyModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

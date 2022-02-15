@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { GEO_POINT_TYPE, IMAGE_FALLBACK } from '../config/common';
+import { GEO_POINT_TYPE, IMAGE_FALLBACK } from '../lib/config/common';
 import {
   COL_COMPANIES,
   COL_CONFIGS,

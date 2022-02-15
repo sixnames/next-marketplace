@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useThemeContext } from '../context/themeContext';
+import { useThemeContext } from './context/themeContext';
 import WpIcon from './WpIcon';
 
 interface ThemeTriggerInterface {

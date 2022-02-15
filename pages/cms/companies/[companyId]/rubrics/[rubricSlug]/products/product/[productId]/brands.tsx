@@ -18,8 +18,8 @@ import {
   ManufacturerInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
-import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getFullProductSummary } from 'lib/productUtils';

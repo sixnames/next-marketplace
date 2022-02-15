@@ -3,7 +3,7 @@ import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-} from '../../config/common';
+} from '../../lib/config/common';
 import { AddBlogPostLikeInputInterface } from '../../db/dao/blog/addPostLike';
 import { CreateBlogAttributeInputInterface } from '../../db/dao/blog/createBlogAttribute';
 import { CreateBlogPostInputInterface } from '../../db/dao/blog/createBlogPost';

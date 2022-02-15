@@ -5,7 +5,7 @@ import {
   DEFAULT_COMPANY_SLUG,
   FILTER_SEPARATOR,
   SORT_DESC,
-} from '../config/common';
+} from './config/common';
 import { COL_PROMO, COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
 import {
   ignoreNoImageStage,

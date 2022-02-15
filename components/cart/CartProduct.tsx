@@ -1,11 +1,11 @@
 import { useFormikContext } from 'formik';
 import { get } from 'lodash';
 import * as React from 'react';
-import { ORDER_DELIVERY_VARIANT_COURIER } from '../../config/common';
-import { useSiteContext } from '../../context/siteContext';
+import { ORDER_DELIVERY_VARIANT_COURIER } from '../../lib/config/common';
+import { useSiteContext } from '../context/siteContext';
 import { CartProductInterface, ShopProductInterface } from '../../db/uiInterfaces';
-import LayoutCard from '../../layout/LayoutCard';
-import ProductSnippetPrice from '../../layout/snippet/ProductSnippetPrice';
+import LayoutCard from '../layout/LayoutCard';
+import ProductSnippetPrice from '../layout/snippet/ProductSnippetPrice';
 import { noNaN } from '../../lib/numbers';
 import ButtonCross from '../button/ButtonCross';
 import ControlButton from '../button/ControlButton';

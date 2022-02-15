@@ -5,13 +5,13 @@ import {
   ORDER_DELIVERY_VARIANT_COURIER,
   ORDER_DELIVERY_VARIANT_PICKUP,
   ORDER_PAYMENT_VARIANT_RECEIPT,
-} from '../../config/common';
-import { useConfigContext } from '../../context/configContext';
-import { useSiteContext } from '../../context/siteContext';
-import { useSiteUserContext } from '../../context/siteUserContext';
+} from '../../lib/config/common';
+import { useConfigContext } from '../context/configContext';
+import { useSiteContext } from '../context/siteContext';
+import { useSiteUserContext } from '../context/siteUserContext';
 import { CartInterface, CompanyInterface } from '../../db/uiInterfaces';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import LayoutCard from '../../layout/LayoutCard';
+import LayoutCard from '../layout/LayoutCard';
 import { noNaN } from '../../lib/numbers';
 import { phoneToRaw } from '../../lib/phoneUtils';
 import { CartTabIndexType, MakeOrderFormInterface } from '../../pages/cart';

@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_BRANDS, REQUEST_METHOD_DELETE } from 'config/common';
+import { ASSETS_DIST_BRANDS, REQUEST_METHOD_DELETE } from 'lib/config/common';
 import { COL_BRANDS } from 'db/collectionNames';
 import { BrandModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

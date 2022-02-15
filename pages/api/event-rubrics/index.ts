@@ -9,7 +9,7 @@ import {
   REQUEST_METHOD_GET,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-} from 'config/common';
+} from 'lib/config/common';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // create

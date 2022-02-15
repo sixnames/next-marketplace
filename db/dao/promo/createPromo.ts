@@ -4,7 +4,7 @@ import {
   TEXT_HORIZONTAL_ALIGN_OPTIONS,
   TEXT_HORIZONTAL_FLEX_OPTIONS,
   TEXT_VERTICAL_FLEX_OPTIONS,
-} from 'config/common';
+} from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import {

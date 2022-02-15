@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { alwaysString } from 'lib/arrayUtils';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';

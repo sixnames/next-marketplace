@@ -12,8 +12,8 @@ import {
   CompanyInterface,
   GiftCertificateInterface,
 } from 'db/uiInterfaces';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getFullName } from 'lib/nameUtils';

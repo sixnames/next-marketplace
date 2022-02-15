@@ -6,11 +6,11 @@ import PromoList, { PromoListInterface } from 'components/Promo/PromoList';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getPromoListSsr } from 'lib/promoUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 const pageTitle = 'Акции';
 

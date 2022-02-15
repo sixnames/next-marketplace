@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'config/common';
+import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'lib/config/common';
 import { MessageSlug } from 'types/messageSlugTypes';
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 

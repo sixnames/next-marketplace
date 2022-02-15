@@ -8,12 +8,12 @@ import PageEditor from 'components/PageEditor';
 import WpBreadcrumbs from 'components/WpBreadcrumbs';
 import WpIcon from 'components/WpIcon';
 import WpTooltip from 'components/WpTooltip';
-import { FILTER_SEPARATOR, REQUEST_METHOD_POST, SORT_DESC } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
-import { useLocaleContext } from 'context/localeContext';
-import { useSiteUserContext } from 'context/siteUserContext';
+import { FILTER_SEPARATOR, REQUEST_METHOD_POST, SORT_DESC } from 'lib/config/common';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { useAppContext } from 'components/context/appContext';
+import { useConfigContext } from 'components/context/configContext';
+import { useLocaleContext } from 'components/context/localeContext';
+import { useSiteUserContext } from 'components/context/siteUserContext';
 import {
   COL_BLOG_ATTRIBUTES,
   COL_BLOG_LIKES,
@@ -25,7 +25,7 @@ import { UpdateBlogPostCountersInputInterface } from 'db/dao/blog/updateBlogPost
 import { getDatabase } from 'db/mongodb';
 import { BlogAttributeInterface, BlogPostInterface, OptionInterface } from 'db/uiInterfaces';
 import { useCreateBlogPostLike } from 'hooks/mutations/useBlogMutations';
-import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
+import SiteLayout, { SiteLayoutProviderInterface } from 'components/layout/SiteLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleBlogLinks } from 'lib/linkUtils';
 import { getFullName } from 'lib/nameUtils';

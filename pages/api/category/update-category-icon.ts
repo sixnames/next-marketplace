@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import { optimize } from 'svgo';
-import { REQUEST_METHOD_DELETE } from 'config/common';
+import { REQUEST_METHOD_DELETE } from 'lib/config/common';
 import { COL_CATEGORIES, COL_ICONS } from 'db/collectionNames';
 import { CategoryModel, IconModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

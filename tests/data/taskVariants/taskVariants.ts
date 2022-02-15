@@ -1,4 +1,4 @@
-import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'lib/config/common';
 import {
   TASK_PRICE_ACTION_ADDED,
   TASK_PRICE_ACTION_DELETED,
@@ -22,7 +22,7 @@ import {
   TASK_VARIANT_SLUG_PRODUCT_DETAILS,
   TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
   TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
-} from 'config/constantSelects';
+} from 'lib/config/constantSelects';
 import { TaskVariantModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 

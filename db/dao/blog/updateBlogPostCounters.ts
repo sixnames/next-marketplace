@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { VIEWS_COUNTER_STEP } from 'config/common';
+import { VIEWS_COUNTER_STEP } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { COL_BLOG_POSTS } from '../../collectionNames';

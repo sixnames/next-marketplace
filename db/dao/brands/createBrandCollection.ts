@@ -1,4 +1,4 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import { COL_BRAND_COLLECTIONS, COL_BRANDS } from 'db/collectionNames';
 import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import {

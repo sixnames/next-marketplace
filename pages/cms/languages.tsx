@@ -12,9 +12,9 @@ import {
 } from '../../components/Modal/LanguageModal';
 import WpTable, { WpTableColumn } from '../../components/WpTable';
 import WpTitle from '../../components/WpTitle';
-import { SORT_DESC } from '../../config/common';
-import { CONFIRM_MODAL, LANGUAGE_MODAL } from '../../config/modalVariants';
-import { useLocaleContext } from '../../context/localeContext';
+import { SORT_DESC } from '../../lib/config/common';
+import { CONFIRM_MODAL, LANGUAGE_MODAL } from '../../lib/config/modalVariants';
+import { useLocaleContext } from '../../components/context/localeContext';
 import { COL_LANGUAGES } from '../../db/collectionNames';
 import { LanguageModel } from '../../db/dbModels';
 import { getDatabase } from '../../db/mongodb';
@@ -25,8 +25,8 @@ import {
   useUpdateLanguageMutation,
 } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import AppContentWrapper from '../../layout/AppContentWrapper';
-import ConsoleLayout from '../../layout/cms/ConsoleLayout';
+import AppContentWrapper from '../../components/layout/AppContentWrapper';
+import ConsoleLayout from '../../components/layout/cms/ConsoleLayout';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from '../../lib/ssrUtils';
 
 const pageTitle = 'Языки сайта';

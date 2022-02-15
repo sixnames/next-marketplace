@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { GENDER_IT } from '../../config/common';
+import { GENDER_IT } from '../../lib/config/common';
 import { ProductSummaryInterface } from '../../db/uiInterfaces';
 import { useCopyProduct, useCreateProduct } from '../../hooks/mutations/useProductMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';

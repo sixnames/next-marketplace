@@ -6,8 +6,8 @@ import {
   DEFAULT_CITY,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   REQUEST_METHOD_POST,
-} from 'config/common';
-import { useConfigContext } from 'context/configContext';
+} from 'lib/config/common';
+import { useConfigContext } from 'components/context/configContext';
 import { SeoContentInterface } from 'db/uiInterfaces';
 import InputLine from './FormElements/Input/InputLine';
 import PageEditor from './PageEditor';

@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { DEFAULT_CITY, DEFAULT_LOCALE } from '../config/common';
+import { DEFAULT_CITY, DEFAULT_LOCALE } from '../lib/config/common';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import { objectIdSchema, requiredAssetSchema } from 'validation/utils/schemaTemplates';
 

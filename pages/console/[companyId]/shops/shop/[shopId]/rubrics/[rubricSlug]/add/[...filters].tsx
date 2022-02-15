@@ -11,7 +11,7 @@ import {
 } from 'components/shops/ShopAddProducts';
 import { getConsoleShopAddProductsListPageSsr } from 'db/ssr/shops/getConsoleShopAddProductsListPageSsr';
 import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
 

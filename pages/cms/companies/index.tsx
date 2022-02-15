@@ -11,18 +11,18 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import TableRowImage from 'components/TableRowImage';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { SORT_DESC } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modalVariants';
+import { SORT_DESC } from 'lib/config/common';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { useDeleteCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getShortName } from 'lib/nameUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 const pageTitle = 'Компании';
 

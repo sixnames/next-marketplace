@@ -4,7 +4,7 @@ import {
   SORT_ASC,
   SORT_DESC,
   SORT_DESC_STR,
-} from 'config/common';
+} from 'lib/config/common';
 import { ObjectIdModel } from 'db/dbModels';
 import { getAlgoliaProductsSearch } from './algolia/productAlgoliaUtils';
 import { alwaysString } from './arrayUtils';

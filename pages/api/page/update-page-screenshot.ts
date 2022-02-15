@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_PAGES, ASSETS_DIST_TEMPLATES } from 'config/common';
+import { ASSETS_DIST_PAGES, ASSETS_DIST_TEMPLATES } from 'lib/config/common';
 import { COL_PAGE_TEMPLATES, COL_PAGES } from 'db/collectionNames';
 import { PageModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

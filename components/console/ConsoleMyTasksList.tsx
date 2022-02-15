@@ -1,9 +1,9 @@
 import WpLink from 'components/Link/WpLink';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { TASK_STATE_IN_PROGRESS } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useUserContext } from 'context/userContext';
+import { TASK_STATE_IN_PROGRESS } from 'lib/config/common';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
+import { useAppContext } from 'components/context/appContext';
+import { useUserContext } from 'components/context/userContext';
 import { useUpdateTask } from 'hooks/mutations/useTaskMutations';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import * as React from 'react';
@@ -17,8 +17,8 @@ import {
   TASK_VARIANT_SLUG_PRODUCT_DETAILS,
   TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
   TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
-} from 'config/constantSelects';
-import { useLocaleContext } from 'context/localeContext';
+} from 'lib/config/constantSelects';
+import { useLocaleContext } from 'components/context/localeContext';
 import { TaskInterface } from 'db/uiInterfaces';
 import ContentItemControls from '../button/ContentItemControls';
 import WpTable, { WpTableColumn } from '../WpTable';

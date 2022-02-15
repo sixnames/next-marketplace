@@ -11,14 +11,14 @@ import { UserCategoryModalInterface } from 'components/Modal/UserCategoryModal';
 import Percent from 'components/Percent';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
+import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from 'lib/config/modalVariants';
+import { useAppContext } from 'components/context/appContext';
 import { COL_USER_CATEGORIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { UserCategoryInterface } from 'db/uiInterfaces';
 import { useDeleteUserCategory } from 'hooks/mutations/useUserCategoryMutations';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import {
   castDbData,

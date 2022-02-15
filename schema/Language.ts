@@ -1,5 +1,5 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { SORT_ASC } from '../config/common';
+import { SORT_ASC } from '../lib/config/common';
 import { COL_LANGUAGES } from '../db/collectionNames';
 import { LanguageModel, LanguagePayloadModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';

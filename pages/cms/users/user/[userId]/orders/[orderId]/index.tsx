@@ -4,13 +4,13 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import ConsoleOrderDetails, {
   CmsOrderDetailsBaseInterface,
 } from 'components/order/ConsoleOrderDetails';
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
-import CmsUserLayout from 'layout/cms/CmsUserLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsUserLayout from 'components/layout/cms/CmsUserLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';

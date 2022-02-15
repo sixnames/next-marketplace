@@ -1,4 +1,4 @@
-import { ISO_LANGUAGES } from 'config/constantSelects';
+import { ISO_LANGUAGES } from 'lib/config/constantSelects';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Languages', () => {

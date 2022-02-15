@@ -1,5 +1,5 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { FILTER_SEPARATOR } from '../config/common';
+import { FILTER_SEPARATOR } from '../lib/config/common';
 import { COL_OPTIONS } from '../db/collectionNames';
 import { OptionAlphabetListModel, OptionModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';

@@ -4,8 +4,8 @@ import ConsolePromoProducts, {
 } from 'components/console/ConsolePromoProducts';
 import { getCmsPromoProductsListPageSsr } from 'db/ssr/promo/getCmsPromoProductsListPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

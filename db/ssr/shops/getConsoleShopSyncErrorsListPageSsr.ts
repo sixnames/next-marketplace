@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { ConsoleShopSyncErrorsListPageInterface } from 'pages/console/[companyId]/shops/shop/[shopId]/sync-errors/[...filters]';

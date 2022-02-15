@@ -1,6 +1,6 @@
 import * as React from 'react';
 import useSWR from 'swr';
-import { ONE_MINUTE } from '../config/common';
+import { ONE_MINUTE } from '../lib/config/common';
 import {
   GetNewOrdersCounterInputInterface,
   GetNewOrdersCounterPayload,

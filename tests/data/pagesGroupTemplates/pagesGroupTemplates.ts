@@ -1,4 +1,4 @@
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { PagesGroupTemplateModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 

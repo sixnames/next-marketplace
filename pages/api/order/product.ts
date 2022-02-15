@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH } from 'config/common';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH } from 'lib/config/common';
 import { cancelOrderProduct } from 'db/dao/orders/cancelOrderProduct';
 import { updateOrderProduct } from 'db/dao/orders/updateOrderProduct';
 import { sendApiRouteResponse, sendApiRouteWrongMethod } from 'lib/sessionHelpers';

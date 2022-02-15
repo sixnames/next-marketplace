@@ -5,13 +5,13 @@ import {
   DEFAULT_PAGE,
   GENDER_HE,
   PAGINATION_DEFAULT_LIMIT,
-} from 'config/common';
+} from 'lib/config/common';
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
   getCommonFilterAttribute,
   getPriceAttribute,
-} from 'config/constantAttributes';
+} from 'lib/config/constantAttributes';
 import { castUrlFilters } from 'lib/castUrlFilters';
 import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import { noNaN } from 'lib/numbers';

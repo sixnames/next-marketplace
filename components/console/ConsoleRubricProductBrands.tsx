@@ -5,9 +5,9 @@ import {
   BRAND_COLLECTION_OPTIONS_MODAL,
   BRAND_OPTIONS_MODAL,
   MANUFACTURER_OPTIONS_MODAL,
-} from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useNotificationsContext } from 'context/notificationsContext';
+} from 'lib/config/modalVariants';
+import { useAppContext } from 'components/context/appContext';
+import { useNotificationsContext } from 'components/context/notificationsContext';
 import {
   BrandCollectionInterface,
   BrandInterface,

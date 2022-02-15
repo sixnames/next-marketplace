@@ -1,7 +1,7 @@
 import { findTask } from 'db/dao/tasks/taskUtils';
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import { COL_OPTIONS, COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   brandPipeline,

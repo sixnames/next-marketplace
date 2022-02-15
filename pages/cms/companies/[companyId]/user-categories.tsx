@@ -10,8 +10,8 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { UserCategoryModalInterface } from 'components/Modal/UserCategoryModal';
 import Percent from 'components/Percent';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
+import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from 'lib/config/modalVariants';
+import { useAppContext } from 'components/context/appContext';
 import { COL_COMPANIES, COL_USER_CATEGORIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -20,8 +20,8 @@ import {
   UserCategoryInterface,
 } from 'db/uiInterfaces';
 import { useDeleteUserCategory } from 'hooks/mutations/useUserCategoryMutations';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ShopOrders, { ShopOrdersInterface } from 'components/shops/ShopOrders';
-import { SORT_DESC } from 'config/common';
+import { SORT_DESC } from 'lib/config/common';
 import {
   COL_COMPANIES,
   COL_ORDER_CUSTOMERS,
@@ -13,7 +13,7 @@ import {
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, ShopInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getShortName } from 'lib/nameUtils';

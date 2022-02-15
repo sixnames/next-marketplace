@@ -6,7 +6,7 @@ import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   DEFAULT_LOCALE,
   SECONDARY_LOCALE,
-} from 'config/common';
+} from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Attributes Groups', () => {

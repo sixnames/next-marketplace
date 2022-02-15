@@ -5,7 +5,7 @@ import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
 import WpLink from 'components/Link/WpLink';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import { SORT_DESC } from 'config/common';
+import { SORT_DESC } from 'lib/config/common';
 import {
   COL_ORDER_STATUSES,
   COL_ORDERS,
@@ -15,8 +15,8 @@ import {
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, OrderInterface, UserInterface } from 'db/uiInterfaces';
-import CmsUserLayout from 'layout/cms/CmsUserLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import CmsUserLayout from 'components/layout/cms/CmsUserLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';

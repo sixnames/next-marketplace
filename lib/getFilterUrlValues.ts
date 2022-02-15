@@ -13,7 +13,7 @@ import {
   FILTER_SEPARATOR,
   SORT_BY_KEY,
   SORT_DIR_KEY,
-} from '../config/common';
+} from './config/common';
 import { noImageStage } from 'db/utils/constantPipelines';
 import { noNaN } from './numbers';
 

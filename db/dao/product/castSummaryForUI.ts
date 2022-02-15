@@ -1,4 +1,4 @@
-import { FILTER_SEPARATOR } from 'config/common';
+import { FILTER_SEPARATOR } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList } from 'lib/treeUtils';
 import {

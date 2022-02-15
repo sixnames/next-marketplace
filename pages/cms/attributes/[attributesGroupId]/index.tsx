@@ -14,13 +14,13 @@ import { AppContentWrapperBreadCrumbs, AttributesGroupInterface } from 'db/uiInt
 import { useUpdateAttributesGroupMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { attributesGroupModalSchema } from 'validation/attributesGroupSchema';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 const pageTitle = `Группы атрибутов`;
 

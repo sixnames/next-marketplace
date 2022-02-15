@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { getConstantOptionName, TASK_STATE_OPTIONS } from 'config/constantSelects';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useLocaleContext } from 'context/localeContext';
+import { getConstantOptionName, TASK_STATE_OPTIONS } from 'lib/config/constantSelects';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
+import { useAppContext } from 'components/context/appContext';
+import { useLocaleContext } from 'components/context/localeContext';
 import { TaskInterface } from 'db/uiInterfaces';
 import { useDeleteTask } from 'hooks/mutations/useTaskMutations';
 import { getConsoleTaskLinks } from 'lib/linkUtils';

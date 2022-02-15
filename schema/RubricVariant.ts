@@ -1,5 +1,5 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { DEFAULT_COMPANY_SLUG, SORT_ASC } from '../config/common';
+import { DEFAULT_COMPANY_SLUG, SORT_ASC } from '../lib/config/common';
 import {
   COL_PRODUCT_FACETS,
   COL_RUBRIC_VARIANTS,

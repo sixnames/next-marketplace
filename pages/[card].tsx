@@ -5,12 +5,12 @@ import FixedButtons from '../components/button/FixedButtons';
 import WpButton from '../components/button/WpButton';
 import ErrorBoundaryFallback from '../components/ErrorBoundaryFallback';
 import Inner from '../components/Inner';
-import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from '../config/constantSelects';
-import { useConfigContext } from '../context/configContext';
-import { useLocaleContext } from '../context/localeContext';
-import { useSiteUserContext } from '../context/siteUserContext';
+import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from '../lib/config/constantSelects';
+import { useConfigContext } from '../components/context/configContext';
+import { useLocaleContext } from '../components/context/localeContext';
+import { useSiteUserContext } from '../components/context/siteUserContext';
 import { CardLayoutInterface, InitialCardDataInterface } from '../db/uiInterfaces';
-import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import SiteLayout, { SiteLayoutProviderInterface } from '../components/layout/SiteLayout';
 import { getCardData } from 'db/utils/cardUtils';
 import { getConsoleRubricLinks } from '../lib/linkUtils';
 import { noNaN } from '../lib/numbers';
@@ -22,8 +22,8 @@ import {
   SeoSchemaCardInterface,
 } from '../types/seoSchemaTypes';
 
-const CardDefaultLayout = dynamic(() => import('../layout/card/CardDefaultLayout'));
-const CardHalfColumnsLayout = dynamic(() => import('../layout/card/CardHalfColumnsLayout'));
+const CardDefaultLayout = dynamic(() => import('../components/layout/card/CardDefaultLayout'));
+const CardHalfColumnsLayout = dynamic(() => import('../components/layout/card/CardHalfColumnsLayout'));
 
 const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
   const sessionUser = useSiteUserContext();

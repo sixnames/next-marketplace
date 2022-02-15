@@ -3,10 +3,10 @@ import * as React from 'react';
 import ConsoleTasksList, { ConsoleTasksListInterface } from 'components/console/ConsoleTasksList';
 import Inner from 'components/Inner';
 import WpTitle from 'components/WpTitle';
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getCompanyTasksListSsr } from 'db/ssr/company/getCompanyTasksListSsr';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCmsLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

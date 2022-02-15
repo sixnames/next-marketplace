@@ -1,4 +1,4 @@
-import { SORT_ASC } from 'config/common';
+import { SORT_ASC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { COL_TASK_VARIANTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { SORT_ASC } from 'config/common';
+import { SORT_ASC } from 'lib/config/common';
 import { COL_ORDER_STATUSES, COL_SHOPS } from 'db/collectionNames';
 import { OrderStatusModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

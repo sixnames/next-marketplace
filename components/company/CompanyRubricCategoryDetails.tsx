@@ -1,6 +1,6 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { GENDER_ENUMS } from '../../config/common';
+import { GENDER_ENUMS } from '../../lib/config/common';
 import { OptionVariantsModel } from '../../db/dbModels';
 import {
   CategoryInterface,

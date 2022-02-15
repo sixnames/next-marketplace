@@ -4,8 +4,8 @@ import UpdateTaskForm, { UpdateTaskFormInterface } from 'components/console/Upda
 import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks, getConsoleTaskLinks } from 'lib/linkUtils';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 

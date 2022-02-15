@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_LOCALE } from 'lib/config/common';
 import { GiftCertificateModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 

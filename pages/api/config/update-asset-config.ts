@@ -6,7 +6,7 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   REQUEST_METHOD_DELETE,
-} from 'config/common';
+} from 'lib/config/common';
 import { COL_CONFIGS } from 'db/collectionNames';
 import { ConfigModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

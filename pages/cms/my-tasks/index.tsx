@@ -4,8 +4,8 @@ import ConsoleMyTasksList, {
 import Inner from 'components/Inner';
 import WpTitle from 'components/WpTitle';
 import { getMyTasksListSsr } from 'db/ssr/tasks/getMyTasksListSsr';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';

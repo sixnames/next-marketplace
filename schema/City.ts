@@ -1,5 +1,5 @@
 import { arg, extendType, nonNull, objectType, stringArg } from 'nexus';
-import { SORT_DESC } from '../config/common';
+import { SORT_DESC } from '../lib/config/common';
 import { COL_CITIES } from '../db/collectionNames';
 import { aggregatePagination } from 'db/utils/aggregatePagination';
 import { CitiesPaginationPayloadModel, CityModel } from '../db/dbModels';

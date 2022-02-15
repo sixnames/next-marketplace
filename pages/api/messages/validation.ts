@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_GET } from 'config/common';
+import { REQUEST_METHOD_GET } from 'lib/config/common';
 import { getValidationMessages } from 'db/utils/apiMessageUtils';
 import { MessageModel, PayloadType } from 'db/dbModels';
 import { sendApiRouteResponse, sendApiRouteWrongMethod } from 'lib/sessionHelpers';

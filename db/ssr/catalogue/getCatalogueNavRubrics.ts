@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, ONE_HOUR, SORT_DESC } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, ONE_HOUR, SORT_DESC } from 'lib/config/common';
 import { getTreeFromList } from 'lib/treeUtils';
 import {
   COL_ATTRIBUTES,

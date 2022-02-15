@@ -5,7 +5,7 @@ import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   PAGE_STATE_PUBLISHED,
-} from 'config/common';
+} from 'lib/config/common';
 import { BlogPostModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 

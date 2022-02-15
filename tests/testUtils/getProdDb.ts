@@ -1,4 +1,4 @@
-import { ISR_ONE_WEEK, ISR_SIX_MONTHS } from 'config/common';
+import { ISR_ONE_WEEK, ISR_SIX_MONTHS } from 'lib/config/common';
 import {
   AttributeModel,
   BlogAttributeModel,

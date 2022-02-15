@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_CURRENCY, DEFAULT_PAGE_FILTER } from 'config/common';
+import { DEFAULT_CURRENCY, DEFAULT_PAGE_FILTER } from 'lib/config/common';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getPromoSsr } from 'lib/promoUtils';

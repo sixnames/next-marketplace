@@ -13,13 +13,13 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager from 'components/Pager';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
+import { useAppContext } from 'components/context/appContext';
 import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/ssr/orders/getConsoleOrders';
 import { OrderCustomerInterface, OrderInterface } from 'db/uiInterfaces';
 import { useDeleteOrder } from 'hooks/mutations/useOrderMutations';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 

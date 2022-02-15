@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
+import { REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
 import { createProductWithSyncError } from 'db/dao/product/createProductWithSyncError';
 import { updateProductWithSyncError } from 'db/dao/product/updateProductWithSyncError';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';

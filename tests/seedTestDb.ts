@@ -1,6 +1,6 @@
 import addZero from 'add-zero';
 import { Seeder } from 'mongo-seeding';
-import { ID_COUNTER_DIGITS } from 'config/common';
+import { ID_COUNTER_DIGITS } from 'lib/config/common';
 // import { getDatabase } from '../db/mongodb';
 // import { updateIndexes } from './testUtils/getProdDb';
 const mkdirp = require('mkdirp');

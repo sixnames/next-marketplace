@@ -3,8 +3,8 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import Inner from 'components/Inner';
 import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
 import WpTitle from 'components/WpTitle';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import {

@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, GENDER_HE, GENDER_SHE, SECONDARY_LOCALE } from 'config/common';
+import { DEFAULT_LOCALE, GENDER_HE, GENDER_SHE, SECONDARY_LOCALE } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { fixtureIds } from '../../fixtures/fixtureIds';
 

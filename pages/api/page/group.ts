@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
 import { createPagesGroup } from 'db/dao/pages/createPagesGroup';
 import { deletePagesGroup } from 'db/dao/pages/deletePagesGroup';
 import { updatePagesGroup } from 'db/dao/pages/updatePagesGroup';

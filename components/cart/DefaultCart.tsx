@@ -5,19 +5,19 @@ import {
   DEFAULT_COMPANY_SLUG,
   ORDER_DELIVERY_VARIANT_COURIER,
   ORDER_PAYMENT_VARIANT_RECEIPT,
-} from '../../config/common';
-import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from '../../config/constantSelects';
-import { MAP_MODAL, ORDER_DELIVERY_ADDRESS_MODAL } from '../../config/modalVariants';
-import { useAppContext } from '../../context/appContext';
-import { useConfigContext } from '../../context/configContext';
-import { useSiteContext } from '../../context/siteContext';
-import { useSiteUserContext } from '../../context/siteUserContext';
+} from '../../lib/config/common';
+import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from '../../lib/config/constantSelects';
+import { MAP_MODAL, ORDER_DELIVERY_ADDRESS_MODAL } from '../../lib/config/modalVariants';
+import { useAppContext } from '../context/appContext';
+import { useConfigContext } from '../context/configContext';
+import { useSiteContext } from '../context/siteContext';
+import { useSiteUserContext } from '../context/siteUserContext';
 import { MakeAnOrderShopConfigInterface } from '../../db/dao/orders/makeAnOrder';
 import { OrderDeliveryInfoModel } from '../../db/dbModels';
 import { CartInterface, CartProductInterface, ShopInterface } from '../../db/uiInterfaces';
 import { useShopMarker } from '../../hooks/useShopMarker';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import LayoutCard from '../../layout/LayoutCard';
+import LayoutCard from '../layout/LayoutCard';
 import { noNaN } from '../../lib/numbers';
 import { phoneToRaw } from '../../lib/phoneUtils';
 import { CartTabIndexType, MakeOrderFormInterface } from '../../pages/cart';

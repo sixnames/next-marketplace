@@ -12,9 +12,9 @@ import { OptionInGroupModalInterface } from 'components/Modal/OptionInGroupModal
 import RequestError from 'components/RequestError';
 import WpImage from 'components/WpImage';
 import WpTitle from 'components/WpTitle';
-import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { CONFIRM_MODAL, MOVE_OPTION_MODAL, OPTION_IN_GROUP_MODAL } from 'config/modalVariants';
+import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { CONFIRM_MODAL, MOVE_OPTION_MODAL, OPTION_IN_GROUP_MODAL } from 'lib/config/modalVariants';
 import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -29,9 +29,9 @@ import {
   useDeleteOptionFromGroupMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';

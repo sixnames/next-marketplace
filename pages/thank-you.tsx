@@ -4,7 +4,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import WpButton from '../components/button/WpButton';
 import Inner from '../components/Inner';
 import WpTitle from '../components/WpTitle';
-import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import SiteLayout, { SiteLayoutProviderInterface } from '../components/layout/SiteLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getSiteInitialData } from '../lib/ssrUtils';
 

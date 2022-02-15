@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_CATEGORIES } from 'config/common';
+import { ASSETS_DIST_CATEGORIES } from 'lib/config/common';
 import { COL_CATEGORIES } from 'db/collectionNames';
 import { CategoryModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';

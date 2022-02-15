@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_LOCALE, IMAGE_FALLBACK } from 'config/common';
+import { DEFAULT_LOCALE, IMAGE_FALLBACK } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';

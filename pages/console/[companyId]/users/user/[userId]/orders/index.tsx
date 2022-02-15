@@ -5,7 +5,7 @@ import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
 import WpLink from 'components/Link/WpLink';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import { SORT_DESC } from 'config/common';
+import { SORT_DESC } from 'lib/config/common';
 import {
   COL_ORDER_STATUSES,
   COL_ORDERS,
@@ -21,8 +21,8 @@ import {
   OrderInterface,
   UserInterface,
 } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsoleUserLayout from 'layout/console/ConsoleUserLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import ConsoleUserLayout from 'components/layout/console/ConsoleUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getFullName } from 'lib/nameUtils';

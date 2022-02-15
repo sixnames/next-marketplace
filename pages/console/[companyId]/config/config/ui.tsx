@@ -5,11 +5,11 @@ import ConfigsFormTemplate, {
   ConfigsFormTemplateInterface,
 } from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
-import { CONFIG_GROUP_UI } from 'config/common';
+import { CONFIG_GROUP_UI } from 'lib/config/common';
 import { getConfigRubrics } from 'db/ssr/rubrics/getConfigRubrics';
 import { CompanyInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import ConsoleCompanyLayout from 'components/layout/console/ConsoleCompanyLayout';
 import {
   castDbData,
   getConsoleInitialData,

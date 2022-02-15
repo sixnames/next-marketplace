@@ -14,8 +14,8 @@ import WpIcon from '../../components/WpIcon';
 import WpImage from '../../components/WpImage';
 import WpTitle from '../../components/WpTitle';
 import WpTooltip from '../../components/WpTooltip';
-import { IMAGE_FALLBACK } from '../../config/common';
-import { useSiteContext } from '../../context/siteContext';
+import { IMAGE_FALLBACK } from '../../lib/config/common';
+import { useSiteContext } from '../../components/context/siteContext';
 import {
   COL_GIFT_CERTIFICATES,
   COL_ORDER_PRODUCTS,
@@ -29,8 +29,8 @@ import { getPageSessionUser } from '../../db/dao/user/getPageSessionUser';
 import { OrderModel } from '../../db/dbModels';
 import { getDatabase } from '../../db/mongodb';
 import { OrderInterface, OrderProductInterface } from '../../db/uiInterfaces';
-import ProfileLayout from '../../layout/ProfileLayout/ProfileLayout';
-import SiteLayout, { SiteLayoutProviderInterface } from '../../layout/SiteLayout';
+import ProfileLayout from '../../components/layout/ProfileLayout/ProfileLayout';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from '../../lib/i18n';
 import { noNaN } from '../../lib/numbers';

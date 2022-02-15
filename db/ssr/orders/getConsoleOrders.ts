@@ -1,7 +1,7 @@
 import { castOrderStatus } from 'db/cast/castOrderStatus';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext } from 'next';
-import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
+import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'lib/config/common';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
 import { getShortName } from 'lib/nameUtils';

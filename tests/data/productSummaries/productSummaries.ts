@@ -11,7 +11,7 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
-} from 'config/common';
+} from 'lib/config/common';
 import {
   ObjectIdModel,
   OptionModel,

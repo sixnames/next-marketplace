@@ -9,9 +9,9 @@ import Inner from 'components/Inner';
 import { OptionsGroupModalInterface } from 'components/Modal/OptionsGroupModal';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { CONFIRM_MODAL, OPTIONS_GROUP_MODAL } from 'config/modalVariants';
+import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { CONFIRM_MODAL, OPTIONS_GROUP_MODAL } from 'lib/config/modalVariants';
 import { COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OptionsGroupInterface } from 'db/uiInterfaces';
@@ -20,8 +20,8 @@ import {
   useDeleteOptionsGroupMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';

@@ -1,4 +1,4 @@
-import { SORT_DESC } from 'config/common';
+import { SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { COL_BLOG_POSTS, COL_USERS } from 'db/collectionNames';

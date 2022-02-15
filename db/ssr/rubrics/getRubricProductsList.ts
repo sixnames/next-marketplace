@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE } from 'lib/config/common';
 import { alwaysString } from 'lib/arrayUtils';
 import { noNaN } from 'lib/numbers';
 import { ConsoleRubricProductsInterface } from 'db/uiInterfaces';

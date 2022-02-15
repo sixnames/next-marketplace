@@ -10,11 +10,11 @@ import {
   CompanyInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
-import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
+import ConsoleShopProductLayout from 'components/layout/console/ConsoleShopProductLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getConsoleShopProduct } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;

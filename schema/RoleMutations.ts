@@ -1,5 +1,5 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { ROLE_SLUG_GUEST } from '../config/common';
+import { ROLE_SLUG_GUEST } from '../lib/config/common';
 import { COL_NAV_ITEMS, COL_ROLES, COL_USERS } from '../db/collectionNames';
 import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import { NavItemModel, RoleModel, RolePayloadModel, UserModel } from '../db/dbModels';

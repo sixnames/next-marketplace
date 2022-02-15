@@ -4,7 +4,7 @@ import {
   IMAGE_FALLBACK,
   IMAGE_FALLBACK_BOTTLE,
   SORT_DESC,
-} from 'config/common';
+} from 'lib/config/common';
 import {
   COL_BRANDS,
   COL_BRAND_COLLECTIONS,

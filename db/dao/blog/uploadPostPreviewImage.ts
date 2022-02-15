@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_BLOG } from 'config/common';
+import { ASSETS_DIST_BLOG } from 'lib/config/common';
 import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { parseApiFormData, UploadRestApiImageInterface } from 'lib/restApi';

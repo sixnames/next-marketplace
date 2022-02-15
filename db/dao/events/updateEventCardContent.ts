@@ -6,7 +6,7 @@ import { EventPayloadModel } from 'db/dbModels';
 import { DaoPropsInterface, SeoContentInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 
-export interface UpdateEventContentInputInterface {
+export interface UpdateEventCardContentInputInterface {
   taskId?: string | null;
   seoContent: SeoContentInterface;
   companySlug: string;
@@ -16,7 +16,7 @@ export interface UpdateEventContentInputInterface {
 export async function updateEventCardContent({
   context,
   input,
-}: DaoPropsInterface<UpdateEventContentInputInterface>): Promise<EventPayloadModel> {
+}: DaoPropsInterface<UpdateEventCardContentInputInterface>): Promise<EventPayloadModel> {
   try {
     const collections = await getDbCollections();
     const eventSummariesCollection = collections.eventSummariesCollection();

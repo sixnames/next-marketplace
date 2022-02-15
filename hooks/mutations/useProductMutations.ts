@@ -169,7 +169,7 @@ export const useCreateProductWithSyncError = () => {
   });
 };
 
-// create with sync error
+// update with sync error
 export const useUpdateProductWithSyncError = () => {
   const { showModal } = useAppContext();
   const router = useRouter();

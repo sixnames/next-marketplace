@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { PAGE_STATE_DRAFT } from '../../lib/config/common';
-import { BLOG_POST_MODAL, CONFIRM_MODAL } from '../../lib/config/modalVariants';
+import { PAGE_STATE_DRAFT } from 'lib/config/common';
+import { BLOG_POST_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { useAppContext } from '../context/appContext';
-import { BlogPostInterface } from '../../db/uiInterfaces';
-import { useDeleteBlogPost } from '../../hooks/mutations/useBlogMutations';
-import { getConsoleBlogLinks } from '../../lib/linkUtils';
+import { BlogPostInterface } from 'db/uiInterfaces';
+import { useDeleteBlogPost } from 'hooks/mutations/useBlogMutations';
+import { getConsoleBlogLinks } from 'lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -66,6 +66,7 @@ const BlogPostsList: React.FC<BlogPostsListInterface> = ({ posts, companySlug, b
               updateTitle={'Редактировать блог-пост'}
               updateHandler={() => {
                 const links = getConsoleBlogLinks({
+                  basePath,
                   blogPostId: dataItem._id,
                 });
                 router.push(links.root).catch(console.log);
@@ -100,6 +101,7 @@ const BlogPostsList: React.FC<BlogPostsListInterface> = ({ posts, companySlug, b
           data={posts}
           onRowDoubleClick={(dataItem) => {
             const links = getConsoleBlogLinks({
+              basePath,
               blogPostId: dataItem._id,
             });
             router.push(links.root).catch(console.log);

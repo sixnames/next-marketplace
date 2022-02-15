@@ -31,7 +31,7 @@ import {
   shopProductDocsFacetPipeline,
   shopProductsGroupPipeline,
 } from 'db/utils/constantPipelines';
-import { castSummaryForUI } from 'db/dao/product/castSummaryForUI';
+import { castSummaryForUI } from 'db/cast/castSummaryForUI';
 
 export interface GetConsoleCompanyRubricProductsInputInterface {
   locale: string;

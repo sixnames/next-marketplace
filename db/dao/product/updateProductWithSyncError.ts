@@ -4,20 +4,10 @@ import { getNextItemId } from 'lib/itemIdUtils';
 import { castSummaryToShopProduct, checkBarcodeIntersects } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
-import {
-  COL_NOT_SYNCED_PRODUCTS,
-  COL_PRODUCT_SUMMARIES,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-} from '../../collectionNames';
-import {
-  ProductPayloadModel,
-  ProductSummaryModel,
-  ShopModel,
-  ShopProductModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { ProductPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductWithSyncErrorInputInterface {
   productId: string;
@@ -32,13 +22,13 @@ export async function updateProductWithSyncError({
   input,
 }: DaoPropsInterface<UpdateProductWithSyncErrorInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-  const notSyncedProductsCollection = db.collection<ShopModel>(COL_NOT_SYNCED_PRODUCTS);
+  const collections = await getDbCollections();
+  const notSyncedProductsCollection = collections.notSyncedProductsCollection();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const shopProductsCollection = collections.shopProductsCollection();
+  const shopsCollection = collections.shopsCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ProductPayloadModel = {
     success: false,

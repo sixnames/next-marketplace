@@ -7,21 +7,9 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { getParentTreeSlugs } from 'lib/treeUtils';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
-import {
-  COL_CATEGORIES,
-  COL_PRODUCT_FACETS,
-  COL_PRODUCT_SUMMARIES,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import {
-  CategoryModel,
-  ProductFacetModel,
-  ProductPayloadModel,
-  ProductSummaryModel,
-  ShopProductModel,
-  SummaryDiffModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { COL_CATEGORIES } from 'db/collectionNames';
+import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductCategoryInputInterface {
@@ -34,14 +22,14 @@ export async function updateProductCategory({
   input,
   context,
 }: DaoPropsInterface<UpdateProductCategoryInputInterface>): Promise<ProductPayloadModel> {
-  const { db, client } = await getDatabase();
+  const collections = await getDbCollections();
   const { getApiMessage, locale } = await getRequestParams(context);
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+  const productSummariesCollection = collections.productSummariesCollection();
+  const productFacetsCollection = collections.productFacetsCollection();
+  const shopProductsCollection = collections.shopProductsCollection();
+  const categoriesCollection = collections.categoriesCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ProductPayloadModel = {
     success: false,

@@ -11,16 +11,8 @@ import {
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_ATTRIBUTES, COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
-import {
-  AttributeModel,
-  ProductFacetModel,
-  ProductPayloadModel,
-  ProductSummaryModel,
-  SummaryDiffModel,
-  TranslationModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ProductPayloadModel, SummaryDiffModel, TranslationModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import {
   DaoPropsInterface,
   ProductAttributeInterface,
@@ -44,12 +36,12 @@ export async function updateProductTextAttribute({
   context,
 }: DaoPropsInterface<UpdateProductTextAttributeInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-  const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+  const collections = await getDbCollections();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const productFacetsCollection = collections.productFacetsCollection();
+  const attributesCollection = collections.attributesCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ProductPayloadModel = {
     success: false,

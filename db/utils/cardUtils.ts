@@ -35,7 +35,7 @@ import {
   productCategoriesPipeline,
 } from 'db/utils/constantPipelines';
 import { castOptionForUI } from 'db/cast/castOptionForUI';
-import { castSummaryForUI } from 'db/dao/product/castSummaryForUI';
+import { castSummaryForUI } from 'db/cast/castSummaryForUI';
 import {
   AttributesGroupModel,
   CatalogueBreadcrumbModel,

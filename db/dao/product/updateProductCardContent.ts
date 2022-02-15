@@ -2,14 +2,13 @@ import { getTextContents, Value } from '@react-page/editor';
 import { reactPageCellPlugins } from 'components/PageEditor';
 import { DEFAULT_LOCALE, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
 import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
-import { COL_LANGUAGES } from 'db/collectionNames';
 import { getCitiesList } from 'db/dao/cities/getCitiesList';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { updateCitiesSeoContent } from 'lib/seoContentUniquenessUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { LanguageModel, ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
+import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
 import { DaoPropsInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductCardContentInputInterface {
@@ -24,7 +23,7 @@ export async function updateProductCardContent({
   input,
 }: DaoPropsInterface<UpdateProductCardContentInputInterface>): Promise<ProductPayloadModel> {
   try {
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
     const { getApiMessage } = await getRequestParams(context);
     // check input
     if (!input) {
@@ -67,7 +66,7 @@ export async function updateProductCardContent({
       }
 
       const cities = await getCitiesList();
-      const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+      const languagesCollection = collections.languagesCollection();
       const languages = await languagesCollection.find({}).toArray();
       const locales = languages.map(({ slug }) => slug);
 

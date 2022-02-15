@@ -15,15 +15,8 @@ import {
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
 import { createProductConnectionSchema } from 'validation/productSchema';
-import { COL_ATTRIBUTES, COL_OPTIONS, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
-import {
-  AttributeModel,
-  OptionModel,
-  ProductPayloadModel,
-  ProductSummaryModel,
-  SummaryDiffModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface, ProductVariantInterface } from 'db/uiInterfaces';
 
 export interface CreateProductVariantInputInterface {
@@ -37,12 +30,12 @@ export async function createProductVariant({
   context,
 }: DaoPropsInterface<CreateProductVariantInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+  const collections = await getDbCollections();
+  const attributesCollection = collections.attributesCollection();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const optionsCollection = collections.optionsCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
   let mutationPayload: ProductPayloadModel = {
     success: false,
     message: await getApiMessage(`products.variant.createError`),

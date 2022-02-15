@@ -42,7 +42,7 @@ import {
   ProductsPaginatedAggregationInterface,
   shopProductDocsFacetPipeline,
 } from 'db/utils/constantPipelines';
-import { castSummaryForUI } from 'db/dao/product/castSummaryForUI';
+import { castSummaryForUI } from 'db/cast/castSummaryForUI';
 
 export interface GetConsoleShopProductsInputInterface {
   locale: string;

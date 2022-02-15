@@ -9,7 +9,7 @@ import {
   ProductVariantInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
-import { castProductVariantForUI } from './castProductVariantForUI';
+import { castProductVariantForUI } from 'db/cast/castProductVariantForUI';
 
 interface CastProductForUI {
   summary: ProductSummaryInterface;

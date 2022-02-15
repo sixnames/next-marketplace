@@ -33,7 +33,7 @@ import {
   ProductsPaginatedAggregationInterface,
   shopProductDocsFacetPipeline,
 } from 'db/utils/constantPipelines';
-import { castSummaryForUI } from 'db/dao/product/castSummaryForUI';
+import { castSummaryForUI } from 'db/cast/castSummaryForUI';
 
 interface GetConsolePromoProductsInterface {
   companyId: ObjectIdModel;

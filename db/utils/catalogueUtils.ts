@@ -38,7 +38,7 @@ import {
   shopProductDocsFacetPipeline,
   shopProductsGroupPipeline,
 } from 'db/utils/constantPipelines';
-import { castSummaryForUI } from 'db/dao/product/castSummaryForUI';
+import { castSummaryForUI } from 'db/cast/castSummaryForUI';
 import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {

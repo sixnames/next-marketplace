@@ -3,21 +3,9 @@ import { deleteProductAlgoliaObjects } from 'lib/algolia/productAlgoliaUtils';
 import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import {
-  COL_PRODUCT_FACETS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-  COL_PRODUCT_SUMMARIES,
-} from '../../collectionNames';
-import {
-  ProductFacetModel,
-  ProductPayloadModel,
-  RubricModel,
-  ShopProductModel,
-  ProductSummaryModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ProductPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface DeleteProductInputInterface {
   productId: string;
@@ -28,13 +16,13 @@ export async function deleteProduct({
   input,
 }: DaoPropsInterface<DeleteProductInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.rubricsCollection();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const productFacetsCollection = collections.productFacetsCollection();
+  const shopProductsCollection = collections.shopProductsCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ProductPayloadModel = {
     success: false,

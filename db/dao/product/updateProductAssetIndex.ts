@@ -5,14 +5,8 @@ import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import {
-  ProductPayloadModel,
-  ProductSummaryModel,
-  ShopProductModel,
-  SummaryDiffModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductAssetIndexInputInterface {
@@ -27,11 +21,11 @@ export async function updateProductAssetIndex({
   input,
 }: DaoPropsInterface<UpdateProductAssetIndexInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const collections = await getDbCollections();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const shopProductsCollection = collections.shopProductsCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ProductPayloadModel = {
     success: false,

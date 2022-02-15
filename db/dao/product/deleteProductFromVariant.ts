@@ -10,15 +10,13 @@ import {
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
 import { deleteProductFromConnectionSchema } from 'validation/productSchema';
-import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
 import {
   ObjectIdModel,
   ProductPayloadModel,
-  ProductSummaryModel,
   ProductVariantItemModel,
   SummaryDiffModel,
 } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface, ProductVariantInterface } from 'db/uiInterfaces';
 
 export interface DeleteProductFromVariantInputInterface {
@@ -33,10 +31,10 @@ export async function deleteProductFromVariant({
   input,
 }: DaoPropsInterface<DeleteProductFromVariantInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+  const collections = await getDbCollections();
+  const productSummariesCollection = collections.productSummariesCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ProductPayloadModel = {
     success: false,

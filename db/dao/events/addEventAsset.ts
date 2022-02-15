@@ -43,7 +43,8 @@ export async function addEventAsset(context: NextContextInterface): Promise<Even
       // check input
       const formData = await parseApiFormData<AddEventAssetInterface>(context.req);
       if (!formData || !formData.files || !formData.fields) {
-        return mutationPayload;
+        await session.abortTransaction();
+        return;
       }
 
       // get summary
@@ -51,7 +52,8 @@ export async function addEventAsset(context: NextContextInterface): Promise<Even
         _id: new ObjectId(formData.fields.eventId),
       });
       if (!summary) {
-        return mutationPayload;
+        await session.abortTransaction();
+        return;
       }
       const updatedSummary = { ...summary };
 

@@ -16,6 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_POST) {
     const payload = await createRubric({
       context: { req, res },
+      input: JSON.parse(req.body),
     });
     sendApiRouteResponse({
       payload,
@@ -28,6 +29,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_PATCH) {
     const payload = await updateRubric({
       context: { req, res },
+      input: JSON.parse(req.body),
     });
     sendApiRouteResponse({
       payload,
@@ -40,6 +42,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_DELETE) {
     const payload = await deleteRubric({
       context: { req, res },
+      input: JSON.parse(req.body),
     });
     sendApiRouteResponse({
       payload,

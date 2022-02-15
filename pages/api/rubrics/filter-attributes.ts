@@ -8,6 +8,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_PATCH) {
     const payload = await toggleAttributeInRubricFilter({
       context: { req, res },
+      input: JSON.parse(req.body),
     });
     sendApiRouteResponse({
       payload,

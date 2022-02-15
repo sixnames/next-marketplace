@@ -25,19 +25,16 @@ describe('Rubrics', () => {
     cy.getByCy(`variantId`).select(fixtureIds.rubricVariantAlcohol);
     cy.getByCy(`gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
-    cy.getByCy(`create-rubric-modal`).should('not.exist');
-    cy.shouldError();
+    cy.wait(1500);
 
     // Should create new rubrics
-    cy.getByCy(`create-rubric`).click();
-    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).type(newRubricName);
-    cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).type(newRubricName);
-    cy.getByCy(`shortDescriptionI18n-${DEFAULT_LOCALE}`).type(newRubricName);
-    cy.getByCy(`defaultTitleI18n-${DEFAULT_LOCALE}`).type(newRubricName);
-    cy.getByCy(`prefixI18n-${DEFAULT_LOCALE}`).type(newRubricName);
-    cy.getByCy(`keywordI18n-${DEFAULT_LOCALE}`).type(newRubricName);
+    cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(newRubricName);
+    cy.getByCy(`descriptionI18n-${DEFAULT_LOCALE}`).clear().type(newRubricName);
+    cy.getByCy(`shortDescriptionI18n-${DEFAULT_LOCALE}`).clear().type(newRubricName);
+    cy.getByCy(`defaultTitleI18n-${DEFAULT_LOCALE}`).clear().type(newRubricName);
+    cy.getByCy(`prefixI18n-${DEFAULT_LOCALE}`).clear().type(newRubricName);
+    cy.getByCy(`keywordI18n-${DEFAULT_LOCALE}`).clear().type(newRubricName);
     cy.getByCy(`variantId`).select(fixtureIds.rubricVariantAlcohol);
-    cy.getByCy(`gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
     cy.wait(1500);
     cy.getByCy(`${newRubricName}-row`).should('exist');

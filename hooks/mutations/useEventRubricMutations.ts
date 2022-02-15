@@ -45,7 +45,7 @@ export const useDeleteEventRubric = () => {
 export const useAddAttributesGroupToEventRubric = () => {
   return useMutationHandler<EventRubricPayloadModel, AddAttributesGroupToEventRubricInputInterface>(
     {
-      path: `${basePath}/attributes-groups`,
+      path: `${basePath}/attributes-group`,
       method: REQUEST_METHOD_POST,
     },
   );
@@ -57,7 +57,7 @@ export const useDeleteAttributesGroupFromEventRubric = () => {
     EventRubricPayloadModel,
     DeleteAttributesGroupFromEventRubricInputInterface
   >({
-    path: `${basePath}/attributes-groups`,
+    path: `${basePath}/attributes-group`,
     method: REQUEST_METHOD_DELETE,
   });
 };

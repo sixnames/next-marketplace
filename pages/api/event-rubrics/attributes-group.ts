@@ -9,6 +9,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_POST) {
     const payload = await addAttributesGroupToEventRubric({
       context: { req, res },
+      input: JSON.parse(req.body),
     });
     sendApiRouteResponse({
       payload,
@@ -21,6 +22,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_DELETE) {
     const payload = await deleteAttributesGroupFromEventRubric({
       context: { req, res },
+      input: JSON.parse(req.body),
     });
     sendApiRouteResponse({
       payload,

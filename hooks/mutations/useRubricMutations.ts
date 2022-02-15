@@ -44,7 +44,7 @@ export const useDeleteRubric = () => {
 // add
 export const useAddAttributesGroupToRubric = () => {
   return useMutationHandler<RubricPayloadModel, AddAttributesGroupToRubricInputInterface>({
-    path: `${basePath}/attributes-groups`,
+    path: `${basePath}/attributes-group`,
     method: REQUEST_METHOD_POST,
   });
 };
@@ -52,7 +52,7 @@ export const useAddAttributesGroupToRubric = () => {
 // delete
 export const useDeleteAttributesGroupFromRubric = () => {
   return useMutationHandler<RubricPayloadModel, DeleteAttributesGroupFromRubricInputInterface>({
-    path: `${basePath}/attributes-groups`,
+    path: `${basePath}/attributes-group`,
     method: REQUEST_METHOD_DELETE,
   });
 };

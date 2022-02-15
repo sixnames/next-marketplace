@@ -474,22 +474,26 @@ export async function checkShopProductBarcodeIntersects({
   return barcodeDoubles;
 }
 
+export function trimTranslationField(fieldI18n?: TranslationModel | null) {
+  const translation = fieldI18n || {};
+  return Object.keys(translation).reduce((acc: TranslationModel, key) => {
+    const value = translation[key];
+    if (!value) {
+      return acc;
+    }
+    acc[key] = trim(value);
+    return acc;
+  }, {});
+}
+
 interface TrimProductNameInterface {
   originalName?: string | null;
   nameI18n?: TranslationModel | null;
 }
 export function trimProductName({ originalName, nameI18n }: TrimProductNameInterface) {
-  const translation = nameI18n || {};
   return {
     originalName: originalName ? trim(originalName) : '',
-    nameI18n: Object.keys(translation).reduce((acc: TranslationModel, key) => {
-      const value = translation[key];
-      if (!value) {
-        return acc;
-      }
-      acc[key] = trim(value);
-      return acc;
-    }, {}),
+    nameI18n: trimTranslationField(nameI18n),
   };
 }
 

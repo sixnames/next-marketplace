@@ -13,10 +13,10 @@ import {
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
 import { createPromoSchema } from 'validation/promoSchema';
-import { COL_PROMO } from '../../collectionNames';
-import { DateModel, PromoModel, PromoPayloadModel, TranslationModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { COL_PROMO } from 'db/collectionNames';
+import { DateModel, PromoModel, PromoPayloadModel, TranslationModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface CreatePromoInputInterface {
   nameI18n: TranslationModel;

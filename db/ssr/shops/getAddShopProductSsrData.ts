@@ -41,7 +41,7 @@ export async function getAddShopProductSsrData({
       },
       {
         $project: {
-          _id: true,
+          productId: true,
         },
       },
     ])

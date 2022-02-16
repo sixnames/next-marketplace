@@ -1,23 +1,23 @@
+import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { ShopPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import generator from 'generate-password';
-import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
-import { COL_SHOP_PRODUCTS } from '../db/collectionNames';
-import { ShopPayloadModel } from '../db/dbModels';
-import { getDbCollections } from '../db/mongodb';
-import { getReadableAddress } from '../lib/addressUtils';
-import { deleteUpload, getMainImage, reorderAssets } from '../lib/assetUtils/assetUtils';
-import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from '../lib/config/common';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { getNextItemId } from '../lib/itemIdUtils';
+import { getReadableAddress } from 'lib/addressUtils';
+import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
+import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from 'lib/config/common';
+import { getNextItemId } from 'lib/itemIdUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
+} from 'lib/sessionHelpers';
+import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
   addManyProductsToShopSchema,
   deleteProductFromShopSchema,
   updateShopSchema,
-} from '../validation/shopSchema';
+} from 'validation/shopSchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const ShopProductsPaginationPayload = objectType({
   name: 'ShopProductsPaginationPayload',

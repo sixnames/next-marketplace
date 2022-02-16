@@ -170,7 +170,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
             {footerPageGroups.map(({ name, _id, pages }, index) => {
               return (
                 <div key={`${_id}`} className='font-sm'>
-                  <div className='mb-1.5 uppercase'>{name}</div>
+                  <div className='mb-1.5 text-lg font-medium'>{name}</div>
                   <ul>
                     {(pages || []).map(({ name, slug, _id }) => {
                       return (

@@ -1,13 +1,11 @@
-import { COL_COMPANIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import {
   getConsoleRubricProducts,
   GetConsoleRubricProductsInputInterface,
 } from 'db/ssr/rubrics/getConsoleRubricProducts';
-import { ShopInterface } from 'db/uiInterfaces';
+import { getConsoleShopSsr } from 'db/ssr/shops/getConsoleShopSsr';
 import { alwaysString } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { ObjectId } from 'mongodb';
 import { ShopAddProductsListRouteReduced } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/add/[...filters]';
 
 interface GetAddShopProductSsrDataInterface extends GetConsoleRubricProductsInputInterface {}
@@ -20,7 +18,7 @@ export async function getAddShopProductSsrData({
   companySlug,
 }: GetAddShopProductSsrDataInterface): Promise<ShopAddProductsListRouteReduced | null> {
   const collections = await getDbCollections();
-  const shopsCollection = collections.shopsCollection();
+  const shopProductsCollection = collections.shopProductsCollection();
   const shopId = alwaysString(query.shopId);
 
   // console.log(' ');
@@ -29,55 +27,26 @@ export async function getAddShopProductSsrData({
   // const startTime = new Date().getTime();
 
   // Get shop
-  const shopAggregation = await shopsCollection
-    .aggregate<ShopInterface>([
+  const shop = await getConsoleShopSsr(`${shopId}`);
+  if (!shop) {
+    return null;
+  }
+  const shopProducts = await shopProductsCollection
+    .aggregate([
       {
-        $match: { _id: new ObjectId(`${shopId}`) },
-      },
-
-      // get company
-      {
-        $lookup: {
-          from: COL_COMPANIES,
-          as: 'company',
-          foreignField: '_id',
-          localField: 'companyId',
+        $match: {
+          shopId: shop._id,
+          rubricSlug: alwaysString(query.rubricSlug),
         },
       },
       {
-        $addFields: {
-          company: {
-            $arrayElemAt: ['$company', 0],
-          },
-        },
-      },
-
-      // get shop products
-      {
-        $lookup: {
-          from: COL_SHOP_PRODUCTS,
-          as: 'shopProducts',
-          let: {
-            shopId: '$_id',
-          },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$shopId', '$$shopId'],
-                },
-              },
-            },
-          ],
+        $project: {
+          _id: true,
         },
       },
     ])
     .toArray();
-  const shop = shopAggregation[0];
-  if (!shop) {
-    return null;
-  }
-  const excludedProductsIds = (shop.shopProducts || []).map(({ productId }) => productId);
+  const excludedProductsIds = shopProducts.map(({ productId }) => productId);
 
   const { selectedAttributes, page, docs, clearSlug, attributes, totalPages, totalDocs, rubric } =
     await getConsoleRubricProducts({

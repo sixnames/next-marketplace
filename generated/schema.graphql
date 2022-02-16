@@ -548,27 +548,6 @@ type MapMarker {
   lightTheme: String
 }
 
-type Message {
-  _id: ObjectId!
-
-  """
-  Returns message for current locale
-  """
-  message: String!
-  messageI18n: JSONObject!
-  slug: String!
-}
-
-type MessagesGroup {
-  _id: ObjectId!
-
-  """
-  Returns all messages for current current group
-  """
-  messages: [Message!]!
-  name: String!
-}
-
 type Metric {
   _id: ObjectId!
   name: String!
@@ -1219,11 +1198,6 @@ type Query {
   Should return supplier by given slug
   """
   getSupplierBySlug(slug: String!): Supplier!
-
-  """
-  Should return validation messages list
-  """
-  getValidationMessages: [Message!]!
 }
 
 type Role implements Timestamp {

@@ -1,13 +1,13 @@
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ShopRubrics, { ShopRubricsInterface } from 'components/shops/ShopRubrics';
-import { COL_COMPANIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
+import { getConsoleShopSsr } from 'db/ssr/shops/getConsoleShopSsr';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
@@ -58,35 +58,12 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyShopProductsInterface>> => {
   const collections = await getDbCollections();
-  const shopsCollection = collections.shopsCollection();
   const rubricsCollection = collections.rubricsCollection();
   const { query } = context;
   const { shopId } = query;
   const initialProps = await getAppInitialData({ context });
 
-  const shopAggregation = await shopsCollection
-    .aggregate([
-      {
-        $match: { _id: new ObjectId(`${shopId}`) },
-      },
-      {
-        $lookup: {
-          from: COL_COMPANIES,
-          as: 'company',
-          foreignField: '_id',
-          localField: 'companyId',
-        },
-      },
-      {
-        $addFields: {
-          company: {
-            $arrayElemAt: ['$company', 0],
-          },
-        },
-      },
-    ])
-    .toArray();
-  const shop = shopAggregation[0];
+  const shop = await getConsoleShopSsr(`${shopId}`);
 
   if (!initialProps.props || !shop) {
     return {

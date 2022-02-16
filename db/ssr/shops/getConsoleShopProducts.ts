@@ -1,11 +1,10 @@
 import { castSummaryForUI } from 'db/cast/castSummaryForUI';
-import { COL_CITIES, COL_COMPANIES } from 'db/collectionNames';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import { getConsoleShopSsr } from 'db/ssr/shops/getConsoleShopSsr';
 import {
   AttributeInterface,
   CompanyShopProductsPageInterface,
-  ShopInterface,
   ShopProductInterface,
   ShopProductPricesInterface,
   ShopProductsAggregationInterface,
@@ -34,7 +33,6 @@ import {
 import { getFieldStringLocale } from 'lib/i18n';
 import { castSupplierProductsList } from 'lib/productUtils';
 import { getTreeFromList } from 'lib/treeUtils';
-import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
 
 export interface GetConsoleShopProductsInputInterface {
@@ -59,7 +57,6 @@ export const getConsoleShopProducts = async ({
   try {
     const collections = await getDbCollections();
     const shopProductsCollection = collections.shopProductsCollection();
-    const shopsCollection = collections.shopsCollection();
     const rubricsCollection = collections.rubricsCollection();
     const filters = alwaysArray(query.filters);
     const search = alwaysString(query.search);
@@ -67,40 +64,7 @@ export const getConsoleShopProducts = async ({
     const rubricSlug = alwaysString(query.rubricSlug);
 
     // Get shop
-    const shopAggregation = await shopsCollection
-      .aggregate<ShopInterface>([
-        {
-          $match: { _id: new ObjectId(`${shopId}`) },
-        },
-        {
-          $lookup: {
-            from: COL_COMPANIES,
-            as: 'company',
-            foreignField: '_id',
-            localField: 'companyId',
-          },
-        },
-        {
-          $lookup: {
-            from: COL_CITIES,
-            as: 'city',
-            foreignField: 'slug',
-            localField: 'citySlug',
-          },
-        },
-        {
-          $addFields: {
-            company: {
-              $arrayElemAt: ['$company', 0],
-            },
-            city: {
-              $arrayElemAt: ['$city', 0],
-            },
-          },
-        },
-      ])
-      .toArray();
-    const shop = shopAggregation[0];
+    const shop = await getConsoleShopSsr(`${shopId}`);
     if (!shop) {
       return null;
     }

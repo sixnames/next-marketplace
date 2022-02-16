@@ -1,13 +1,13 @@
+import { ConsoleShopLayoutInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { ConsoleShopLayoutInterface } from '../../db/uiInterfaces';
 import {
   useDeleteShopAssetMutation,
   useUpdateShopAssetIndexMutation,
-} from '../../generated/apolloComponents';
+} from 'generated/apolloComponents';
+import { alwaysArray } from 'lib/arrayUtils';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { alwaysArray } from '../../lib/arrayUtils';
 import AssetsManager from '../AssetsManager';
 import FormikImageUpload from '../FormElements/Upload/FormikImageUpload';
 import WpDropZone from '../FormElements/Upload/WpDropZone';

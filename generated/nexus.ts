@@ -3,10 +3,9 @@
  * Do not make changes to this file directly
  */
 
-import type { core } from 'nexus';
 import type * as dbModels from './../db/dbModels';
 import type { NexusContext } from './../types/apiContextTypes';
-
+import type { core } from 'nexus';
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
     /**
@@ -648,8 +647,6 @@ export interface NexusGenObjects {
   ManufacturersAlphabetList: dbModels.ManufacturersAlphabetListModel;
   ManufacturersPaginationPayload: dbModels.ManufacturersPaginationPayloadModel;
   MapMarker: dbModels.MapMarkerModel;
-  Message: dbModels.MessageModel;
-  MessagesGroup: dbModels.MessagesGroupModel;
   Metric: dbModels.MetricModel;
   MetricPayload: dbModels.MetricPayloadModel;
   Mutation: {};
@@ -969,19 +966,6 @@ export interface NexusGenFieldTypes {
     darkTheme: string | null; // String
     lightTheme: string | null; // String
   };
-  Message: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    message: string; // String!
-    messageI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    slug: string; // String!
-  };
-  MessagesGroup: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    messages: NexusGenRootTypes['Message'][]; // [Message!]!
-    name: string; // String!
-  };
   Metric: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1207,7 +1191,6 @@ export interface NexusGenFieldTypes {
     getSupplier: NexusGenRootTypes['Supplier']; // Supplier!
     getSupplierAlphabetLists: NexusGenRootTypes['SuppliersAlphabetList'][]; // [SuppliersAlphabetList!]!
     getSupplierBySlug: NexusGenRootTypes['Supplier']; // Supplier!
-    getValidationMessages: NexusGenRootTypes['Message'][]; // [Message!]!
   };
   Role: {
     // field return type
@@ -1736,19 +1719,6 @@ export interface NexusGenFieldTypeNames {
     darkTheme: 'String';
     lightTheme: 'String';
   };
-  Message: {
-    // field return type name
-    _id: 'ObjectId';
-    message: 'String';
-    messageI18n: 'JSONObject';
-    slug: 'String';
-  };
-  MessagesGroup: {
-    // field return type name
-    _id: 'ObjectId';
-    messages: 'Message';
-    name: 'String';
-  };
   Metric: {
     // field return type name
     _id: 'ObjectId';
@@ -1974,7 +1944,6 @@ export interface NexusGenFieldTypeNames {
     getSupplier: 'Supplier';
     getSupplierAlphabetLists: 'SuppliersAlphabetList';
     getSupplierBySlug: 'Supplier';
-    getValidationMessages: 'Message';
   };
   Role: {
     // field return type name

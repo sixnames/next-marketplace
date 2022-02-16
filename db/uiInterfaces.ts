@@ -62,6 +62,7 @@ import {
   ShopProductModel,
   SupplierModel,
   SupplierProductModel,
+  SyncLogModel,
   TaskLogModel,
   TaskModel,
   TaskVariantModel,
@@ -453,6 +454,7 @@ export interface ShopInterface extends ShopModel {
   shopProducts?: ShopProductInterface[] | null;
   cardShopProduct?: ShopProductInterface | null;
   priceWarning: string | null;
+  lastSyncLog?: SyncLogModel | null;
 }
 
 export interface PromoProductInterface extends PromoProductModel {

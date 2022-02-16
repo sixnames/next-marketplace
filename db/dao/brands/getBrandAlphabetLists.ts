@@ -1,6 +1,5 @@
-import { COL_BRANDS } from 'db/collectionNames';
 import { AlphabetListModelType, BrandModel, PayloadType } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { BrandInterface, DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getAlphabetList } from 'lib/optionUtils';
@@ -19,8 +18,8 @@ export async function getBrandAlphabetLists({
 }: DaoPropsInterface<GetBrandAlphabetListsInputInterface>): Promise<BrandAlphabetListsPayloadModel> {
   try {
     const { locale } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
+    const collections = await getDbCollections();
+    const brandsCollection = collections.brandsCollection();
 
     let query: Record<string, any> = {};
     if ((input?.slugs || []).length > 0) {

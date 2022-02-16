@@ -1,6 +1,5 @@
-import { COL_ATTRIBUTES_GROUPS, COL_RUBRICS } from 'db/collectionNames';
-import { AttributesGroupModel, RubricModel, RubricPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { RubricPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -16,11 +15,11 @@ export async function deleteAttributesGroupFromRubric({
   input,
 }: DaoPropsInterface<DeleteAttributesGroupFromRubricInputInterface>): Promise<RubricPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const attributesGroupsCollection = db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.rubricsCollection();
+  const attributesGroupsCollection = collections.attributesGroupsCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: RubricPayloadModel = {
     success: false,

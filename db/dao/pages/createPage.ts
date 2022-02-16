@@ -1,4 +1,8 @@
-import { ObjectId } from 'mongodb';
+import { COL_PAGE_TEMPLATES, COL_PAGES } from 'db/collectionNames';
+import { PagePayloadModel, TranslationModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import { PAGE_EDITOR_DEFAULT_VALUE_STRING, PAGE_STATE_PUBLISHED } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
@@ -7,17 +11,8 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 import { createPageSchema } from 'validation/pagesSchema';
-import {
-  COL_PAGE_TEMPLATES,
-  COL_PAGES,
-  COL_PAGES_GROUP,
-  COL_PAGES_GROUP_TEMPLATES,
-} from '../../collectionNames';
-import { PageModel, PagePayloadModel, PagesGroupModel, TranslationModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 
 export interface CreatePageInputInterface {
   nameI18n: TranslationModel;
@@ -34,7 +29,7 @@ export async function createPage({
 }: DaoPropsInterface<CreatePageInputInterface>): Promise<PagePayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
 
     // permission
     const { allow, message } = await getOperationPermission({
@@ -64,10 +59,12 @@ export async function createPage({
     await validationSchema.validate(input);
 
     const { isTemplate } = input;
-    const pagesGroupsCollection = db.collection<PagesGroupModel>(
-      isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
-    );
-    const pagesCollection = db.collection<PageModel>(isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES);
+    const pagesGroupsCollection = isTemplate
+      ? collections.pagesGroupTemplatesCollection()
+      : collections.pagesGroupsCollection();
+    const pagesCollection = isTemplate
+      ? collections.pageTemplatesCollection()
+      : collections.pagesCollection();
 
     // check if already exist
     const exist = await findDocumentByI18nField({

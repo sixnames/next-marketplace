@@ -1,4 +1,7 @@
-import { ObjectId } from 'mongodb';
+import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { ProductPayloadModel, ShopProductModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { DEFAULT_LOCALE, IMAGE_FALLBACK } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
@@ -9,10 +12,7 @@ import {
 } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
-import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { ProductPayloadModel, ShopProductModel } from 'db/dbModels';
-import { getDbCollections } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
 import { CreateProductInputInterface } from './createProduct';
 
 export interface CreateProductWithSyncErrorInputInterface {

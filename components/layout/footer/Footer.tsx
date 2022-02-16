@@ -1,5 +1,7 @@
-import * as React from 'react';
 import WpButton from 'components/button/WpButton';
+import { useAppContext } from 'components/context/appContext';
+import { useConfigContext } from 'components/context/configContext';
+import { useLocaleContext } from 'components/context/localeContext';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import Inner from 'components/Inner';
 import LinkEmail from 'components/Link/LinkEmail';
@@ -8,15 +10,13 @@ import WpLink from 'components/Link/WpLink';
 import { MapModalInterface } from 'components/Modal/MapModal';
 import Socials from 'components/Socials';
 import WpIcon from 'components/WpIcon';
-import { getConstantTranslation } from 'lib/config/constantTranslations';
-import { MAP_MODAL } from 'lib/config/modalVariants';
-import { useAppContext } from 'components/context/appContext';
-import { useConfigContext } from 'components/context/configContext';
-import { useLocaleContext } from 'components/context/localeContext';
 import { PagesGroupInterface } from 'db/uiInterfaces';
 import { useShopMarker } from 'hooks/useShopMarker';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { MAP_MODAL } from 'lib/config/modalVariants';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import * as React from 'react';
 
 const links = getProjectLinks();
 

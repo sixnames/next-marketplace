@@ -1,12 +1,12 @@
+import { ProductSummaryInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
+import { useUpdateProduct } from 'hooks/mutations/useProductMutations';
 import { alwaysString } from 'lib/arrayUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { ProductSummaryInterface } from 'db/uiInterfaces';
-import { useUpdateProduct } from 'hooks/mutations/useProductMutations';
+import { updateProductSchema } from 'validation/productSchema';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { updateProductSchema } from 'validation/productSchema';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import FormikMultiLineInput from '../FormElements/Input/FormikMultiLineInput';

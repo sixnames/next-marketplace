@@ -1,6 +1,6 @@
+import capitalize from 'capitalize';
 import dirTree from 'directory-tree';
 import fs from 'fs';
-import capitalize from 'capitalize';
 import { set } from 'lodash';
 
 const excludedNames = [

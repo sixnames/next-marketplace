@@ -1,18 +1,17 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
 import UpdateTaskVariantForm, {
   UpdateTaskVariantFormInterface,
 } from 'components/console/UpdateTaskVariantForm';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getCompanyTaskVariantSsr } from 'db/ssr/company/getCompanyTaskVariantSsr';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getDbCollections } from 'db/mongodb';
+import { getCompanyTaskVariantSsr } from 'db/ssr/company/getCompanyTaskVariantSsr';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 
 interface CreateTaskVariantDetailsConsumerInterface extends UpdateTaskVariantFormInterface {
   pageCompany: CompanyInterface;
@@ -75,8 +74,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
   const companyAggregationResult = await companiesCollection
     .aggregate([
       {

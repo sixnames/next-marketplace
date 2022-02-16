@@ -1,30 +1,29 @@
-import { UpdateRubricInputInterface } from 'db/dao/rubrics/updateRubric';
-import { Form, Formik } from 'formik';
-import { useUpdateRubric } from 'hooks/mutations/useRubricMutations';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
 import RubricMainFields from 'components/FormTemplates/RubricMainFields';
 import Inner from 'components/Inner';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import SeoContentEditor from 'components/SeoContentEditor';
-import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { UpdateRubricInputInterface } from 'db/dao/rubrics/updateRubric';
+import { getDbCollections } from 'db/mongodb';
 import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
-import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   RubricInterface,
   RubricVariantInterface,
   SeoContentCitiesInterface,
 } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
+import { useUpdateRubric } from 'hooks/mutations/useRubricMutations';
 import useValidationSchema from 'hooks/useValidationSchema';
-import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { sortObjectsByField } from 'lib/arrayUtils';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 import { updateRubricSchema } from 'validation/rubricSchema';
 
 interface RubricDetailsInterface {
@@ -174,8 +173,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const rubricVariantsCollection = db.collection<RubricVariantInterface>(COL_RUBRIC_VARIANTS);
+  const collections = await getDbCollections();
+  const rubricVariantsCollection = collections.rubricVariantsCollection();
   const initialRubricVariants = await rubricVariantsCollection.find({}).toArray();
   const castedRubricVariants = initialRubricVariants.map((document) => {
     return {

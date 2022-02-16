@@ -1,16 +1,15 @@
+import ConsoleTasksList, { ConsoleTasksListInterface } from 'components/console/ConsoleTasksList';
+import Inner from 'components/Inner';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getDbCollections } from 'db/mongodb';
+import { getCompanyTasksListSsr } from 'db/ssr/company/getCompanyTasksListSsr';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import ConsoleTasksList, { ConsoleTasksListInterface } from 'components/console/ConsoleTasksList';
-import Inner from 'components/Inner';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getCompanyTasksListSsr } from 'db/ssr/company/getCompanyTasksListSsr';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Задачи';
 interface TasksListConsumerInterface extends ConsoleTasksListInterface {
@@ -75,8 +74,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
   const companyAggregationResult = await companiesCollection
     .aggregate([
       {

@@ -1,7 +1,7 @@
 import { addEventAsset } from 'db/dao/events/addEventAsset';
-import { NextApiRequest, NextApiResponse } from 'next';
 import { REQUEST_METHOD_POST } from 'lib/config/common';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export const config = {
   api: {

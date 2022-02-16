@@ -1,19 +1,16 @@
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { useAppContext } from 'components/context/appContext';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { SetUserCategoryModalInterface } from 'components/Modal/SetUserCategoryModal';
-import { SORT_ASC } from 'lib/config/common';
-import { CONFIRM_MODAL, SET_USER_CATEGORY_MODAL } from 'lib/config/modalVariants';
-import { useAppContext } from 'components/context/appContext';
-import { COL_COMPANIES, COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface, UserInterface } from 'db/uiInterfaces';
-import { useSetUserCategoryMutation } from 'hooks/mutations/useUserMutations';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsoleUserLayout from 'components/layout/console/ConsoleUserLayout';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { SetUserCategoryModalInterface } from 'components/Modal/SetUserCategoryModal';
+import { COL_ROLES, COL_USER_CATEGORIES } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface, UserInterface } from 'db/uiInterfaces';
+import { useSetUserCategoryMutation } from 'hooks/mutations/useUserMutations';
+import { SORT_ASC } from 'lib/config/common';
+import { CONFIRM_MODAL, SET_USER_CATEGORY_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getFullName } from 'lib/nameUtils';
@@ -23,6 +20,9 @@ import {
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface UserDetailsConsumerInterface {
   user: UserInterface;
@@ -113,9 +113,9 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<UserDetailsPageInterface>> => {
   const { query } = context;
-  const { db } = await getDatabase();
-  const usersCollection = db.collection<UserInterface>(COL_USERS);
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const usersCollection = collections.usersCollection();
+  const companiesCollection = collections.companiesCollection();
   const { props } = await getConsoleInitialData({ context });
 
   const companyId = new ObjectId(`${query.companyId}`);

@@ -1,15 +1,7 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
 import ConsoleRubricProductBrands from 'components/console/ConsoleRubricProductBrands';
-import {
-  COL_BRAND_COLLECTIONS,
-  COL_BRANDS,
-  COL_COMPANIES,
-  COL_MANUFACTURERS,
-} from 'db/collectionNames';
-import { BrandCollectionModel, BrandModel, ManufacturerModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getDbCollections } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   BrandCollectionInterface,
@@ -18,12 +10,13 @@ import {
   ManufacturerInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
-import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getFullProductSummary } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface ProductBrandsInterface {
   product: ProductSummaryInterface;
@@ -109,11 +102,11 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { productId } = query;
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
-  const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
-  const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-  const brandCollectionsCollection = db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
+  const manufacturersCollection = collections.manufacturersCollection();
+  const brandsCollection = collections.brandsCollection();
+  const brandCollectionsCollection = collections.brandCollectionsCollection();
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {

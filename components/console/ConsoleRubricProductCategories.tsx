@@ -1,11 +1,11 @@
-import { alwaysString } from 'lib/arrayUtils';
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import { ProductCategoryInterface, ProductSummaryInterface } from 'db/uiInterfaces';
 import {
   useUpdateProductCategory,
   useUpdateProductCategoryVisibility,
 } from 'hooks/mutations/useProductMutations';
+import { alwaysString } from 'lib/arrayUtils';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import WpCheckbox from '../FormElements/Checkbox/WpCheckbox';
 import Inner from '../Inner';

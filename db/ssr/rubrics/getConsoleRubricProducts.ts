@@ -1,5 +1,23 @@
-import { ObjectId } from 'mongodb';
-import { ParsedUrlQuery } from 'querystring';
+import { castSummaryForUI } from 'db/cast/castSummaryForUI';
+import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import {
+  AttributeInterface,
+  ConsoleRubricProductsInterface,
+  ProductsAggregationInterface,
+  ProductSummaryInterface,
+  ShopProductPricesInterface,
+} from 'db/uiInterfaces';
+import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
+import {
+  paginatedAggregationFinalPipeline,
+  productsPaginatedAggregationFacetsPipeline,
+  ProductsPaginatedAggregationInterface,
+  summaryPipeline,
+} from 'db/utils/constantPipelines';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
 import { DEFAULT_CITY, GENDER_HE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'lib/config/common';
 import {
   getBrandFilterAttribute,
@@ -7,33 +25,13 @@ import {
   getCommonFilterAttribute,
   getPriceAttribute,
 } from 'lib/config/constantAttributes';
-import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/castUrlFilters';
-import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { countProductAttributes, getRubricAllAttributes } from 'lib/productAttributesUtils';
 import { getProductAllSeoContents } from 'lib/seoContentUtils';
 import { getTreeFromList } from 'lib/treeUtils';
-import { COL_PRODUCT_FACETS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { ObjectIdModel, ProductFacetModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import {
-  AttributeInterface,
-  ConsoleRubricProductsInterface,
-  ProductsAggregationInterface,
-  ProductSummaryInterface,
-  RubricInterface,
-  ShopProductInterface,
-  ShopProductPricesInterface,
-} from 'db/uiInterfaces';
-import {
-  paginatedAggregationFinalPipeline,
-  productsPaginatedAggregationFacetsPipeline,
-  ProductsPaginatedAggregationInterface,
-  summaryPipeline,
-} from 'db/utils/constantPipelines';
-import { castSummaryForUI } from 'db/cast/castSummaryForUI';
+import { ObjectId } from 'mongodb';
+import { ParsedUrlQuery } from 'querystring';
 
 export interface GetConsoleRubricProductsInputInterface {
   locale: string;
@@ -71,10 +69,10 @@ export const getConsoleRubricProducts = async ({
   };
 
   try {
-    const { db } = await getDatabase();
-    const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-    const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
-    const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+    const collections = await getDbCollections();
+    const productFacetsCollection = collections.productFacetsCollection();
+    const rubricsCollection = collections.rubricsCollection();
+    const shopProductsCollection = collections.shopProductsCollection();
     const filters = alwaysArray(query.filters);
     const search = alwaysString(query.search);
     const rubricSlug = alwaysString(query.rubricSlug);

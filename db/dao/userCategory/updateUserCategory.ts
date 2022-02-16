@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import {
@@ -6,15 +5,10 @@ import {
   getOperationPermission,
   getRequestParams,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 import { updateUserCategorySchema } from 'validation/userCategorySchema';
-import { COL_COMPANIES, COL_USER_CATEGORIES } from '../../collectionNames';
-import {
-  CompanyModel,
-  TranslationModel,
-  UserCategoryModel,
-  UserCategoryPayloadModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { TranslationModel, UserCategoryPayloadModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateUserCategoryInputInterface {
@@ -34,9 +28,9 @@ export async function updateUserCategory({
 }: DaoPropsInterface<UpdateUserCategoryInputInterface>): Promise<UserCategoryPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-    const userCategoriesCollection = db.collection<UserCategoryModel>(COL_USER_CATEGORIES);
+    const collections = await getDbCollections();
+    const companiesCollection = collections.companiesCollection();
+    const userCategoriesCollection = collections.userCategoriesCollection();
     const errorPayload = {
       success: false,
       message: await getApiMessage('userCategories.update.error'),

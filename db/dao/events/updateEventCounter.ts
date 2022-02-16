@@ -1,10 +1,10 @@
-import { ObjectId } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from 'lib/config/common';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { EventPayloadModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import { DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from 'lib/config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 
 export interface UpdateEventCounterInputInterface {
   eventId: string;

@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { ProductAttributeInterface } from 'db/uiInterfaces';
+import * as React from 'react';
 
 interface CardTextFeaturesInterface {
   textFeatures: ProductAttributeInterface[];

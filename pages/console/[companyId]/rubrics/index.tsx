@@ -1,17 +1,13 @@
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from 'components/Inner';
-import WpTitle from 'components/WpTitle';
-import { COL_RUBRIC_VARIANTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { RubricInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import CompanyRubricsList, {
   CompanyRubricsListInterface,
 } from 'components/layout/CompanyRubricsList';
+import WpTitle from 'components/WpTitle';
+import { COL_RUBRIC_VARIANTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { RubricInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import {
@@ -19,6 +15,9 @@ import {
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 const pageTitle = 'Рубрикатор';
@@ -51,9 +50,9 @@ const Rubrics: NextPage<RubricsInterface> = ({ layoutProps, ...props }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricsInterface>> => {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const { query } = context;
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const rubricsCollection = collections.rubricsCollection();
   const { props } = await getConsoleInitialData({ context });
   if (!props) {
     return {

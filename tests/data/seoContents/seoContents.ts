@@ -1,12 +1,12 @@
-import { getObjectId } from 'mongo-seeding';
+import { SeoContentModel, TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
 } from 'lib/config/common';
-import { SeoContentModel, TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import { getConstructorContentFromText } from 'lib/stringUtils';
+import { getObjectId } from 'mongo-seeding';
 
 const seoLocales: TextUniquenessApiParsedResponseModel[] = [
   {

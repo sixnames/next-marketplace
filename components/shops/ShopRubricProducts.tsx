@@ -1,8 +1,3 @@
-import { ROLE_SLUG_ADMIN } from 'lib/config/common';
-import { Form, Formik } from 'formik';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { useUserContext } from 'components/context/userContext';
 import { ShopProductModel } from 'db/dbModels';
 import {
@@ -10,16 +5,20 @@ import {
   ShopRubricProductsInterface,
   SupplierProductInterface,
 } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
 import { useDeleteProductFromShopMutation } from 'generated/apolloComponents';
 import { useUpdateManyShopProducts } from 'hooks/mutations/useShopProductMutations';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import useValidationSchema from '../../hooks/useValidationSchema';
-import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import { alwaysArray } from 'lib/arrayUtils';
+import { ROLE_SLUG_ADMIN } from 'lib/config/common';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getNumWord } from 'lib/i18n';
 import { getCmsCompanyLinks, getConsoleShopLinks } from 'lib/linkUtils';
 import { noNaN } from 'lib/numbers';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import { updateManyShopProductsSchema } from 'validation/shopSchema';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
 import AppContentFilter from '../AppContentFilter';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
@@ -29,6 +28,7 @@ import FormattedDateTime from '../FormattedDateTime';
 import FormikInput from '../FormElements/Input/FormikInput';
 import FormikRouterSearch from '../FormElements/Search/FormikRouterSearch';
 import Inner from '../Inner';
+import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import WpLink from '../Link/WpLink';
 import { ConfirmModalInterface } from '../Modal/ConfirmModal';
 import Pager from '../Pager';

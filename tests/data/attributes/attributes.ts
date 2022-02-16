@@ -1,4 +1,10 @@
 import {
+  AttributeModel,
+  AttributePositionInTitleModel,
+  AttributeVariantModel,
+  AttributeViewVariantModel,
+} from 'db/dbModels';
+import {
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_END,
@@ -12,12 +18,6 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   DEFAULT_LOCALE,
 } from 'lib/config/common';
-import {
-  AttributeModel,
-  AttributePositionInTitleModel,
-  AttributeVariantModel,
-  AttributeViewVariantModel,
-} from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const booleans = {

@@ -1,8 +1,3 @@
-import {
-  REQUEST_METHOD_DELETE,
-  REQUEST_METHOD_PATCH,
-  REQUEST_METHOD_POST,
-} from 'lib/config/common';
 import { AddAttributesGroupToRubricInputInterface } from 'db/dao/rubrics/addAttributesGroupToRubric';
 import { CreateRubricInputInterface } from 'db/dao/rubrics/createRubric';
 import { DeleteAttributesGroupFromRubricInputInterface } from 'db/dao/rubrics/deleteAttributesGroupFromRubric';
@@ -12,6 +7,11 @@ import { ToggleCmsCardAttributeInRubricInputInterface } from 'db/dao/rubrics/tog
 import { UpdateRubricInputInterface } from 'db/dao/rubrics/updateRubric';
 import { RubricPayloadModel } from 'db/dbModels';
 import { useMutationHandler } from 'hooks/mutations/useFetch';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from 'lib/config/common';
 
 const basePath = '/api/rubrics';
 

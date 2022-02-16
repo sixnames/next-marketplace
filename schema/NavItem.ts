@@ -1,16 +1,16 @@
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { SORT_ASC } from '../lib/config/common';
-import { COL_NAV_ITEMS } from '../db/collectionNames';
+import { COL_NAV_ITEMS } from 'db/collectionNames';
+import { NavItemModel, NavItemPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
-import { NavItemModel, NavItemPayloadModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { SORT_ASC } from 'lib/config/common';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
-import { createNavItemSchema, updateNavItemSchema } from '../validation/navItemSchema';
+} from 'lib/sessionHelpers';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { createNavItemSchema, updateNavItemSchema } from 'validation/navItemSchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const NavItem = objectType({
   name: 'NavItem',
@@ -37,8 +37,8 @@ export const NavItem = objectType({
     t.nonNull.list.nonNull.field('children', {
       type: 'NavItem',
       resolve: async (source): Promise<NavItemModel[]> => {
-        const { db } = await getDatabase();
-        const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
+        const collections = await getDbCollections();
+        const navItemsCollection = collections.navItemsCollection();
         const children = await navItemsCollection
           .find(
             { parentId: source._id },
@@ -126,8 +126,8 @@ export const NavItemMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
+          const collections = await getDbCollections();
+          const navItemsCollection = collections.navItemsCollection();
           const { input } = args;
 
           // Check if nav item already exist
@@ -211,8 +211,8 @@ export const NavItemMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
+          const collections = await getDbCollections();
+          const navItemsCollection = collections.navItemsCollection();
           const { input } = args;
           const { _id, ...values } = input;
 
@@ -305,8 +305,8 @@ export const NavItemMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
+          const collections = await getDbCollections();
+          const navItemsCollection = collections.navItemsCollection();
           const { _id } = args;
 
           // Delete nav item

@@ -1,12 +1,12 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { OPTIONS_GROUP_VARIANT_TEXT } from '../../lib/config/common';
-import { useAppContext } from '../context/appContext';
+import * as React from 'react';
 import { CreateOptionsGroupInput, OptionsGroupVariant } from '../../generated/apolloComponents';
 import { useConstantOptions } from '../../hooks/useConstantOptions';
 import useValidationSchema from '../../hooks/useValidationSchema';
+import { OPTIONS_GROUP_VARIANT_TEXT } from '../../lib/config/common';
 import { optionsGroupModalSchema } from '../../validation/optionsGroupSchema';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import FormikSelect from '../FormElements/Select/FormikSelect';
 import ModalButtons from './ModalButtons';

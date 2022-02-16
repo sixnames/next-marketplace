@@ -1,7 +1,5 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { GENDER_ENUMS } from '../../lib/config/common';
-import { useAppContext } from '../context/appContext';
+import * as React from 'react';
 import { OptionVariantsModel } from '../../db/dbModels';
 import {
   AddOptionToGroupInput,
@@ -9,8 +7,10 @@ import {
   UpdateOptionInGroupInput,
 } from '../../generated/apolloComponents';
 import useValidationSchema from '../../hooks/useValidationSchema';
+import { GENDER_ENUMS } from '../../lib/config/common';
 import { optionInGroupModalSchema } from '../../validation/optionsGroupSchema';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import OptionMainFields from '../FormTemplates/OptionMainFields';
 import ModalButtons from './ModalButtons';
 import ModalFrame from './ModalFrame';

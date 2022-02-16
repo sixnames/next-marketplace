@@ -1,10 +1,10 @@
-import * as React from 'react';
-import Router from 'next/router';
-import { debounce } from 'lodash';
+import { useConfigContext } from 'components/context/configContext';
 import { ADULT_FALSE, ADULT_KEY, DEFAULT_CITY, DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { ADULT_MODAL } from 'lib/config/modalVariants';
+import { debounce } from 'lodash';
+import Router from 'next/router';
+import * as React from 'react';
 import { IpInfoInterface } from 'types/clientTypes';
-import { useConfigContext } from 'components/context/configContext';
 
 interface ContextState {
   isModal: {

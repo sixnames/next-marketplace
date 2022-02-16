@@ -1,5 +1,5 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import { ManufacturerModel } from 'db/dbModels';
+import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import { getObjectId } from 'mongo-seeding';
 
 const manufacturers: ManufacturerModel[] = [

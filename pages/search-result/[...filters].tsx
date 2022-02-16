@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Catalogue, { CatalogueInterface } from '../../components/Catalogue';
-import { alwaysArray } from '../../lib/arrayUtils';
 import { getCatalogueData } from 'db/utils/catalogueUtils';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
+import Catalogue, { CatalogueInterface } from '../../components/Catalogue';
+import { alwaysArray } from '../../lib/arrayUtils';
 import { castDbData, getSiteInitialData } from '../../lib/ssrUtils';
 
 const SearchResultPage: NextPage<CatalogueInterface> = ({ ...props }) => {

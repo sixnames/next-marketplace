@@ -1,12 +1,12 @@
+import { BlogPostModel } from 'db/dbModels';
 import {
   ASSETS_DIST_BLOG,
-  FILTER_SEPARATOR,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
+  FILTER_SEPARATOR,
   PAGE_STATE_PUBLISHED,
 } from 'lib/config/common';
-import { BlogPostModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();

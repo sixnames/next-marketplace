@@ -1,16 +1,16 @@
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { SORT_ASC } from 'lib/config/common';
-import { COL_ATTRIBUTES, COL_METRICS } from 'db/collectionNames';
+import { COL_METRICS } from 'db/collectionNames';
+import { MetricModel, MetricPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
-import { AttributeModel, MetricModel, MetricPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { SORT_ASC } from 'lib/config/common';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { createMetricSchema, updateMetricSchema } from 'validation/metricSchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const Metric = objectType({
   name: 'Metric',
@@ -38,8 +38,8 @@ export const MetricQueries = extendType({
       type: 'Metric',
       description: 'Should return all metrics list',
       resolve: async (): Promise<MetricModel[]> => {
-        const { db } = await getDatabase();
-        const metricsCollection = db.collection<MetricModel>(COL_METRICS);
+        const collections = await getDbCollections();
+        const metricsCollection = collections.metricsCollection();
         const metrics = await metricsCollection.find({}, { sort: { itemId: SORT_ASC } }).toArray();
         return metrics;
       },
@@ -109,8 +109,8 @@ export const MetricMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const metricsCollection = db.collection<MetricModel>(COL_METRICS);
+          const collections = await getDbCollections();
+          const metricsCollection = collections.metricsCollection();
           const { input } = args;
 
           // Check if metric is already exist
@@ -163,11 +163,11 @@ export const MetricMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<MetricPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const metricsCollection = db.collection<MetricModel>(COL_METRICS);
-        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+        const collections = await getDbCollections();
+        const metricsCollection = collections.metricsCollection();
+        const attributesCollection = collections.attributesCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: MetricPayloadModel = {
           success: false,
@@ -313,9 +313,9 @@ export const MetricMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const metricsCollection = db.collection<MetricModel>(COL_METRICS);
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+          const collections = await getDbCollections();
+          const metricsCollection = collections.metricsCollection();
+          const attributesCollection = collections.attributesCollection();
           const { _id } = args;
 
           // Check metric availability

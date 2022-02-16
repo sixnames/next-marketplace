@@ -1,10 +1,10 @@
 import { UpdateRubricInputInterface } from 'db/dao/rubrics/updateRubric';
+import { CompanyInterface, RubricInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { useUpdateRubric } from 'hooks/mutations/useRubricMutations';
 import * as React from 'react';
-import { CompanyInterface, RubricInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
-import useValidationSchema from '../../hooks/useValidationSchema';
 import { updateRubricSchema } from 'validation/rubricSchema';
+import useValidationSchema from '../../hooks/useValidationSchema';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import Inner from '../Inner';

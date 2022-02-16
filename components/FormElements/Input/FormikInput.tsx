@@ -1,7 +1,7 @@
-import * as React from 'react';
-import WpInput, { WpInputPropsInterface } from './WpInput';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
+import * as React from 'react';
+import WpInput, { WpInputPropsInterface } from './WpInput';
 
 export interface FormikInputPropsInterface extends WpInputPropsInterface {
   frameClass?: string;

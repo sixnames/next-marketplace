@@ -1,11 +1,11 @@
-import { ObjectId } from 'mongodb';
+import { ProductPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { deleteProductAlgoliaObjects } from 'lib/algolia/productAlgoliaUtils';
 import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { ProductPayloadModel } from 'db/dbModels';
-import { getDbCollections } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface DeleteProductInputInterface {
   productId: string;

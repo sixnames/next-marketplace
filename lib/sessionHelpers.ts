@@ -1,8 +1,8 @@
+import { COL_ROLE_RULES } from 'db/collectionNames';
+import { UserModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { RoleInterface } from 'db/uiInterfaces';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
-import nookies from 'nookies';
-import { ArraySchema, ObjectSchema } from 'yup';
+import { getApiMessageValue, getValidationMessages } from 'db/utils/apiMessageUtils';
 import {
   CITY_COOKIE_KEY,
   COMPANY_SLUG_COOKIE_KEY,
@@ -16,13 +16,13 @@ import {
   ROLE_SLUG_GUEST,
   SECONDARY_LOCALE,
 } from 'lib/config/common';
-import { COL_ROLE_RULES, COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { RoleModel, RoleRuleModel, UserModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/react';
+import nookies from 'nookies';
 import { NexusContext } from 'types/apiContextTypes';
 import { MessageSlug } from 'types/messageSlugTypes';
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
-import { getApiMessageValue, getValidationMessages } from 'db/utils/apiMessageUtils';
+import { ArraySchema, ObjectSchema } from 'yup';
 import { getCityFieldData, getI18nLocaleValue } from './i18n';
 import { RoleRuleSlugType } from './roleRuleUtils';
 
@@ -34,8 +34,8 @@ export const getSessionUser = async (context: NexusContext): Promise<UserModel |
   }
 
   // Get session user from db
-  const { db } = await getDatabase();
-  const usersCollection = db.collection<UserModel>(COL_USERS);
+  const collections = await getDbCollections();
+  const usersCollection = collections.usersCollection();
   const user = await usersCollection.findOne({ email: session.user.email });
 
   return user;
@@ -52,8 +52,8 @@ export const getSessionRole = async (
   // Get session user
   const user = await getSessionUser(context);
 
-  const { db } = await getDatabase();
-  const rolesCollection = db.collection<RoleModel>(COL_ROLES);
+  const collections = await getDbCollections();
+  const rolesCollection = collections.rolesCollection();
 
   // Get guest role if user is unauthenticated
   const roleMatch = user ? { _id: user.roleId } : { slug: ROLE_SLUG_GUEST };
@@ -127,8 +127,8 @@ export const getOperationPermission = async ({
   context,
   slug,
 }: GetOperationPermissionInterface): Promise<GetOperationPermissionPayloadInterface> => {
-  const { db } = await getDatabase();
-  const roleRulesCollection = db.collection<RoleRuleModel>(COL_ROLE_RULES);
+  const collections = await getDbCollections();
+  const roleRulesCollection = collections.roleRulesCollection();
   const { role, user } = await getSessionRole(context);
 
   if (!user) {

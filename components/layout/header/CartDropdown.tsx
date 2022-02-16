@@ -1,17 +1,17 @@
-import * as React from 'react';
-import { useRouter } from 'next/router';
 import ButtonCross from 'components/button/ButtonCross';
 import ControlButton from 'components/button/ControlButton';
 import WpButton from 'components/button/WpButton';
-import Currency from 'components/Currency';
-import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
-import ProductShopPrices from 'components/ProductShopPrices';
-import WpImage from 'components/WpImage';
 import { useConfigContext } from 'components/context/configContext';
 import { useNotificationsContext } from 'components/context/notificationsContext';
 import { useSiteContext } from 'components/context/siteContext';
-import { noNaN } from 'lib/numbers';
+import Currency from 'components/Currency';
+import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import ProductSnippetPrice from 'components/layout/snippet/ProductSnippetPrice';
+import ProductShopPrices from 'components/ProductShopPrices';
+import WpImage from 'components/WpImage';
+import { noNaN } from 'lib/numbers';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 const cartDropdownCssVars = {
   '--framePadding': '1.5rem',

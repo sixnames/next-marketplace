@@ -1,11 +1,11 @@
-import { GENDER_IT } from 'lib/config/common';
-import { CreateRubricInputInterface } from 'db/dao/rubrics/createRubric';
-import { useCreateRubric } from 'hooks/mutations/useRubricMutations';
-import * as React from 'react';
-import { Form, Formik } from 'formik';
 import { useAppContext } from 'components/context/appContext';
-import useValidationSchema from '../../hooks/useValidationSchema';
+import { CreateRubricInputInterface } from 'db/dao/rubrics/createRubric';
+import { Form, Formik } from 'formik';
+import { useCreateRubric } from 'hooks/mutations/useRubricMutations';
+import { GENDER_IT } from 'lib/config/common';
+import * as React from 'react';
 import { createRubricSchema } from 'validation/rubricSchema';
+import useValidationSchema from '../../hooks/useValidationSchema';
 import WpButton from '../button/WpButton';
 import RubricMainFields, { RubricMainFieldsInterface } from '../FormTemplates/RubricMainFields';
 import ModalButtons from './ModalButtons';

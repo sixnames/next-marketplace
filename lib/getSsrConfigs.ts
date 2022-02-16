@@ -1,13 +1,12 @@
+import { castConfigs } from 'db/cast/castConfigs';
+import { ConfigModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { SsrConfigsInterface } from 'db/uiInterfaces';
 import {
   CATALOGUE_PRODUCTS_LIMIT,
   CONFIG_GROUP_PROJECT,
   DEFAULT_COMPANY_SLUG,
 } from 'lib/config/common';
-import { castConfigs } from 'db/cast/castConfigs';
-import { COL_CONFIGS, COL_SHOPS } from 'db/collectionNames';
-import { ConfigModel, ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { SsrConfigsInterface } from 'db/uiInterfaces';
 import {
   getConfigBooleanValue,
   getConfigListValue,
@@ -21,9 +20,9 @@ export const getSsrConfigs = async ({
   citySlug,
   companySlug,
 }: GetPageInitialDataCommonInterface): Promise<SsrConfigsInterface> => {
-  const { db } = await getDatabase();
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const collections = await getDbCollections();
+  const configsCollection = collections.configsCollection();
+  const shopsCollection = collections.shopsCollection();
   const companyShopsCount = await shopsCollection.countDocuments({
     companySlug,
     citySlug,

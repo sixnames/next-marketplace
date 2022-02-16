@@ -1,13 +1,13 @@
-import { SORT_DESC } from 'lib/config/common';
 import { castRubricForUI } from 'db/cast/castRubricForUI';
-import { getTreeFromList } from 'lib/treeUtils';
-import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { COL_CATEGORIES } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
+import { SORT_DESC } from 'lib/config/common';
+import { getTreeFromList } from 'lib/treeUtils';
 
 export async function getConfigRubrics(locale: string) {
-  const { db } = await getDatabase();
-  const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.rubricsCollection();
   const rubricsAggregation = await rubricsCollection
     .aggregate<RubricInterface>([
       {

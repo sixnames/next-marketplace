@@ -7,12 +7,12 @@ import {
   useUpdateShopAssetIndexMutation,
 } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import { alwaysArray } from '../../lib/arrayUtils';
 import AssetsManager from '../AssetsManager';
 import FormikImageUpload from '../FormElements/Upload/FormikImageUpload';
 import WpDropZone from '../FormElements/Upload/WpDropZone';
 import Inner from '../Inner';
+import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 
 export type ShopAssetsInterface = ConsoleShopLayoutInterface;
 

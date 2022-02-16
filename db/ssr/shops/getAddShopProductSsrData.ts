@@ -1,14 +1,14 @@
-import { ObjectId } from 'mongodb';
-import { alwaysString } from 'lib/arrayUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { ShopAddProductsListRouteReduced } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/add/[...filters]';
-import { COL_COMPANIES, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { ShopInterface } from 'db/uiInterfaces';
+import { COL_COMPANIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import {
   getConsoleRubricProducts,
   GetConsoleRubricProductsInputInterface,
 } from 'db/ssr/rubrics/getConsoleRubricProducts';
+import { ShopInterface } from 'db/uiInterfaces';
+import { alwaysString } from 'lib/arrayUtils';
+import { getFieldStringLocale } from 'lib/i18n';
+import { ObjectId } from 'mongodb';
+import { ShopAddProductsListRouteReduced } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/add/[...filters]';
 
 interface GetAddShopProductSsrDataInterface extends GetConsoleRubricProductsInputInterface {}
 
@@ -19,8 +19,8 @@ export async function getAddShopProductSsrData({
   currency,
   companySlug,
 }: GetAddShopProductSsrDataInterface): Promise<ShopAddProductsListRouteReduced | null> {
-  const { db } = await getDatabase();
-  const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
+  const collections = await getDbCollections();
+  const shopsCollection = collections.shopsCollection();
   const shopId = alwaysString(query.shopId);
 
   // console.log(' ');

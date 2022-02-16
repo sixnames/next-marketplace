@@ -1,5 +1,9 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
+import * as React from 'react';
+import { UpdateAttributeInputInterface } from '../../db/dao/attributes/updateAttribute';
+import { AttributeInterface, MetricInterface, OptionsGroupInterface } from '../../db/uiInterfaces';
+import { useConstantOptions } from '../../hooks/useConstantOptions';
+import useValidationSchema from '../../hooks/useValidationSchema';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
@@ -7,13 +11,9 @@ import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   DEFAULT_LOCALE,
 } from '../../lib/config/common';
-import { useAppContext } from '../context/appContext';
-import { UpdateAttributeInputInterface } from '../../db/dao/attributes/updateAttribute';
-import { AttributeInterface, MetricInterface, OptionsGroupInterface } from '../../db/uiInterfaces';
-import { useConstantOptions } from '../../hooks/useConstantOptions';
-import useValidationSchema from '../../hooks/useValidationSchema';
 import { attributeInGroupModalSchema } from '../../validation/attributesGroupSchema';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import FormikSelect from '../FormElements/Select/FormikSelect';

@@ -1,12 +1,11 @@
+import { getSsrDomainCompany } from 'db/ssr/company/getSsrDomainCompany';
 import { GetServerSidePropsContext } from 'next';
 import { getDomain } from 'tldts';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from './config/common';
-import { COL_CITIES } from '../db/collectionNames';
-import { getSsrDomainCompany } from 'db/ssr/company/getSsrDomainCompany';
 import { CityModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { getDbCollections } from '../db/mongodb';
 import { PagePropsInterface } from '../pages/_app';
 import { alwaysString } from './arrayUtils';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from './config/common';
 import { getPageDataSsr } from './getPageDataSsr';
 import { getI18nLocaleValue } from './i18n';
 import { noNaN } from './numbers';
@@ -27,8 +26,8 @@ export async function getPageCompanySsr({
   context,
 }: GetPageSsrInitialStateInterface): Promise<GetPageSsrInitialStatePayloadInterface> {
   const { locale, resolvedUrl, query } = context;
-  const { db } = await getDatabase();
-  const citiesCollection = db.collection<CityModel>(COL_CITIES);
+  const collections = await getDbCollections();
+  const citiesCollection = collections.citiesCollection();
 
   const path = `${resolvedUrl}`;
   const host = `${context.req.headers.host}`;

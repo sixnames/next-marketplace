@@ -1,4 +1,21 @@
-import { ObjectId } from 'mongodb';
+import { castSummaryForUI } from 'db/cast/castSummaryForUI';
+import { COL_PROMO_PRODUCTS } from 'db/collectionNames';
+import { ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import {
+  AttributeInterface,
+  GetConsoleRubricPromoProductsPayloadInterface,
+  ShopProductInterface,
+  ShopProductsAggregationInterface,
+} from 'db/uiInterfaces';
+import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
+import {
+  paginatedAggregationFinalPipeline,
+  productsPaginatedAggregationFacetsPipeline,
+  ProductsPaginatedAggregationInterface,
+  shopProductDocsFacetPipeline,
+} from 'db/utils/constantPipelines';
+import { castUrlFilters } from 'lib/castUrlFilters';
 import {
   DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
@@ -12,28 +29,10 @@ import {
   getCommonFilterAttribute,
   getPriceAttribute,
 } from 'lib/config/constantAttributes';
-import { castUrlFilters } from 'lib/castUrlFilters';
-import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import { noNaN } from 'lib/numbers';
 import { castSupplierProductsList } from 'lib/productUtils';
 import { getTreeFromList } from 'lib/treeUtils';
-import { COL_PROMO_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import {
-  AttributeInterface,
-  GetConsoleRubricPromoProductsPayloadInterface,
-  RubricInterface,
-  ShopProductInterface,
-  ShopProductsAggregationInterface,
-} from 'db/uiInterfaces';
-import {
-  paginatedAggregationFinalPipeline,
-  productsPaginatedAggregationFacetsPipeline,
-  ProductsPaginatedAggregationInterface,
-  shopProductDocsFacetPipeline,
-} from 'db/utils/constantPipelines';
-import { castSummaryForUI } from 'db/cast/castSummaryForUI';
+import { ObjectId } from 'mongodb';
 
 interface GetConsolePromoProductsInterface {
   companyId: ObjectIdModel;
@@ -71,9 +70,9 @@ export async function getConsolePromoProducts({
   };
 
   try {
-    const { db } = await getDatabase();
-    const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
-    const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+    const collections = await getDbCollections();
+    const rubricsCollection = collections.rubricsCollection();
+    const shopProductsCollection = collections.shopProductsCollection();
 
     // get rubric
     const rubric = await rubricsCollection.findOne({

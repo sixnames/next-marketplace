@@ -1,10 +1,9 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { COL_ORDER_PRODUCTS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
-import { OrderProductModel, OrderStatusModel, ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { COL_ORDER_PRODUCTS, COL_ORDER_STATUSES } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import { SyncParamsInterface, SyncUpdateOrderProductInterface } from 'db/syncInterfaces';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'PATCH') {
@@ -35,11 +34,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const { db } = await getDatabase();
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-  const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
-  const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
-  const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
+  const collections = await getDbCollections();
+  const shopsCollection = collections.shopsCollection();
+  const ordersCollection = collections.ordersCollection();
+  const orderProductsCollection = collections.ordersProductsCollection();
+  const orderStatusesCollection = collections.orderStatusesCollection();
 
   // get shop
   const shop = await shopsCollection.findOne({ token });

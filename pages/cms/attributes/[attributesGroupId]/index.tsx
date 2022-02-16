@@ -1,26 +1,25 @@
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import Head from 'next/head';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { Form, Formik } from 'formik';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import WpTitle from 'components/WpTitle';
-import { COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, AttributesGroupInterface } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
 import { useUpdateAttributesGroupMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import AppSubNav from 'components/layout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Head from 'next/head';
+import * as React from 'react';
 import { attributesGroupModalSchema } from 'validation/attributesGroupSchema';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 const pageTitle = `Группы атрибутов`;
 
@@ -154,8 +153,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const attributesGroupsCollection = db.collection<AttributesGroupInterface>(COL_ATTRIBUTES_GROUPS);
+  const collections = await getDbCollections();
+  const attributesGroupsCollection = collections.attributesGroupsCollection();
 
   const attributesGroup = await attributesGroupsCollection.findOne({
     _id: new ObjectId(`${query.attributesGroupId}`),

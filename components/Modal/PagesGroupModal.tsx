@@ -1,9 +1,9 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { DEFAULT_LOCALE } from '../../lib/config/common';
+import * as React from 'react';
 import { PagesGroupInterface } from '../../db/uiInterfaces';
 import { useCreatePagesGroup, useUpdatePagesGroup } from '../../hooks/mutations/usePageMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { DEFAULT_LOCALE } from '../../lib/config/common';
 import { noNaN } from '../../lib/numbers';
 import { ResolverValidationSchema } from '../../lib/sessionHelpers';
 import WpButton from '../button/WpButton';

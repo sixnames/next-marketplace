@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { DEFAULT_COMPANY_SLUG, REQUEST_METHOD_PATCH } from '../lib/config/common';
 import { UpdateProductCounterInputInterface } from '../db/dao/product/updateProductCounter';
+import { DEFAULT_COMPANY_SLUG, REQUEST_METHOD_PATCH } from '../lib/config/common';
 
 const useUpdateCardCounter = ({
   shopProductIds,

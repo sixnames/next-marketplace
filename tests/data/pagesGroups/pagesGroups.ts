@@ -1,5 +1,5 @@
-import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { PagesGroupModel } from 'db/dbModels';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getObjectId } from 'mongo-seeding';
 
 const pagesGroups: PagesGroupModel[] = [

@@ -1,9 +1,8 @@
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { getRequestParams, getSessionUser } from 'lib/sessionHelpers';
-import { COL_USERS } from '../../collectionNames';
-import { UserModel, UserPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { UserPayloadModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateMyProfileInputInterface {
@@ -21,8 +20,8 @@ export async function updateMyProfile({
   try {
     const { getApiMessage } = await getRequestParams(context);
     const sessionUser = await getSessionUser(context);
-    const { db } = await getDatabase();
-    const usersCollection = db.collection<UserModel>(COL_USERS);
+    const collections = await getDbCollections();
+    const usersCollection = collections.usersCollection();
 
     // check if user is authenticated
     if (!sessionUser) {

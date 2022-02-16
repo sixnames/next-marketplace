@@ -1,8 +1,3 @@
-import {
-  REQUEST_METHOD_DELETE,
-  REQUEST_METHOD_PATCH,
-  REQUEST_METHOD_POST,
-} from 'lib/config/common';
 import { CreateBrandInputInterface } from 'db/dao/brands/createBrand';
 import { CreateBrandCollectionInputInterface } from 'db/dao/brands/createBrandCollection';
 import { DeleteBrandInputInterface } from 'db/dao/brands/deleteBrand';
@@ -11,6 +6,11 @@ import { UpdateBrandInputInterface } from 'db/dao/brands/updateBrand';
 import { UpdateBrandCollectionInputInterface } from 'db/dao/brands/updateBrandCollection';
 import { BrandCollectionPayloadModel, BrandPayloadModel } from 'db/dbModels';
 import { useMutationHandler } from 'hooks/mutations/useFetch';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from 'lib/config/common';
 
 const brandApiBasePath = '/api/brand';
 const brandCollectionApiBasePath = '/api/brand-collections';

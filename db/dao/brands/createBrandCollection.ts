@@ -1,15 +1,15 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
-import { COL_BRAND_COLLECTIONS, COL_BRANDS } from 'db/collectionNames';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
+import { COL_BRAND_COLLECTIONS } from 'db/collectionNames';
 import {
   BrandBaseModel,
-  BrandCollectionModel,
   BrandCollectionPayloadModel,
   BrandModel,
   TranslationModel,
 } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
+import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextNumberItemId } from 'lib/itemIdUtils';
 import {
@@ -32,9 +32,9 @@ export async function createBrandCollection({
 }: DaoPropsInterface<CreateBrandCollectionInputInterface>): Promise<BrandCollectionPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-    const brandsCollectionsCollection = db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
+    const collections = await getDbCollections();
+    const brandsCollection = collections.brandsCollection();
+    const brandsCollectionsCollection = collections.brandCollectionsCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

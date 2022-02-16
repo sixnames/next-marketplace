@@ -1,13 +1,13 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { createPromoCode } from 'db/dao/promo/createPromoCode';
+import { deletePromoCode } from 'db/dao/promo/deletePromoCode';
+import { updatePromoCode } from 'db/dao/promo/updatePromoCode';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
 } from 'lib/config/common';
-import { createPromoCode } from 'db/dao/promo/createPromoCode';
-import { deletePromoCode } from 'db/dao/promo/deletePromoCode';
-import { updatePromoCode } from 'db/dao/promo/updatePromoCode';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // create

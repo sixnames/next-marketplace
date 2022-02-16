@@ -1,5 +1,7 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import { LinkProps } from 'next/link';
 import * as React from 'react';
+import { MessageSlug } from 'types/messageSlugTypes';
 import {
   AttributeModel,
   AttributesGroupModel,
@@ -17,10 +19,13 @@ import {
   CompanyModel,
   ConfigModel,
   ContactsModel,
+  EventRubricModel,
+  EventSummaryModel,
   FormattedPhoneModel,
   GiftCertificateLogModel,
   GiftCertificateModel,
   IconModel,
+  MainPageBannerModel,
   ManufacturerModel,
   MetricModel,
   NavItemModel,
@@ -33,17 +38,19 @@ import {
   OrderLogModel,
   OrderModel,
   OrderProductModel,
+  OrderPromoModel,
   OrderRequestModel,
   OrderStatusModel,
   PageModel,
   PagesGroupModel,
   PayloadType,
-  ProductSummaryAttributeModel,
   ProductCardBreadcrumbModel,
+  ProductFacetModel,
+  ProductSummaryAttributeModel,
+  ProductSummaryModel,
   ProductVariantItemModel,
   ProductVariantModel,
-  ProductFacetModel,
-  ProductSummaryModel,
+  PromoCodeModel,
   PromoModel,
   PromoProductModel,
   RoleModel,
@@ -55,23 +62,16 @@ import {
   ShopProductModel,
   SupplierModel,
   SupplierProductModel,
+  TaskLogModel,
+  TaskModel,
+  TaskVariantModel,
   TranslationModel,
   UserCashbackLogModel,
   UserCashbackModel,
   UserCategoryModel,
   UserModel,
   UserNotificationsModel,
-  PromoCodeModel,
-  OrderPromoModel,
-  MainPageBannerModel,
-  TaskModel,
-  TaskVariantModel,
-  TaskLogModel,
-  EventRubricModel,
-  EventSummaryModel,
 } from './dbModels';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { MessageSlug } from 'types/messageSlugTypes';
 
 // Blog
 export interface BlogAttributeInterface extends BlogAttributeModel {
@@ -233,7 +233,7 @@ export interface ProductVariantItemInterface extends ProductVariantItemModel {
   summary?: ProductSummaryInterface;
   shopProducts?: ShopProductInterface[];
   option?: OptionInterface | null;
-  isCurrent: boolean;
+  isCurrent?: boolean;
 }
 
 export interface ProductVariantInterface extends ProductVariantModel {

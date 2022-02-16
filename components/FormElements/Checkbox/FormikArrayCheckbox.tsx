@@ -1,7 +1,7 @@
-import * as React from 'react';
 import { Field, FieldProps } from 'formik';
-import WpCheckbox from './WpCheckbox';
 import { get } from 'lodash';
+import * as React from 'react';
+import WpCheckbox from './WpCheckbox';
 
 interface FormikArrayCheckboxInterface {
   name: string;

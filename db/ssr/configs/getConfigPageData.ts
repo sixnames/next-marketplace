@@ -1,9 +1,8 @@
-import { CONFIG_VARIANT_ASSET, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'lib/config/common';
-import { COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
 import { ConfigModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { getConfigTemplates } from 'db/utils/getConfigTemplates';
+import { CONFIG_VARIANT_ASSET, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'lib/config/common';
 import { castDbData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 
@@ -22,9 +21,9 @@ export async function getConfigPageData({
   companyId,
   group,
 }: GetConfigPageDataInterface): Promise<GetConfigPageDataPayloadInterface | null> {
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
+  const configsCollection = collections.configsCollection();
   const isDefault = companyId === DEFAULT_COMPANY_SLUG;
 
   if (!companyId || companyId === 'undefined') {

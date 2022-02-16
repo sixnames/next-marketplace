@@ -1,3 +1,4 @@
+import { TaskModel } from 'db/dbModels';
 import { DEFAULT_COMPANY_SLUG, TASK_STATE_PENDING } from 'lib/config/common';
 import {
   TASK_VARIANT_SLUG_PRODUCT_ASSETS,
@@ -8,7 +9,6 @@ import {
   TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
   TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
 } from 'lib/config/constantSelects';
-import { TaskModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();

@@ -1,23 +1,23 @@
-import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
-import { ObjectId } from 'mongodb';
+import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface, ProductVariantInterface } from 'db/uiInterfaces';
 import {
   ATTRIBUTE_VARIANT_SELECT,
   DEFAULT_COMPANY_SLUG,
   TASK_STATE_IN_PROGRESS,
 } from 'lib/config/common';
+import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 import { createProductConnectionSchema } from 'validation/productSchema';
-import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
-import { getDbCollections } from 'db/mongodb';
-import { DaoPropsInterface, ProductVariantInterface } from 'db/uiInterfaces';
 
 export interface CreateProductVariantInputInterface {
   productId: string;

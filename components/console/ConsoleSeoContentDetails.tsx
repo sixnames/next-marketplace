@@ -1,8 +1,8 @@
-import { Form, Formik } from 'formik';
-import * as React from 'react';
 import { useConfigContext } from 'components/context/configContext';
 import { SeoContentModel } from 'db/dbModels';
+import { Form, Formik } from 'formik';
 import { useUpdateSeoContent } from 'hooks/mutations/useSeoContentMutations';
+import * as React from 'react';
 import WpButton from '../button/WpButton';
 import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';

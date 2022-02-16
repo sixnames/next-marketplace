@@ -1,18 +1,17 @@
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { ObjectId } from 'mongodb';
-import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
+import { useSiteUserContext } from '../../components/context/siteUserContext';
 import Currency from '../../components/Currency';
+import ProfileLayout from '../../components/layout/ProfileLayout/ProfileLayout';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
 import RequestError from '../../components/RequestError';
 import WpTable, { WpTableColumn } from '../../components/WpTable';
 import WpTitle from '../../components/WpTitle';
-import { useSiteUserContext } from '../../components/context/siteUserContext';
-import { COL_GIFT_CERTIFICATES } from '../../db/collectionNames';
 import { getPageSessionUser } from '../../db/dao/user/getPageSessionUser';
-import { getDatabase } from '../../db/mongodb';
+import { getDbCollections } from '../../db/mongodb';
 import { GiftCertificateInterface } from '../../db/uiInterfaces';
-import ProfileLayout from '../../components/layout/ProfileLayout/ProfileLayout';
-import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale, getNumWord } from '../../lib/i18n';
 import { castDbData, getSiteInitialData } from '../../lib/ssrUtils';
 
@@ -103,8 +102,8 @@ const ProfileGiftCertificatesPage: NextPage<ProfileGiftCertificatesPageInterface
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProfileGiftCertificatesPageInterface>> {
-  const { db } = await getDatabase();
-  const giftCertificatesCollection = db.collection<GiftCertificateInterface>(COL_GIFT_CERTIFICATES);
+  const collections = await getDbCollections();
+  const giftCertificatesCollection = collections.giftCertificatesCollection();
   const { props } = await getSiteInitialData({
     context,
   });

@@ -1,16 +1,16 @@
-import { ObjectId } from 'mongodb';
+import { COL_PAGES_GROUP, COL_PAGES_GROUP_TEMPLATES } from 'db/collectionNames';
+import { PagesGroupPayloadModel, TranslationModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 import { updatePagesGroupSchema } from 'validation/pagesSchema';
-import { COL_PAGES_GROUP, COL_PAGES_GROUP_TEMPLATES } from '../../collectionNames';
-import { PagesGroupModel, PagesGroupPayloadModel, TranslationModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 
 export interface UpdatePagesGroupInputInterface {
   _id: string;
@@ -28,7 +28,7 @@ export async function updatePagesGroup({
 }: DaoPropsInterface<UpdatePagesGroupInputInterface>): Promise<PagesGroupPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
 
     // permission
     const { allow, message } = await getOperationPermission({
@@ -58,9 +58,9 @@ export async function updatePagesGroup({
     await validationSchema.validate(input);
 
     const { isTemplate } = input;
-    const pagesGroupsCollection = db.collection<PagesGroupModel>(
-      isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
-    );
+    const pagesGroupsCollection = isTemplate
+      ? collections.pagesGroupTemplatesCollection()
+      : collections.pagesGroupsCollection();
 
     // check availability
     const { _id, ...values } = input;

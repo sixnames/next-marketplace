@@ -1,4 +1,21 @@
+import {
+  ignoreNoImageStage,
+  shopProductsGroupPipeline,
+  summaryPipeline,
+} from 'db/utils/constantPipelines';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { ObjectId } from 'mongodb';
+import { getDbCollections } from '../db/mongodb';
+import {
+  CompanyInterface,
+  MainPageBannerInterface,
+  MobileTopFilters,
+  PagesGroupInterface,
+  RubricInterface,
+  ShopInterface,
+  ShopProductInterface,
+  TopFilterInterface,
+} from '../db/uiInterfaces';
 import {
   CATALOGUE_TOP_FILTERS_LIMIT,
   CATALOGUE_TOP_PRODUCTS_LIMIT,
@@ -6,25 +23,6 @@ import {
   FILTER_SEPARATOR,
   SORT_DESC,
 } from './config/common';
-import { COL_PROMO, COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
-import {
-  ignoreNoImageStage,
-  shopProductsGroupPipeline,
-  summaryPipeline,
-} from 'db/utils/constantPipelines';
-import { getDatabase } from '../db/mongodb';
-import {
-  CompanyInterface,
-  MainPageBannerInterface,
-  MobileTopFilters,
-  PagesGroupInterface,
-  PromoInterface,
-  RubricInterface,
-  ShopInterface,
-  ShopProductInterface,
-  TopFilterInterface,
-} from '../db/uiInterfaces';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from './i18n';
 import { noNaN } from './numbers';
 import { phoneToRaw, phoneToReadable } from './phoneUtils';
@@ -61,10 +59,10 @@ export async function getMainPageData({
   currency,
   navRubrics,
 }: GetMainPageDataInterface): Promise<MainPageInterface> {
-  const { db } = await getDatabase();
-  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
-  const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
-  const promoCollection = db.collection<PromoInterface>(COL_PROMO);
+  const collections = await getDbCollections();
+  const shopProductsCollection = collections.shopProductsCollection();
+  const shopsCollection = collections.shopsCollection();
+  const promoCollection = collections.promoCollection();
 
   const companyRubricsMatch = domainCompany ? { companyId: new ObjectId(domainCompany._id) } : {};
   const shopProductsAggregation = await shopProductsCollection

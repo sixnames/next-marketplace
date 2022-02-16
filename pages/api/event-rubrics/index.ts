@@ -2,14 +2,14 @@ import { createEventRubric } from 'db/dao/eventRubrics/createEventRubric';
 import { deleteEventRubric } from 'db/dao/eventRubrics/deleteEventRubric';
 import { getEventRubricsList } from 'db/dao/eventRubrics/getEventRubricsList';
 import { updateEventRubric } from 'db/dao/eventRubrics/updateEventRubric';
-import { sendApiRouteResponse } from 'lib/sessionHelpers';
-import { NextApiRequest, NextApiResponse } from 'next';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_GET,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
 } from 'lib/config/common';
+import { sendApiRouteResponse } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // create

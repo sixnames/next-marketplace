@@ -1,29 +1,13 @@
-import { ObjectId } from 'mongodb';
-import { ParsedUrlQuery } from 'querystring';
-import { DEFAULT_CITY, GENDER_HE, PAGINATION_DEFAULT_LIMIT } from 'lib/config/common';
-import {
-  getBrandFilterAttribute,
-  getCategoryFilterAttribute,
-  getCommonFilterAttribute,
-  getPriceAttribute,
-} from 'lib/config/constantAttributes';
-import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/castUrlFilters';
-import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { countProductAttributes, getRubricAllAttributes } from 'lib/productAttributesUtils';
-import { getTreeFromList } from 'lib/treeUtils';
-import { COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { castSummaryForUI } from 'db/cast/castSummaryForUI';
 import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import {
   AttributeInterface,
   ConsoleRubricProductsInterface,
   ProductsAggregationInterface,
   ProductSummaryInterface,
-  RubricInterface,
-  ShopProductInterface,
 } from 'db/uiInterfaces';
+import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import {
   paginatedAggregationFinalPipeline,
   productsPaginatedAggregationFacetsPipeline,
@@ -31,7 +15,20 @@ import {
   shopProductDocsFacetPipeline,
   shopProductsGroupPipeline,
 } from 'db/utils/constantPipelines';
-import { castSummaryForUI } from 'db/cast/castSummaryForUI';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import { DEFAULT_CITY, GENDER_HE, PAGINATION_DEFAULT_LIMIT } from 'lib/config/common';
+import {
+  getBrandFilterAttribute,
+  getCategoryFilterAttribute,
+  getCommonFilterAttribute,
+  getPriceAttribute,
+} from 'lib/config/constantAttributes';
+import { getFieldStringLocale } from 'lib/i18n';
+import { countProductAttributes, getRubricAllAttributes } from 'lib/productAttributesUtils';
+import { getTreeFromList } from 'lib/treeUtils';
+import { ObjectId } from 'mongodb';
+import { ParsedUrlQuery } from 'querystring';
 
 export interface GetConsoleCompanyRubricProductsInputInterface {
   locale: string;
@@ -67,9 +64,9 @@ export const getConsoleCompanyRubricProducts = async ({
   };
 
   try {
-    const { db } = await getDatabase();
-    const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
-    const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+    const collections = await getDbCollections();
+    const shopProductsCollection = collections.shopProductsCollection();
+    const rubricsCollection = collections.rubricsCollection();
     const filters = alwaysArray(query.filters);
     const search = alwaysString(query.search);
     const rubricSlug = alwaysString(query.rubricSlug);

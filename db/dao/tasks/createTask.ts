@@ -1,12 +1,12 @@
-import { getNextItemId } from 'lib/itemIdUtils';
-import { ObjectId } from 'mongodb';
+import { COL_TASKS } from 'db/collectionNames';
+import { TaskPayloadModel, TaskVariantModel, TranslationModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface, ProductSummaryInterface, UserInterface } from 'db/uiInterfaces';
 import { TASK_STATE_PENDING } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getNextItemId } from 'lib/itemIdUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_TASK_VARIANTS, COL_TASKS } from 'db/collectionNames';
-import { TaskModel, TaskPayloadModel, TaskVariantModel, TranslationModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface, ProductSummaryInterface, UserInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface CreateTaskInputInterface {
   companySlug: string;
@@ -21,9 +21,9 @@ export async function createTask({
   input,
 }: DaoPropsInterface<CreateTaskInputInterface>): Promise<TaskPayloadModel> {
   try {
-    const { db } = await getDatabase();
-    const tasksCollection = db.collection<TaskModel>(COL_TASKS);
-    const taskVariantsCollection = db.collection<TaskVariantModel>(COL_TASK_VARIANTS);
+    const collections = await getDbCollections();
+    const tasksCollection = collections.tasksCollection();
+    const taskVariantsCollection = collections.taskVariantsCollection();
     const { getApiMessage } = await getRequestParams(context);
 
     // check permission

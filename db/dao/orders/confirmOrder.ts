@@ -1,26 +1,12 @@
-import { ObjectId } from 'mongodb';
+import { OrderLogModel, OrderPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { DEFAULT_DIFF, SORT_ASC } from 'lib/config/common';
 import { sendOrderConfirmedEmail } from 'lib/email/sendOrderConfirmedEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { sendOrderConfirmedSms } from 'lib/sms/sendOrderConfirmedSms';
-import {
-  COL_ORDER_LOGS,
-  COL_ORDER_PRODUCTS,
-  COL_ORDER_STATUSES,
-  COL_ORDERS,
-  COL_USERS,
-} from '../../collectionNames';
-import {
-  OrderLogModel,
-  OrderModel,
-  OrderPayloadModel,
-  OrderProductModel,
-  OrderStatusModel,
-  UserModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface ConfirmOrderInputInterface {
   orderId: string;
@@ -31,14 +17,14 @@ export async function confirmOrder({
   input,
 }: DaoPropsInterface<ConfirmOrderInputInterface>): Promise<OrderPayloadModel> {
   const { getApiMessage, citySlug, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-  const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
-  const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
-  const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
-  const usersCollection = db.collection<UserModel>(COL_USERS);
+  const collections = await getDbCollections();
+  const ordersCollection = collections.ordersCollection();
+  const orderLogsCollection = collections.ordersLogsCollection();
+  const orderStatusesCollection = collections.orderStatusesCollection();
+  const orderProductsCollection = collections.ordersProductsCollection();
+  const usersCollection = collections.usersCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: OrderPayloadModel = {
     success: false,

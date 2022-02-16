@@ -1,15 +1,15 @@
 import { getTextContents, Value } from '@react-page/editor';
 import { reactPageCellPlugins } from 'components/PageEditor';
-import { DEFAULT_LOCALE, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
-import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import { getCitiesList } from 'db/dao/cities/getCitiesList';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
+import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
+import { DEFAULT_LOCALE, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
+import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { updateCitiesSeoContent } from 'lib/seoContentUniquenessUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
-import { DaoPropsInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 
 export interface UpdateProductCardContentInputInterface {
   taskId?: string | null;

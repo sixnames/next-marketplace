@@ -1,15 +1,4 @@
 import capitalize from 'capitalize';
-import {
-  ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
-  ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
-  ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
-  ATTRIBUTE_POSITION_IN_TITLE_END,
-  ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
-  GENDER_IT,
-  FILTER_PRICE_KEY,
-  FILTER_CATEGORY_KEY,
-} from 'lib/config/common';
-import { getConstantTranslation } from 'lib/config/constantTranslations';
 import { GenderModel } from 'db/dbModels';
 import {
   AttributeInterface,
@@ -18,9 +7,20 @@ import {
   OptionInterface,
   ProductAttributeInterface,
 } from 'db/uiInterfaces';
-import { getFieldStringLocale } from './i18n';
+import {
+  ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
+  ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
+  ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
+  ATTRIBUTE_POSITION_IN_TITLE_END,
+  ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
+  FILTER_CATEGORY_KEY,
+  FILTER_PRICE_KEY,
+  GENDER_IT,
+} from 'lib/config/common';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
 import { get } from 'lodash';
 import trim from 'trim';
+import { getFieldStringLocale } from './i18n';
 
 interface TitleOptionInterface
   extends Pick<OptionInterface, 'nameI18n' | 'variants'>,

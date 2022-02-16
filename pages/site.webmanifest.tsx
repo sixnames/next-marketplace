@@ -1,10 +1,9 @@
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
 import { getDomain } from 'tldts';
+import { CompanyModel } from '../db/dbModels';
+import { getDbCollections } from '../db/mongodb';
 import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, SORT_ASC } from '../lib/config/common';
-import { COL_COMPANIES, COL_CONFIGS } from '../db/collectionNames';
-import { CompanyModel, ConfigModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
 import { getCityFieldLocaleString } from '../lib/i18n';
 
 const SiteWebmanifest: React.FC = () => {
@@ -12,7 +11,7 @@ const SiteWebmanifest: React.FC = () => {
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const { locale, res } = context;
   const host = `${context.req.headers.host}`;
   const domain = getDomain(host, { validHosts: ['localhost'] });
@@ -21,13 +20,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Session company
   let company: CompanyModel | null | undefined = null;
   if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
-    const { db } = await getDatabase();
-    company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
+    const collections = await getDbCollections();
+    company = await collections.companiesCollection().findOne({ domain });
   }
   const companySlug = company ? company.slug : DEFAULT_COMPANY_SLUG;
 
   // configs
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const configsCollection = collections.configsCollection();
   const initialConfigs = await configsCollection
     .find({ companySlug }, { sort: { _id: SORT_ASC } })
     .toArray();

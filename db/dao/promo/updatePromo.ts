@@ -1,21 +1,13 @@
-import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 import { updatePromoSchema } from 'validation/promoSchema';
-import { COL_PROMO, COL_PROMO_CODES, COL_PROMO_PRODUCTS } from '../../collectionNames';
-import {
-  DateModel,
-  PromoCodeModel,
-  PromoModel,
-  PromoPayloadModel,
-  PromoProductModel,
-  TranslationModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { DateModel, PromoPayloadModel, TranslationModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdatePromoInputInterface {
@@ -67,11 +59,11 @@ export async function updatePromo({
   input,
 }: DaoPropsInterface<UpdatePromoInputInterface>): Promise<PromoPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const promoCollection = db.collection<PromoModel>(COL_PROMO);
-  const promoProductsCollection = db.collection<PromoProductModel>(COL_PROMO_PRODUCTS);
-  const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
-  const session = client.startSession();
+  const collections = await getDbCollections();
+  const promoCollection = collections.promoCollection();
+  const promoProductsCollection = collections.promoProductsCollection();
+  const promoCodesCollection = collections.promoCodesCollection();
+  const session = collections.client.startSession();
   let mutationPayload: PromoPayloadModel = {
     success: false,
     message: await getApiMessage('promo.update.error'),

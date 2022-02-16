@@ -1,11 +1,11 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import Head from 'next/head';
-import parse from 'html-react-parser';
 import { useConfigContext } from 'components/context/configContext';
+import parse from 'html-react-parser';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFilterUrlValues } from 'lib/getFilterUrlValues';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 export interface MetaInterface {
   title?: string;

@@ -1,24 +1,24 @@
-import { Form, Formik } from 'formik';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import WpButton from 'components/button/WpButton';
 import CompanyMainFields from 'components/FormTemplates/CompanyMainFields';
 import Inner from 'components/Inner';
-import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
 import { UpdateCompanyInput, useUpdateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 import { updateCompanyClientSchema } from 'validation/companySchema';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 interface CompanyDetailsConsumerInterface {
   pageCompany: CompanyInterface;
@@ -171,8 +171,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
   const companyAggregationResult = await companiesCollection
     .aggregate<CompanyInterface>([
       {

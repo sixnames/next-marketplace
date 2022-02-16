@@ -1,6 +1,5 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { GENDER_ENUMS } from '../../lib/config/common';
 import { OptionVariantsModel } from '../../db/dbModels';
 import {
   CategoryInterface,
@@ -14,6 +13,7 @@ import {
 } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
+import { GENDER_ENUMS } from '../../lib/config/common';
 import { updateCategorySchema } from '../../validation/categorySchema';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';

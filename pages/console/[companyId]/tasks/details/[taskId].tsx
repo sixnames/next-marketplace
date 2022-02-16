@@ -1,13 +1,13 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
 import UpdateTaskForm, { UpdateTaskFormInterface } from 'components/console/UpdateTaskForm';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks, getConsoleTaskLinks } from 'lib/linkUtils';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 
 interface TaskDetailsConsumerInterface extends UpdateTaskFormInterface {
   basePath: string;

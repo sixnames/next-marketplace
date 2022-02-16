@@ -1,8 +1,8 @@
 import 'cypress-file-upload';
 import 'cypress-localstorage-commands';
-import { KEY_CODES } from 'lib/config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import { TaskModel } from 'db/dbModels';
+import { KEY_CODES } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 // ***********************************************

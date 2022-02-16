@@ -1,5 +1,5 @@
-import * as React from 'react';
 import WpImage from 'components/WpImage';
+import * as React from 'react';
 
 const quality = 70;
 

@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { MAP_MODAL } from '../lib/config/modalVariants';
-import { useAppContext } from './context/appContext';
-import { useSiteContext } from './context/siteContext';
 import { ShopProductInterface } from '../db/uiInterfaces';
 import { useShopMarker } from '../hooks/useShopMarker';
-import LayoutCard from './layout/LayoutCard';
+import { MAP_MODAL } from '../lib/config/modalVariants';
 import WpButton from './button/WpButton';
+import { useAppContext } from './context/appContext';
+import { useSiteContext } from './context/siteContext';
+import LayoutCard from './layout/LayoutCard';
 import LinkPhone from './Link/LinkPhone';
 import { MapModalInterface } from './Modal/MapModal';
 import ProductShopPrices from './ProductShopPrices';

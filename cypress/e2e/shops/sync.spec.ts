@@ -1,4 +1,3 @@
-import { REQUEST_METHOD_GET, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import {
   SyncBlackListProductInterface,
@@ -10,6 +9,7 @@ import {
   SyncShopProductsResponseInterface,
   SyncUpdateOrderProductInterface,
 } from 'db/syncInterfaces';
+import { REQUEST_METHOD_GET, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 

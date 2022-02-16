@@ -11,10 +11,10 @@ import {
   OrderRequestStateModel,
   OrderRequestVariantModel,
   PageStateModel,
-  TaskStateModel,
   SessionLogEventVariantEnum,
   SortDirectionModel,
   SupplierPriceVariantModel,
+  TaskStateModel,
 } from 'db/dbModels';
 
 export type RequestMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH';

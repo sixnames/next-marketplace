@@ -1,5 +1,5 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE } from 'lib/config/common';
 import { SessionLogModel } from 'db/dbModels';
+import { DEFAULT_CITY, DEFAULT_LOCALE } from 'lib/config/common';
 import { getObjectId } from 'mongo-seeding';
 
 const sessionLogs: SessionLogModel[] = [

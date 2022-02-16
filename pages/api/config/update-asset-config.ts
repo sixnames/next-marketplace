@@ -1,5 +1,7 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { ConfigModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { getApiMessageValue } from 'db/utils/apiMessageUtils';
+import { storeUploads } from 'lib/assetUtils/assetUtils';
 import {
   ASSETS_DIST_CONFIGS,
   DEFAULT_CITY,
@@ -7,13 +9,10 @@ import {
   DEFAULT_LOCALE,
   REQUEST_METHOD_DELETE,
 } from 'lib/config/common';
-import { COL_CONFIGS } from 'db/collectionNames';
-import { ConfigModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getApiMessageValue } from 'db/utils/apiMessageUtils';
-import { storeUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export const config = {
   api: {
@@ -22,8 +21,8 @@ export const config = {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { db } = await getDatabase();
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const collections = await getDbCollections();
+  const configsCollection = collections.configsCollection();
   const formData = await parseRestApiFormData(req);
   const { locale } = req.cookies;
 

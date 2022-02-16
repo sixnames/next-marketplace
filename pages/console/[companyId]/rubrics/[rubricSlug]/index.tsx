@@ -1,18 +1,14 @@
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CompanyRubricDetails, {
   CompanyRubricDetailsInterface,
 } from 'components/company/CompanyRubricDetails';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
 } from 'lib/config/common';
-import { COL_RUBRICS } from 'db/collectionNames';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
-import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getRubricAllSeoContents } from 'lib/seoContentUtils';
@@ -21,6 +17,8 @@ import {
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface RubricDetailsInterface extends CompanyRubricDetailsInterface {}
 
@@ -76,8 +74,8 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
   const { query } = context;
-  const { db } = await getDatabase();
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.rubricsCollection();
 
   const { props } = await getConsoleInitialData({ context });
   if (!props) {

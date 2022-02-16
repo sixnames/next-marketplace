@@ -1,10 +1,9 @@
-import { ObjectId } from 'mongodb';
+import { CartPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams } from 'lib/sessionHelpers';
-import { COL_CARTS, COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../../collectionNames';
-import { CartModel, CartPayloadModel, ProductFacetModel, ShopProductModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 import { getSessionCart } from './getSessionCart';
 
 export interface AddCartProductInputInterface {
@@ -19,10 +18,10 @@ export async function addCartProduct({
 }: DaoPropsInterface<AddCartProductInputInterface>): Promise<CartPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const cartsCollection = db.collection<CartModel>(COL_CARTS);
-    const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const collections = await getDbCollections();
+    const cartsCollection = collections.cartsCollection();
+    const productsCollection = collections.productFacetsCollection();
+    const shopProductsCollection = collections.shopProductsCollection();
 
     if (!input) {
       return {

@@ -1,5 +1,7 @@
-import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { get } from 'lodash';
+import { CategoryModel, ConfigModel, ConfigPayloadModel, ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { CategoryInterface } from 'db/uiInterfaces';
+import { alwaysArray } from 'lib/arrayUtils';
 import {
   CONFIG_VARIANTS_ENUMS,
   DEFAULT_COMPANY_SLUG,
@@ -7,15 +9,12 @@ import {
   FILTER_SEPARATOR,
   SORT_ASC,
 } from 'lib/config/common';
-import { COL_CATEGORIES, COL_CONFIGS } from 'db/collectionNames';
-import { CategoryModel, ConfigModel, ConfigPayloadModel, ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { CategoryInterface } from 'db/uiInterfaces';
-import { alwaysArray } from 'lib/arrayUtils';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { getTreeFromList } from 'lib/treeUtils';
+import { get } from 'lodash';
+import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const ConfigVariant = enumType({
   name: 'ConfigVariant',
@@ -77,8 +76,8 @@ export const ConfigQueries = extendType({
     t.nonNull.list.nonNull.field('getAllConfigs', {
       type: 'Config',
       resolve: async (): Promise<ConfigModel[]> => {
-        const { db } = await getDatabase();
-        const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+        const collections = await getDbCollections();
+        const configsCollection = collections.configsCollection();
         const configs = await configsCollection.find({}, { sort: { index: SORT_ASC } }).toArray();
         return configs;
       },
@@ -209,8 +208,8 @@ export const ConfigMutations = extendType({
 
           // Validate
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+          const collections = await getDbCollections();
+          const configsCollection = collections.configsCollection();
           const { input } = args;
           const { _id, ...values } = input;
 
@@ -304,9 +303,9 @@ export const ConfigMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+          const collections = await getDbCollections();
+          const configsCollection = collections.configsCollection();
+          const categoriesCollection = collections.categoriesCollection();
           const { input } = args;
           const { _id, rubricId, categoryId, citySlug, cities, ...values } = input;
 
@@ -423,8 +422,8 @@ export const ConfigMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+          const collections = await getDbCollections();
+          const configsCollection = collections.configsCollection();
           const { input } = args;
           const { _id, rubricId, citySlug, cities, ...values } = input;
 
@@ -512,8 +511,8 @@ export const ConfigMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+          const collections = await getDbCollections();
+          const configsCollection = collections.configsCollection();
           const { input } = args;
           const { _id, rubricSlug, citySlug, cities, ...values } = input;
 

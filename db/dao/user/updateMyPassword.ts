@@ -3,9 +3,8 @@ import { sendPasswordUpdatedEmail } from 'lib/email/sendPasswordUpdatedEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getResolverValidationSchema, getSessionUser } from 'lib/sessionHelpers';
 import { updateMyPasswordSchema } from 'validation/userSchema';
-import { COL_USERS } from '../../collectionNames';
-import { UserModel, UserPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { UserPayloadModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateMyPasswordInputInterface {
@@ -21,8 +20,8 @@ export async function updateMyPassword({
   try {
     const { getApiMessage, companySlug, citySlug, locale } = await getRequestParams(context);
     const sessionUser = await getSessionUser(context);
-    const { db } = await getDatabase();
-    const usersCollection = db.collection<UserModel>(COL_USERS);
+    const collections = await getDbCollections();
+    const usersCollection = collections.usersCollection();
 
     // check input
     if (!input) {

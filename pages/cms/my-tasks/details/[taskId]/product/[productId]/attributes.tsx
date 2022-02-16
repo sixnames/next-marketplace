@@ -1,16 +1,16 @@
 import ConsoleRubricProductAttributes from 'components/console/ConsoleRubricProductAttributes';
-import { TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES } from 'lib/config/constantSelects';
-import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import CmsTaskProductLayout, {
   CmsTaskProductLayoutInterface,
 } from 'components/layout/cms/CmsTaskProductLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
+import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import { getCmsProductAttributesPageSsr } from 'db/ssr/products/getCmsProductAttributesPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import { TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES } from 'lib/config/constantSelects';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface CmsProductAttributesPageConsumerInterface extends CmsTaskProductLayoutInterface {}
 

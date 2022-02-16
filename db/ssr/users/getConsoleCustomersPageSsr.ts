@@ -1,20 +1,20 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_PAGE, SORT_DESC } from 'lib/config/common';
+import { COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { AppPaginationInterface, UserInterface } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
+import { DEFAULT_PAGE, SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import {
   ConsoleCustomersPageConsumerInterface,
   ConsoleCustomersPageInterface,
 } from 'pages/console/[companyId]/users/[...filters]';
-import { COL_ORDERS, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppPaginationInterface, OrderInterface, UserInterface } from 'db/uiInterfaces';
 
 export const getConsoleCustomersPageSsr = async (
   context: GetServerSidePropsContext,
@@ -74,8 +74,8 @@ export const getConsoleCustomersPageSsr = async (
       ]
     : [];
 
-  const { db } = await getDatabase();
-  const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
+  const collections = await getDbCollections();
+  const ordersCollection = collections.ordersCollection();
 
   const usersAggregationResult = await ordersCollection
     .aggregate<AppPaginationInterface<UserInterface>>(

@@ -1,24 +1,23 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { ShopProductInterface } from 'db/uiInterfaces';
+import {
+  ignoreNoImageStage,
+  shopProductsGroupPipeline,
+  summaryPipeline,
+} from 'db/utils/constantPipelines';
+import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
 import {
   DEFAULT_COMPANY_SLUG,
   HEADER_SEARCH_PRODUCTS_LIMIT,
   REQUEST_METHOD_POST,
   SORT_DESC,
 } from 'lib/config/common';
-import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import {
-  ignoreNoImageStage,
-  shopProductsGroupPipeline,
-  summaryPipeline,
-} from 'db/utils/constantPipelines';
-import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { ShopProductInterface } from 'db/uiInterfaces';
-import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getRequestParams } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export interface HeaderSearchPayloadInterface {
   shopProducts: ShopProductInterface[];
@@ -43,8 +42,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     const { citySlug, locale } = await getRequestParams({ req, res });
-    const { db } = await getDatabase();
-    const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+    const collections = await getDbCollections();
+    const shopProductsCollection = collections.shopProductsCollection();
     const args = JSON.parse(req.body) as HeaderSearchInputInterface;
     const { search, companyId } = args;
     const companySlug = args.companySlug || DEFAULT_COMPANY_SLUG;

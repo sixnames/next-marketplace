@@ -1,51 +1,34 @@
-import { ObjectId } from 'mongodb';
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { GEO_POINT_TYPE, IMAGE_FALLBACK } from '../lib/config/common';
+import { COL_COMPANIES, COL_SHOPS } from 'db/collectionNames';
 import {
-  COL_COMPANIES,
-  COL_CONFIGS,
-  COL_PAGE_TEMPLATES,
-  COL_PAGES,
-  COL_PAGES_GROUP,
-  COL_PAGES_GROUP_TEMPLATES,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-  COL_USERS,
-} from '../db/collectionNames';
-import { aggregatePagination } from 'db/utils/aggregatePagination';
-import {
-  CompanyModel,
   CompanyPayloadModel,
-  ConfigModel,
-  PageModel,
-  PagesGroupModel,
-  PagesGroupTemplateModel,
-  PagesTemplateModel,
   ShopModel,
-  ShopProductModel,
   ShopsPaginationPayloadModel,
   UserModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { getReadableAddress } from '../lib/addressUtils';
-import { deleteUpload } from '../lib/assetUtils/assetUtils';
-import { updateCompanyDomain } from '../lib/companyUtils';
+} from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { aggregatePagination } from 'db/utils/aggregatePagination';
 import { getConfigTemplates } from 'db/utils/getConfigTemplates';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { getNextItemId, getNextNumberItemId } from '../lib/itemIdUtils';
+import { getReadableAddress } from 'lib/addressUtils';
+import { deleteUpload } from 'lib/assetUtils/assetUtils';
+import { updateCompanyDomain } from 'lib/companyUtils';
+import { GEO_POINT_TYPE, IMAGE_FALLBACK } from 'lib/config/common';
+import { getNextItemId, getNextNumberItemId } from 'lib/itemIdUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
   getSessionUser,
-} from '../lib/sessionHelpers';
-import { generateShopSlug } from '../lib/slugUtils';
+} from 'lib/sessionHelpers';
+import { generateShopSlug } from 'lib/slugUtils';
+import { ObjectId } from 'mongodb';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   addShopToCompanySchema,
   createCompanySchema,
   deleteShopFromCompanySchema,
   updateCompanySchema,
-} from '../validation/companySchema';
+} from 'validation/companySchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const Company = objectType({
   name: 'Company',
@@ -67,8 +50,8 @@ export const Company = objectType({
     t.nonNull.field('owner', {
       type: 'User',
       resolve: async (source): Promise<UserModel> => {
-        const { db } = await getDatabase();
-        const usersCollection = db.collection<UserModel>(COL_USERS);
+        const collections = await getDbCollections();
+        const usersCollection = collections.usersCollection();
         const user = await usersCollection.findOne({ _id: source.ownerId });
         if (!user) {
           throw Error('Owner not found in Company');
@@ -81,8 +64,8 @@ export const Company = objectType({
     t.nonNull.list.nonNull.field('staff', {
       type: 'User',
       resolve: async (source): Promise<UserModel[]> => {
-        const { db } = await getDatabase();
-        const usersCollection = db.collection<UserModel>(COL_USERS);
+        const collections = await getDbCollections();
+        const usersCollection = collections.usersCollection();
         const users = await usersCollection.find({ _id: { $in: source.staffIds } }).toArray();
         return users;
       },
@@ -198,17 +181,16 @@ export const CompanyMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
+        const collections = await getDbCollections();
         const sessionUser = await getSessionUser(context);
-        const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-        const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-        const pagesCollection = db.collection<PageModel>(COL_PAGES);
-        const pagesGroupsCollection = db.collection<PagesGroupModel>(COL_PAGES_GROUP);
-        const pageTemplatesCollection = db.collection<PagesTemplateModel>(COL_PAGE_TEMPLATES);
-        const pagesGroupTemplatesCollection =
-          db.collection<PagesGroupTemplateModel>(COL_PAGES_GROUP_TEMPLATES);
+        const companiesCollection = collections.companiesCollection();
+        const configsCollection = collections.configsCollection();
+        const pagesCollection = collections.pagesCollection();
+        const pagesGroupsCollection = collections.pagesGroupsCollection();
+        const pageTemplatesCollection = collections.pageTemplatesCollection();
+        const pagesGroupTemplatesCollection = collections.pagesGroupTemplatesCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: CompanyPayloadModel = {
           success: false,
@@ -418,8 +400,8 @@ export const CompanyMutations = extendType({
 
           const sessionUser = await getSessionUser(context);
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+          const collections = await getDbCollections();
+          const companiesCollection = collections.companiesCollection();
           const { input } = args;
           const { companyId, ...values } = input;
 
@@ -515,15 +497,15 @@ export const CompanyMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-        const pagesCollection = db.collection<PageModel>(COL_PAGES);
-        const pagesGroupsCollection = db.collection<PagesGroupModel>(COL_PAGES_GROUP);
+        const collections = await getDbCollections();
+        const companiesCollection = collections.companiesCollection();
+        const shopsCollection = collections.shopsCollection();
+        const shopProductsCollection = collections.shopProductsCollection();
+        const configsCollection = collections.configsCollection();
+        const pagesCollection = collections.pagesCollection();
+        const pagesGroupsCollection = collections.pagesGroupsCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: CompanyPayloadModel = {
           success: false,
@@ -666,11 +648,11 @@ export const CompanyMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+        const collections = await getDbCollections();
+        const companiesCollection = collections.companiesCollection();
+        const shopsCollection = collections.shopsCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: CompanyPayloadModel = {
           success: false,
@@ -829,12 +811,12 @@ export const CompanyMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CompanyPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-        const shopProductsCollection = db.collection<CompanyModel>(COL_SHOP_PRODUCTS);
+        const collections = await getDbCollections();
+        const companiesCollection = collections.companiesCollection();
+        const shopsCollection = collections.shopsCollection();
+        const shopProductsCollection = collections.shopProductsCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: CompanyPayloadModel = {
           success: false,

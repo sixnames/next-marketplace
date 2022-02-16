@@ -1,12 +1,12 @@
-import { asNexusMethod, scalarType } from 'nexus';
 import { Kind } from 'graphql';
-import { ObjectId } from 'mongodb';
 import {
-  GraphQLJSONObject,
   GraphQLEmailAddress,
-  GraphQLURL,
+  GraphQLJSONObject,
   GraphQLPhoneNumber,
+  GraphQLURL,
 } from 'graphql-scalars';
+import { ObjectId } from 'mongodb';
+import { asNexusMethod, scalarType } from 'nexus';
 
 export const Json = asNexusMethod(GraphQLJSONObject, 'json');
 export const Email = asNexusMethod(GraphQLEmailAddress, 'email');

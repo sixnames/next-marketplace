@@ -1,14 +1,14 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { CONFIRM_MODAL, CREATE_PROMO_CODE_MODAL } from '../../lib/config/modalVariants';
-import { useAppContext } from '../context/appContext';
 import { PromoCodeModel } from '../../db/dbModels';
 import { CompanyInterface, PromoInterface } from '../../db/uiInterfaces';
 import { useDeletePromoCode } from '../../hooks/mutations/usePromoMutations';
+import { CONFIRM_MODAL, CREATE_PROMO_CODE_MODAL } from '../../lib/config/modalVariants';
 import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import Inner from '../Inner';
 import WpLink from '../Link/WpLink';
 import { ConfirmModalInterface } from '../Modal/ConfirmModal';

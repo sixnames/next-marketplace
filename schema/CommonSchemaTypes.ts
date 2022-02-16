@@ -1,4 +1,5 @@
 import { enumType, inputObjectType, interfaceType, objectType } from 'nexus';
+import { CoordinatesModel } from '../db/dbModels';
 import {
   DEFAULT_PAGE,
   GENDER_ENUMS,
@@ -7,7 +8,6 @@ import {
   SORT_BY_CREATED_AT,
   SORT_DESC,
 } from '../lib/config/common';
-import { CoordinatesModel } from '../db/dbModels';
 import { phoneToRaw, phoneToReadable } from '../lib/phoneUtils';
 
 export const Gender = enumType({

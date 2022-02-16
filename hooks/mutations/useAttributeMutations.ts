@@ -1,13 +1,13 @@
-import {
-  REQUEST_METHOD_DELETE,
-  REQUEST_METHOD_PATCH,
-  REQUEST_METHOD_POST,
-} from '../../lib/config/common';
 import { CreateAttributeInputInterface } from '../../db/dao/attributes/createAttribute';
 import { DeleteAttributeInputInterface } from '../../db/dao/attributes/deleteAttribute';
 import { MoveAttributeInputInterface } from '../../db/dao/attributes/moveAttribute';
 import { UpdateAttributeInputInterface } from '../../db/dao/attributes/updateAttribute';
 import { AttributePayloadModel } from '../../db/dbModels';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from '../../lib/config/common';
 import { useMutationHandler } from './useFetch';
 
 const basePath = '/api/attributes';

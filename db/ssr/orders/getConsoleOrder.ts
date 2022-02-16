@@ -1,22 +1,14 @@
-import { SORT_ASC } from 'lib/config/common';
 import { castOrderStatus } from 'db/cast/castOrderStatus';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { castSupplierProductsList } from 'lib/productUtils';
-import { ObjectId } from 'mongodb';
 import {
   COL_GIFT_CERTIFICATES,
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
-  COL_ORDERS,
-  COL_PROMO,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
-import { ObjectIdModel, PromoModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import {
   OrderInterface,
   OrderPromoInterface,
@@ -24,6 +16,12 @@ import {
   PromoInterface,
 } from 'db/uiInterfaces';
 import { shopProductSupplierProductsPipeline, summaryPipeline } from 'db/utils/constantPipelines';
+import { SORT_ASC } from 'lib/config/common';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getFullName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { castSupplierProductsList } from 'lib/productUtils';
+import { ObjectId } from 'mongodb';
 
 interface GetConsoleOrderInterface {
   orderId: string | ObjectIdModel | null | undefined;
@@ -39,10 +37,10 @@ export async function getConsoleOrder({
   orderId,
   locale,
 }: GetConsoleOrderInterface): Promise<GetConsoleOrderPayloadInterface | null> {
-  const { db } = await getDatabase();
-  const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
-  const promoCollection = db.collection<PromoModel>(COL_PROMO);
-  const orderStatusesCollection = db.collection<OrderStatusInterface>(COL_ORDER_STATUSES);
+  const collections = await getDbCollections();
+  const ordersCollection = collections.ordersCollection();
+  const promoCollection = collections.promoCollection();
+  const orderStatusesCollection = collections.orderStatusesCollection();
   if (!orderId) {
     return null;
   }

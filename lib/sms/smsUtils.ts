@@ -1,9 +1,7 @@
 import { castConfigs } from 'db/cast/castConfigs';
 import fetch from 'node-fetch';
 import qs from 'qs';
-import { COL_CONFIGS } from '../../db/collectionNames';
-import { ConfigModel } from '../../db/dbModels';
-import { getDatabase } from '../../db/mongodb';
+import { getDbCollections } from '../../db/mongodb';
 import { getConfigStringValue } from '../configsUtils';
 
 export interface SmsSenderInterface {
@@ -23,8 +21,8 @@ export async function smsSender({
 }: SmsSenderInterface) {
   try {
     // get sms api configs for current company
-    const { db } = await getDatabase();
-    const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+    const collections = await getDbCollections();
+    const configsCollection = collections.configsCollection();
     const smsApiConfigs = await configsCollection
       .find({
         slug: {

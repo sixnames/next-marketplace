@@ -1,25 +1,24 @@
-import { Form, Formik } from 'formik';
-import { ObjectId } from 'mongodb';
-import Head from 'next/head';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
 import RoleMainFields from 'components/FormTemplates/RoleMainFields';
 import Inner from 'components/Inner';
-import WpTitle from 'components/WpTitle';
-import { COL_ROLES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, RoleInterface } from 'db/uiInterfaces';
-import { useUpdateRoleMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import AppSubNav from 'components/layout/AppSubNav';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import WpTitle from 'components/WpTitle';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, RoleInterface } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
+import { useUpdateRoleMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Head from 'next/head';
+import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
 import { updateRoleSchema } from 'validation/roleSchema';
 
@@ -148,8 +147,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
+  const collections = await getDbCollections();
+  const rolesCollection = collections.rolesCollection();
   const roleQueryResult = await rolesCollection.findOne({
     _id: new ObjectId(`${context.query.roleId}`),
   });

@@ -1,15 +1,15 @@
-import { getConfigPageData } from 'db/ssr/configs/getConfigPageData';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
-import { CONFIG_GROUP_UI, DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getConfigRubrics } from 'db/ssr/rubrics/getConfigRubrics';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsoleConfigsLayout, {
   ConfigPageInterface,
 } from 'components/layout/console/ConsoleConfigsLayout';
+import { getConfigPageData } from 'db/ssr/configs/getConfigPageData';
+import { getConfigRubrics } from 'db/ssr/rubrics/getConfigRubrics';
+import { CONFIG_GROUP_UI, DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 const ConfigConsumer: React.FC<ConfigPageInterface> = ({
   assetConfigs,

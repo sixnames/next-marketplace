@@ -1,12 +1,10 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_PAGES, ASSETS_DIST_TEMPLATES } from 'lib/config/common';
-import { COL_PAGES } from 'db/collectionNames';
-import { PageModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { storeUploads } from 'lib/assetUtils/assetUtils';
+import { ASSETS_DIST_PAGES, ASSETS_DIST_TEMPLATES } from 'lib/config/common';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getRequestParams } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export const config = {
   api: {
@@ -40,8 +38,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // get page
-  const { db } = await getDatabase();
-  const pagesCollection = db.collection<PageModel>(COL_PAGES);
+  const collections = await getDbCollections();
+  const pagesCollection = collections.pagesCollection();
   const page = await pagesCollection.findOne({
     _id: new ObjectId(`${pageId}`),
   });

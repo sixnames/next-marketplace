@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ConsoleShopLayoutInterface, RubricInterface } from '../../db/uiInterfaces';
-import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import Inner from '../Inner';
+import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface ShopRubricsInterface extends ConsoleShopLayoutInterface {

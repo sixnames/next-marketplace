@@ -1,8 +1,7 @@
+import { LanguageModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { CityInterface, SsrConfigsInterface } from 'db/uiInterfaces';
 import { DEFAULT_CURRENCY, SORT_ASC, SORT_DESC } from './config/common';
-import { COL_CITIES, COL_LANGUAGES } from '../db/collectionNames';
-import { CityModel, LanguageModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { CityInterface, SsrConfigsInterface } from '../db/uiInterfaces';
 import { getSsrConfigs } from './getSsrConfigs';
 import { getFieldStringLocale } from './i18n';
 import { GetPageInitialDataCommonInterface } from './ssrUtils';
@@ -28,7 +27,7 @@ export const getPageDataSsr = async ({
   // console.log(' ');
   // console.log('=================== getPageInitialData =======================');
   // const timeStart = new Date().getTime();
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
 
   // configs
   const configs = await getSsrConfigs({
@@ -39,7 +38,7 @@ export const getPageDataSsr = async ({
   // console.log('After configs ', new Date().getTime() - timeStart);
 
   // languages
-  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  const languagesCollection = collections.languagesCollection();
   const languages = await languagesCollection
     .find(
       {},
@@ -53,7 +52,7 @@ export const getPageDataSsr = async ({
   // console.log('After languages ', new Date().getTime() - timeStart);
 
   // cities
-  const citiesCollection = db.collection<CityModel>(COL_CITIES);
+  const citiesCollection = collections.citiesCollection();
   const initialCities = await citiesCollection.find({}, { sort: { _id: SORT_DESC } }).toArray();
   const cities = initialCities.map((city) => {
     return {

@@ -3,9 +3,10 @@
  * Do not make changes to this file directly
  */
 
+import type { core } from 'nexus';
 import type * as dbModels from './../db/dbModels';
 import type { NexusContext } from './../types/apiContextTypes';
-import type { core } from 'nexus';
+
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
     /**

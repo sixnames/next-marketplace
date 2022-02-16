@@ -1,16 +1,16 @@
-import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
-import * as React from 'react';
 import BlogPostsList from 'components/blog/BlogPostsList';
 import Inner from 'components/Inner';
-import WpTitle from 'components/WpTitle';
-import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getBlogPostsList } from 'db/ssr/blog/getBlogPostsList';
-import { BlogPostInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import AppSubNav from 'components/layout/AppSubNav';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import WpTitle from 'components/WpTitle';
+import { getBlogPostsList } from 'db/ssr/blog/getBlogPostsList';
+import { BlogPostInterface } from 'db/uiInterfaces';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getCmsLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface BlogPostsListConsumerInterface {

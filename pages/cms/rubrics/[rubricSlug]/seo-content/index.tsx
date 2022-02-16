@@ -1,20 +1,19 @@
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ConsoleSeoContentsList, {
   ConsoleSeoContentsListInterface,
 } from 'components/console/ConsoleSeoContentsList';
 import Inner from 'components/Inner';
-import { DEFAULT_COMPANY_SLUG, PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'lib/config/common';
-import { COL_SEO_CONTENTS } from 'db/collectionNames';
-import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
-import { SeoContentModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { SeoContentModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
+import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
+import { DEFAULT_COMPANY_SLUG, PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface RubricDetailsInterface extends ConsoleSeoContentsListInterface {
   rubric: RubricInterface;
@@ -73,8 +72,8 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
   const { query } = context;
-  const { db } = await getDatabase();
-  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  const collections = await getDbCollections();
+  const seoContentsCollection = collections.seoContentsCollection();
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {

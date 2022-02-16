@@ -1,22 +1,18 @@
-import { ObjectId } from 'mongodb';
-import Head from 'next/head';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { MoveOptionModalInterface } from 'components/Modal/MoveOptionModal';
 import { OptionInGroupModalInterface } from 'components/Modal/OptionInGroupModal';
 import RequestError from 'components/RequestError';
 import WpImage from 'components/WpImage';
 import WpTitle from 'components/WpTitle';
-import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
-import { getConstantTranslation } from 'lib/config/constantTranslations';
-import { CONFIRM_MODAL, MOVE_OPTION_MODAL, OPTION_IN_GROUP_MODAL } from 'lib/config/modalVariants';
-import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { COL_ICONS, COL_OPTIONS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   OptionInterface,
@@ -29,14 +25,18 @@ import {
   useDeleteOptionFromGroupMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import AppSubNav from 'components/layout/AppSubNav';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { sortObjectsByField } from 'lib/arrayUtils';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { CONFIRM_MODAL, MOVE_OPTION_MODAL, OPTION_IN_GROUP_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { getTreeFromList } from 'lib/treeUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Head from 'next/head';
+import * as React from 'react';
 
 interface OptionsGroupOptionsConsumerInterface {
   optionsGroup: OptionsGroupInterface;
@@ -299,8 +299,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const optionGroupsCollection = await db.collection<OptionsGroupInterface>(COL_OPTIONS_GROUPS);
+  const collections = await getDbCollections();
+  const optionGroupsCollection = await collections.optionsGroupsCollection();
 
   const optionsGroupAggregationResult = await optionGroupsCollection
     .aggregate<OptionsGroupInterface>([

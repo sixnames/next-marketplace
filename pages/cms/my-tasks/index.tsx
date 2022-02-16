@@ -2,14 +2,14 @@ import ConsoleMyTasksList, {
   ConsoleMyTasksListInterface,
 } from 'components/console/ConsoleMyTasksList';
 import Inner from 'components/Inner';
-import WpTitle from 'components/WpTitle';
-import { getMyTasksListSsr } from 'db/ssr/tasks/getMyTasksListSsr';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import WpTitle from 'components/WpTitle';
+import { getMyTasksListSsr } from 'db/ssr/tasks/getMyTasksListSsr';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Мои задачи';
 interface TasksListConsumerInterface extends ConsoleMyTasksListInterface {}

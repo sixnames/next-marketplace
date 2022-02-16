@@ -1,10 +1,9 @@
-import { ObjectId } from 'mongodb';
+import { PromoCodePayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_PROMO_CODES } from '../../collectionNames';
-import { PromoCodeModel, PromoCodePayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface DeletePromoCodeInputInterface {
   _id: string;
@@ -16,7 +15,7 @@ export async function deletePromoCode({
 }: DaoPropsInterface<DeletePromoCodeInputInterface>): Promise<PromoCodePayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
 
     // permission
     const { allow, message } = await getOperationPermission({
@@ -39,7 +38,7 @@ export async function deletePromoCode({
     }
 
     // delete promo code
-    const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
+    const promoCodesCollection = collections.promoCodesCollection();
     const createdPromoCodeResult = await promoCodesCollection.findOneAndDelete({
       _id: new ObjectId(input._id),
     });

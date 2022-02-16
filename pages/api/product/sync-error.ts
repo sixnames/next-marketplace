@@ -1,8 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
 import { createProductWithSyncError } from 'db/dao/product/createProductWithSyncError';
 import { updateProductWithSyncError } from 'db/dao/product/updateProductWithSyncError';
+import { REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // create

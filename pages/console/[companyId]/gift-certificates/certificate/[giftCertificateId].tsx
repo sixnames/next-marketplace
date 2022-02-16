@@ -1,20 +1,20 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
 import ConsoleGiftCertificateDetails, {
   ConsoleGiftCertificateDetailsInterface,
 } from 'components/console/ConsoleGiftCertificateDetails';
 import Inner from 'components/Inner';
-import { COL_GIFT_CERTIFICATES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, GiftCertificateInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { COL_USERS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 
 interface GiftCertificateDetailsConsumerInterface extends ConsoleGiftCertificateDetailsInterface {}
 
@@ -76,8 +76,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const giftCertificatesCollection = db.collection<GiftCertificateInterface>(COL_GIFT_CERTIFICATES);
+  const collections = await getDbCollections();
+  const giftCertificatesCollection = collections.giftCertificatesCollection();
 
   const giftCertificateAggregationResult = await giftCertificatesCollection
     .aggregate([

@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
+import * as React from 'react';
 import useSWR from 'swr';
-import { DEFAULT_LOCALE, GENDER_IT } from '../../lib/config/common';
 import { NotSyncedProductInterface, RubricInterface } from '../../db/uiInterfaces';
 import { useCreateProductWithSyncError } from '../../hooks/mutations/useProductMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { DEFAULT_LOCALE, GENDER_IT } from '../../lib/config/common';
 import WpButton from '../button/WpButton';
 import FormikSelect from '../FormElements/Select/FormikSelect';
 import ProductMainFields, { ProductFormValuesInterface } from '../FormTemplates/ProductMainFields';

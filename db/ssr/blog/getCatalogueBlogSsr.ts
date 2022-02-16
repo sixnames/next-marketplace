@@ -1,4 +1,16 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { COL_BLOG_ATTRIBUTES, COL_BLOG_LIKES, COL_OPTIONS } from 'db/collectionNames';
+import { AttributeViewVariantModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import {
+  BlogAttributeInterface,
+  BlogPostInterface,
+  CatalogueFilterAttributeInterface,
+  CatalogueFilterAttributeOptionInterface,
+  OptionInterface,
+} from 'db/uiInterfaces';
+import { castCatalogueParamToObject } from 'db/utils/catalogueUtils';
+import { alwaysArray } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   CATALOGUE_PRODUCTS_LIMIT,
@@ -7,29 +19,12 @@ import {
   PAGE_STATE_PUBLISHED,
   SORT_DESC,
 } from 'lib/config/common';
-import { alwaysArray } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/castUrlFilters';
-import { castCatalogueParamToObject } from 'db/utils/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleBlogLinks } from 'lib/linkUtils';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { BlogListPageInterface } from 'pages/blog/[...filters]';
-import {
-  COL_BLOG_ATTRIBUTES,
-  COL_BLOG_LIKES,
-  COL_BLOG_POSTS,
-  COL_OPTIONS,
-} from 'db/collectionNames';
-import { AttributeViewVariantModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import {
-  BlogAttributeInterface,
-  BlogPostInterface,
-  CatalogueFilterAttributeInterface,
-  CatalogueFilterAttributeOptionInterface,
-  OptionInterface,
-} from 'db/uiInterfaces';
 
 export const getCatalogueBlogSsr = async (
   context: GetServerSidePropsContext,
@@ -55,8 +50,8 @@ export const getCatalogueBlogSsr = async (
     searchFieldName: '_id',
   });
 
-  const { db } = await getDatabase();
-  const blogPostsCollection = db.collection<BlogPostInterface>(COL_BLOG_POSTS);
+  const collections = await getDbCollections();
+  const blogPostsCollection = collections.blogPostsCollection();
   const links = getConsoleBlogLinks({});
   const basePath = links.mainPath;
 

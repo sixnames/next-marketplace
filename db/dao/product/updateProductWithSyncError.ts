@@ -1,13 +1,13 @@
-import { ObjectId } from 'mongodb';
+import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { ProductPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { castSummaryToShopProduct, checkBarcodeIntersects } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
-import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { ProductPayloadModel } from 'db/dbModels';
-import { getDbCollections } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface UpdateProductWithSyncErrorInputInterface {
   productId: string;

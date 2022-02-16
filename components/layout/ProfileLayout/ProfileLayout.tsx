@@ -1,12 +1,12 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import AsideNav from 'components/AsideNav';
+import { useSiteUserContext } from 'components/context/siteUserContext';
 import { HeadlessMenuGroupInterface } from 'components/HeadlessMenuButton';
 import Inner from 'components/Inner';
 import WpBreadcrumbs from 'components/WpBreadcrumbs';
 import WpTitle from 'components/WpTitle';
-import { useSiteUserContext } from 'components/context/siteUserContext';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 interface ProfileLayoutInterface {
   testId?: string;

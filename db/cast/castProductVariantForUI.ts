@@ -1,6 +1,6 @@
-import { ProductVariantInterface, ProductVariantItemInterface } from 'db/uiInterfaces';
-import { castAttributeForUI } from 'db/dao/attributes/castAttributesGroupForUI';
+import { castAttributeForUI } from 'db/cast/castAttributesGroupForUI';
 import { castOptionForUI } from 'db/cast/castOptionForUI';
+import { ProductVariantInterface, ProductVariantItemInterface } from 'db/uiInterfaces';
 
 interface CastProductVariantForUI {
   variant: ProductVariantInterface;

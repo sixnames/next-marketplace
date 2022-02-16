@@ -1,4 +1,14 @@
-import { ObjectId } from 'mongodb';
+import { COL_ATTRIBUTES } from 'db/collectionNames';
+import {
+  AttributePayloadModel,
+  AttributePositioningInTitleModel,
+  AttributeVariantModel,
+  AttributeViewVariantModel,
+  TranslationModel,
+} from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextNumberItemId } from 'lib/itemIdUtils';
 import {
@@ -6,21 +16,8 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 import { addAttributeToGroupSchema } from 'validation/attributesGroupSchema';
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_METRICS } from '../../collectionNames';
-import {
-  AttributeModel,
-  AttributePayloadModel,
-  AttributePositioningInTitleModel,
-  AttributesGroupModel,
-  AttributeVariantModel,
-  AttributeViewVariantModel,
-  MetricModel,
-  TranslationModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 
 export interface CreateAttributeInputInterface {
   attributesGroupId: string;
@@ -69,12 +66,12 @@ export async function createAttribute({
   input,
 }: DaoPropsInterface<CreateAttributeInputInterface>): Promise<AttributePayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const attributesGroupCollection = db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
-  const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-  const metricsCollection = db.collection<MetricModel>(COL_METRICS);
+  const collections = await getDbCollections();
+  const attributesGroupCollection = collections.attributesGroupsCollection();
+  const attributesCollection = collections.attributesCollection();
+  const metricsCollection = collections.metricsCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: AttributePayloadModel = {
     success: false,

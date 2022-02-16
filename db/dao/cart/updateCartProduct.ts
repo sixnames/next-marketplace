@@ -1,9 +1,8 @@
-import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams } from 'lib/sessionHelpers';
-import { COL_CARTS } from '../../collectionNames';
-import { CartModel, CartPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ObjectId } from 'mongodb';
+import { CartPayloadModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 import { getSessionCart } from './getSessionCart';
 
@@ -19,8 +18,8 @@ export async function updateCartProduct({
 }: DaoPropsInterface<UpdateCartProductInputInterface>): Promise<CartPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const cartsCollection = db.collection<CartModel>(COL_CARTS);
+    const collections = await getDbCollections();
+    const cartsCollection = collections.cartsCollection();
     const cart = await getSessionCart({ context });
     if (!cart) {
       return {

@@ -1,4 +1,7 @@
-import { ObjectId } from 'mongodb';
+import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
+import { ProductPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { IMAGE_FALLBACK } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
@@ -9,11 +12,8 @@ import {
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
+import { ObjectId } from 'mongodb';
 import { updateProductSchema } from 'validation/productSchema';
-import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
-import { ProductPayloadModel } from 'db/dbModels';
-import { getDbCollections } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
 import { CreateProductInputInterface } from './createProduct';
 
 export interface CopyProductInputInterface extends CreateProductInputInterface {

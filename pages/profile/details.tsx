@@ -1,17 +1,20 @@
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import WpButton from '../../components/button/WpButton';
+import { useSiteUserContext } from '../../components/context/siteUserContext';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
+import ProfileLayout from '../../components/layout/ProfileLayout/ProfileLayout';
+import RowWithGap from '../../components/layout/RowWithGap/RowWithGap';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal';
 import { UpdateMyPasswordModalInterface } from '../../components/Modal/UpdateMyPasswordModal';
 import RequestError from '../../components/RequestError';
 import StringButton from '../../components/StringButton';
 import WpTitle from '../../components/WpTitle';
-import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from '../../lib/config/modalVariants';
-import { useSiteUserContext } from '../../components/context/siteUserContext';
 import { getPageSessionUser } from '../../db/dao/user/getPageSessionUser';
 import { UpdateMyProfileInputInterface } from '../../db/dao/user/updateMyProfile';
 import {
@@ -20,10 +23,7 @@ import {
 } from '../../hooks/mutations/useUserMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import ProfileLayout from '../../components/layout/ProfileLayout/ProfileLayout';
-import RowWithGap from '../../components/layout/RowWithGap/RowWithGap';
-import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from '../../lib/config/modalVariants';
 import { phoneToRaw } from '../../lib/phoneUtils';
 import { getSiteInitialData } from '../../lib/ssrUtils';
 import { updateMyProfileSchema } from '../../validation/userSchema';

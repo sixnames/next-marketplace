@@ -1,5 +1,13 @@
-import { sortBy } from 'lodash';
-import { ObjectId } from 'mongodb';
+import { COL_OPTIONS } from 'db/collectionNames';
+import { getCitiesList } from 'db/dao/cities/getCitiesList';
+import { DescriptionPositionType, ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import {
+  AttributeInterface,
+  CategoryInterface,
+  SeoContentCitiesInterface,
+  SeoContentInterface,
+} from 'db/uiInterfaces';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
@@ -11,39 +19,10 @@ import {
   SORT_DESC,
 } from 'lib/config/common';
 import { getPriceAttribute } from 'lib/config/constantAttributes';
-import {
-  COL_ATTRIBUTES,
-  COL_BRAND_COLLECTIONS,
-  COL_BRANDS,
-  COL_CATEGORIES,
-  COL_CITIES,
-  COL_COMPANIES,
-  COL_OPTIONS,
-  COL_RUBRICS,
-  COL_SEO_CONTENTS,
-} from 'db/collectionNames';
-import { getCitiesList } from 'db/dao/cities/getCitiesList';
-import {
-  AttributeModel,
-  BrandCollectionModel,
-  BrandModel,
-  CategoryModel,
-  CityModel,
-  CompanyModel,
-  DescriptionPositionType,
-  ObjectIdModel,
-  RubricModel,
-  SeoContentModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import {
-  AttributeInterface,
-  CategoryInterface,
-  SeoContentCitiesInterface,
-  SeoContentInterface,
-} from 'db/uiInterfaces';
-import { castUrlFilters } from './castUrlFilters';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { sortBy } from 'lodash';
+import { ObjectId } from 'mongodb';
+import { castUrlFilters } from './castUrlFilters';
 import { getFieldStringLocale } from './i18n';
 import { sortStringArray } from './stringUtils';
 import { getTreeFromList, getTreeLeaves } from './treeUtils';
@@ -96,14 +75,14 @@ export async function getCatalogueSeoContentSlug({
   rubricSlug,
 }: GetCatalogueSeoContentSlugInterface): Promise<GetCatalogueSeoContentSlugPayloadInterface | null> {
   try {
-    const { db } = await getDatabase();
-    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-    const citiesCollection = db.collection<CityModel>(COL_CITIES);
-    const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-    const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-    const brandCollectionsCollection = db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
-    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-    const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+    const collections = await getDbCollections();
+    const rubricsCollection = collections.rubricsCollection();
+    const citiesCollection = collections.citiesCollection();
+    const categoriesCollection = collections.categoriesCollection();
+    const brandsCollection = collections.brandsCollection();
+    const brandCollectionsCollection = collections.brandCollectionsCollection();
+    const companiesCollection = collections.companiesCollection();
+    const attributesCollection = collections.attributesCollection();
     const {
       brandFilters,
       brandCollectionFilters,
@@ -354,8 +333,8 @@ interface GetCatalogueAllSeoContentsPayloadInterface {
 export async function getCatalogueAllSeoContents(
   props: GetCatalogueAllSeoContentsInterface,
 ): Promise<GetCatalogueAllSeoContentsPayloadInterface | null> {
-  const { db } = await getDatabase();
-  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  const collections = await getDbCollections();
+  const seoContentsCollection = collections.seoContentsCollection();
   const payload = await getCatalogueSeoContentSlug(props);
 
   if (!payload) {
@@ -433,9 +412,9 @@ export async function getProductSeoContentSlug({
   productSlug,
 }: GetProductSeoContentSlugInterface): Promise<GetDocumentSeoContentSlugPayloadInterface | null> {
   try {
-    const { db } = await getDatabase();
-    const citiesCollection = db.collection<CityModel>(COL_CITIES);
-    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+    const collections = await getDbCollections();
+    const citiesCollection = collections.citiesCollection();
+    const companiesCollection = collections.companiesCollection();
 
     // get company
     let companyId = DEFAULT_COMPANY_SLUG;
@@ -484,9 +463,9 @@ export async function getRubricSeoContentSlug({
   position,
 }: GetRubricSeoContentSlugInterface): Promise<GetDocumentSeoContentSlugPayloadInterface | null> {
   try {
-    const { db } = await getDatabase();
-    const citiesCollection = db.collection<CityModel>(COL_CITIES);
-    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+    const collections = await getDbCollections();
+    const citiesCollection = collections.citiesCollection();
+    const companiesCollection = collections.companiesCollection();
 
     // get company
     let companyId = DEFAULT_COMPANY_SLUG;
@@ -533,10 +512,10 @@ export async function getCategorySeoContentSlug({
   position,
 }: GetCategorySeoContentSlugInterface): Promise<GetDocumentSeoContentSlugPayloadInterface | null> {
   try {
-    const { db } = await getDatabase();
-    const citiesCollection = db.collection<CityModel>(COL_CITIES);
-    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-    const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+    const collections = await getDbCollections();
+    const citiesCollection = collections.citiesCollection();
+    const companiesCollection = collections.companiesCollection();
+    const categoriesCollection = collections.categoriesCollection();
     const category = await categoriesCollection.findOne({
       _id: categoryId,
     });
@@ -620,7 +599,7 @@ export async function getRubricSeoContent({
   citySlug,
   locale,
 }: GetRubricSeoContentInterface): Promise<SeoContentInterface | null> {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
 
   const seoContentSlugPayload = await getRubricSeoContentSlug({
     rubricId,
@@ -633,7 +612,7 @@ export async function getRubricSeoContent({
     return null;
   }
 
-  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  const seoContentsCollection = collections.seoContentsCollection();
   const seoContent = await seoContentsCollection.findOne({
     slug: seoContentSlugPayload.seoContentSlug,
   });
@@ -697,7 +676,7 @@ export async function getCategorySeoContent({
   rubricSlug,
   locale,
 }: GetCategorySeoContentInterface): Promise<SeoContentInterface | null> {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const seoContentSlugPayload = await getCategorySeoContentSlug({
     categoryId,
     companySlug,
@@ -708,7 +687,7 @@ export async function getCategorySeoContent({
     return null;
   }
 
-  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  const seoContentsCollection = collections.seoContentsCollection();
   const seoContent = await seoContentsCollection.findOne({
     slug: seoContentSlugPayload.seoContentSlug,
   });
@@ -773,8 +752,8 @@ export async function getProductSeoContent({
   rubricSlug,
   locale,
 }: GetProductSeoContentInterface): Promise<SeoContentInterface | null> {
-  const { db } = await getDatabase();
-  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  const collections = await getDbCollections();
+  const seoContentsCollection = collections.seoContentsCollection();
 
   const seoContentSlugPayload = await getProductSeoContentSlug({
     companySlug,
@@ -844,8 +823,8 @@ export async function getSeoContentBySlug({
   rubricSlug,
   url,
 }: GetSeoContentBySlugInterface): Promise<SeoContentInterface | null> {
-  const { db } = await getDatabase();
-  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  const collections = await getDbCollections();
+  const seoContentsCollection = collections.seoContentsCollection();
   let seoContent = await seoContentsCollection.findOne({
     slug: seoContentSlug,
   });

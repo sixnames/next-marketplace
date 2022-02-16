@@ -1,10 +1,9 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { BlogPostPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getSessionUser } from 'lib/sessionHelpers';
-import { COL_BLOG_LIKES, COL_BLOG_POSTS } from '../../collectionNames';
-import { BlogLikeModel, BlogPostModel, BlogPostPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { UpdateBlogPostInputInterface } from './updateBlogPost';
 
 export interface AddBlogPostLikeInputInterface {
@@ -12,11 +11,11 @@ export interface AddBlogPostLikeInputInterface {
 }
 
 export async function addPostLike(req: NextApiRequest, res: NextApiResponse) {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const { getApiMessage } = await getRequestParams({ req, res });
   const sessionUser = await getSessionUser({ req, res });
-  const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
-  const blogLikesCollection = db.collection<BlogLikeModel>(COL_BLOG_LIKES);
+  const blogPostsCollection = collections.blogPostsCollection();
+  const blogLikesCollection = collections.blogLikesCollection();
   const args = JSON.parse(req.body) as UpdateBlogPostInputInterface;
 
   let payload: BlogPostPayloadModel = {

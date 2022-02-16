@@ -1,20 +1,19 @@
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CompanyProductDetails from 'components/company/CompanyProductDetails';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import ConsoleShopProductLayout from 'components/layout/console/ConsoleShopProductLayout';
 import RequestError from 'components/RequestError';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
-import ConsoleShopProductLayout from 'components/layout/console/ConsoleShopProductLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getConsoleShopProduct } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
@@ -101,8 +100,8 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { shopProductId, companyId, shopId } = query;
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
   const { props } = await getAppInitialData({ context });
   if (!props || !shopProductId || !companyId || !shopId) {
     return {

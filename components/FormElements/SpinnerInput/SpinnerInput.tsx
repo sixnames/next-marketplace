@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { noNaN } from 'lib/numbers';
+import * as React from 'react';
 import { InputTheme, OnOffType } from 'types/clientTypes';
 import WpIcon from '../../WpIcon';
 

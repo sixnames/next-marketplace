@@ -1,11 +1,4 @@
-import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
-import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
-import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import {
@@ -13,6 +6,13 @@ import {
   ProductAttributeInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
+import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
+import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 
 export interface UpdateProductNumberAttributeItemInputInterface {
   productAttributeId: string;

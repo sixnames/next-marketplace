@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
+import * as React from 'react';
 import { useConstantOptions } from '../../hooks/useConstantOptions';
 import { InputTheme } from '../../types/clientTypes';
 import HeadlessMenuButton, {

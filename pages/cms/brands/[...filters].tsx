@@ -1,25 +1,25 @@
-import { useAppContext } from 'components/context/appContext';
-import { useDeleteBrand } from 'hooks/mutations/useBrandMutations';
-import { NextPage } from 'next';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
+import { useAppContext } from 'components/context/appContext';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import WpLink from 'components/Link/WpLink';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager from 'components/Pager';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'lib/config/modalVariants';
 import { getCmsBrandsListPageSsr } from 'db/ssr/brands/getCmsBrandsListPageSsr';
 import { AppPaginationInterface, BrandInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { useDeleteBrand } from 'hooks/mutations/useBrandMutations';
+import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'lib/config/modalVariants';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { NextPage } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 export type CmsBrandsListConsumerInterface = AppPaginationInterface<BrandInterface>;
 

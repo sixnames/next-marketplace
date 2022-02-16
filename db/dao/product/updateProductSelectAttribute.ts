@@ -1,17 +1,17 @@
-import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
-import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
-import { ObjectId } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { getParentTreeIds } from 'lib/treeUtils';
-import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import { COL_OPTIONS } from 'db/collectionNames';
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { ObjectIdModel, ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface, ProductAttributeInterface } from 'db/uiInterfaces';
+import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
+import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { getParentTreeIds } from 'lib/treeUtils';
+import { execUpdateProductTitles } from 'lib/updateProductTitles';
+import { ObjectId } from 'mongodb';
 
 export interface UpdateProductSelectAttributeInputInterface {
   productId: string;

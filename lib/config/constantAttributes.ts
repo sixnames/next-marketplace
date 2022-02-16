@@ -1,4 +1,3 @@
-import { getObjectId } from 'mongo-seeding';
 import { ObjectIdModel } from 'db/dbModels';
 import {
   AttributeInterface,
@@ -7,8 +6,6 @@ import {
   OptionInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/treeUtils';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
@@ -24,6 +21,9 @@ import {
   GENDER_IT,
   SECONDARY_LOCALE,
 } from 'lib/config/common';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getTreeFromList } from 'lib/treeUtils';
+import { getObjectId } from 'mongo-seeding';
 
 export const getCommonOptionFields = (
   optionsGroupId: ObjectIdModel,

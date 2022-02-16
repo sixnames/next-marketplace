@@ -1,12 +1,12 @@
 import { CreateBrandInputInterface } from 'db/dao/brands/createBrand';
+import { BrandCollectionInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   useCreateBrandCollection,
   useUpdateBrandCollection,
 } from 'hooks/mutations/useBrandMutations';
-import * as React from 'react';
-import { BrandCollectionInterface } from 'db/uiInterfaces';
 import { ResolverValidationSchema } from 'lib/sessionHelpers';
+import * as React from 'react';
 import WpButton from '../button/WpButton';
 import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';

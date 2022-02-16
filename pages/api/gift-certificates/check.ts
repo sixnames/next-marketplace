@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_PATCH } from 'lib/config/common';
 import { checkGiftCertificateAvailability } from 'db/dao/giftCertificate/checkGiftCertificateAvailability';
+import { REQUEST_METHOD_PATCH } from 'lib/config/common';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // update

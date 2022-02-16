@@ -1,30 +1,30 @@
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
+import { useAppContext } from 'components/context/appContext';
 import Currency from 'components/Currency';
 import Inner from 'components/Inner';
+import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { UserCategoryModalInterface } from 'components/Modal/UserCategoryModal';
 import Percent from 'components/Percent';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from 'lib/config/modalVariants';
-import { useAppContext } from 'components/context/appContext';
-import { COL_COMPANIES, COL_USER_CATEGORIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { COL_USER_CATEGORIES } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   UserCategoryInterface,
 } from 'db/uiInterfaces';
 import { useDeleteUserCategory } from 'hooks/mutations/useUserCategoryMutations';
-import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface CompanyDetailsConsumerInterface {
   pageCompany: CompanyInterface;
@@ -169,8 +169,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
   const companyAggregationResult = await companiesCollection
     .aggregate<CompanyInterface>([
       {

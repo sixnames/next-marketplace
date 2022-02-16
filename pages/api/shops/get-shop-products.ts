@@ -1,13 +1,11 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { DEFAULT_LOCALE } from 'lib/config/common';
-import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { summaryPipeline } from 'db/utils/constantPipelines';
-import { ObjectIdModel, ProductSummaryModel, ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ObjectIdModel, ProductSummaryModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from 'db/syncInterfaces';
-import { ShopProductInterface } from 'db/uiInterfaces';
+import { summaryPipeline } from 'db/utils/constantPipelines';
 import { alwaysString } from 'lib/arrayUtils';
+import { DEFAULT_LOCALE } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 interface SyncProductAggregationInterface extends Omit<SyncProductInterface, '_id'> {
   _id: ObjectIdModel;
@@ -42,9 +40,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const { db } = await getDatabase();
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+  const collections = await getDbCollections();
+  const shopsCollection = collections.shopsCollection();
+  const shopProductsCollection = collections.shopProductsCollection();
 
   // get shop
   const shop = await shopsCollection.findOne({ token });

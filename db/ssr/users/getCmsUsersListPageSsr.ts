@@ -1,19 +1,19 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_PAGE, SORT_DESC } from 'lib/config/common';
+import { COL_ROLES, COL_USER_CATEGORIES } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { UserInterface } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { DEFAULT_PAGE, SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import {
   CmsUsersListConsumerInterface,
   CmsUsersListPageInterface,
 } from 'pages/cms/users/[...filters]';
-import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { RoleInterface, UserInterface } from 'db/uiInterfaces';
 
 interface UsersAggregationInterface {
   docs: UserInterface[];
@@ -79,9 +79,9 @@ export const getCmsUsersListPageSsr = async (
       ]
     : [];
 
-  const { db } = await getDatabase();
-  const usersCollection = db.collection<UserInterface>(COL_USERS);
-  const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
+  const collections = await getDbCollections();
+  const usersCollection = collections.usersCollection();
+  const rolesCollection = collections.rolesCollection();
 
   const usersAggregationResult = await usersCollection
     .aggregate<UsersAggregationInterface>(

@@ -1,14 +1,14 @@
 import * as React from 'react';
+import { AppPaginationInterface, NotSyncedProductInterface } from '../db/uiInterfaces';
+import { useUpdateProductWithSyncError } from '../hooks/mutations/useProductMutations';
 import {
   CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
   PRODUCT_SEARCH_MODAL,
 } from '../lib/config/modalVariants';
-import { useAppContext } from './context/appContext';
-import { AppPaginationInterface, NotSyncedProductInterface } from '../db/uiInterfaces';
-import { useUpdateProductWithSyncError } from '../hooks/mutations/useProductMutations';
 import { getNumWord } from '../lib/i18n';
 import ContentItemControls from './button/ContentItemControls';
 import WpButton from './button/WpButton';
+import { useAppContext } from './context/appContext';
 import Currency from './Currency';
 import FormattedDateTime from './FormattedDateTime';
 import { CreateProductWithSyncErrorModalInterface } from './Modal/CreateProductWithSyncErrorModal';

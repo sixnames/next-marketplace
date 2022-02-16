@@ -1,19 +1,18 @@
-import * as React from 'react';
+import { useSiteUserContext } from 'components/context/siteUserContext';
+import { getDbCollections } from 'db/mongodb';
+import { PageInterface } from 'db/uiInterfaces';
+import { PAGE_STATE_PUBLISHED } from 'lib/config/common';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getConsolePagesLinks } from 'lib/linkUtils';
+import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 import FixedButtons from '../../components/button/FixedButtons';
 import WpButton from '../../components/button/WpButton';
 import Inner from '../../components/Inner';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
 import PageEditor from '../../components/PageEditor';
 import WpBreadcrumbs from '../../components/WpBreadcrumbs';
-import { PAGE_STATE_PUBLISHED } from '../../lib/config/common';
-import { useSiteUserContext } from '../../components/context/siteUserContext';
-import { COL_PAGES } from '../../db/collectionNames';
-import { getDatabase } from '../../db/mongodb';
-import { PageInterface } from '../../db/uiInterfaces';
-import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
-import { getFieldStringLocale } from '../../lib/i18n';
-import { getConsolePagesLinks } from '../../lib/linkUtils';
-import { castDbData, getSiteInitialData } from '../../lib/ssrUtils';
 
 interface CreatedPageConsumerInterface {
   page: PageInterface;
@@ -83,8 +82,8 @@ export async function getServerSideProps(
     };
   }
 
-  const { db } = await getDatabase();
-  const pagesCollection = db.collection<PageInterface>(COL_PAGES);
+  const collections = await getDbCollections();
+  const pagesCollection = collections.pagesCollection();
   const initialPage = await pagesCollection.findOne({
     slug: `${query?.pageSlug}`,
     citySlug: props.citySlug,

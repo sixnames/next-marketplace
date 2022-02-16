@@ -1,13 +1,11 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_COMPANIES, ASSETS_LOGO_WIDTH } from 'lib/config/common';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { CompanyModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { getApiMessageValue } from 'db/utils/apiMessageUtils';
 import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
+import { ASSETS_DIST_COMPANIES, ASSETS_LOGO_WIDTH } from 'lib/config/common';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export const config = {
   api: {
@@ -32,8 +30,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
   const formData = await parseRestApiFormData(req);
   const { locale } = req.cookies;
 

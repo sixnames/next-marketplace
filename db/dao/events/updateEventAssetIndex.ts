@@ -1,9 +1,9 @@
-import { getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { EventPayloadModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import { getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
 export interface UpdateEventAssetIndexInputInterface {

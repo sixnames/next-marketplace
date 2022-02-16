@@ -1,5 +1,24 @@
-import { ObjectId } from 'mongodb';
-import { ParsedUrlQuery } from 'querystring';
+import { castSummaryForUI } from 'db/cast/castSummaryForUI';
+import { COL_CITIES, COL_COMPANIES } from 'db/collectionNames';
+import { ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import {
+  AttributeInterface,
+  CompanyShopProductsPageInterface,
+  ShopInterface,
+  ShopProductInterface,
+  ShopProductPricesInterface,
+  ShopProductsAggregationInterface,
+} from 'db/uiInterfaces';
+import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
+import {
+  paginatedAggregationFinalPipeline,
+  productsPaginatedAggregationFacetsPipeline,
+  ProductsPaginatedAggregationInterface,
+  shopProductDocsFacetPipeline,
+} from 'db/utils/constantPipelines';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
 import {
   DEFAULT_CITY,
   DEFAULT_CURRENCY,
@@ -12,37 +31,11 @@ import {
   getCommonFilterAttribute,
   getPriceAttribute,
 } from 'lib/config/constantAttributes';
-import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/castUrlFilters';
-import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castSupplierProductsList } from 'lib/productUtils';
 import { getTreeFromList } from 'lib/treeUtils';
-import {
-  COL_CITIES,
-  COL_COMPANIES,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-} from 'db/collectionNames';
-import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import {
-  AttributeInterface,
-  CompanyShopProductsPageInterface,
-  RubricInterface,
-  ShopInterface,
-  ShopProductInterface,
-  ShopProductPricesInterface,
-  ShopProductsAggregationInterface,
-} from 'db/uiInterfaces';
-import {
-  paginatedAggregationFinalPipeline,
-  productsPaginatedAggregationFacetsPipeline,
-  ProductsPaginatedAggregationInterface,
-  shopProductDocsFacetPipeline,
-} from 'db/utils/constantPipelines';
-import { castSummaryForUI } from 'db/cast/castSummaryForUI';
+import { ObjectId } from 'mongodb';
+import { ParsedUrlQuery } from 'querystring';
 
 export interface GetConsoleShopProductsInputInterface {
   locale: string;
@@ -64,10 +57,10 @@ export const getConsoleShopProducts = async ({
   ...props
 }: GetConsoleShopProductsInputInterface): Promise<CompanyShopProductsPageInterface | null> => {
   try {
-    const { db } = await getDatabase();
-    const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
-    const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
-    const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+    const collections = await getDbCollections();
+    const shopProductsCollection = collections.shopProductsCollection();
+    const shopsCollection = collections.shopsCollection();
+    const rubricsCollection = collections.rubricsCollection();
     const filters = alwaysArray(query.filters);
     const search = alwaysString(query.search);
     const shopId = alwaysString(query.shopId);

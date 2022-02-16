@@ -1,4 +1,4 @@
-import { ADDRESS_COMPONENTS } from '../../mocks';
+import { ShopModel } from 'db/dbModels';
 import {
   ASSETS_DIST_SHOPS,
   ASSETS_DIST_SHOPS_LOGOS,
@@ -6,8 +6,8 @@ import {
   DEFAULT_LOCALE,
   GEO_POINT_TYPE,
 } from 'lib/config/common';
-import { ShopModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
+import { ADDRESS_COMPONENTS } from '../../mocks';
 
 require('dotenv').config();
 

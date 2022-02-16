@@ -1,11 +1,11 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { useAppContext } from '../context/appContext';
-import { useSiteUserContext } from '../context/siteUserContext';
+import * as React from 'react';
 import { UpdateMyPasswordInputInterface } from '../../db/dao/user/updateMyPassword';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { updateMyPasswordSchema } from '../../validation/userSchema';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
+import { useSiteUserContext } from '../context/siteUserContext';
 import FormikInput from '../FormElements/Input/FormikInput';
 import RequestError from '../RequestError';
 import ModalButtons from './ModalButtons';

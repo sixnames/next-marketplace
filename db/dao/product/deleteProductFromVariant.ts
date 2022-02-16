@@ -1,15 +1,4 @@
-import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
-import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
-import { getFullProductSummary, getFullProductSummaryWithDraft } from 'lib/productUtils';
-import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { deleteProductFromConnectionSchema } from 'validation/productSchema';
 import {
   ObjectIdModel,
   ProductPayloadModel,
@@ -18,6 +7,17 @@ import {
 } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface, ProductVariantInterface } from 'db/uiInterfaces';
+import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
+import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getFullProductSummary, getFullProductSummaryWithDraft } from 'lib/productUtils';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { deleteProductFromConnectionSchema } from 'validation/productSchema';
 
 export interface DeleteProductFromVariantInputInterface {
   taskId?: string | null;

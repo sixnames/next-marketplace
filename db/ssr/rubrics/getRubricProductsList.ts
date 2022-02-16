@@ -1,9 +1,9 @@
-import { ObjectId } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE } from 'lib/config/common';
-import { alwaysString } from 'lib/arrayUtils';
-import { noNaN } from 'lib/numbers';
-import { ConsoleRubricProductsInterface } from 'db/uiInterfaces';
 import { getConsoleRubricProducts } from 'db/ssr/rubrics/getConsoleRubricProducts';
+import { ConsoleRubricProductsInterface } from 'db/uiInterfaces';
+import { alwaysString } from 'lib/arrayUtils';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE } from 'lib/config/common';
+import { noNaN } from 'lib/numbers';
+import { ObjectId } from 'mongodb';
 
 export interface GetRubricProductsListInputInterface {
   rubricSlug: string;

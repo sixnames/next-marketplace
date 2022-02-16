@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { updateEventCardContent } from 'db/dao/events/updateEventCardContent';
 import { REQUEST_METHOD_PATCH } from 'lib/config/common';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
-import { updateEventCardContent } from 'db/dao/events/updateEventCardContent';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // update

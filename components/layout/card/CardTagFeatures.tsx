@@ -1,8 +1,8 @@
-import * as React from 'react';
 import TagLink from 'components/Link/TagLink';
-import { FILTER_SEPARATOR } from 'lib/config/common';
 import { ProductAttributeInterface } from 'db/uiInterfaces';
+import { FILTER_SEPARATOR } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
+import * as React from 'react';
 
 interface CardTagFeaturesInterface {
   tagFeatures: ProductAttributeInterface[];

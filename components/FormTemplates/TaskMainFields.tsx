@@ -1,16 +1,16 @@
 import { useFormikContext } from 'formik';
+import { get } from 'lodash';
 import * as React from 'react';
-import { PRODUCT_SEARCH_MODAL } from '../../lib/config/modalVariants';
-import { useAppContext } from '../context/appContext';
 import { CreateTaskInputInterface } from '../../db/dao/tasks/createTask';
 import { TaskVariantInterface } from '../../db/uiInterfaces';
 import { useUserSearchModal } from '../../hooks/useUserSearchModal';
+import { PRODUCT_SEARCH_MODAL } from '../../lib/config/modalVariants';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import FakeInput from '../FormElements/Input/FakeInput';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import InputLine from '../FormElements/Input/InputLine';
 import FormikSelect from '../FormElements/Select/FormikSelect';
-import { get } from 'lodash';
 import { ProductSearchModalInterface } from '../Modal/ProductSearchModal';
 
 export interface TaskMainFieldsInterface {

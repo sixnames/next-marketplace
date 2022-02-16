@@ -1,13 +1,13 @@
-import * as React from 'react';
 import { useLocaleContext } from 'components/context/localeContext';
 import { TranslationModel } from 'db/dbModels';
+import { useFormikContext } from 'formik';
+import { get } from 'lodash';
+import * as React from 'react';
 import WpAccordion from '../../WpAccordion';
 import WpIcon from '../../WpIcon';
 import WpTooltip from '../../WpTooltip';
-import FormikSelect, { FormikSelectInterface } from './FormikSelect';
-import { useFormikContext } from 'formik';
-import { get } from 'lodash';
 import InputLine from '../Input/InputLine';
+import FormikSelect, { FormikSelectInterface } from './FormikSelect';
 
 const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
   name: inputName,

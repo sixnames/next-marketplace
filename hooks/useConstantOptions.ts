@@ -1,3 +1,4 @@
+import { useLocaleContext } from '../components/context/localeContext';
 import {
   getAttributePositioningOptions,
   getAttributeVariantsOptions,
@@ -7,7 +8,6 @@ import {
   getOptionsGroupVariantsOptions,
   ISO_LANGUAGES,
 } from '../lib/config/constantSelects';
-import { useLocaleContext } from '../components/context/localeContext';
 
 export const useConstantOptions = () => {
   const { locale } = useLocaleContext();

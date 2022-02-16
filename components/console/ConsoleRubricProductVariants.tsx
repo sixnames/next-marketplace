@@ -1,25 +1,25 @@
-import { alwaysString } from 'lib/arrayUtils';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { FILTER_SEPARATOR } from 'lib/config/common';
-import {
-  CONFIRM_MODAL,
-  CREATE_CONNECTION_MODAL,
-  PRODUCT_SEARCH_MODAL,
-} from 'lib/config/modalVariants';
 import { useAppContext } from 'components/context/appContext';
 import { useNotificationsContext } from 'components/context/notificationsContext';
 import {
+  ProductSummaryInterface,
   ProductVariantInterface,
   ProductVariantItemInterface,
-  ProductSummaryInterface,
 } from 'db/uiInterfaces';
 import {
   useAddProductToVariant,
   useCreateProductVariant,
   useDeleteProductFromVariant,
 } from 'hooks/mutations/useProductMutations';
+import { alwaysString } from 'lib/arrayUtils';
+import { FILTER_SEPARATOR } from 'lib/config/common';
+import {
+  CONFIRM_MODAL,
+  CREATE_CONNECTION_MODAL,
+  PRODUCT_SEARCH_MODAL,
+} from 'lib/config/modalVariants';
 import { getCmsLinks } from 'lib/linkUtils';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';

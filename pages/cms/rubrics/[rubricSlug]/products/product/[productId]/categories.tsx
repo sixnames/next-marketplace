@@ -1,21 +1,19 @@
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProductCategories';
-import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { COL_CATEGORIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getDbCollections } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
-  CategoryInterface,
   ProductCategoryInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
-import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { getTreeFromList } from 'lib/treeUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface ProductCategoriesInterface {
   product: ProductSummaryInterface;
@@ -73,8 +71,8 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { productId } = query;
-  const { db } = await getDatabase();
-  const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
+  const collections = await getDbCollections();
+  const categoriesCollection = collections.categoriesCollection();
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {

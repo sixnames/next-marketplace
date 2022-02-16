@@ -1,39 +1,37 @@
-import { useAppContext } from 'components/context/appContext';
-import {
-  useDeleteAttributesGroupFromRubric,
-  useToggleAttributeInRubricFilter,
-  useToggleCmsCardAttributeInRubric,
-} from 'hooks/mutations/useRubricMutations';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
+import { useAppContext } from 'components/context/appContext';
+import { useLocaleContext } from 'components/context/localeContext';
 import WpCheckbox from 'components/FormElements/Checkbox/WpCheckbox';
 import Inner from 'components/Inner';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
 import WpAccordion from 'components/WpAccordion';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import { getConstantTranslation } from 'lib/config/constantTranslations';
-import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
-import { useLocaleContext } from 'components/context/localeContext';
-import { COL_ATTRIBUTES_GROUPS, COL_RUBRICS } from 'db/collectionNames';
-import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { castRubricForUI } from 'db/cast/castRubricForUI';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   AttributeInterface,
   AttributesGroupInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
-import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
+import {
+  useDeleteAttributesGroupFromRubric,
+  useToggleAttributeInRubricFilter,
+  useToggleCmsCardAttributeInRubric,
+} from 'hooks/mutations/useRubricMutations';
 import { sortObjectsByField } from 'lib/arrayUtils';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface RubricAttributesConsumerInterface {
   rubric: RubricInterface;
@@ -240,9 +238,9 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricAttributesPageInterface>> => {
   const { query } = context;
-  const { db } = await getDatabase();
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const attributeGroupsCollection = db.collection<AttributesGroupInterface>(COL_ATTRIBUTES_GROUPS);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.rubricsCollection();
+  const attributeGroupsCollection = collections.attributesGroupsCollection();
 
   const { props } = await getAppInitialData({ context });
   if (!props) {

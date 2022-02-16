@@ -1,4 +1,8 @@
 import { hash } from 'bcryptjs';
+import { COL_USERS } from 'db/collectionNames';
+import { UserPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { ROLE_SLUG_GUEST } from 'lib/config/common';
 import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -7,10 +11,6 @@ import { getNextItemId } from 'lib/itemIdUtils';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import { signUpSchema } from 'validation/userSchema';
-import { COL_ROLES, COL_USERS } from '../../collectionNames';
-import { RoleModel, UserModel, UserPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface SignUpInputInterface {
   name: string;
@@ -27,9 +27,9 @@ export async function signUp({
 }: DaoPropsInterface<SignUpInputInterface>): Promise<UserPayloadModel> {
   try {
     const { getApiMessage, citySlug, companySlug, locale } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const usersCollection = db.collection<UserModel>(COL_USERS);
-    const rolesCollection = db.collection<RoleModel>(COL_ROLES);
+    const collections = await getDbCollections();
+    const usersCollection = collections.usersCollection();
+    const rolesCollection = collections.rolesCollection();
 
     // check input
     if (!input) {

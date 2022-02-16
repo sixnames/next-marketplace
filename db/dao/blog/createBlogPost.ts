@@ -1,4 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { COL_BLOG_POSTS } from 'db/collectionNames';
+import { BlogPostPayloadModel, TranslationModel } from 'db/dbModels';
+
+import { getDbCollections } from 'db/mongodb';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import {
   DEFAULT_COUNTERS_OBJECT,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
@@ -11,11 +15,8 @@ import {
   getOperationPermission,
   getRequestParams,
 } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { createBlogPostSchema } from 'validation/blogSchema';
-import { COL_BLOG_POSTS } from '../../collectionNames';
-import { BlogPostModel, BlogPostPayloadModel, TranslationModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 
 export interface CreateBlogPostInputInterface {
   titleI18n: TranslationModel;
@@ -24,9 +25,9 @@ export interface CreateBlogPostInputInterface {
 }
 
 export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const { getApiMessage } = await getRequestParams({ req, res });
-  const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
+  const blogPostsCollection = collections.blogPostsCollection();
   const args = JSON.parse(req.body) as CreateBlogPostInputInterface;
 
   let payload: BlogPostPayloadModel = {

@@ -1,15 +1,13 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_CURRENCY, DEFAULT_PAGE_FILTER } from 'lib/config/common';
+import { castRubricForUI } from 'db/cast/castRubricForUI';
+import { getDbCollections } from 'db/mongodb';
+import { getConsolePromoProducts } from 'db/ssr/promo/getConsolePromoProducts';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { DEFAULT_CURRENCY, DEFAULT_PAGE_FILTER } from 'lib/config/common';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { ConsolePromoProductsListPageInterface } from 'pages/console/[companyId]/promo/details/[promoId]/rubrics/[rubricSlug]/products/[...filters]';
-import { COL_RUBRICS } from 'db/collectionNames';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getConsolePromoProducts } from 'db/ssr/promo/getConsolePromoProducts';
-import { castRubricForUI } from 'db/cast/castRubricForUI';
 
 export const getConsolePromoProductsListPageSsr = async (
   context: GetServerSidePropsContext,
@@ -22,8 +20,8 @@ export const getConsolePromoProductsListPageSsr = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.rubricsCollection();
 
   // get promo
   const locale = props.sessionLocale;

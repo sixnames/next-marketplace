@@ -1,7 +1,7 @@
+import { GenderModel, ObjectIdModel, OptionVariantsModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
-import { GenderModel, ObjectIdModel, OptionVariantsModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
 import { alwaysArray, sortObjectsByField } from './arrayUtils';
 import { getFieldStringLocale } from './i18n';
 
@@ -100,7 +100,7 @@ export async function getParentTreeSlugs({
   collectionName,
   acc,
 }: GetParentTreeSlugsInterface): Promise<string[]> {
-  const { db } = await getDatabase();
+  const { db } = await getDbCollections();
   const collection = db.collection(collectionName);
   const document = await collection.findOne({ _id });
 
@@ -128,7 +128,7 @@ export async function getParentTreeIds({
   collectionName,
   acc,
 }: GetParentTreeIdsInterface): Promise<ObjectIdModel[]> {
-  const { db } = await getDatabase();
+  const { db } = await getDbCollections();
   const collection = db.collection(collectionName);
   const document = await collection.findOne({ _id });
 
@@ -152,7 +152,7 @@ export async function getChildrenTreeIds({
   collectionName,
   acc,
 }: GetChildrenTreeIdsInterface): Promise<ObjectIdModel[]> {
-  const { db } = await getDatabase();
+  const { db } = await getDbCollections();
   const collection = db.collection(collectionName);
   const document = await collection.findOne({ _id });
 
@@ -190,7 +190,7 @@ export async function deleteDocumentsTree({
     acc: [],
     collectionName,
   });
-  const { db } = await getDatabase();
+  const { db } = await getDbCollections();
   const collection = db.collection(collectionName);
   const removedResult = await collection.deleteMany({
     _id: {

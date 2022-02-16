@@ -1,7 +1,6 @@
 import { objectType } from 'nexus';
-import { COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
 import { ShopModel, ShopProductModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { getDbCollections } from '../db/mongodb';
 import { noNaN } from '../lib/numbers';
 
 export const OrderProduct = objectType({
@@ -23,8 +22,8 @@ export const OrderProduct = objectType({
     t.field('shopProduct', {
       type: 'ShopProduct',
       resolve: async (source): Promise<ShopProductModel | null> => {
-        const { db } = await getDatabase();
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const collections = await getDbCollections();
+        const shopProductsCollection = collections.shopProductsCollection();
         const shopProduct = await shopProductsCollection.findOne({ _id: source.shopProductId });
         return shopProduct;
       },
@@ -34,8 +33,8 @@ export const OrderProduct = objectType({
     t.field('shop', {
       type: 'Shop',
       resolve: async (source): Promise<ShopModel | null> => {
-        const { db } = await getDatabase();
-        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+        const collections = await getDbCollections();
+        const shopsCollection = collections.shopsCollection();
         const shop = await shopsCollection.findOne({ _id: source.shopId });
         return shop;
       },

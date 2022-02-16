@@ -1,21 +1,16 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getApiResolverValidationSchema,
   getOperationPermission,
   getRequestParams,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { updateBlogPostSchema } from 'validation/blogSchema';
 import { COL_BLOG_POSTS } from '../../collectionNames';
-import {
-  BlogPostModel,
-  BlogPostPayloadModel,
-  PageStateModel,
-  TranslationModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
+import { BlogPostPayloadModel, PageStateModel, TranslationModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 
 export interface UpdateBlogPostInputInterface {
   blogPostId: string;
@@ -27,9 +22,9 @@ export interface UpdateBlogPostInputInterface {
 }
 
 export async function updateBlogPost(req: NextApiRequest, res: NextApiResponse) {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const { getApiMessage } = await getRequestParams({ req, res });
-  const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
+  const blogPostsCollection = collections.blogPostsCollection();
   const args = JSON.parse(req.body) as UpdateBlogPostInputInterface;
 
   let payload: BlogPostPayloadModel = {

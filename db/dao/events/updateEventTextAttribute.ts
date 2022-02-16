@@ -1,8 +1,3 @@
-import { ObjectId } from 'mongodb';
-import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'lib/config/common';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { EventPayloadModel, TranslationModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import {
@@ -10,6 +5,11 @@ import {
   EventSummaryInterface,
   ProductAttributeInterface,
 } from 'db/uiInterfaces';
+import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'lib/config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 
 export interface UpdateEventTextAttributeItemInputInterface {
   productAttributeId: string;

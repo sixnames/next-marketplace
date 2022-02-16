@@ -1,13 +1,13 @@
+import { GetRubricProductsListInputInterface } from 'db/ssr/rubrics/getRubricProductsList';
+import qs from 'qs';
 import * as React from 'react';
 import useSWR from 'swr';
-import qs from 'qs';
-import { DEFAULT_PAGE } from '../../lib/config/common';
-import { GetRubricProductsListInputInterface } from 'db/ssr/rubrics/getRubricProductsList';
 import {
   ConsoleRubricProductsInterface,
   ProductSummaryInterface,
   RubricInterface,
 } from '../../db/uiInterfaces';
+import { DEFAULT_PAGE } from '../../lib/config/common';
 import { getCmsLinks } from '../../lib/linkUtils';
 import ContentItemControls, { ContentItemControlsInterface } from '../button/ContentItemControls';
 import FormikIndividualSearch from '../FormElements/Search/FormikIndividualSearch';

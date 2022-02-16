@@ -1,10 +1,10 @@
-import { arg, extendType, nonNull, objectType, stringArg } from 'nexus';
-import { SORT_DESC } from '../lib/config/common';
-import { COL_CITIES } from '../db/collectionNames';
+import { COL_CITIES } from 'db/collectionNames';
+import { CitiesPaginationPayloadModel, CityModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { aggregatePagination } from 'db/utils/aggregatePagination';
-import { CitiesPaginationPayloadModel, CityModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { getRequestParams } from '../lib/sessionHelpers';
+import { SORT_DESC } from 'lib/config/common';
+import { getRequestParams } from 'lib/sessionHelpers';
+import { arg, extendType, nonNull, objectType, stringArg } from 'nexus';
 
 export const City = objectType({
   name: 'City',
@@ -45,8 +45,8 @@ export const CityQueries = extendType({
         _id: nonNull(arg({ type: 'ObjectId' })),
       },
       resolve: async (_root, args): Promise<CityModel> => {
-        const { db } = await getDatabase();
-        const citiesCollection = db.collection<CityModel>(COL_CITIES);
+        const collections = await getDbCollections();
+        const citiesCollection = collections.citiesCollection();
         const city = await citiesCollection.findOne({ _id: args._id });
         if (!city) {
           throw Error('City not found by given _id');
@@ -63,8 +63,8 @@ export const CityQueries = extendType({
         slug: nonNull(stringArg()),
       },
       resolve: async (_root, args): Promise<CityModel> => {
-        const { db } = await getDatabase();
-        const citiesCollection = db.collection<CityModel>(COL_CITIES);
+        const collections = await getDbCollections();
+        const citiesCollection = collections.citiesCollection();
         const city = await citiesCollection.findOne({ slug: args.slug });
         if (!city) {
           throw Error('City not found by given slug');
@@ -98,8 +98,8 @@ export const CityQueries = extendType({
       type: 'City',
       description: 'Should return cities list',
       resolve: async (_root): Promise<CityModel[]> => {
-        const { db } = await getDatabase();
-        const citiesCollection = db.collection<CityModel>(COL_CITIES);
+        const collections = await getDbCollections();
+        const citiesCollection = collections.citiesCollection();
         const cities = await citiesCollection.find({}, { sort: { itemId: SORT_DESC } }).toArray();
         return cities;
       },

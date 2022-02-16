@@ -1,11 +1,11 @@
-import Head from 'next/head';
-import * as React from 'react';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
 import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import AppSubNav from 'components/layout/AppSubNav';
+import Head from 'next/head';
+import * as React from 'react';
 
 interface ConsoleUserLayoutInterface {
   user: UserInterface;

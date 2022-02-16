@@ -1,7 +1,5 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { PAGE_STATE_DRAFT } from '../../lib/config/common';
-import { CONFIRM_MODAL, CREATE_PAGE_MODAL } from '../../lib/config/modalVariants';
 import {
   CityInterface,
   PageInterface,
@@ -11,6 +9,8 @@ import {
 } from '../../db/uiInterfaces';
 import { useDeletePage } from '../../hooks/mutations/usePageMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { PAGE_STATE_DRAFT } from '../../lib/config/common';
+import { CONFIRM_MODAL, CREATE_PAGE_MODAL } from '../../lib/config/modalVariants';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';

@@ -1,15 +1,11 @@
-import { ObjectId } from 'mongodb';
-import Head from 'next/head';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import WpCheckbox from 'components/FormElements/Checkbox/WpCheckbox';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { SORT_ASC, SORT_DESC } from 'lib/config/common';
-import { getConstantTranslation } from 'lib/config/constantTranslations';
-import { COL_NAV_ITEMS, COL_ROLES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   NavGroupInterface,
@@ -18,12 +14,15 @@ import {
 } from 'db/uiInterfaces';
 import { useUpdateRoleNavMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import AppSubNav from 'components/layout/AppSubNav';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { SORT_ASC, SORT_DESC } from 'lib/config/common';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Head from 'next/head';
+import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface RoleNavConsumerInterface {
@@ -162,9 +161,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
-  const navItemsCollection = db.collection<NavGroupInterface>(COL_NAV_ITEMS);
+  const collections = await getDbCollections();
+  const rolesCollection = collections.rolesCollection();
+  const navItemsCollection = collections.navItemsCollection();
   const roleQueryResult = await rolesCollection.findOne({
     _id: new ObjectId(`${context.query.roleId}`),
   });

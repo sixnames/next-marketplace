@@ -1,8 +1,8 @@
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { COL_ORDER_STATUSES } from '../db/collectionNames';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
-import { OrderStatusModel, OrderStatusPayloadModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { OrderStatusPayloadModel } from '../db/dbModels';
+import { getDbCollections } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
@@ -111,8 +111,8 @@ export const OrderStatusMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
+          const collections = await getDbCollections();
+          const orderStatusesCollection = collections.orderStatusesCollection();
           const { input } = args;
 
           // Check if order status is already exist
@@ -174,10 +174,10 @@ export const OrderStatusMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<OrderStatusPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
+        const collections = await getDbCollections();
+        const orderStatusesCollection = collections.orderStatusesCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: OrderStatusPayloadModel = {
           success: false,
@@ -311,8 +311,8 @@ export const OrderStatusMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
+          const collections = await getDbCollections();
+          const orderStatusesCollection = collections.orderStatusesCollection();
           const { _id } = args;
 
           // Check order status availability

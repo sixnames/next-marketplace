@@ -1,9 +1,9 @@
 import { CreateBrandInputInterface } from 'db/dao/brands/createBrand';
+import { Form, Formik } from 'formik';
 import { useCreateBrand } from 'hooks/mutations/useBrandMutations';
 import * as React from 'react';
-import { Form, Formik } from 'formik';
-import useValidationSchema from '../../hooks/useValidationSchema';
 import { createBrandSchema } from 'validation/brandSchema';
+import useValidationSchema from '../../hooks/useValidationSchema';
 import WpButton from '../button/WpButton';
 import BrandMainFields from '../FormTemplates/BrandMainFields';
 import ModalFrame from './ModalFrame';

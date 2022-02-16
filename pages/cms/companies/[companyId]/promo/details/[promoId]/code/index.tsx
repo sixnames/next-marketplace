@@ -1,18 +1,16 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
 import ConsolePromoCodeList, {
   ConsolePromoCodeListInterface,
 } from 'components/console/ConsolePromoCodeList';
-import { COL_COMPANIES, COL_PROMO_CODES } from 'db/collectionNames';
-import { PromoCodeModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 
 interface PromoCodeListPageInterface
   extends GetAppInitialDataPropsInterface,
@@ -62,7 +60,7 @@ const PromoCodeListPage: React.FC<PromoCodeListPageInterface> = ({
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<PromoCodeListPageInterface>> => {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const { query } = context;
   const { props } = await getAppInitialData({ context });
   if (!props) {
@@ -71,7 +69,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const companiesCollection = collections.companiesCollection();
   const pageCompany = await companiesCollection.findOne({
     _id: new ObjectId(`${query.companyId}`),
   });
@@ -91,7 +89,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
+  const promoCodesCollection = collections.promoCodesCollection();
   const promoCodes = await promoCodesCollection
     .aggregate([
       {

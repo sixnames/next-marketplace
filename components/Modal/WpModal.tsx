@@ -1,5 +1,5 @@
-import * as React from 'react';
 import dynamic from 'next/dynamic';
+import * as React from 'react';
 import {
   ADD_ASSETS_MODAL,
   ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
@@ -23,6 +23,7 @@ import {
   CREATE_NEW_PRODUCT_MODAL,
   CREATE_PAGE_MODAL,
   CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
+  CREATE_PROMO_CODE_MODAL,
   CREATE_PROMO_MODAL,
   CREATE_ROLE_MODAL,
   CREATE_RUBRIC_MODAL,
@@ -51,11 +52,10 @@ import {
   SHOP_PRODUCT_SUPPLIER_MODAL,
   SUPPLIER_MODAL,
   SUPPLIER_OPTIONS_MODAL,
+  TASK_VARIANT_PRICE_MODAL,
   UPDATE_MY_PASSWORD_MODAL,
   USER_CATEGORY_MODAL,
   USERS_SEARCH_MODAL,
-  CREATE_PROMO_CODE_MODAL,
-  TASK_VARIANT_PRICE_MODAL,
 } from '../../lib/config/modalVariants';
 import Spinner from '../Spinner';
 

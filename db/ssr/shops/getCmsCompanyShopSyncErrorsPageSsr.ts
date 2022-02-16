@@ -1,19 +1,18 @@
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { getPaginatedNotSyncedProducts } from 'db/ssr/shops/getPaginatedNotSyncedProducts';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { CmsCompanyShopSyncErrorsPageInterface } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/sync-errors/[...filters]';
-import { COL_COMPANIES, COL_SHOPS } from 'db/collectionNames';
-import { ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getPaginatedNotSyncedProducts } from 'db/ssr/shops/getPaginatedNotSyncedProducts';
 
 export const getCmsCompanyShopSyncErrorsPageSsr = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CmsCompanyShopSyncErrorsPageInterface>> => {
-  const { db } = await getDatabase();
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const collections = await getDbCollections();
+  const shopsCollection = collections.shopsCollection();
   const { query } = context;
   const { shopId } = query;
   const initialProps = await getAppInitialData({ context });

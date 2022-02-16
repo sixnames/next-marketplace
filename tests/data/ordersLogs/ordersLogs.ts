@@ -1,5 +1,5 @@
-import { DEFAULT_DIFF } from 'lib/config/common';
 import { OrderLogModel } from 'db/dbModels';
+import { DEFAULT_DIFF } from 'lib/config/common';
 import { getObjectId } from 'mongo-seeding';
 
 const orderLogs: OrderLogModel[] = [

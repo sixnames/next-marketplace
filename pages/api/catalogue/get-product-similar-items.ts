@@ -1,18 +1,17 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { DEFAULT_COMPANY_SLUG, SORT_DESC } from 'lib/config/common';
-import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { ShopProductInterface } from 'db/uiInterfaces';
 import {
   ignoreNoImageStage,
   shopProductsGroupPipeline,
   summaryPipeline,
 } from 'db/utils/constantPipelines';
-import { ProductFacetModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { ShopProductInterface } from 'db/uiInterfaces';
+import { DEFAULT_COMPANY_SLUG, SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getRequestParams, getSessionCompanySlug } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 const fullPercentage = 100;
 const filterPercentage = 50;
@@ -38,9 +37,9 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
-    const { db } = await getDatabase();
-    const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
-    const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+    const collections = await getDbCollections();
+    const shopProductsCollection = collections.shopProductsCollection();
+    const productsCollection = collections.productFacetsCollection();
     const companyMatch = companySlug !== DEFAULT_COMPANY_SLUG ? { companySlug } : {};
 
     // get product

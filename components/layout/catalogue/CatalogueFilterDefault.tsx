@@ -1,18 +1,18 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import { getFilterOptions } from 'components/CheckBoxFilter';
+import { useAppContext } from 'components/context/appContext';
+import { useConfigContext } from 'components/context/configContext';
 import FilterSelectedAttributes from 'components/FilterSelectedAttributes';
+import {
+  CatalogueFilterAttributePropsInterface,
+  CatalogueFilterInterface,
+} from 'components/layout/catalogue/CatalogueFilter';
 import FilterLink from 'components/Link/FilterLink';
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
 import WpAccordion from 'components/WpAccordion';
 import { CATALOGUE_FILTER_VISIBLE_OPTIONS } from 'lib/config/common';
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'lib/config/modalVariants';
-import { useAppContext } from 'components/context/appContext';
-import { useConfigContext } from 'components/context/configContext';
-import {
-  CatalogueFilterAttributePropsInterface,
-  CatalogueFilterInterface,
-} from 'components/layout/catalogue/CatalogueFilter';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 const CatalogueFilterAttributeOptions: React.FC<CatalogueFilterAttributePropsInterface> = ({
   attribute,

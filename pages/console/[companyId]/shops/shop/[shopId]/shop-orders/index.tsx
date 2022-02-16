@@ -1,19 +1,14 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ShopOrders, { ShopOrdersInterface } from 'components/shops/ShopOrders';
-import { SORT_DESC } from 'lib/config/common';
 import {
   COL_COMPANIES,
   COL_ORDER_CUSTOMERS,
   COL_ORDER_STATUSES,
   COL_ORDERS,
-  COL_SHOPS,
 } from 'db/collectionNames';
-import { ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, ShopInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getShortName } from 'lib/nameUtils';
@@ -23,6 +18,9 @@ import {
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface CompanyShopAssetsInterface
   extends GetConsoleInitialDataPropsInterface,
@@ -57,8 +55,8 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyShopAssetsInterface>> => {
-  const { db } = await getDatabase();
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const collections = await getDbCollections();
+  const shopsCollection = collections.shopsCollection();
   const { query } = context;
   const { shopId } = query;
   const initialProps = await getConsoleInitialData({ context });

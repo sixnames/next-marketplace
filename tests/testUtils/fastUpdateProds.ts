@@ -1,12 +1,17 @@
-import { Db } from 'mongodb';
+import { generateDbCollections } from 'db/mongodb';
 import { ID_COUNTER_STEP } from 'lib/config/common';
+import { Db, MongoClient } from 'mongodb';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_ID_COUNTERS } from 'db/collectionNames';
-import { IdCounterModel } from 'db/dbModels';
+
 require('dotenv').config();
 
-export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
-  const idCountersCollection = db.collection<IdCounterModel>(COL_ID_COUNTERS);
+export async function getFastNextNumberItemId(
+  collectionName: string,
+  db: Db,
+  client: MongoClient,
+): Promise<string> {
+  const collections = generateDbCollections({ db, client });
+  const idCountersCollection = collections.idCountersCollection();
 
   const updatedCounter = await idCountersCollection.findOneAndUpdate(
     { collection: collectionName },
@@ -34,7 +39,10 @@ async function processProds() {
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
     console.log(`Processing ${dbConfig.dbName} db`);
-    const { client } = await getProdDb(dbConfig);
+    const { db, client } = await getProdDb(dbConfig);
+    const collections = generateDbCollections({ db, client });
+
+    console.log(collections);
 
     // disconnect form db
     await client.close();

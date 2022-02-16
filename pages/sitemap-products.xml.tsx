@@ -1,12 +1,12 @@
+import { ignoreNoImageStage } from 'db/utils/constantPipelines';
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
 import { getDomain } from 'tldts';
-import { DEFAULT_CITY, SORT_DESC } from '../lib/config/common';
-import { COL_COMPANIES, COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../db/collectionNames';
-import { ignoreNoImageStage } from 'db/utils/constantPipelines';
-import { CompanyModel, ShopProductModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { COL_PRODUCT_FACETS } from '../db/collectionNames';
+import { CompanyModel } from '../db/dbModels';
+import { getDbCollections } from '../db/mongodb';
 import { ShopProductInterface } from '../db/uiInterfaces';
+import { DEFAULT_CITY, SORT_DESC } from '../lib/config/common';
 
 const SitemapXml: React.FC = () => {
   return <div />;
@@ -37,8 +37,8 @@ const createSitemap = ({
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { res, req } = context;
   const initialSlugs: string[] = [];
-  const { db } = await getDatabase();
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const collections = await getDbCollections();
+  const shopProductsCollection = collections.shopProductsCollection();
   const host = `${context.req.headers.host}`;
   const domain = getDomain(host, { validHosts: ['localhost'] });
 
@@ -47,7 +47,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Session company
   let company: CompanyModel | null | undefined = null;
   if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
-    company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
+    company = await collections.companiesCollection().findOne({ domain });
   }
 
   const companyMatch = company ? { companyId: company._id } : {};

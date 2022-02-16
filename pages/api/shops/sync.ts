@@ -1,43 +1,26 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_POST } from 'lib/config/common';
-import {
-  COL_BLACKLIST_PRODUCTS,
-  COL_NOT_SYNCED_PRODUCTS,
-  COL_PRODUCT_SUMMARIES,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-  COL_SYNC_INTERSECT,
-  COL_SYNC_LOGS,
-} from 'db/collectionNames';
-import {
-  BlackListProductModel,
-  NotSyncedProductModel,
-  ObjectIdModel,
-  ProductSummaryModel,
-  ShopModel,
-  ShopProductModel,
-  SyncIntersectModel,
-  SyncLogModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { ObjectIdModel, ShopProductModel, SyncIntersectModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from 'db/syncInterfaces';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { REQUEST_METHOD_POST } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { noNaN } from 'lib/numbers';
 import { castSummaryToShopProduct } from 'lib/productUtils';
 import { getUpdatedShopProductPrices } from 'lib/shopUtils';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { db } = await getDatabase();
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const blacklistProducts = db.collection<BlackListProductModel>(COL_BLACKLIST_PRODUCTS);
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const syncIntersectCollection = db.collection<SyncIntersectModel>(COL_SYNC_INTERSECT);
-  const syncLogsCollection = db.collection<SyncLogModel>(COL_SYNC_LOGS);
-  const notSyncedProductsCollection = db.collection<NotSyncedProductModel>(COL_NOT_SYNCED_PRODUCTS);
+  const collections = await getDbCollections();
+  const shopsCollection = collections.shopsCollection();
+  const shopProductsCollection = collections.shopProductsCollection();
+  const blacklistProducts = collections.blackListProductsCollection();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const syncIntersectCollection = collections.syncIntersectCollection();
+  const syncLogsCollection = collections.syncLogsCollection();
+  const notSyncedProductsCollection = collections.notSyncedProductsCollection();
 
   try {
     if (req.method !== REQUEST_METHOD_POST) {

@@ -1,21 +1,20 @@
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ConsoleSeoContentDetails, {
   ConsoleSeoContentDetailsInterface,
 } from 'components/console/ConsoleSeoContentDetails';
 import Inner from 'components/Inner';
-import { CATALOGUE_SEO_TEXT_POSITION_TOP } from 'lib/config/common';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getDbCollections } from 'db/mongodb';
+import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
+import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import { alwaysString } from 'lib/arrayUtils';
+import { CATALOGUE_SEO_TEXT_POSITION_TOP } from 'lib/config/common';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getSeoContentBySlug } from 'lib/seoContentUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface RubricDetailsInterface extends ConsoleSeoContentDetailsInterface {
   rubric: RubricInterface;
@@ -77,8 +76,8 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
   const { query } = context;
   const { props } = await getAppInitialData({ context });
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
   if (!props) {
     return {
       notFound: true,

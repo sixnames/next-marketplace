@@ -1,36 +1,30 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
-import FormattedDate from 'components/FormattedDate';
-import Inner from 'components/Inner';
-import PageEditor from 'components/PageEditor';
-import WpBreadcrumbs from 'components/WpBreadcrumbs';
-import WpIcon from 'components/WpIcon';
-import WpTooltip from 'components/WpTooltip';
-import { FILTER_SEPARATOR, REQUEST_METHOD_POST, SORT_DESC } from 'lib/config/common';
-import { getConstantTranslation } from 'lib/config/constantTranslations';
 import { useAppContext } from 'components/context/appContext';
 import { useConfigContext } from 'components/context/configContext';
 import { useLocaleContext } from 'components/context/localeContext';
 import { useSiteUserContext } from 'components/context/siteUserContext';
-import {
-  COL_BLOG_ATTRIBUTES,
-  COL_BLOG_LIKES,
-  COL_BLOG_POSTS,
-  COL_OPTIONS,
-  COL_USERS,
-} from 'db/collectionNames';
+import FormattedDate from 'components/FormattedDate';
+import Inner from 'components/Inner';
+import SiteLayout, { SiteLayoutProviderInterface } from 'components/layout/SiteLayout';
+import PageEditor from 'components/PageEditor';
+import WpBreadcrumbs from 'components/WpBreadcrumbs';
+import WpIcon from 'components/WpIcon';
+import WpTooltip from 'components/WpTooltip';
+import { COL_BLOG_ATTRIBUTES, COL_BLOG_LIKES, COL_OPTIONS, COL_USERS } from 'db/collectionNames';
 import { UpdateBlogPostCountersInputInterface } from 'db/dao/blog/updateBlogPostCounters';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { BlogAttributeInterface, BlogPostInterface, OptionInterface } from 'db/uiInterfaces';
 import { useCreateBlogPostLike } from 'hooks/mutations/useBlogMutations';
-import SiteLayout, { SiteLayoutProviderInterface } from 'components/layout/SiteLayout';
+import { FILTER_SEPARATOR, REQUEST_METHOD_POST, SORT_DESC } from 'lib/config/common';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleBlogLinks } from 'lib/linkUtils';
 import { getFullName } from 'lib/nameUtils';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 import { BlogListSnippetTags } from '../[...filters]';
 
 interface BlogListSnippetMetaInterface {
@@ -196,8 +190,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const blogPostsCollection = db.collection<BlogPostInterface>(COL_BLOG_POSTS);
+  const collections = await getDbCollections();
+  const blogPostsCollection = collections.blogPostsCollection();
 
   const viewsStage = {
     $addFields: {

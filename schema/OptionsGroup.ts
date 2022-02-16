@@ -1,4 +1,12 @@
-import { arg, enumType, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
+import { COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import {
+  OptionModel,
+  OptionsGroupModel,
+  OptionsGroupPayloadModel,
+  ProductFacetModel,
+} from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
@@ -6,44 +14,26 @@ import {
   OPTIONS_GROUP_VARIANT_COLOR,
   OPTIONS_GROUP_VARIANT_ENUMS,
   SORT_ASC,
-} from '../lib/config/common';
-import {
-  COL_ATTRIBUTES,
-  COL_OPTIONS,
-  COL_OPTIONS_GROUPS,
-  COL_PRODUCT_FACETS,
-  COL_SHOP_PRODUCTS,
-  COL_PRODUCT_SUMMARIES,
-} from '../db/collectionNames';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
-import {
-  AttributeModel,
-  OptionModel,
-  OptionsGroupModel,
-  OptionsGroupPayloadModel,
-  ProductFacetModel,
-  ShopProductModel,
-  ProductSummaryModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { getFieldStringLocale } from '../lib/i18n';
-import { getNextNumberItemId } from '../lib/itemIdUtils';
-import { trimOptionNames } from '../lib/optionUtils';
+} from 'lib/config/common';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getNextNumberItemId } from 'lib/itemIdUtils';
+import { trimOptionNames } from 'lib/optionUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
-import { deleteDocumentsTree, getChildrenTreeIds } from '../lib/treeUtils';
-import { execUpdateProductTitles } from '../lib/updateProductTitles';
+} from 'lib/sessionHelpers';
+import { deleteDocumentsTree, getChildrenTreeIds } from 'lib/treeUtils';
+import { execUpdateProductTitles } from 'lib/updateProductTitles';
+import { arg, enumType, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
   deleteOptionFromGroupSchema,
   updateOptionInGroupSchema,
   updateOptionsGroupSchema,
-} from '../validation/optionsGroupSchema';
+} from 'validation/optionsGroupSchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const OptionsGroupVariant = enumType({
   name: 'OptionsGroupVariant',
@@ -73,8 +63,8 @@ export const OptionsGroup = objectType({
     t.nonNull.list.nonNull.field('options', {
       type: 'Option',
       resolve: async (source): Promise<OptionModel[]> => {
-        const { db } = await getDatabase();
-        const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+        const collections = await getDbCollections();
+        const optionsCollection = collections.optionsCollection();
         const options = await optionsCollection
           .aggregate<OptionModel>([
             {
@@ -112,8 +102,8 @@ export const OptionsGroupQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<OptionsGroupModel> => {
-        const { db } = await getDatabase();
-        const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+        const collections = await getDbCollections();
+        const optionsGroupsCollection = collections.optionsGroupsCollection();
         const optionsGroup = await optionsGroupsCollection.findOne({ _id: args._id });
         if (!optionsGroup) {
           throw Error('Options group not found by given id');
@@ -134,8 +124,8 @@ export const OptionsGroupQueries = extendType({
       description: 'Should return options groups list',
       resolve: async (_root, args, context): Promise<OptionsGroupModel[]> => {
         const { locale } = await getRequestParams(context);
-        const { db } = await getDatabase();
-        const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+        const collections = await getDbCollections();
+        const optionsGroupsCollection = collections.optionsGroupsCollection();
         const optionsGroups = await optionsGroupsCollection
           .find(
             { _id: { $nin: args.excludedIds || [] } },
@@ -265,8 +255,8 @@ export const OptionsGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const collections = await getDbCollections();
+          const optionsGroupsCollection = collections.optionsGroupsCollection();
           const { input } = args;
 
           // Check if options group already exist
@@ -337,8 +327,8 @@ export const OptionsGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const collections = await getDbCollections();
+          const optionsGroupsCollection = collections.optionsGroupsCollection();
           const { input } = args;
           const { optionsGroupId, ...values } = input;
 
@@ -403,12 +393,12 @@ export const OptionsGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<OptionsGroupPayloadModel> => {
         const { getApiMessage, locale } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-        const optionsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS);
-        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+        const collections = await getDbCollections();
+        const optionsGroupsCollection = collections.optionsGroupsCollection();
+        const optionsCollection = collections.optionsCollection();
+        const attributesCollection = collections.attributesCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: OptionsGroupPayloadModel = {
           success: false,
@@ -539,9 +529,9 @@ export const OptionsGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+          const collections = await getDbCollections();
+          const optionsGroupsCollection = collections.optionsGroupsCollection();
+          const optionsCollection = collections.optionsCollection();
           const { input } = args;
           const { optionsGroupId, parentId, ...values } = input;
 
@@ -654,11 +644,10 @@ export const OptionsGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const productSummariesCollection =
-            db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+          const collections = await getDbCollections();
+          const optionsGroupsCollection = collections.optionsGroupsCollection();
+          const productSummariesCollection = collections.productSummariesCollection();
+          const optionsCollection = collections.optionsCollection();
           const { input } = args;
           const { optionsGroupId, optionId, parentId, ...values } = input;
 
@@ -780,14 +769,13 @@ export const OptionsGroupMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-          const productSummariesCollection =
-            db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+          const collections = await getDbCollections();
+          const optionsGroupsCollection = collections.optionsGroupsCollection();
+          const optionsCollection = collections.optionsCollection();
+          const productSummariesCollection = collections.productSummariesCollection();
+          const productFacetsCollection = collections.productFacetsCollection();
+          const shopProductsCollection = collections.shopProductsCollection();
+          const attributesCollection = collections.attributesCollection();
           const { input } = args;
           const { optionsGroupId, optionId } = input;
 
@@ -951,14 +939,13 @@ export const OptionsGroupMutations = extendType({
           await validationSchema.validate(args.input);
           const { getApiMessage } = await getRequestParams(context);
 
-          const { db } = await getDatabase();
-          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-          const productSummariesCollection =
-            db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+          const collections = await getDbCollections();
+          const optionsGroupsCollection = collections.optionsGroupsCollection();
+          const optionsCollection = collections.optionsCollection();
+          const productSummariesCollection = collections.productSummariesCollection();
+          const productFacetsCollection = collections.productFacetsCollection();
+          const shopProductsCollection = collections.shopProductsCollection();
+          const attributesCollection = collections.attributesCollection();
           const { input } = args;
           const { optionsGroupId, optionId } = input;
 

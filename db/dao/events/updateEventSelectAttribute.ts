@@ -1,13 +1,13 @@
-import { ObjectId } from 'mongodb';
+import { COL_OPTIONS } from 'db/collectionNames';
+import { EventPayloadModel, ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface, ProductAttributeInterface } from 'db/uiInterfaces';
 import { FILTER_SEPARATOR } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { getParentTreeIds } from 'lib/treeUtils';
-import { COL_OPTIONS } from 'db/collectionNames';
-import { EventPayloadModel, ObjectIdModel } from 'db/dbModels';
-import { getDbCollections } from 'db/mongodb';
-import { DaoPropsInterface, ProductAttributeInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface UpdateEventSelectAttributeInputInterface {
   eventId: string;

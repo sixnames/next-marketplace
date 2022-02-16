@@ -1,6 +1,7 @@
-import { DEFAULT_COUNTERS_OBJECT, ID_COUNTER_DIGITS } from 'lib/config/common';
 import { OptionModel } from 'db/dbModels';
+import { DEFAULT_COUNTERS_OBJECT, ID_COUNTER_DIGITS } from 'lib/config/common';
 import { getObjectId } from 'mongo-seeding';
+
 const addZero = require('add-zero');
 
 interface OptionBaseModel extends Omit<OptionModel, 'slug' | 'views' | 'variants'> {

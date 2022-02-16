@@ -1,16 +1,16 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_PAGE, SORT_DESC } from 'lib/config/common';
+import { COL_CITIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { AppPaginationAggregationInterface, ShopInterface } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
+import { DEFAULT_PAGE, SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { ConsoleShopsListPageInterface } from 'pages/console/[companyId]/shops/[...filters]';
-import { COL_CITIES, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppPaginationAggregationInterface, ShopInterface } from 'db/uiInterfaces';
 
 export const getConsoleShopsListPageSsr = async (
   context: GetServerSidePropsContext,
@@ -23,8 +23,8 @@ export const getConsoleShopsListPageSsr = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
+  const collections = await getDbCollections();
+  const shopsCollection = collections.shopsCollection();
 
   const { filters, search } = query;
 

@@ -1,12 +1,12 @@
-import * as React from 'react';
 import ControlButton from 'components/button/ControlButton';
+import ProductAddToCartButton from 'components/layout/snippet/ProductAddToCartButton';
+import ProductSnippetEditButton from 'components/layout/snippet/ProductSnippetEditButton';
+import ProductSnippetPrice from 'components/layout/snippet/ProductSnippetPrice';
 import WpLink from 'components/Link/WpLink';
 import RatingStars from 'components/RatingStars';
 import WpImage from 'components/WpImage';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
-import ProductAddToCartButton from 'components/layout/snippet/ProductAddToCartButton';
-import ProductSnippetEditButton from 'components/layout/snippet/ProductSnippetEditButton';
-import ProductSnippetPrice from 'components/layout/snippet/ProductSnippetPrice';
+import * as React from 'react';
 
 const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   shopProduct,

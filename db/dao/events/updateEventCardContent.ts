@@ -1,9 +1,9 @@
+import { EventPayloadModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface, SeoContentInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { updateCitiesSeoContent } from 'lib/seoContentUniquenessUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { EventPayloadModel } from 'db/dbModels';
-import { DaoPropsInterface, SeoContentInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 
 export interface UpdateEventCardContentInputInterface {

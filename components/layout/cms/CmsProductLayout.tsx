@@ -1,22 +1,22 @@
-import WpNotification from 'components/WpNotification';
+import WpButton from 'components/button/WpButton';
+import { useAppContext } from 'components/context/appContext';
+import { useConfigContext } from 'components/context/configContext';
 import { useUserContext } from 'components/context/userContext';
+import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import WpNotification from 'components/WpNotification';
+import WpTitle from 'components/WpTitle';
+import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
+import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import WpButton from 'components/button/WpButton';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import WpTitle from 'components/WpTitle';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { CONFIRM_MODAL } from 'lib/config/modalVariants';
-import { useAppContext } from 'components/context/appContext';
-import { useConfigContext } from 'components/context/configContext';
-import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
-import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { ClientNavItemInterface } from 'types/clientTypes';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import AppSubNav from 'components/layout/AppSubNav';
 
 interface CmsProductLayoutInterface {
   product: ProductSummaryInterface;

@@ -1,26 +1,26 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
 import Inner from 'components/Inner';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { CreateCategoryModalInterface } from 'components/Modal/CreateCategoryModal';
 import RequestError from 'components/RequestError';
 import WpImage from 'components/WpImage';
-import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
-import { CONFIRM_MODAL, CREATE_CATEGORY_MODAL } from 'lib/config/modalVariants';
-import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { COL_CATEGORIES, COL_ICONS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
 import { useDeleteCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { sortObjectsByField } from 'lib/arrayUtils';
+import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
+import { CONFIRM_MODAL, CREATE_CATEGORY_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { getTreeFromList } from 'lib/treeUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface RubricCategoriesConsumerInterface {
   rubric: RubricInterface;
@@ -204,8 +204,8 @@ const RubricCategoriesPage: NextPage<RubricCategoriesPageInterface> = ({
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricCategoriesPageInterface>> => {
-  const { db } = await getDatabase();
-  const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.rubricsCollection();
   const { query } = context;
   const initialProps = await getAppInitialData({ context });
   if (!initialProps.props) {

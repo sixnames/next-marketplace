@@ -1,3 +1,5 @@
+import { getFieldValidationMessage } from 'validation/utils/getFieldValidationMessage';
+import { objectIdSchema, requiredStringTranslationSchema } from 'validation/utils/schemaTemplates';
 import * as Yup from 'yup';
 import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
@@ -6,9 +8,7 @@ import {
   ATTRIBUTE_VIEW_VARIANTS_ENUMS,
   DEFAULT_LOCALE,
 } from '../lib/config/common';
-import { getFieldValidationMessage } from 'validation/utils/getFieldValidationMessage';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
-import { objectIdSchema, requiredStringTranslationSchema } from 'validation/utils/schemaTemplates';
 
 export const attributesGroupIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.attributesGroups.id' });

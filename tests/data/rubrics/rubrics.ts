@@ -1,10 +1,10 @@
+import { GenderModel, ObjectIdModel, RubricModel } from 'db/dbModels';
 import {
   DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_COUNTERS_OBJECT,
   GENDER_IT,
 } from 'lib/config/common';
-import { GenderModel, ObjectIdModel, RubricModel } from 'db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 import attributes from '../attributes/attributes';
 

@@ -1,15 +1,15 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
 import ConsoleTaskVariantsList, {
   ConsoleTaskVariantsListInterface,
 } from 'components/console/ConsoleTaskVariantsList';
 import Inner from 'components/Inner';
-import WpTitle from 'components/WpTitle';
-import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import WpTitle from 'components/WpTitle';
+import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 
 const pageTitle = 'Типы задач';
 interface TaskVariantsListConsumerInterface extends ConsoleTaskVariantsListInterface {}

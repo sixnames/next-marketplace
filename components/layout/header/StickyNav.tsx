@@ -1,19 +1,19 @@
-import dynamic from 'next/dynamic';
-import * as React from 'react';
-import { useRouter } from 'next/router';
+import { useConfigContext } from 'components/context/configContext';
+import { useSiteContext } from 'components/context/siteContext';
+import { useThemeContext } from 'components/context/themeContext';
 import Inner from 'components/Inner';
 import WpLink from 'components/Link/WpLink';
+import { AttributeInterface, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
 import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from 'lib/config/common';
 import {
   NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY,
   NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
   NAV_DROPDOWN_LAYOUT_WITHOUT_SUBCATEGORIES,
 } from 'lib/config/constantSelects';
-import { useConfigContext } from 'components/context/configContext';
-import { useSiteContext } from 'components/context/siteContext';
-import { useThemeContext } from 'components/context/themeContext';
-import { AttributeInterface, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 interface AttributeStylesInterface {
   attributeLinkStyle: React.CSSProperties;

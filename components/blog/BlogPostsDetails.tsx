@@ -1,10 +1,6 @@
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { PAGE_STATE_OPTIONS, REQUEST_METHOD_PATCH } from '../../lib/config/common';
-import { ATTRIBUTE_OPTIONS_MODAL } from '../../lib/config/modalVariants';
-import { useAppContext } from '../context/appContext';
-import { useNotificationsContext } from '../context/notificationsContext';
 import { BlogAttributeInterface, BlogPostInterface } from '../../db/uiInterfaces';
 import {
   useDeleteBlogPostPreviewImage,
@@ -12,9 +8,13 @@ import {
   useUpdateBlogPostAttribute,
 } from '../../hooks/mutations/useBlogMutations';
 import useValidationSchema from '../../hooks/useValidationSchema';
+import { PAGE_STATE_OPTIONS, REQUEST_METHOD_PATCH } from '../../lib/config/common';
+import { ATTRIBUTE_OPTIONS_MODAL } from '../../lib/config/modalVariants';
 import { updateBlogPostSchema } from '../../validation/blogSchema';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
+import { useNotificationsContext } from '../context/notificationsContext';
 import FakeInput from '../FormElements/Input/FakeInput';
 import FormikInput from '../FormElements/Input/FormikInput';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';

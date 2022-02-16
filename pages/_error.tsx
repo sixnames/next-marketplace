@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
-import * as React from 'react';
 import Error from 'next/error';
+import * as React from 'react';
 import Inner from '../components/Inner';
 import { PagePropsInterface } from './_app';
 

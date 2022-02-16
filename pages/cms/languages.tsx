@@ -1,10 +1,13 @@
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ContentItemControls from '../../components/button/ContentItemControls';
 import FixedButtons from '../../components/button/FixedButtons';
 import WpButton from '../../components/button/WpButton';
+import { useLocaleContext } from '../../components/context/localeContext';
 import Inner from '../../components/Inner';
+import AppContentWrapper from '../../components/layout/AppContentWrapper';
+import ConsoleLayout from '../../components/layout/cms/ConsoleLayout';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal';
 import {
   LanguageModalInterface,
@@ -12,12 +15,8 @@ import {
 } from '../../components/Modal/LanguageModal';
 import WpTable, { WpTableColumn } from '../../components/WpTable';
 import WpTitle from '../../components/WpTitle';
-import { SORT_DESC } from '../../lib/config/common';
-import { CONFIRM_MODAL, LANGUAGE_MODAL } from '../../lib/config/modalVariants';
-import { useLocaleContext } from '../../components/context/localeContext';
-import { COL_LANGUAGES } from '../../db/collectionNames';
 import { LanguageModel } from '../../db/dbModels';
-import { getDatabase } from '../../db/mongodb';
+import { getDbCollections } from '../../db/mongodb';
 import {
   CreateLanguageInput,
   useCreateLanguageMutation,
@@ -25,8 +24,8 @@ import {
   useUpdateLanguageMutation,
 } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import AppContentWrapper from '../../components/layout/AppContentWrapper';
-import ConsoleLayout from '../../components/layout/cms/ConsoleLayout';
+import { SORT_DESC } from '../../lib/config/common';
+import { CONFIRM_MODAL, LANGUAGE_MODAL } from '../../lib/config/modalVariants';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from '../../lib/ssrUtils';
 
 const pageTitle = 'Языки сайта';
@@ -192,8 +191,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  const collections = await getDbCollections();
+  const languagesCollection = collections.languagesCollection();
   const languages = await languagesCollection
     .aggregate([
       {

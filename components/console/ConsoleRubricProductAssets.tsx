@@ -1,14 +1,14 @@
-import { REQUEST_METHOD_POST } from 'lib/config/common';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import { ProductSummaryInterface } from 'db/uiInterfaces';
 import {
   useDeleteProductAsset,
   useUpdateProductAssetIndex,
 } from 'hooks/mutations/useProductMutations';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { REQUEST_METHOD_POST } from 'lib/config/common';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import AssetsManager from '../AssetsManager';
 import WpDropZone from '../FormElements/Upload/WpDropZone';
 import Inner from '../Inner';

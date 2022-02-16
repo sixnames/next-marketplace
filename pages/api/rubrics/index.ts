@@ -1,15 +1,15 @@
 import { createRubric } from 'db/dao/rubrics/createRubric';
 import { deleteRubric } from 'db/dao/rubrics/deleteRubric';
+import { getRubricsList } from 'db/dao/rubrics/getRubricsList';
 import { updateRubric } from 'db/dao/rubrics/updateRubric';
-import { sendApiRouteResponse } from 'lib/sessionHelpers';
-import { NextApiRequest, NextApiResponse } from 'next';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_GET,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
 } from 'lib/config/common';
-import { getRubricsList } from 'db/dao/rubrics/getRubricsList';
+import { sendApiRouteResponse } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // create

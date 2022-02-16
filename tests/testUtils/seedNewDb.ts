@@ -1,5 +1,6 @@
 import { Seeder } from 'mongo-seeding';
 import { getProdDb, GetProdDd, updateIndexes } from './getProdDb';
+
 const path = require('path');
 require('dotenv').config();
 
@@ -55,7 +56,7 @@ async function seedNewDb() {
     // create indexes
     const { db, client } = await getProdDb(dbConfig);
     console.log('Creating indexes');
-    await updateIndexes(db);
+    await updateIndexes(db, client);
 
     // disconnect form db
     await client.close();

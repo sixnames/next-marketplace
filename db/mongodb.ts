@@ -37,6 +37,7 @@ import {
   OrderStatusModel,
   PageModel,
   PagesGroupModel,
+  PagesGroupTemplateModel,
   PagesTemplateModel,
   ProductFacetModel,
   ProductSummaryModel,
@@ -62,7 +63,7 @@ import {
   UserModel,
   UserPaybackLogModel,
 } from 'db/dbModels';
-import { MongoClient, Db } from 'mongodb';
+import { Db, MongoClient } from 'mongodb';
 import path from 'path';
 import {
   COL_ATTRIBUTES,
@@ -183,10 +184,9 @@ export async function getDatabase(): Promise<GetDbPayloadInterface> {
   return payload;
 }
 
-export async function getDbCollections() {
-  const { db, client } = await getDatabase();
-
+export function generateDbCollections({ db, client }: GetDbPayloadInterface) {
   return {
+    db,
     client,
     attributesCollection: () => db.collection<AttributeModel>(COL_ATTRIBUTES),
     attributesGroupsCollection: () => db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS),
@@ -227,7 +227,8 @@ export async function getDbCollections() {
     orderStatusesCollection: () => db.collection<OrderStatusModel>(COL_ORDER_STATUSES),
     pagesCollection: () => db.collection<PageModel>(COL_PAGES),
     pagesGroupsCollection: () => db.collection<PagesGroupModel>(COL_PAGES_GROUP),
-    pagesGroupTemplatesCollection: () => db.collection(COL_PAGES_GROUP_TEMPLATES),
+    pagesGroupTemplatesCollection: () =>
+      db.collection<PagesGroupTemplateModel>(COL_PAGES_GROUP_TEMPLATES),
     pageTemplatesCollection: () => db.collection<PagesTemplateModel>(COL_PAGE_TEMPLATES),
     productFacetsCollection: () => db.collection<ProductFacetModel>(COL_PRODUCT_FACETS),
     productSummariesCollection: () => db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES),
@@ -253,4 +254,9 @@ export async function getDbCollections() {
     userCategoriesCollection: () => db.collection<UserCategoryModel>(COL_USER_CATEGORIES),
     userPaybackLogsCollection: () => db.collection<UserPaybackLogModel>(COL_USER_PAYBACK_LOGS),
   };
+}
+
+export async function getDbCollections() {
+  const { db, client } = await getDatabase();
+  return generateDbCollections({ db, client });
 }

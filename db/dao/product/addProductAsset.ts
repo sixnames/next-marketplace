@@ -1,3 +1,8 @@
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
+import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { NextContextInterface } from 'db/uiInterfaces';
+import { getMainImage, storeUploads } from 'lib/assetUtils/assetUtils';
 import {
   ASSETS_DIST_PRODUCTS,
   ASSETS_PRODUCT_IMAGE_WIDTH,
@@ -5,11 +10,6 @@ import {
   TASK_STATE_IN_PROGRESS,
 } from 'lib/config/common';
 import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
-import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
-import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
-import { getDbCollections } from 'db/mongodb';
-import { NextContextInterface } from 'db/uiInterfaces';
-import { getMainImage, storeUploads } from 'lib/assetUtils/assetUtils';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { parseApiFormData } from 'lib/restApi';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';

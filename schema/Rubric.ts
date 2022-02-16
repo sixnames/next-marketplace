@@ -1,8 +1,7 @@
+import { RubricVariantModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { getRequestParams } from 'lib/sessionHelpers';
 import { inputObjectType, objectType } from 'nexus';
-import { COL_RUBRIC_VARIANTS } from '../db/collectionNames';
-import { RubricVariantModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { getRequestParams } from '../lib/sessionHelpers';
 
 export const RubricProductsCountersInput = inputObjectType({
   name: 'RubricProductsCountersInput',
@@ -70,8 +69,8 @@ export const Rubric = objectType({
     t.nonNull.field('variant', {
       type: 'RubricVariant',
       resolve: async (source): Promise<RubricVariantModel> => {
-        const { db } = await getDatabase();
-        const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
+        const collections = await getDbCollections();
+        const rubricVariantsCollection = collections.rubricVariantsCollection();
         const variant = await rubricVariantsCollection.findOne({ _id: source.variantId });
         if (!variant) {
           throw Error('Rubric variant not found');

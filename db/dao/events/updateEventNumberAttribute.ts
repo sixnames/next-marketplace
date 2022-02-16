@@ -1,7 +1,3 @@
-import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { EventPayloadModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import {
@@ -9,6 +5,10 @@ import {
   EventSummaryInterface,
   ProductAttributeInterface,
 } from 'db/uiInterfaces';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 
 export interface UpdateEventNumberAttributeItemInputInterface {
   productAttributeId: string;

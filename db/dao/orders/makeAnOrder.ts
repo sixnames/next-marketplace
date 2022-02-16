@@ -1,7 +1,21 @@
 import { hash } from 'bcryptjs';
+import { COL_ORDERS, COL_USERS } from 'db/collectionNames';
+import {
+  GiftCertificateModel,
+  OrderCustomerModel,
+  OrderDeliveryInfoModel,
+  OrderDeliveryVariantModel,
+  OrderLogModel,
+  OrderModel,
+  OrderPaymentVariantModel,
+  OrderProductModel,
+  OrderPromoModel,
+  PromoModel,
+  PromoProductModel,
+} from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface, PromoCodeInterface } from 'db/uiInterfaces';
 import generator from 'generate-password';
-import { ObjectId } from 'mongodb';
-import uniqid from 'uniqid';
 import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_DIFF,
@@ -19,48 +33,9 @@ import { phoneToRaw } from 'lib/phoneUtils';
 import { countDiscountedPrice, getOrderDiscountedPrice } from 'lib/priceUtils';
 import { getRequestParams, getResolverValidationSchema, getSessionUser } from 'lib/sessionHelpers';
 import { sendOrderCreatedSms } from 'lib/sms/sendOrderCreatedSms';
+import { ObjectId } from 'mongodb';
+import uniqid from 'uniqid';
 import { makeAnOrderSchema } from 'validation/orderSchema';
-import {
-  COL_CARTS,
-  COL_COMPANIES,
-  COL_GIFT_CERTIFICATES,
-  COL_ORDER_CUSTOMERS,
-  COL_ORDER_LOGS,
-  COL_ORDER_PRODUCTS,
-  COL_ORDER_STATUSES,
-  COL_ORDERS,
-  COL_PRODUCT_SUMMARIES,
-  COL_PROMO,
-  COL_PROMO_CODES,
-  COL_PROMO_PRODUCTS,
-  COL_ROLES,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-  COL_USERS,
-} from '../../collectionNames';
-import {
-  CartModel,
-  CompanyModel,
-  GiftCertificateModel,
-  OrderCustomerModel,
-  OrderDeliveryInfoModel,
-  OrderDeliveryVariantModel,
-  OrderLogModel,
-  OrderModel,
-  OrderPaymentVariantModel,
-  OrderProductModel,
-  OrderPromoModel,
-  OrderStatusModel,
-  PromoCodeModel,
-  PromoModel,
-  PromoProductModel,
-  RoleModel,
-  ShopModel,
-  ShopProductModel,
-  UserModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface, ProductSummaryInterface, PromoCodeInterface } from '../../uiInterfaces';
 import { getSessionCart } from '../cart/getSessionCart';
 import { checkGiftCertificateAvailability } from '../giftCertificate/checkGiftCertificateAvailability';
 
@@ -99,25 +74,25 @@ export async function makeAnOrder({
   input,
 }: DaoPropsInterface<MakeAnOrderInputInterface>): Promise<MakeAnOrderPayloadModel> {
   const { getApiMessage, companySlug, citySlug, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const rolesCollection = db.collection<RoleModel>(COL_ROLES);
-  const usersCollection = db.collection<UserModel>(COL_USERS);
-  const cartsCollection = db.collection<CartModel>(COL_CARTS);
-  const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-  const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
-  const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
-  const orderCustomersCollection = db.collection<OrderCustomerModel>(COL_ORDER_CUSTOMERS);
-  const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
-  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const productSummariesCollection = db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
-  const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
-  const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
-  const promoProductsCollection = db.collection<PromoProductModel>(COL_PROMO_PRODUCTS);
-  const promoCollection = db.collection<PromoModel>(COL_PROMO);
+  const collections = await getDbCollections();
+  const rolesCollection = collections.rolesCollection();
+  const usersCollection = collections.usersCollection();
+  const cartsCollection = collections.cartsCollection();
+  const ordersCollection = collections.ordersCollection();
+  const orderProductsCollection = collections.ordersProductsCollection();
+  const orderLogsCollection = collections.ordersLogsCollection();
+  const ordersCustomersCollection = collections.ordersCustomersCollection();
+  const orderStatusesCollection = collections.orderStatusesCollection();
+  const companiesCollection = collections.companiesCollection();
+  const shopsCollection = collections.shopsCollection();
+  const shopProductsCollection = collections.shopProductsCollection();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const giftCertificatesCollection = collections.giftCertificatesCollection();
+  const promoCodesCollection = collections.promoCodesCollection();
+  const promoProductsCollection = collections.promoProductsCollection();
+  const promoCollection = collections.promoCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let payload: MakeAnOrderPayloadModel = {
     success: false,
@@ -523,7 +498,7 @@ export async function makeAnOrder({
           createdAt: new Date(),
           updatedAt: new Date(),
         };
-        await orderCustomersCollection.insertOne(customer);
+        await ordersCustomersCollection.insertOne(customer);
 
         // create order log
         const orderLog: OrderLogModel = {

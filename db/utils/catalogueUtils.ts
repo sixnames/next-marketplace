@@ -1,6 +1,32 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { CatalogueInterface } from 'components/Catalogue';
+import { castSummaryForUI } from 'db/cast/castSummaryForUI';
+import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { CatalogueBreadcrumbModel, ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import {
+  AttributeInterface,
+  BrandInterface,
+  CatalogueDataInterface,
+  CatalogueFilterAttributeInterface,
+  CatalogueFilterAttributeOptionInterface,
+  CatalogueProductPricesInterface,
+  CatalogueProductsAggregationInterface,
+  CategoryInterface,
+  OptionInterface,
+  RubricInterface,
+  SeoContentInterface,
+  ShopProductInterface,
+} from 'db/uiInterfaces';
+import {
+  ignoreNoImageStage,
+  paginatedAggregationFinalPipeline,
+  productsPaginatedAggregationFacetsPipeline,
+  ProductsPaginatedAggregationInterface,
+  shopProductDocsFacetPipeline,
+  shopProductsGroupPipeline,
+} from 'db/utils/constantPipelines';
+import { alwaysArray, alwaysString, sortObjectsByField } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   CATALOGUE_FILTER_LIMIT,
@@ -29,40 +55,8 @@ import {
   GRID_SNIPPET_LAYOUT_BIG_IMAGE,
   ROW_SNIPPET_LAYOUT_BIG_IMAGE,
 } from 'lib/config/constantSelects';
-import { COL_RUBRIC_VARIANTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import {
-  ignoreNoImageStage,
-  paginatedAggregationFinalPipeline,
-  productsPaginatedAggregationFacetsPipeline,
-  ProductsPaginatedAggregationInterface,
-  shopProductDocsFacetPipeline,
-  shopProductsGroupPipeline,
-} from 'db/utils/constantPipelines';
-import { castSummaryForUI } from 'db/cast/castSummaryForUI';
-import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import {
-  AttributeInterface,
-  BrandInterface,
-  CatalogueDataInterface,
-  CatalogueFilterAttributeInterface,
-  CatalogueFilterAttributeOptionInterface,
-  CatalogueProductPricesInterface,
-  CatalogueProductsAggregationInterface,
-  CategoryInterface,
-  OptionInterface,
-  RubricInterface,
-  SeoContentInterface,
-  ShopProductInterface,
-} from 'db/uiInterfaces';
-import {
-  SeoSchemaBreadcrumbItemInterface,
-  SeoSchemaCatalogueInterface,
-} from 'types/seoSchemaTypes';
-import { alwaysArray, alwaysString, sortObjectsByField } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/castUrlFilters';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { getCatalogueAllSeoContents } from 'lib/seoContentUtils';
@@ -70,6 +64,12 @@ import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { sortStringArray } from 'lib/stringUtils';
 import { generateTitle } from 'lib/titleUtils';
 import { getTreeFromList } from 'lib/treeUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import {
+  SeoSchemaBreadcrumbItemInterface,
+  SeoSchemaCatalogueInterface,
+} from 'types/seoSchemaTypes';
 
 interface GetSelectedCategoryLeaf {
   acc: ObjectIdModel[];
@@ -602,9 +602,9 @@ export const getCatalogueData = async ({
     // console.log(' ');
     // console.log('===========================================================');
     // const timeStart = new Date().getTime();
-    const { db } = await getDatabase();
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-    const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+    const collections = await getDbCollections();
+    const shopProductsCollection = collections.shopProductsCollection();
+    const rubricsCollection = collections.rubricsCollection();
 
     // args
     const { rubricSlug, search } = input;

@@ -1,13 +1,13 @@
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { COL_COMPANIES, COL_SHOPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { COL_SHOPS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 
 export async function getSsrDomainCompany(
   match: Record<any, any>,
 ): Promise<CompanyInterface | null> {
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
   const domainCompanyAggregation = await companiesCollection
     .aggregate<CompanyInterface>([
       {

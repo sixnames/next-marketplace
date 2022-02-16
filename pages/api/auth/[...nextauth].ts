@@ -1,11 +1,9 @@
+import bcrypt from 'bcryptjs';
+import { getDbCollections } from 'db/mongodb';
+import { ISR_ONE_WEEK } from 'lib/config/common';
+import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { NextApiRequest, NextApiResponse } from 'next';
-import bcrypt from 'bcryptjs';
-import { ISR_ONE_WEEK } from 'lib/config/common';
-import { COL_USERS } from 'db/collectionNames';
-import { UserModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
 
 const options: NextAuthOptions = {
   session: {
@@ -26,8 +24,8 @@ const options: NextAuthOptions = {
       },
       authorize: async (credentials) => {
         try {
-          const { db } = await getDatabase();
-          const collection = db.collection<UserModel>(COL_USERS);
+          const collections = await getDbCollections();
+          const collection = collections.usersCollection();
 
           if (!credentials?.email || !credentials?.password) {
             return null;

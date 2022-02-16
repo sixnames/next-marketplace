@@ -1,5 +1,12 @@
 import addZero from 'add-zero';
 import {
+  EventSummaryModel,
+  ObjectIdModel,
+  OptionModel,
+  ProductSummaryAttributeModel,
+} from 'db/dbModels';
+import { OptionInterface } from 'db/uiInterfaces';
+import {
   ASSETS_DIST_EVENTS,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_NUMBER,
@@ -12,13 +19,6 @@ import {
   GEO_POINT_TYPE,
   ID_COUNTER_DIGITS,
 } from 'lib/config/common';
-import {
-  EventSummaryModel,
-  ObjectIdModel,
-  OptionModel,
-  ProductSummaryAttributeModel,
-} from 'db/dbModels';
-import { OptionInterface } from 'db/uiInterfaces';
 import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
 import { getTreeFromList } from 'lib/treeUtils';
 import { getObjectId } from 'mongo-seeding';

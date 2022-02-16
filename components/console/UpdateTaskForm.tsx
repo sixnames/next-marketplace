@@ -1,9 +1,9 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { TASK_STATE_OPTIONS } from '../../lib/config/constantSelects';
 import { UpdateTaskInputInterface } from '../../db/dao/tasks/updateTask';
 import { TaskInterface } from '../../db/uiInterfaces';
 import { useUpdateTask } from '../../hooks/mutations/useTaskMutations';
+import { TASK_STATE_OPTIONS } from '../../lib/config/constantSelects';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import FormikSelect from '../FormElements/Select/FormikSelect';

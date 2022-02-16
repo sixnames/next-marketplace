@@ -1,8 +1,8 @@
-import * as React from 'react';
 import { CatalogueHeadDefaultInterface } from 'components/Catalogue';
 import Inner from 'components/Inner';
 import WpBreadcrumbs from 'components/WpBreadcrumbs';
 import WpTitle from 'components/WpTitle';
+import * as React from 'react';
 
 const CatalogueHeadDefault: React.FC<CatalogueHeadDefaultInterface> = ({
   catalogueCounterString,

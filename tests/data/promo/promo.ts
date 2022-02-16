@@ -1,3 +1,4 @@
+import { PromoModel } from 'db/dbModels';
 import {
   ASSETS_DIST_PROMO,
   DEFAULT_LOCALE,
@@ -6,7 +7,6 @@ import {
   TEXT_HORIZONTAL_FLEX_OPTIONS,
   TEXT_VERTICAL_FLEX_OPTIONS,
 } from 'lib/config/common';
-import { PromoModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();

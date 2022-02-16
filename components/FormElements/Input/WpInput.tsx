@@ -1,10 +1,10 @@
 import * as React from 'react';
+import MaskedField from 'react-masked-field';
 import { InputTheme, InputType, OnOffType } from 'types/clientTypes';
 import { IconType } from 'types/iconTypes';
 import ButtonCross from '../../button/ButtonCross';
 import WpIcon from '../../WpIcon';
 import InputLine, { InputLinePropsInterface } from './InputLine';
-import MaskedField from 'react-masked-field';
 
 export interface InputEvent {
   target: {

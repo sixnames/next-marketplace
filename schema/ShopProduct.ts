@@ -1,21 +1,9 @@
+import { ShopModel, ShopProductPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { SUPPLIER_PRICE_VARIANT_ENUMS } from 'lib/config/common';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { SUPPLIER_PRICE_VARIANT_ENUMS } from '../lib/config/common';
-import {
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-  COL_SUPPLIER_PRODUCTS,
-  COL_SUPPLIERS,
-} from '../db/collectionNames';
-import {
-  ShopModel,
-  ShopProductModel,
-  ShopProductPayloadModel,
-  SupplierModel,
-  SupplierProductModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from '../lib/sessionHelpers';
 
 export const ShopProductOldPrice = objectType({
   name: 'ShopProductOldPrice',
@@ -48,8 +36,8 @@ export const ShopProduct = objectType({
     t.nonNull.field('shop', {
       type: 'Shop',
       resolve: async (source): Promise<ShopModel> => {
-        const { db } = await getDatabase();
-        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+        const collections = await getDbCollections();
+        const shopsCollection = collections.shopsCollection();
         const shop = await shopsCollection.findOne({ _id: source.shopId });
         if (!shop) {
           throw Error('Shop not found in ShopProduct');
@@ -117,13 +105,12 @@ export const ShopProductMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
-        const supplierProductsCollection =
-          db.collection<SupplierProductModel>(COL_SUPPLIER_PRODUCTS);
+        const collections = await getDbCollections();
+        const shopProductsCollection = collections.shopProductsCollection();
+        const suppliersCollection = collections.suppliersCollection();
+        const supplierProductsCollection = collections.supplierProductsCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: ShopProductPayloadModel = {
           success: false,
@@ -239,11 +226,10 @@ export const ShopProductMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const supplierProductsCollection =
-          db.collection<SupplierProductModel>(COL_SUPPLIER_PRODUCTS);
+        const collections = await getDbCollections();
+        const supplierProductsCollection = collections.supplierProductsCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: ShopProductPayloadModel = {
           success: false,
@@ -336,11 +322,10 @@ export const ShopProductMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const supplierProductsCollection =
-          db.collection<SupplierProductModel>(COL_SUPPLIER_PRODUCTS);
+        const collections = await getDbCollections();
+        const supplierProductsCollection = collections.supplierProductsCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: ShopProductPayloadModel = {
           success: false,

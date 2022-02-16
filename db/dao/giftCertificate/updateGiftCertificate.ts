@@ -1,13 +1,12 @@
-import { ObjectId } from 'mongodb';
-import trim from 'trim';
+import { GiftCertificatePayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { DEFAULT_CITY, DEFAULT_LOCALE } from 'lib/config/common';
 import { sendGiftCertificateEmail } from 'lib/email/sendGiftCertificateEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_GIFT_CERTIFICATES, COL_USERS } from 'db/collectionNames';
-import { GiftCertificateModel, GiftCertificatePayloadModel, UserModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
+import trim from 'trim';
 import { CreateGiftCertificateInputInterface } from './createGiftCertificate';
 
 export interface UpdateGiftCertificateInputInterface extends CreateGiftCertificateInputInterface {
@@ -21,9 +20,9 @@ export async function updateGiftCertificate({
 }: DaoPropsInterface<UpdateGiftCertificateInputInterface>): Promise<GiftCertificatePayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
-    const usersCollection = db.collection<UserModel>(COL_USERS);
+    const collections = await getDbCollections();
+    const giftCertificatesCollection = collections.giftCertificatesCollection();
+    const usersCollection = collections.usersCollection();
 
     // check input
     if (!input) {

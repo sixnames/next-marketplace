@@ -1,3 +1,4 @@
+import { PagesTemplateModel } from 'db/dbModels';
 import {
   ASSETS_DIST_TEMPLATES,
   DEFAULT_CITY,
@@ -7,7 +8,6 @@ import {
   PAGE_STATE_DRAFT,
   PAGE_STATE_PUBLISHED,
 } from 'lib/config/common';
-import { PagesTemplateModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();

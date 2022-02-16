@@ -1,3 +1,5 @@
+import { RubricVariantModel } from 'db/dbModels';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, SECONDARY_LOCALE } from 'lib/config/common';
 import {
   CARD_LAYOUT_HALF_COLUMNS,
   CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE,
@@ -6,8 +8,6 @@ import {
   NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
   ROW_SNIPPET_LAYOUT_BIG_IMAGE,
 } from 'lib/config/constantSelects';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, SECONDARY_LOCALE } from 'lib/config/common';
-import { RubricVariantModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 const rubricVariants: RubricVariantModel[] = [

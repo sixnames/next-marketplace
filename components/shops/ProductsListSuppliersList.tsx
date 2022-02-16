@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { SupplierProductInterface } from '../../db/uiInterfaces';
 import { getConstantTranslation } from '../../lib/config/constantTranslations';
 import { useLocaleContext } from '../context/localeContext';
-import { SupplierProductInterface } from '../../db/uiInterfaces';
 import Currency from '../Currency';
 import Percent from '../Percent';
 

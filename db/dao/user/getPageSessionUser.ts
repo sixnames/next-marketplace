@@ -1,11 +1,11 @@
-import { getSession } from 'next-auth/react';
-import { ROLE_SLUG_ADMIN, NAV_GROUP_CMS, NAV_GROUP_CONSOLE, SORT_ASC } from 'lib/config/common';
+import { COL_COMPANIES, COL_NAV_ITEMS, COL_ROLES } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { UserInterface } from 'db/uiInterfaces';
+import { NAV_GROUP_CMS, NAV_GROUP_CONSOLE, ROLE_SLUG_ADMIN, SORT_ASC } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFullName, getShortName } from 'lib/nameUtils';
+import { getSession } from 'next-auth/react';
 import { NexusContext } from 'types/apiContextTypes';
-import { COL_COMPANIES, COL_NAV_ITEMS, COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { UserInterface } from 'db/uiInterfaces';
 
 export interface SessionUserPayloadInterface {
   me: UserInterface;
@@ -30,8 +30,8 @@ export async function getPageSessionUser({
     return null;
   }
 
-  const { db } = await getDatabase();
-  const usersCollection = db.collection<UserInterface>(COL_USERS);
+  const collections = await getDbCollections();
+  const usersCollection = collections.usersCollection();
   const userAggregation = await usersCollection
     .aggregate<UserInterface>([
       {

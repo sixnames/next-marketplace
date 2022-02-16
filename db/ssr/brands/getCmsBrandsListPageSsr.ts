@@ -1,4 +1,7 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { getDbCollections } from 'db/mongodb';
+import { BrandInterface } from 'db/uiInterfaces';
+import { alwaysArray } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
 import {
   CMS_BRANDS_LIMIT,
   DEFAULT_LOCALE,
@@ -7,18 +10,14 @@ import {
   SORT_DESC,
 } from 'lib/config/common';
 import { ISO_LANGUAGES } from 'lib/config/constantSelects';
-import { alwaysArray } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/castUrlFilters';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import {
   CmsBrandsListConsumerInterface,
   CmsBrandsListPageInterface,
 } from 'pages/cms/brands/[...filters]';
-import { COL_BRANDS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { BrandInterface } from 'db/uiInterfaces';
 
 export const getCmsBrandsListPageSsr = async (
   context: GetServerSidePropsContext,
@@ -77,8 +76,8 @@ export const getCmsBrandsListPageSsr = async (
       ]
     : [];
 
-  const { db } = await getDatabase();
-  const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
+  const collections = await getDbCollections();
+  const brandsCollection = collections.brandsCollection();
 
   const brandsAggregationResult = await brandsCollection
     .aggregate<CmsBrandsListConsumerInterface>(

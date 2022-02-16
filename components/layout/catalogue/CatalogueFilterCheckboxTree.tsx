@@ -1,6 +1,6 @@
-import * as React from 'react';
 import CheckBoxFilter from 'components/CheckBoxFilter';
 import { CatalogueFilterInterface } from 'components/layout/catalogue/CatalogueFilter';
+import * as React from 'react';
 
 const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = (props) => {
   const { hideFilterHandler } = props;

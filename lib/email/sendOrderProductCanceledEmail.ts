@@ -1,7 +1,6 @@
+import { ObjectIdModel, UserModel } from '../../db/dbModels';
+import { getDbCollections } from '../../db/mongodb';
 import { DEFAULT_COMPANY_SLUG } from '../config/common';
-import { COL_COMPANIES, COL_USERS } from '../../db/collectionNames';
-import { CompanyModel, ObjectIdModel, UserModel } from '../../db/dbModels';
-import { getDatabase } from '../../db/mongodb';
 import { sendEmail, SendEmailInterface } from './mailer';
 
 interface SendOrderProductCanceledEmailInterface
@@ -21,9 +20,9 @@ export const sendOrderProductCanceledEmail = async ({
   citySlug,
   locale,
 }: SendOrderProductCanceledEmailInterface) => {
-  const { db } = await getDatabase();
-  const usersCollection = db.collection<UserModel>(COL_USERS);
-  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const usersCollection = collections.usersCollection();
+  const companiesCollection = collections.companiesCollection();
   const company = await companiesCollection.findOne({
     _id: companyId,
   });

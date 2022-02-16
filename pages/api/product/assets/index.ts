@@ -1,8 +1,8 @@
 import { deleteProductAsset } from 'db/dao/product/deleteProductAsset';
 import { updateProductAssetIndex } from 'db/dao/product/updateProductAssetIndex';
-import { NextApiRequest, NextApiResponse } from 'next';
 import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH } from 'lib/config/common';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // update

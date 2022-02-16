@@ -1,8 +1,8 @@
+import ControlButton from 'components/button/ControlButton';
+import { useAppContext } from 'components/context/appContext';
+import WpImage from 'components/WpImage';
 import * as React from 'react';
 import ImageGallery, { ReactImageGalleryItem, ReactImageGalleryProps } from 'react-image-gallery';
-import ControlButton from 'components/button/ControlButton';
-import WpImage from 'components/WpImage';
-import { useAppContext } from 'components/context/appContext';
 
 const quality = 70;
 

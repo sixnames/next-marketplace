@@ -1,9 +1,9 @@
-import { dbsConfig, getProdDb, updateIndexes } from './getProdDb';
-import navItemTemplates from '../data/navItems/navItems';
-import messagesGroupsTemplates from '../data/messagesGroups/messagesGroups';
+import { generateDbCollections } from 'db/mongodb';
 import messageTemplates from '../data/messages/messages';
-import { MessageModel, MessagesGroupModel, NavItemModel } from '../../db/dbModels';
-import { COL_MESSAGES, COL_MESSAGES_GROUPS, COL_NAV_ITEMS } from '../../db/collectionNames';
+import messagesGroupsTemplates from '../data/messagesGroups/messagesGroups';
+import navItemTemplates from '../data/navItems/navItems';
+import { dbsConfig, getProdDb, updateIndexes } from './getProdDb';
+
 require('dotenv').config();
 
 async function updateProds() {
@@ -15,8 +15,9 @@ async function updateProds() {
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
     console.log(`Updating api messages in ${dbConfig.dbName} db`);
-    const messagesGroupsCollection = db.collection<MessagesGroupModel>(COL_MESSAGES_GROUPS);
-    const messagesCollection = db.collection<MessageModel>(COL_MESSAGES);
+    const collections = generateDbCollections({ db, client });
+    const messagesGroupsCollection = collections.messagesGroupsCollection();
+    const messagesCollection = collections.messagesCollection();
     // await messagesGroupsCollection.deleteMany({});
     // await messagesCollection.deleteMany({});
 
@@ -57,7 +58,7 @@ async function updateProds() {
 
     // Update nav items
     console.log(`Updating nav items in ${dbConfig.dbName} db`);
-    const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
+    const navItemsCollection = collections.navItemsCollection();
     for await (const navItemTemplate of navItemTemplates) {
       const navItem = await navItemsCollection.findOne({
         slug: navItemTemplate.slug,
@@ -85,7 +86,7 @@ async function updateProds() {
 
     // update indexes
     console.log(`Updating indexes in ${dbConfig.dbName} db`);
-    await updateIndexes(db);
+    await updateIndexes(db, client);
     console.log(`Indexes updated in ${dbConfig.dbName} db`);
 
     // disconnect form db

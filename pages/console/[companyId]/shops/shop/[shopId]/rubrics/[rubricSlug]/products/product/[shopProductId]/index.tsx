@@ -1,10 +1,8 @@
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CompanyProductDetails from 'components/company/CompanyProductDetails';
-import RequestError from 'components/RequestError';
-import { AppContentWrapperBreadCrumbs, ShopProductInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'components/layout/console/ConsoleShopProductLayout';
+import RequestError from 'components/RequestError';
+import { AppContentWrapperBreadCrumbs, ShopProductInterface } from 'db/uiInterfaces';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getConsoleShopProduct } from 'lib/productUtils';
 import {
@@ -12,6 +10,8 @@ import {
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;

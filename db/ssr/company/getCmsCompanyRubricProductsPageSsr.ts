@@ -1,19 +1,18 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { getDbCollections } from 'db/mongodb';
+import { getConsoleCompanyRubricProducts } from 'db/ssr/products/getConsoleCompanyRubricProducts';
+import { CompanyInterface } from 'db/uiInterfaces';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { CmsCompanyRubricProductsPageInterface } from 'pages/cms/companies/[companyId]/rubrics/[rubricSlug]/products/[...filters]';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
-import { getConsoleCompanyRubricProducts } from 'db/ssr/products/getConsoleCompanyRubricProducts';
 
 export const getCmsCompanyRubricProductsPageSsr = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CmsCompanyRubricProductsPageInterface>> => {
   const { query } = context;
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
   const initialProps = await getAppInitialData({ context });
   if (!initialProps.props) {
     return {

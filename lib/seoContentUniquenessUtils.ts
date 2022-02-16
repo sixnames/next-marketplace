@@ -1,26 +1,19 @@
 import { getTextContents, Value } from '@react-page/editor';
-import { castConfigs } from 'db/cast/castConfigs';
-import { ObjectId } from 'mongodb';
-import fetch from 'node-fetch';
-import qs from 'qs';
 import { reactPageCellPlugins } from 'components/PageEditor';
+import { castConfigs } from 'db/cast/castConfigs';
+import { getCitiesList } from 'db/dao/cities/getCitiesList';
+import { ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { SeoContentCitiesInterface } from 'db/uiInterfaces';
 import {
   DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   REQUEST_METHOD_POST,
 } from 'lib/config/common';
-import { COL_COMPANIES, COL_CONFIGS, COL_LANGUAGES, COL_SEO_CONTENTS } from 'db/collectionNames';
-import { getCitiesList } from 'db/dao/cities/getCitiesList';
-import {
-  CompanyModel,
-  ConfigModel,
-  LanguageModel,
-  ObjectIdModel,
-  SeoContentModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { SeoContentCitiesInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
+import fetch from 'node-fetch';
+import qs from 'qs';
 import { getConfigStringValue } from './configsUtils';
 
 interface CheckSeoContentUniquenessInterface {
@@ -37,12 +30,12 @@ export async function checkSeoContentUniqueness({
   seoContentId,
 }: CheckSeoContentUniquenessInterface) {
   try {
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
 
     // get uniqueness api key and url
     const configSlug = 'textUniquenessApiKey';
-    const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-    const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+    const languagesCollection = collections.languagesCollection();
+    const configsCollection = collections.configsCollection();
     const initialConfigs = await configsCollection
       .find({
         slug: configSlug,
@@ -63,7 +56,7 @@ export async function checkSeoContentUniqueness({
     // get domain
     let domain = process.env.DEFAULT_DOMAIN;
     if (companySlug !== DEFAULT_COMPANY_SLUG) {
-      const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+      const companiesCollection = collections.companiesCollection();
       const company = await companiesCollection.findOne({
         slug: companySlug,
       });
@@ -133,8 +126,8 @@ export async function updateCitiesSeoContent({
   companySlug,
 }: UpdateCitiesSeoContentInterface) {
   try {
-    const { db } = await getDatabase();
-    const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+    const collections = await getDbCollections();
+    const seoContentsCollection = collections.seoContentsCollection();
 
     const cities = await getCitiesList();
     for await (const city of cities) {

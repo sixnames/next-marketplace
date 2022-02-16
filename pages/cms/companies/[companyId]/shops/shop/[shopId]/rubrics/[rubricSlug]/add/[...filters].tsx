@@ -1,5 +1,4 @@
-import { NextPage } from 'next';
-import * as React from 'react';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import {
   ShopAddProductsCreateChosenProduct,
   ShopAddProductsDeleteChosenProduct,
@@ -11,9 +10,10 @@ import {
 } from 'components/shops/ShopAddProducts';
 import { getCompanyShopAddProductsListPageSsr } from 'db/ssr/shops/getCompanyShopAddProductsListPageSsr';
 import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { NextPage } from 'next';
+import * as React from 'react';
 
 export type ShopAddProductsListRouteReduced = Omit<
   ShopAddProductsListInterface,

@@ -1,27 +1,26 @@
-import { Form, Formik } from 'formik';
-import { ObjectId } from 'mongodb';
-import Head from 'next/head';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import WpButton from 'components/button/WpButton';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import WpTitle from 'components/WpTitle';
-import { getConstantTranslation } from 'lib/config/constantTranslations';
-import { COL_OPTIONS_GROUPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, OptionsGroupInterface } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
 import { OptionsGroupVariant, useUpdateOptionsGroupMutation } from 'generated/apolloComponents';
 import { useConstantOptions } from 'hooks/useConstantOptions';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import AppSubNav from 'components/layout/AppSubNav';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Head from 'next/head';
+import * as React from 'react';
 import { optionsGroupModalSchema } from 'validation/optionsGroupSchema';
 
 interface OptionsGroupConsumerInterface {
@@ -149,8 +148,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const optionsGroupsCollection = await db.collection<OptionsGroupInterface>(COL_OPTIONS_GROUPS);
+  const collections = await getDbCollections();
+  const optionsGroupsCollection = await collections.optionsGroupsCollection();
 
   const optionsGroupResult = await optionsGroupsCollection.findOne({
     _id: new ObjectId(`${context.query.optionsGroupId}`),

@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { CONFIRM_MODAL } from '../../lib/config/modalVariants';
-import { useAppContext } from '../context/appContext';
 import { TaskVariantInterface } from '../../db/uiInterfaces';
 import { useDeleteTaskVariant } from '../../hooks/mutations/useTaskMutations';
+import { CONFIRM_MODAL } from '../../lib/config/modalVariants';
 import { getConsoleTaskVariantLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import WpLink from '../Link/WpLink';
 import { ConfirmModalInterface } from '../Modal/ConfirmModal';
 import WpTable, { WpTableColumn } from '../WpTable';

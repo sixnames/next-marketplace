@@ -1,31 +1,20 @@
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { DEFAULT_COMPANY_SLUG, SORT_ASC } from '../lib/config/common';
-import {
-  COL_PRODUCT_FACETS,
-  COL_RUBRIC_VARIANTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from '../db/collectionNames';
+import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { RubricVariantModel, RubricVariantPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
-import {
-  ProductFacetModel,
-  RubricModel,
-  RubricVariantModel,
-  RubricVariantPayloadModel,
-  ShopProductModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { DEFAULT_COMPANY_SLUG, SORT_ASC } from 'lib/config/common';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
-import { generateDefaultLangSlug } from '../lib/slugUtils';
+} from 'lib/sessionHelpers';
+import { generateDefaultLangSlug } from 'lib/slugUtils';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   createRubricVariantSchema,
   updateRubricVariantSchema,
-} from '../validation/rubricVariantSchema';
+} from 'validation/rubricVariantSchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const RubricVariant = objectType({
   name: 'RubricVariant',
@@ -88,8 +77,8 @@ export const RubricVariantQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<RubricVariantModel> => {
-        const { db } = await getDatabase();
-        const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
+        const collections = await getDbCollections();
+        const rubricVariantsCollection = collections.rubricVariantsCollection();
         const rubricVariant = await rubricVariantsCollection.findOne({ _id: args._id });
         if (!rubricVariant) {
           throw Error('Rubric variant not found by given id');
@@ -103,8 +92,8 @@ export const RubricVariantQueries = extendType({
       type: 'RubricVariant',
       description: 'Should return rubric variants list',
       resolve: async (): Promise<RubricVariantModel[]> => {
-        const { db } = await getDatabase();
-        const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
+        const collections = await getDbCollections();
+        const rubricVariantsCollection = collections.rubricVariantsCollection();
         const rubricVariants = await rubricVariantsCollection
           .aggregate<RubricVariantModel>([
             {
@@ -226,8 +215,8 @@ export const RubricVariantMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
+          const collections = await getDbCollections();
+          const rubricVariantsCollection = collections.rubricVariantsCollection();
           const { input } = args;
 
           // Check if rubric variant already exist
@@ -282,13 +271,13 @@ export const RubricVariantMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RubricVariantPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
-        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const collections = await getDbCollections();
+        const rubricVariantsCollection = collections.rubricVariantsCollection();
+        const rubricsCollection = collections.rubricsCollection();
+        const productsCollection = collections.productFacetsCollection();
+        const shopProductsCollection = collections.shopProductsCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
         let mutationPayload: RubricVariantPayloadModel = {
           success: false,
           message: await getApiMessage('rubricVariants.update.error'),
@@ -441,9 +430,9 @@ export const RubricVariantMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const collections = await getDbCollections();
+          const rubricVariantsCollection = collections.rubricVariantsCollection();
+          const rubricsCollection = collections.rubricsCollection();
           const { _id } = args;
 
           // Check if rubric variant is used in rubrics

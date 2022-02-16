@@ -1,8 +1,7 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { SORT_ASC } from '../lib/config/common';
-import { COL_LANGUAGES } from '../db/collectionNames';
 import { LanguageModel, LanguagePayloadModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { getDbCollections } from '../db/mongodb';
+import { SORT_ASC } from '../lib/config/common';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
@@ -30,8 +29,8 @@ export const LanguageQueries = extendType({
       type: 'Language',
       description: 'Should all languages list',
       resolve: async (): Promise<LanguageModel[]> => {
-        const { db } = await getDatabase();
-        const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+        const collections = await getDbCollections();
+        const languagesCollection = collections.languagesCollection();
         const languages = await languagesCollection
           .find(
             {},
@@ -114,8 +113,8 @@ export const LanguageMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+          const collections = await getDbCollections();
+          const languagesCollection = collections.languagesCollection();
           const { input } = args;
 
           // Check if language already exist
@@ -186,8 +185,8 @@ export const LanguageMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+          const collections = await getDbCollections();
+          const languagesCollection = collections.languagesCollection();
           const { input } = args;
           const { languageId, ...values } = input;
 
@@ -274,8 +273,8 @@ export const LanguageMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+          const collections = await getDbCollections();
+          const languagesCollection = collections.languagesCollection();
           const { _id } = args;
 
           // Check language availability

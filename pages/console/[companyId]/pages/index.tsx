@@ -1,10 +1,8 @@
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from 'components/Inner';
-import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
-import WpTitle from 'components/WpTitle';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
+import WpTitle from 'components/WpTitle';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import {
@@ -12,6 +10,8 @@ import {
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 const pageTitle = 'Группы страниц';
 

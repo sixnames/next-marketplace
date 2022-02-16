@@ -1,23 +1,17 @@
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import {
-  COL_COMPANIES,
-  COL_RUBRIC_VARIANTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import { castRubricForUI } from 'db/cast/castRubricForUI';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import CompanyRubricsList, {
   CompanyRubricsListInterface,
 } from 'components/layout/CompanyRubricsList';
+import { castRubricForUI } from 'db/cast/castRubricForUI';
+import { COL_RUBRIC_VARIANTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 
@@ -60,10 +54,10 @@ const Rubrics: NextPage<RubricsInterface> = ({ layoutProps, ...props }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricsInterface>> => {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const { query } = context;
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const rubricsCollection = collections.rubricsCollection();
+  const companiesCollection = collections.companiesCollection();
 
   const { props } = await getAppInitialData({ context });
   if (!props) {

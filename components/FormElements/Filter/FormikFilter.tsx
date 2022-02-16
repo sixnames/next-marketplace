@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { Formik, Form } from 'formik';
+import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
+import * as React from 'react';
 import { ObjectType } from 'types/clientTypes';
 
 interface ChildrenPropsInterface {

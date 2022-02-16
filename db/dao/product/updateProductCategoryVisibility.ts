@@ -1,32 +1,26 @@
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
+import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
 import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
-import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
-import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
-import { COL_CATEGORIES, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
-import {
-  CategoryModel,
-  ProductPayloadModel,
-  ProductSummaryModel,
-  SummaryDiffModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
 import { UpdateProductCategoryInputInterface } from './updateProductCategory';
 
 export async function updateProductCategoryVisibility({
   context,
   input,
 }: DaoPropsInterface<UpdateProductCategoryInputInterface>): Promise<ProductPayloadModel> {
-  const { db, client } = await getDatabase();
   const { getApiMessage, locale } = await getRequestParams(context);
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+  const collections = await getDbCollections();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const categoriesCollection = collections.categoriesCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ProductPayloadModel = {
     success: false,

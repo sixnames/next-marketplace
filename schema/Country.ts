@@ -1,22 +1,22 @@
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { SORT_ASC } from '../lib/config/common';
-import { COL_CITIES, COL_COUNTRIES } from '../db/collectionNames';
+import { COL_CITIES } from 'db/collectionNames';
+import { CountryModel, CountryPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
-import { CityModel, CountryModel, CountryPayloadModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { SORT_ASC } from 'lib/config/common';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
+} from 'lib/sessionHelpers';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   addCityToCountrySchema,
   createCountrySchema,
   deleteCityFromCountrySchema,
   updateCityInCountrySchema,
   updateCountrySchema,
-} from '../validation/countrySchema';
+} from 'validation/countrySchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const Country = objectType({
   name: 'Country',
@@ -29,8 +29,8 @@ export const Country = objectType({
     t.nonNull.list.nonNull.field('cities', {
       type: 'City',
       resolve: async (source) => {
-        const { db } = await getDatabase();
-        const citiesCollection = db.collection<CityModel>(COL_CITIES);
+        const collections = await getDbCollections();
+        const citiesCollection = collections.citiesCollection();
         return citiesCollection.find({ countryId: source._id }).toArray();
       },
     });
@@ -46,8 +46,8 @@ export const CountryQueries = extendType({
       type: 'Country',
       description: 'Should return countries list',
       resolve: async (): Promise<CountryModel[]> => {
-        const { db } = await getDatabase();
-        const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
+        const collections = await getDbCollections();
+        const countriesCollection = collections.countriesCollection();
         const countries = await countriesCollection
           .find(
             {},
@@ -155,8 +155,8 @@ export const CountryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
+          const collections = await getDbCollections();
+          const countriesCollection = collections.countriesCollection();
           const { input } = args;
 
           // Check if country already exist
@@ -223,8 +223,8 @@ export const CountryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
+          const collections = await getDbCollections();
+          const countriesCollection = collections.countriesCollection();
           const { input } = args;
           const { countryId, ...values } = input;
 
@@ -296,11 +296,11 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
-        const citiesCollection = db.collection<CityModel>(COL_CITIES);
+        const collections = await getDbCollections();
+        const countriesCollection = collections.countriesCollection();
+        const citiesCollection = collections.citiesCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: CountryPayloadModel = {
           success: false,
@@ -392,11 +392,11 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
-        const citiesCollection = db.collection<CityModel>(COL_CITIES);
+        const collections = await getDbCollections();
+        const countriesCollection = collections.countriesCollection();
+        const citiesCollection = collections.citiesCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: CountryPayloadModel = {
           success: false,
@@ -548,9 +548,9 @@ export const CountryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
-          const citiesCollection = db.collection<CityModel>(COL_CITIES);
+          const collections = await getDbCollections();
+          const countriesCollection = collections.countriesCollection();
+          const citiesCollection = collections.citiesCollection();
           const { input } = args;
           const { countryId, cityId, ...values } = input;
 
@@ -644,11 +644,11 @@ export const CountryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CountryPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
-        const citiesCollection = db.collection<CityModel>(COL_CITIES);
+        const collections = await getDbCollections();
+        const countriesCollection = collections.countriesCollection();
+        const citiesCollection = collections.citiesCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: CountryPayloadModel = {
           success: false,

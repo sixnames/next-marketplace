@@ -1,11 +1,10 @@
-import { ObjectId } from 'mongodb';
+import { ProductPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getSessionRole } from 'lib/sessionHelpers';
-import { COL_SHOP_PRODUCTS } from '../../collectionNames';
-import { ProductPayloadModel, ShopProductModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface UpdateProductCounterInputInterface {
   shopProductIds: string[];
@@ -18,8 +17,8 @@ export async function updateProductCounter({
   context,
 }: DaoPropsInterface<UpdateProductCounterInputInterface>): Promise<ProductPayloadModel> {
   try {
-    const { db } = await getDatabase();
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const collections = await getDbCollections();
+    const shopProductsCollection = collections.shopProductsCollection();
     const { role } = await getSessionRole(context);
 
     // check input
@@ -90,7 +89,7 @@ export async function updateProductCounter({
       message: 'success',
     };
   } catch (e) {
-    console.log(e);
+    console.log('updateProductCounter error', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

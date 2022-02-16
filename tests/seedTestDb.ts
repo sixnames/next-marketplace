@@ -1,7 +1,7 @@
 import addZero from 'add-zero';
-import { Seeder } from 'mongo-seeding';
 import { ID_COUNTER_DIGITS } from 'lib/config/common';
-// import { getDatabase } from '../db/mongodb';
+import { Seeder } from 'mongo-seeding';
+// import { getDbCollections } from '../db/mongodb';
 // import { updateIndexes } from './testUtils/getProdDb';
 const mkdirp = require('mkdirp');
 const path = require('path');
@@ -68,7 +68,7 @@ const config = {
     console.log(`Test data seeded in ${(new Date().getTime() - startTime) / 1000}s`);
 
     // console.log('creating indexes');
-    // const { db, client } = await getDatabase();
+    // const collections = await getDbCollections();
     // await updateIndexes(db);
     // await client.close();
     // console.log('indexes created');

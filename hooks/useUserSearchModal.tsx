@@ -1,11 +1,11 @@
 import * as React from 'react';
 import ContentItemControls from '../components/button/ContentItemControls';
+import { useAppContext } from '../components/context/appContext';
 import {
   UsersSearchModalControlsInterface,
   UsersSearchModalInterface,
 } from '../components/Modal/UsersSearchModal';
 import { USERS_SEARCH_MODAL } from '../lib/config/modalVariants';
-import { useAppContext } from '../components/context/appContext';
 
 export function useUserSearchModal() {
   const { showModal } = useAppContext();

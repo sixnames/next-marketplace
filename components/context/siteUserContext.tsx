@@ -1,7 +1,7 @@
+import { SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
+import { ONE_MINUTE } from 'lib/config/common';
 import * as React from 'react';
 import useSWR from 'swr';
-import { ONE_MINUTE } from 'lib/config/common';
-import { SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
 
 const SiteUserContext = React.createContext<SessionUserPayloadInterface | undefined | null>(null);
 

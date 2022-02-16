@@ -1,7 +1,8 @@
-import { ObjectId } from 'mongodb';
 import { FILTER_SEPARATOR } from 'lib/config/common';
 import { updateProductTitles } from 'lib/updateProductTitles';
+import { ObjectId } from 'mongodb';
 import { getCliParam } from 'tests/testUtils/testDbUtils';
+
 require('dotenv').config();
 
 const UNDEFINED_PARAM = 'undefined';
@@ -42,7 +43,7 @@ async function updateProductTitlesInChildProcess() {
   const attributeId = getCliParam('attributeId');
   if (attributeId && attributeId !== UNDEFINED_PARAM) {
     match = {
-      'attributes.attributeId': new ObjectId(attributeId),
+      attributeIds: new ObjectId(attributeId),
     };
   }
 

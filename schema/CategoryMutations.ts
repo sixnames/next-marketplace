@@ -1,5 +1,7 @@
-import { ObjectId } from 'mongodb';
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { COL_CATEGORIES } from 'db/collectionNames';
+import { CategoryModel, CategoryPayloadModel, ConfigModel, ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import {
   CATEGORY_SLUG_PREFIX,
   CONFIG_VARIANT_CATEGORIES_TREE,
@@ -8,36 +10,20 @@ import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   FILTER_SEPARATOR,
-} from '../lib/config/common';
-import {
-  COL_ATTRIBUTES,
-  COL_CATEGORIES,
-  COL_COMPANIES,
-  COL_CONFIGS,
-  COL_RUBRICS,
-} from '../db/collectionNames';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
-import {
-  AttributeModel,
-  CategoryModel,
-  CategoryPayloadModel,
-  CompanyModel,
-  ConfigModel,
-  ObjectIdModel,
-  RubricModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { getNextItemId } from '../lib/itemIdUtils';
-import { updateCitiesSeoContent } from '../lib/seoContentUniquenessUtils';
+} from 'lib/config/common';
+import { getNextItemId } from 'lib/itemIdUtils';
+import { updateCitiesSeoContent } from 'lib/seoContentUniquenessUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
-import { deleteDocumentsTree, getParentTreeIds } from '../lib/treeUtils';
-import { execUpdateProductTitles } from '../lib/updateProductTitles';
-import { createCategorySchema, updateCategorySchema } from '../validation/categorySchema';
+} from 'lib/sessionHelpers';
+import { deleteDocumentsTree, getParentTreeIds } from 'lib/treeUtils';
+import { execUpdateProductTitles } from 'lib/updateProductTitles';
+import { ObjectId } from 'mongodb';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { createCategorySchema, updateCategorySchema } from 'validation/categorySchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const CategoryPayload = objectType({
   name: 'CategoryPayload',
@@ -133,11 +119,11 @@ export const CategoryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const collections = await getDbCollections();
+          const categoriesCollection = collections.categoriesCollection();
+          const companiesCollection = collections.companiesCollection();
+          const configsCollection = collections.configsCollection();
+          const rubricsCollection = collections.rubricsCollection();
           const { input } = args;
 
           // Check rubric availability
@@ -317,9 +303,9 @@ export const CategoryMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const collections = await getDbCollections();
+          const categoriesCollection = collections.categoriesCollection();
+          const rubricsCollection = collections.rubricsCollection();
           const { input } = args;
           const { categoryId, rubricId, textBottom, textTop, companySlug, ...values } = input;
 
@@ -430,10 +416,10 @@ export const CategoryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CategoryPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+        const collections = await getDbCollections();
+        const categoriesCollection = collections.categoriesCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: CategoryPayloadModel = {
           success: false,
@@ -515,11 +501,11 @@ export const CategoryMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<CategoryPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+        const collections = await getDbCollections();
+        const categoriesCollection = collections.categoriesCollection();
+        const attributesCollection = collections.attributesCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: CategoryPayloadModel = {
           success: false,

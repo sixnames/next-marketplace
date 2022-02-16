@@ -1,8 +1,7 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { get } from 'lodash';
+import { useAppContext } from 'components/context/appContext';
+import { useNotificationsContext } from 'components/context/notificationsContext';
+import { useSiteUserContext } from 'components/context/siteUserContext';
 import { CartModalInterface } from 'components/Modal/CartModal';
-import { CART_MODAL } from 'lib/config/modalVariants';
 import { AddCartProductInputInterface } from 'db/dao/cart/addCartProduct';
 import { DeleteCartProductInputInterface } from 'db/dao/cart/deleteCartProduct';
 import { UpdateCartProductInputInterface } from 'db/dao/cart/updateCartProduct';
@@ -28,10 +27,11 @@ import {
 import { useCheckGiftCertificateMutation } from 'hooks/mutations/useGiftCertificateMutations';
 import { useCheckPromoCode } from 'hooks/mutations/usePromoMutations';
 import { useSetSessionLogHandler } from 'hooks/mutations/useSessionLogMutations';
+import { CART_MODAL } from 'lib/config/modalVariants';
 import { noNaN } from 'lib/numbers';
-import { useAppContext } from 'components/context/appContext';
-import { useNotificationsContext } from 'components/context/notificationsContext';
-import { useSiteUserContext } from 'components/context/siteUserContext';
+import { get } from 'lodash';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 interface SiteContextStateInterface {
   loadingCart: boolean;

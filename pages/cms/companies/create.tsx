@@ -1,25 +1,25 @@
-import { Form, Formik } from 'formik';
-import { omit } from 'lodash';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { GetServerSidePropsContext, NextPage } from 'next';
 import WpButton from 'components/button/WpButton';
 import CompanyMainFields, {
   CompanyFormMainValuesInterface,
 } from 'components/FormTemplates/CompanyMainFields';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
 import { useCreateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { omit } from 'lodash';
+import { GetServerSidePropsContext, NextPage } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import { createCompanyClientSchema } from 'validation/companySchema';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 
 const pageTitle = 'Создание компании';
 

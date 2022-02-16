@@ -1,14 +1,14 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { REQUEST_METHOD_POST } from '../../lib/config/common';
 import { useAppContext } from '../../components/context/appContext';
 import {
   SessionLogAddToCartEventInputModel,
-  SessionNavLogEventInputModel,
   SessionLogMakeAnOrderEventInputModel,
+  SessionNavLogEventInputModel,
   SetSessionLogInputInterface,
 } from '../../db/dao/sessionLogs/setSessionLog';
 import { SessionLogPayloadModel } from '../../db/dbModels';
+import { REQUEST_METHOD_POST } from '../../lib/config/common';
 
 const basePath = '/api/logs';
 

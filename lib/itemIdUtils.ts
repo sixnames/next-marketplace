@@ -1,15 +1,14 @@
-import { COL_ID_COUNTERS, COL_ORDERS } from 'db/collectionNames';
-import { IdCounterModel } from 'db/dbModels';
-import { ID_COUNTER_STEP, ID_COUNTER_DIGITS, ID_COUNTER_ORDER_DIGITS } from 'lib/config/common';
-import { getDatabase } from 'db/mongodb';
 import addZero from 'add-zero';
+import { COL_ORDERS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { ID_COUNTER_DIGITS, ID_COUNTER_ORDER_DIGITS, ID_COUNTER_STEP } from 'lib/config/common';
 
 export async function getNextItemId(
   collectionName: string,
   digits: number = ID_COUNTER_DIGITS,
 ): Promise<string> {
-  const { db } = await getDatabase();
-  const idCountersCollection = db.collection<IdCounterModel>(COL_ID_COUNTERS);
+  const collections = await getDbCollections();
+  const idCountersCollection = collections.idCountersCollection();
 
   const updatedCounter = await idCountersCollection.findOneAndUpdate(
     { collection: collectionName },
@@ -32,8 +31,8 @@ export async function getNextItemId(
 }
 
 export async function getNextNumberItemId(collectionName: string): Promise<string> {
-  const { db } = await getDatabase();
-  const idCountersCollection = db.collection<IdCounterModel>(COL_ID_COUNTERS);
+  const collections = await getDbCollections();
+  const idCountersCollection = collections.idCountersCollection();
 
   const updatedCounter = await idCountersCollection.findOneAndUpdate(
     { collection: collectionName },

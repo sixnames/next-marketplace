@@ -1,15 +1,15 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
 import UpdateTaskVariantForm, {
   UpdateTaskVariantFormInterface,
 } from 'components/console/UpdateTaskVariantForm';
-import { getCompanyTaskVariantSsr } from 'db/ssr/company/getCompanyTaskVariantSsr';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getCompanyTaskVariantSsr } from 'db/ssr/company/getCompanyTaskVariantSsr';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks, getConsoleTaskVariantLinks } from 'lib/linkUtils';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 
 interface CreateTaskVariantDetailsConsumerInterface extends UpdateTaskVariantFormInterface {
   basePath: string;

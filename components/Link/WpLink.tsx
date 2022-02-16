@@ -1,7 +1,7 @@
-import * as React from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import qs from 'qs';
+import * as React from 'react';
 import { LinkInterface } from '../../db/uiInterfaces';
 
 const WpLink: React.FC<LinkInterface> = ({

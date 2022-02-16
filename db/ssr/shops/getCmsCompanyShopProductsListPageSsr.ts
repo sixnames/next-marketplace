@@ -1,18 +1,16 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { getDbCollections } from 'db/mongodb';
+import { getConsoleShopProducts } from 'db/ssr/shops/getConsoleShopProducts';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { CmsCompanyShopProductsListPageInterface } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/products/[...filters]';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { CompanyModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getConsoleShopProducts } from 'db/ssr/shops/getConsoleShopProducts';
 
 export const getCmsCompanyShopProductsListPageSsr = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CmsCompanyShopProductsListPageInterface>> => {
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
   const { query } = context;
   const { shopId, rubricSlug } = query;
   const initialProps = await getAppInitialData({ context });

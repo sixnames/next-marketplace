@@ -1,13 +1,10 @@
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from 'components/Inner';
-import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
-import WpTitle from 'components/WpTitle';
-import { COL_CITIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CityInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
+import WpTitle from 'components/WpTitle';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
@@ -17,6 +14,8 @@ import {
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface PagesListPageInterface
   extends GetConsoleInitialDataPropsInterface,
@@ -70,8 +69,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const citiesCollection = db.collection<CityInterface>(COL_CITIES);
+  const collections = await getDbCollections();
+  const citiesCollection = collections.citiesCollection();
   const initialCities = await citiesCollection.find({}).toArray();
   const castedCities = initialCities.map((document) => {
     return {

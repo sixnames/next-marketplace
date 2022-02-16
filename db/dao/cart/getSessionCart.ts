@@ -1,5 +1,9 @@
-import { ObjectId } from 'mongodb';
-import nookies from 'nookies';
+import {
+  brandPipeline,
+  productAttributesPipeline,
+  productCategoriesPipeline,
+  summaryPipeline,
+} from 'db/utils/constantPipelines';
 import { CART_COOKIE_KEY } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
@@ -7,26 +11,12 @@ import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { countDiscountedPrice } from 'lib/priceUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { getUpdatedShopProductPrices } from 'lib/shopUtils';
+import { ObjectId } from 'mongodb';
+import nookies from 'nookies';
 import { NexusContext } from 'types/apiContextTypes';
-import {
-  COL_CARTS,
-  COL_GIFT_CERTIFICATES,
-  COL_PRODUCT_SUMMARIES,
-  COL_PROMO_CODES,
-  COL_PROMO_PRODUCTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-  COL_USERS,
-} from '../../collectionNames';
-import {
-  CartModel,
-  GiftCertificateModel,
-  PromoCodeModel,
-  PromoProductModel,
-  UserModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from '../../collectionNames';
+import { CartModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import {
   CartInterface,
   CartProductInterface,
@@ -35,12 +25,6 @@ import {
   PromoCodeInterface,
   ShopProductInterface,
 } from '../../uiInterfaces';
-import {
-  brandPipeline,
-  productAttributesPipeline,
-  productCategoriesPipeline,
-  summaryPipeline,
-} from 'db/utils/constantPipelines';
 import { getPageSessionUser } from '../user/getPageSessionUser';
 
 export interface GetSessionCartInterface {
@@ -53,17 +37,16 @@ export const getSessionCart = async ({
   companyId,
 }: GetSessionCartInterface): Promise<CartInterface | null> => {
   try {
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
     const { req } = context;
     const { locale, citySlug } = await getRequestParams(context);
-    const cartsCollection = db.collection<CartModel>(COL_CARTS);
-    const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
-    const productSummariesCollection =
-      db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
-    const usersCollection = db.collection<UserModel>(COL_USERS);
-    const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
-    const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
-    const promoProductsCollection = db.collection<PromoProductModel>(COL_PROMO_PRODUCTS);
+    const cartsCollection = collections.cartsCollection();
+    const shopProductsCollection = collections.shopProductsCollection();
+    const productSummariesCollection = collections.productSummariesCollection();
+    const usersCollection = collections.usersCollection();
+    const giftCertificatesCollection = collections.giftCertificatesCollection();
+    const promoCodesCollection = collections.promoCodesCollection();
+    const promoProductsCollection = collections.promoProductsCollection();
 
     // get user
     const user = await getPageSessionUser({

@@ -1,23 +1,23 @@
-import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
+import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { ShopPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import generator from 'generate-password';
-import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from '../lib/config/common';
-import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
-import { ProductSummaryModel, ShopModel, ShopPayloadModel, ShopProductModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { getReadableAddress } from '../lib/addressUtils';
-import { deleteUpload, getMainImage, reorderAssets } from '../lib/assetUtils/assetUtils';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { getNextItemId } from '../lib/itemIdUtils';
+import { getReadableAddress } from 'lib/addressUtils';
+import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
+import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from 'lib/config/common';
+import { getNextItemId } from 'lib/itemIdUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
+} from 'lib/sessionHelpers';
+import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
   addManyProductsToShopSchema,
   deleteProductFromShopSchema,
   updateShopSchema,
-} from '../validation/shopSchema';
+} from 'validation/shopSchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const ShopProductsPaginationPayload = objectType({
   name: 'ShopProductsPaginationPayload',
@@ -161,8 +161,8 @@ export const ShopMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+          const collections = await getDbCollections();
+          const shopsCollection = collections.shopsCollection();
           const { input } = args;
           const { shopId, ...values } = input;
 
@@ -258,8 +258,8 @@ export const ShopMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+          const collections = await getDbCollections();
+          const shopsCollection = collections.shopsCollection();
           const { input } = args;
           const { shopId, assetIndex } = input;
 
@@ -368,8 +368,8 @@ export const ShopMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+          const collections = await getDbCollections();
+          const shopsCollection = collections.shopsCollection();
           const { input } = args;
           const { shopId, assetNewIndex, assetUrl } = input;
 
@@ -449,13 +449,12 @@ export const ShopMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<ShopPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-        const productSummariesCollection =
-          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const collections = await getDbCollections();
+        const shopsCollection = collections.shopsCollection();
+        const productSummariesCollection = collections.productSummariesCollection();
+        const shopProductsCollection = collections.shopProductsCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: ShopPayloadModel = {
           success: false,
@@ -597,9 +596,9 @@ export const ShopMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          const collections = await getDbCollections();
+          const shopsCollection = collections.shopsCollection();
+          const shopProductsCollection = collections.shopProductsCollection();
           const { input } = args;
           const { shopId, shopProductId } = input;
 
@@ -664,8 +663,8 @@ export const ShopMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+          const collections = await getDbCollections();
+          const shopsCollection = collections.shopsCollection();
           const { _id } = args;
 
           // Check shop availability

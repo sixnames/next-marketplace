@@ -1,7 +1,7 @@
-import * as React from 'react';
 import { Field, FieldProps } from 'formik';
-import Textarea, { TextareaInterface } from './Textarea';
 import { get } from 'lodash';
+import * as React from 'react';
+import Textarea, { TextareaInterface } from './Textarea';
 
 interface FormikTextareaInterface extends TextareaInterface {
   name: string;

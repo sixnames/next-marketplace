@@ -1,4 +1,7 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { getDbCollections } from 'db/mongodb';
+import { SupplierInterface } from 'db/uiInterfaces';
+import { alwaysArray } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
 import {
   CMS_BRANDS_LIMIT,
   DEFAULT_LOCALE,
@@ -7,17 +10,13 @@ import {
   SORT_DESC,
 } from 'lib/config/common';
 import { ISO_LANGUAGES } from 'lib/config/constantSelects';
-import { alwaysArray } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/castUrlFilters';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import {
   CmsSuppliersListConsumerInterface,
   CmsSuppliersListPageInterface,
 } from 'pages/cms/suppliers/[...filters]';
-import { COL_SUPPLIERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { SupplierInterface } from 'db/uiInterfaces';
 
 export const getCmsSuppliersListPageSsr = async (
   context: GetServerSidePropsContext,
@@ -76,8 +75,8 @@ export const getCmsSuppliersListPageSsr = async (
       ]
     : [];
 
-  const { db } = await getDatabase();
-  const suppliersCollection = db.collection<SupplierInterface>(COL_SUPPLIERS);
+  const collections = await getDbCollections();
+  const suppliersCollection = collections.suppliersCollection();
 
   const suppliersAggregationResult = await suppliersCollection
     .aggregate<CmsSuppliersListConsumerInterface>(

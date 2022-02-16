@@ -1,6 +1,6 @@
-import { SUPPLIER_PRICE_VARIANT_CHARGE } from './config/common';
 import { OrderProductModel } from '../db/dbModels';
 import { SupplierProductInterface } from '../db/uiInterfaces';
+import { SUPPLIER_PRICE_VARIANT_CHARGE } from './config/common';
 import { noNaN } from './numbers';
 
 interface GetOrderDiscountedPriceInterface {

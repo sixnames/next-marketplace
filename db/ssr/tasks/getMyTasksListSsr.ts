@@ -1,14 +1,13 @@
+import { COL_PRODUCT_SUMMARIES, COL_TASK_VARIANTS, COL_USERS } from 'db/collectionNames';
+import { getUserAllowedTaskVariants } from 'db/dao/tasks/taskUtils';
+import { getDbCollections } from 'db/mongodb';
+import { getTaskNestedFieldsPipeline } from 'db/ssr/company/getCompanyTaskSsr';
+import { TaskInterface, UserInterface } from 'db/uiInterfaces';
 import { SORT_ASC } from 'lib/config/common';
-import { TaskVariantModel } from 'db/dbModels';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { COL_PRODUCT_SUMMARIES, COL_TASK_VARIANTS, COL_TASKS, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { TaskInterface, UserInterface } from 'db/uiInterfaces';
-import { getUserAllowedTaskVariants } from 'db/dao/tasks/taskUtils';
 import { ObjectId } from 'mongodb';
-import { getTaskNestedFieldsPipeline } from 'db/ssr/company/getCompanyTaskSsr';
 
 export interface GetMyTasksListSsr {
   sessionUser: UserInterface;
@@ -22,9 +21,9 @@ export async function getMyTasksListSsr({
   locale,
 }: GetMyTasksListSsr): Promise<TaskInterface[]> {
   try {
-    const { db } = await getDatabase();
-    const tasksCollection = db.collection<TaskInterface>(COL_TASKS);
-    const tasksVariantsCollection = db.collection<TaskVariantModel>(COL_TASK_VARIANTS);
+    const collections = await getDbCollections();
+    const tasksCollection = collections.tasksCollection();
+    const tasksVariantsCollection = collections.taskVariantsCollection();
     const taskVariantSlugs = await getUserAllowedTaskVariants({
       roleId: sessionUser.roleId,
       roleSlug: sessionUser.role?.slug,

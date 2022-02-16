@@ -1,6 +1,5 @@
-import { COL_CARTS } from '../../collectionNames';
-import { CartModel, ObjectIdModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ObjectIdModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 
 export interface UpdateCartGiftCertificateInterface {
   cartId: ObjectIdModel;
@@ -11,8 +10,8 @@ export async function updateCartGiftCertificate({
   cartId,
   giftCertificateId,
 }: UpdateCartGiftCertificateInterface) {
-  const { db } = await getDatabase();
-  const cartsCollection = db.collection<CartModel>(COL_CARTS);
+  const collections = await getDbCollections();
+  const cartsCollection = collections.cartsCollection();
   await cartsCollection.findOneAndUpdate(
     {
       _id: cartId,

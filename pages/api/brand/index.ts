@@ -1,13 +1,13 @@
 import { createBrand } from 'db/dao/brands/createBrand';
 import { deleteBrand } from 'db/dao/brands/deleteBrand';
 import { updateBrand } from 'db/dao/brands/updateBrand';
-import { NextApiRequest, NextApiResponse } from 'next';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
 } from 'lib/config/common';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // create

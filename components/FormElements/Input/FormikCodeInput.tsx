@@ -1,10 +1,10 @@
+import { Field, FieldProps } from 'formik';
+import { get } from 'lodash';
 import * as React from 'react';
+import uniqid from 'uniqid';
 import WpButton from '../../button/WpButton';
 import InputLine from './InputLine';
 import WpInput, { WpInputPropsInterface } from './WpInput';
-import { Field, FieldProps } from 'formik';
-import { get } from 'lodash';
-import uniqid from 'uniqid';
 
 export interface FormikCodeInputPropsInterface
   extends Omit<WpInputPropsInterface, 'label' | 'value' | 'type'> {

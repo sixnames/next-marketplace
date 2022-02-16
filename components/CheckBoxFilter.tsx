@@ -1,6 +1,10 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import {
+  CatalogueFilterAttributeInterface,
+  CatalogueFilterAttributeOptionInterface,
+} from '../db/uiInterfaces';
+import {
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
   FILTER_BRAND_COLLECTION_KEY,
   FILTER_BRAND_KEY,
@@ -8,12 +12,8 @@ import {
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from '../lib/config/modalVariants';
 import { useAppContext } from './context/appContext';
 import { useConfigContext } from './context/configContext';
-import {
-  CatalogueFilterAttributeInterface,
-  CatalogueFilterAttributeOptionInterface,
-} from '../db/uiInterfaces';
-import { FilterBaseInterface } from './layout/catalogue/CatalogueFilter';
 import FilterSelectedAttributes from './FilterSelectedAttributes';
+import { FilterBaseInterface } from './layout/catalogue/CatalogueFilter';
 import WpLink from './Link/WpLink';
 import { CatalogueAdditionalOptionsModalInterface } from './Modal/CatalogueAdditionalOptionsModal';
 import WpAccordion from './WpAccordion';

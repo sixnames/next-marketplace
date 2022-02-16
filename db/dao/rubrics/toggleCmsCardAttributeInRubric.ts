@@ -1,6 +1,5 @@
-import { COL_ATTRIBUTES, COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
-import { AttributeModel, CategoryModel, RubricModel, RubricPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { RubricPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -17,12 +16,12 @@ export async function toggleCmsCardAttributeInRubric({
   input,
 }: DaoPropsInterface<ToggleCmsCardAttributeInRubricInputInterface>): Promise<RubricPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-  const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.rubricsCollection();
+  const categoriesCollection = collections.categoriesCollection();
+  const attributesCollection = collections.attributesCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: RubricPayloadModel = {
     success: false,

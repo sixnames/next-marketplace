@@ -1,8 +1,8 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { getConsoleCompanyRubricProducts } from 'db/ssr/products/getConsoleCompanyRubricProducts';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { ConsoleRubricProductsListPageInterface } from 'pages/console/[companyId]/rubrics/[rubricSlug]/products/[...filters]';
-import { getConsoleCompanyRubricProducts } from 'db/ssr/products/getConsoleCompanyRubricProducts';
 
 export const getConsoleRubricProductsListPageSsr = async (
   context: GetServerSidePropsContext,

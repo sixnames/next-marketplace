@@ -1,16 +1,15 @@
-import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
-import { DEFAULT_COUNTERS_OBJECT } from '../lib/config/common';
-import { COL_MANUFACTURERS, COL_PRODUCT_FACETS } from '../db/collectionNames';
 import { aggregatePagination } from 'db/utils/aggregatePagination';
 import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
+import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
+import { COL_MANUFACTURERS } from '../db/collectionNames';
 import {
   ManufacturerModel,
   ManufacturerPayloadModel,
   ManufacturersAlphabetListModel,
   ManufacturersPaginationPayloadModel,
-  ProductFacetModel,
 } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { getDbCollections } from '../db/mongodb';
+import { DEFAULT_COUNTERS_OBJECT } from '../lib/config/common';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { getNextNumberItemId } from '../lib/itemIdUtils';
 import { getAlphabetList } from '../lib/optionUtils';
@@ -100,8 +99,8 @@ export const ManufacturerQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<ManufacturerModel> => {
-        const { db } = await getDatabase();
-        const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
+        const collections = await getDbCollections();
+        const manufacturersCollection = collections.manufacturersCollection();
         const manufacturer = await manufacturersCollection.findOne({ _id: args._id });
         if (!manufacturer) {
           throw Error('Manufacturer not found by given id');
@@ -118,8 +117,8 @@ export const ManufacturerQueries = extendType({
         slug: nonNull(stringArg()),
       },
       resolve: async (_root, args): Promise<ManufacturerModel> => {
-        const { db } = await getDatabase();
-        const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
+        const collections = await getDbCollections();
+        const manufacturersCollection = collections.manufacturersCollection();
         const manufacturer = await manufacturersCollection.findOne({ slug: args.slug });
         if (!manufacturer) {
           throw Error('Manufacturer not found by given slug');
@@ -159,8 +158,8 @@ export const ManufacturerQueries = extendType({
       },
       resolve: async (_root, args, context): Promise<ManufacturersAlphabetListModel[]> => {
         const { locale } = await getRequestParams(context);
-        const { db } = await getDatabase();
-        const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
+        const collections = await getDbCollections();
+        const manufacturersCollection = collections.manufacturersCollection();
         const { input } = args;
         let query: Record<string, any> = {};
         if (input) {
@@ -257,8 +256,8 @@ export const ManufacturerMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
+          const collections = await getDbCollections();
+          const manufacturersCollection = collections.manufacturersCollection();
           const { input } = args;
 
           // Check if manufacturer already exist
@@ -339,8 +338,8 @@ export const ManufacturerMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
+          const collections = await getDbCollections();
+          const manufacturersCollection = collections.manufacturersCollection();
           const { input } = args;
           const { manufacturerId, ...values } = input;
 
@@ -431,9 +430,9 @@ export const ManufacturerMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
-          const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+          const collections = await getDbCollections();
+          const manufacturersCollection = collections.manufacturersCollection();
+          const productsCollection = collections.productFacetsCollection();
           const { _id } = args;
 
           // Check manufacturer availability

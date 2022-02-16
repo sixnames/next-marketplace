@@ -1,15 +1,8 @@
-import { ObjectId } from 'mongodb';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import {
-  COL_ORDER_CUSTOMERS,
-  COL_ORDER_LOGS,
-  COL_ORDER_PRODUCTS,
-  COL_ORDERS,
-} from '../../collectionNames';
-import { OrderCustomerModel, OrderLogModel, OrderModel, OrderProductModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 import { MakeAnOrderPayloadModel } from './makeAnOrder';
 
 export interface DeleteOrderPayloadModel {
@@ -26,13 +19,13 @@ export async function deleteOrder({
   input,
 }: DaoPropsInterface<DeleteOrderInputInterface>): Promise<DeleteOrderPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-  const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
-  const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
-  const orderCustomersCollection = db.collection<OrderCustomerModel>(COL_ORDER_CUSTOMERS);
+  const collections = await getDbCollections();
+  const ordersCollection = collections.ordersCollection();
+  const orderProductsCollection = collections.ordersProductsCollection();
+  const orderLogsCollection = collections.ordersLogsCollection();
+  const ordersCustomersCollection = collections.ordersCustomersCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let payload: MakeAnOrderPayloadModel = {
     success: false,
@@ -89,7 +82,7 @@ export async function deleteOrder({
       }
 
       // delete order customer
-      const removedOrderCustomerResult = await orderCustomersCollection.findOneAndDelete({
+      const removedOrderCustomerResult = await ordersCustomersCollection.findOneAndDelete({
         orderId,
       });
       if (!removedOrderCustomerResult.ok) {

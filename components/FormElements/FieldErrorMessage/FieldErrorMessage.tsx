@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { FormikErrors } from 'formik';
+import * as React from 'react';
 
 interface FieldErrorMessageInterface {
   name: string;

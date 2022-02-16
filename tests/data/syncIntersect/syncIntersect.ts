@@ -3,7 +3,7 @@ import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();
 
-const shops: SyncIntersectModel[] = [
+const syncIntersect: SyncIntersectModel[] = [
   {
     _id: getObjectId('sync intersect A'),
     products: [],
@@ -12,4 +12,4 @@ const shops: SyncIntersectModel[] = [
 ];
 
 // @ts-ignore
-export = shops;
+export = syncIntersect;

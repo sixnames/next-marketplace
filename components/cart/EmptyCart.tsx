@@ -1,6 +1,6 @@
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 import WpButton from '../button/WpButton';
 import Inner from '../Inner';
 import WpBreadcrumbs from '../WpBreadcrumbs';

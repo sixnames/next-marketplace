@@ -1,6 +1,8 @@
-import Formidable from 'formidable';
-import mkdirp from 'mkdirp';
 import extName from 'ext-name';
+import Formidable from 'formidable';
+import fs from 'fs';
+import mkdirp from 'mkdirp';
+import path from 'path';
 import rimraf from 'rimraf';
 import sharp, {
   AvailableFormatInfo,
@@ -14,9 +16,8 @@ import sharp, {
   TiffOptions,
   WebpOptions,
 } from 'sharp';
-import fs from 'fs';
-import path from 'path';
 import { promisify } from 'util';
+import { alwaysArray } from '../arrayUtils';
 import {
   ASSETS_DIST,
   ASSETS_DIST_CONFIGS,
@@ -25,7 +26,7 @@ import {
   IMAGE_FALLBACK,
   IMAGE_FALLBACK_BOTTLE,
 } from '../config/common';
-import { alwaysArray } from '../arrayUtils';
+
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 

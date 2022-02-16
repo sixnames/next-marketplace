@@ -1,12 +1,12 @@
-import { ObjectId } from 'mongodb';
 import addZero from 'add-zero';
+import { ObjectIdModel, TranslationModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { ProductSummaryInterface } from 'db/uiInterfaces';
 import { HITS_PER_PAGE, ID_COUNTER_DIGITS } from 'lib/config/common';
-import { COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
-import { ObjectIdModel, ProductSummaryModel, TranslationModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { ProductFacetInterface, ProductSummaryInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
 import { noNaN } from '../numbers';
 import { deleteAlgoliaObjects, getAlgoliaClient, saveAlgoliaObjects } from './algoliaUtils';
+
 require('dotenv').config();
 
 export function getAlgoliaProductsIndex() {
@@ -25,8 +25,8 @@ interface AlgoliaProductInterface {
 
 export async function updateAlgoliaProducts(match?: Record<any, any>) {
   try {
-    const { db } = await getDatabase();
-    const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+    const collections = await getDbCollections();
+    const productSummariesCollection = collections.productSummariesCollection();
 
     const aggregationMatch = match
       ? [
@@ -100,8 +100,8 @@ export async function getAlgoliaProductsSearch({
   search,
   excludedProductsIds,
 }: GetAlgoliaProductsSearch): Promise<ObjectId[]> {
-  const { db } = await getDatabase();
-  const productFacetsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
+  const collections = await getDbCollections();
+  const productFacetsCollection = collections.productFacetsCollection();
   const algoliaIndex = getAlgoliaProductsIndex();
   const searchIds: ObjectId[] = [];
   try {

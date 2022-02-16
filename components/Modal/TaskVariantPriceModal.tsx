@@ -1,5 +1,6 @@
+import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { Formik, Form } from 'formik';
+import { TaskVariantPriceModel } from '../../db/dbModels';
 import {
   TASK_PRICE_ACTION_ADDED,
   TASK_PRICE_ACTIONS,
@@ -8,9 +9,8 @@ import {
   TASK_PRICE_TARGET_TASK,
   TASK_PRICE_TARGETS,
 } from '../../lib/config/constantSelects';
-import { useAppContext } from '../context/appContext';
-import { TaskVariantPriceModel } from '../../db/dbModels';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import FormikInput from '../FormElements/Input/FormikInput';
 import FormikSelect from '../FormElements/Select/FormikSelect';
 import ModalButtons from './ModalButtons';

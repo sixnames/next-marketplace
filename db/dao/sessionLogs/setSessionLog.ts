@@ -1,20 +1,14 @@
+import { ObjectIdModel, SessionLogEventModel, SessionLogPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
+import { ONE_DAY, SESSION_COOKIE_KEY } from 'lib/config/common';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import nookies from 'nookies';
 import { getDomain } from 'tldts';
-import { ONE_DAY, SESSION_COOKIE_KEY } from 'lib/config/common';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { IpInfoInterface } from 'types/clientTypes';
-import { COL_SESSION_LOGS } from '../../collectionNames';
-import {
-  ObjectIdModel,
-  SessionLogEventModel,
-  SessionLogModel,
-  SessionLogPayloadModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface SessionLogMakeAnOrderProductEventInputModel {
   summaryId: string;
@@ -123,8 +117,8 @@ async function createNewSessionLog({
   userRoleId,
   context,
 }: CreateNewSessionLogInterface): Promise<Boolean> {
-  const { db } = await getDatabase();
-  const sessionLogsCollection = db.collection<SessionLogModel>(COL_SESSION_LOGS);
+  const collections = await getDbCollections();
+  const sessionLogsCollection = collections.sessionLogsCollection();
   const event = getSessionLogEven({
     event: input.event,
     context,
@@ -153,11 +147,11 @@ export async function setSessionLog({
   context,
 }: DaoPropsInterface<SetSessionLogInputInterface>): Promise<SessionLogPayloadModel> {
   try {
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
     const cookies = nookies.get(context);
     const { locale, citySlug, companySlug } = await getRequestParams(context);
     const { user, role } = await getSessionRole(context);
-    const sessionLogsCollection = db.collection<SessionLogModel>(COL_SESSION_LOGS);
+    const sessionLogsCollection = collections.sessionLogsCollection();
 
     // check cookies
     if (!cookies) {

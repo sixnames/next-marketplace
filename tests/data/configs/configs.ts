@@ -1,8 +1,9 @@
-import { MOCK_ADDRESS_A, MOCK_ADDRESS_B } from '../../mocks';
 import { getConfigTemplates } from 'db/utils/getConfigTemplates';
 import { ASSETS_DIST_CONFIGS, DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR } from 'lib/config/common';
+import { MOCK_ADDRESS_A, MOCK_ADDRESS_B } from '../../mocks';
 import categories from '../categories/categories';
 import rubrics from '../rubrics/rubrics';
+
 require('dotenv').config();
 
 const companyBSlug = 'company_b';

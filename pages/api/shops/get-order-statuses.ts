@@ -1,11 +1,9 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { SORT_ASC } from 'lib/config/common';
-import { COL_ORDER_STATUSES, COL_SHOPS } from 'db/collectionNames';
-import { OrderStatusModel, ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { SyncOrderStatusInterface, SyncParamsInterface } from 'db/syncInterfaces';
+import { SORT_ASC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getSessionLocale } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
@@ -35,9 +33,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const { db } = await getDatabase();
-  const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const collections = await getDbCollections();
+  const orderStatusesCollection = collections.orderStatusesCollection();
+  const shopsCollection = collections.shopsCollection();
 
   // get shop
   const shop = await shopsCollection.findOne({ token });

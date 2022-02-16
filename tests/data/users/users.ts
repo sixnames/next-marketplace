@@ -1,5 +1,5 @@
-import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
 import { UserModel } from 'db/dbModels';
+import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 
 // hashed 'password'

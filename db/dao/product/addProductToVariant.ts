@@ -1,30 +1,23 @@
-import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
-import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullProductSummary, getFullProductSummaryWithDraft } from 'lib/productUtils';
-import { ObjectId } from 'mongodb';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { addProductToConnectionSchema } from 'validation/productSchema';
-import { COL_OPTIONS, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
-import {
-  ObjectIdModel,
-  OptionModel,
-  ProductPayloadModel,
-  ProductSummaryModel,
-  SummaryDiffModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ObjectIdModel, ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import {
   DaoPropsInterface,
   ProductVariantInterface,
   ProductVariantItemInterface,
 } from 'db/uiInterfaces';
+import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
+import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getFullProductSummary, getFullProductSummaryWithDraft } from 'lib/productUtils';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { addProductToConnectionSchema } from 'validation/productSchema';
 
 export interface AddProductToVariantInputInterface {
   taskId?: string | null;
@@ -38,11 +31,11 @@ export async function addProductToVariant({
   context,
 }: DaoPropsInterface<AddProductToVariantInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+  const collections = await getDbCollections();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const optionsCollection = collections.optionsCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ProductPayloadModel = {
     success: false,

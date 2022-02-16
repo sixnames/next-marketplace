@@ -1,5 +1,5 @@
+import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { Formik, Form } from 'formik';
 import { AttributesGroupInterface } from '../../db/uiInterfaces';
 import { useMoveAttributeMutation } from '../../hooks/mutations/useAttributeMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';

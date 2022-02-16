@@ -1,9 +1,9 @@
 import { COL_EVENT_RUBRICS } from 'db/collectionNames';
 import { CreateEventRubricInputInterface } from 'db/dao/eventRubrics/createEventRubric';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import { EventRubricModel, EventRubricPayloadModel, JSONObjectModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { updateCitiesSeoContent } from 'lib/seoContentUniquenessUtils';
 import {
@@ -29,8 +29,8 @@ export async function updateEventRubric({
 }: DaoPropsInterface<UpdateEventRubricInputInterface>): Promise<EventRubricPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const rubricsCollection = db.collection<EventRubricModel>(COL_EVENT_RUBRICS);
+    const collections = await getDbCollections();
+    const rubricsCollection = collections.eventRubricsCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

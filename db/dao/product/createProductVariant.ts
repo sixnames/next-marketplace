@@ -1,30 +1,23 @@
-import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
-import { ObjectId } from 'mongodb';
+import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface, ProductVariantInterface } from 'db/uiInterfaces';
 import {
   ATTRIBUTE_VARIANT_SELECT,
   DEFAULT_COMPANY_SLUG,
   TASK_STATE_IN_PROGRESS,
 } from 'lib/config/common';
+import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 import { createProductConnectionSchema } from 'validation/productSchema';
-import { COL_ATTRIBUTES, COL_OPTIONS, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
-import {
-  AttributeModel,
-  OptionModel,
-  ProductPayloadModel,
-  ProductSummaryModel,
-  SummaryDiffModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface, ProductVariantInterface } from 'db/uiInterfaces';
 
 export interface CreateProductVariantInputInterface {
   productId: string;
@@ -37,12 +30,12 @@ export async function createProductVariant({
   context,
 }: DaoPropsInterface<CreateProductVariantInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+  const collections = await getDbCollections();
+  const attributesCollection = collections.attributesCollection();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const optionsCollection = collections.optionsCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
   let mutationPayload: ProductPayloadModel = {
     success: false,
     message: await getApiMessage(`products.variant.createError`),

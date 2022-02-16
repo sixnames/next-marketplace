@@ -1,13 +1,13 @@
-import { ObjectId } from 'mongodb';
+import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { CategoryInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
 } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCategoryAllSeoContents } from 'lib/seoContentUtils';
-import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { CategoryInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 interface GetConsoleCategoryDetailsPayloadInterface {
   category: CategoryInterface;
@@ -26,8 +26,8 @@ export async function getConsoleCategoryDetails({
   companySlug,
   locale,
 }: GetConsoleCategoryDetailsInterface): Promise<GetConsoleCategoryDetailsPayloadInterface | null> {
-  const { db } = await getDatabase();
-  const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
+  const collections = await getDbCollections();
+  const categoriesCollection = collections.categoriesCollection();
   const categoryAggregation = await categoriesCollection
     .aggregate<CategoryInterface>([
       {

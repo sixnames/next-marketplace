@@ -1,10 +1,10 @@
 import * as React from 'react';
 import useSWR from 'swr';
-import { ONE_MINUTE } from '../lib/config/common';
 import {
   GetNewOrdersCounterInputInterface,
   GetNewOrdersCounterPayload,
 } from '../db/dao/orders/getNewOrdersCounter';
+import { ONE_MINUTE } from '../lib/config/common';
 import { noNaN } from '../lib/numbers';
 import { stringifyApiParams } from '../lib/qsUtils';
 

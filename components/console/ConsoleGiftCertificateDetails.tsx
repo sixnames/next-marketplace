@@ -1,13 +1,13 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { USERS_SEARCH_MODAL } from '../../lib/config/modalVariants';
-import { useAppContext } from '../context/appContext';
 import { UpdateGiftCertificateInputInterface } from '../../db/dao/giftCertificate/updateGiftCertificate';
 import { CompanyInterface, GiftCertificateInterface } from '../../db/uiInterfaces';
 import { useUpdateGiftCertificateMutation } from '../../hooks/mutations/useGiftCertificateMutations';
+import { USERS_SEARCH_MODAL } from '../../lib/config/modalVariants';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import GiftCertificateMainFields from '../FormTemplates/GiftCertificateMainFields';
 import {
   UsersSearchModalControlsInterface,

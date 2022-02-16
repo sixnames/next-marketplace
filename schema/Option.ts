@@ -1,9 +1,8 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { FILTER_SEPARATOR } from '../lib/config/common';
-import { COL_OPTIONS } from '../db/collectionNames';
 import { OptionAlphabetListModel, OptionModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { getDbCollections } from '../db/mongodb';
 import { OptionInterface } from '../db/uiInterfaces';
+import { FILTER_SEPARATOR } from '../lib/config/common';
 import { getAlphabetList } from '../lib/optionUtils';
 import { getRequestParams } from '../lib/sessionHelpers';
 import { getTreeFromList } from '../lib/treeUtils';
@@ -23,8 +22,8 @@ export const Option = objectType({
     t.list.nonNull.field('options', {
       type: 'Option',
       resolve: async (source): Promise<OptionModel[]> => {
-        const { db } = await getDatabase();
-        const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+        const collections = await getDbCollections();
+        const optionsCollection = collections.optionsCollection();
         const options = await optionsCollection.find({ parentId: source._id }).toArray();
         return options;
       },
@@ -75,9 +74,9 @@ export const OptionQueries = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<OptionAlphabetListModel[]> => {
-        const { db } = await getDatabase();
+        const collections = await getDbCollections();
         const { locale } = await getRequestParams(context);
-        const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+        const optionsCollection = collections.optionsCollection();
         const { input } = args;
         const { optionsGroupId, slugs, parentId } = input;
 

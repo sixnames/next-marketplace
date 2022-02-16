@@ -1,11 +1,11 @@
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import WpButton from '../components/button/WpButton';
 import Inner from '../components/Inner';
-import WpTitle from '../components/WpTitle';
 import SiteLayout, { SiteLayoutProviderInterface } from '../components/layout/SiteLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import WpTitle from '../components/WpTitle';
 import { getSiteInitialData } from '../lib/ssrUtils';
 
 const links = getProjectLinks();

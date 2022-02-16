@@ -1,6 +1,5 @@
-import { COL_ATTRIBUTES, COL_EVENT_RUBRICS } from 'db/collectionNames';
-import { AttributeModel, EventRubricModel, EventRubricPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { EventRubricPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -17,11 +16,11 @@ export async function toggleCmsCardAttributeInEventRubric({
   input,
 }: DaoPropsInterface<ToggleCmsCardAttributeInEventRubricInputInterface>): Promise<EventRubricPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const rubricsCollection = db.collection<EventRubricModel>(COL_EVENT_RUBRICS);
-  const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.eventRubricsCollection();
+  const attributesCollection = collections.attributesCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: EventRubricPayloadModel = {
     success: false,

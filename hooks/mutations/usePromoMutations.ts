@@ -1,9 +1,4 @@
 import { useRouter } from 'next/router';
-import {
-  REQUEST_METHOD_DELETE,
-  REQUEST_METHOD_PATCH,
-  REQUEST_METHOD_POST,
-} from '../../lib/config/common';
 import { AddPromoProductsInputInterface } from '../../db/dao/promo/addPromoProducts';
 import {
   CheckPromoCodeAvailabilityInputInterface,
@@ -17,6 +12,11 @@ import { DeletePromoProductsInputInterface } from '../../db/dao/promo/deleteProm
 import { UpdatePromoInputInterface } from '../../db/dao/promo/updatePromo';
 import { UpdatePromoCodeInputInterface } from '../../db/dao/promo/updatePromoCode';
 import { PromoCodePayloadModel, PromoPayloadModel } from '../../db/dbModels';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from '../../lib/config/common';
 import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import { useMutationHandler } from './useFetch';
 

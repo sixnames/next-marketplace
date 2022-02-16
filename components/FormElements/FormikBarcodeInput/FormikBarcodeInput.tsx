@@ -1,10 +1,10 @@
-import dynamic from 'next/dynamic';
-import * as React from 'react';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
+import dynamic from 'next/dynamic';
+import * as React from 'react';
 import WpButton from '../../button/WpButton';
-import WpInput, { WpInputPropsInterface } from '../Input/WpInput';
 import InputLine from '../Input/InputLine';
+import WpInput, { WpInputPropsInterface } from '../Input/WpInput';
 
 const BarcodeReader = dynamic(() => import('../../BarcodeReader'), {
   ssr: false,

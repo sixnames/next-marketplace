@@ -1,6 +1,5 @@
-import { COL_ATTRIBUTES, COL_RUBRICS } from 'db/collectionNames';
-import { AttributeModel, RubricModel, RubricPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { RubricPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -18,9 +17,9 @@ export async function toggleAttributeInRubricFilter({
 }: DaoPropsInterface<ToggleAttributeInRubricFilterInputInterface>): Promise<RubricPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-    const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+    const collections = await getDbCollections();
+    const rubricsCollection = collections.rubricsCollection();
+    const attributesCollection = collections.attributesCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

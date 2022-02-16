@@ -1,12 +1,12 @@
+import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
+import WpTitle from 'components/WpTitle';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { getCmsCompanyLinks } from 'lib/links/getProjectLinks';
 import Head from 'next/head';
 import * as React from 'react';
-import Inner from 'components/Inner';
-import WpTitle from 'components/WpTitle';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { ClientNavItemInterface } from 'types/clientTypes';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import AppSubNav from 'components/layout/AppSubNav';
 
 interface CmsCompanyLayoutInterface {
   company: CompanyInterface;

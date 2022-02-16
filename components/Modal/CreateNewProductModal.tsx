@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { Form, Formik } from 'formik';
-import { GENDER_IT } from 'lib/config/common';
 import { ProductSummaryInterface } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
 import { useCopyProduct, useCreateProduct } from 'hooks/mutations/useProductMutations';
+import { GENDER_IT } from 'lib/config/common';
+import * as React from 'react';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import WpButton from '../button/WpButton';
 import ProductMainFields, { ProductFormValuesInterface } from '../FormTemplates/ProductMainFields';

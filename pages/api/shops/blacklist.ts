@@ -1,12 +1,11 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_GET, REQUEST_METHOD_POST, SORT_ASC } from 'lib/config/common';
-import { COL_BLACKLIST_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { BlackListProductItemModel, BlackListProductModel, ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { BlackListProductItemModel, BlackListProductModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { SyncBlackListProductInterface, SyncParamsInterface } from 'db/syncInterfaces';
 import { alwaysString } from 'lib/arrayUtils';
+import { REQUEST_METHOD_GET, REQUEST_METHOD_POST, SORT_ASC } from 'lib/config/common';
 import { noNaN } from 'lib/numbers';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -19,10 +18,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    const { db } = await getDatabase();
-    const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-    const blacklistProductsCollection =
-      db.collection<BlackListProductModel>(COL_BLACKLIST_PRODUCTS);
+    const collections = await getDbCollections();
+    const shopsCollection = collections.shopsCollection();
+    const blacklistProductsCollection = collections.blackListProductsCollection();
 
     // get shop
     const shop = await shopsCollection.findOne({ token: query.token });

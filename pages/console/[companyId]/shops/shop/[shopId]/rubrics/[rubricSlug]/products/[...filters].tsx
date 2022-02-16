@@ -1,11 +1,11 @@
-import { NextPage } from 'next';
-import * as React from 'react';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ShopRubricProducts from 'components/shops/ShopRubricProducts';
 import { getConsoleShopProductsListPageSsr } from 'db/ssr/shops/getConsoleShopProductsListPageSsr';
 import { AppContentWrapperBreadCrumbs, ShopRubricProductsInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
+import { NextPage } from 'next';
+import * as React from 'react';
 
 export interface ConsoleShopProductsListPageInterface
   extends GetConsoleInitialDataPropsInterface,

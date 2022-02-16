@@ -1,11 +1,11 @@
-import * as Yup from 'yup';
-import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import {
   objectIdSchema,
   requiredNumberSchema,
   requiredStringSchema,
   requiredStringTranslationSchema,
 } from 'validation/utils/schemaTemplates';
+import * as Yup from 'yup';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 
 export const pagesGroupIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({

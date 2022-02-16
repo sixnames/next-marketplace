@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { phoneToRaw } from 'lib/phoneUtils';
 import {
@@ -6,10 +5,10 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 import { updateUserSchema } from 'validation/userSchema';
-import { COL_USERS } from '../../collectionNames';
-import { UserModel, UserNotificationsModel, UserPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { UserNotificationsModel, UserPayloadModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateUserInputInterface {
@@ -29,8 +28,8 @@ export async function updateUser({
 }: DaoPropsInterface<UpdateUserInputInterface>): Promise<UserPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const usersCollection = db.collection<UserModel>(COL_USERS);
+    const collections = await getDbCollections();
+    const usersCollection = collections.usersCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

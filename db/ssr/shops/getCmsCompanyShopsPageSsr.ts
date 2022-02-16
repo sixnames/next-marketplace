@@ -1,26 +1,16 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_PAGE, SORT_DESC } from 'lib/config/common';
+import { COL_CITIES, COL_SHOP_PRODUCTS, COL_USERS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { AppPaginationAggregationInterface, ShopInterface } from 'db/uiInterfaces';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
+import { DEFAULT_PAGE, SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { CmsCompanyShopsPageInterface } from 'pages/cms/companies/[companyId]/shops/[...filters]';
-import {
-  COL_CITIES,
-  COL_COMPANIES,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-  COL_USERS,
-} from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import {
-  AppPaginationAggregationInterface,
-  CompanyInterface,
-  ShopInterface,
-} from 'db/uiInterfaces';
 
 export const getCmsCompanyShopsPageSsr = async (
   context: GetServerSidePropsContext,
@@ -33,9 +23,9 @@ export const getCmsCompanyShopsPageSsr = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
-  const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
+  const shopsCollection = collections.shopsCollection();
 
   const { search } = query;
   const filters = alwaysArray(query.filters);

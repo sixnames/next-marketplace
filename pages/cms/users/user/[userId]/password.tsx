@@ -1,21 +1,21 @@
-import { Form, Formik } from 'formik';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import WpButton from 'components/button/WpButton';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import Inner from 'components/Inner';
-import { COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
-import { useUpdateUserPasswordMutation } from 'hooks/mutations/useUserMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsUserLayout from 'components/layout/cms/CmsUserLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { COL_ROLES } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
+import { useUpdateUserPasswordMutation } from 'hooks/mutations/useUserMutations';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFullName } from 'lib/nameUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface UserPasswordInterface {
   user: UserInterface;
@@ -110,8 +110,8 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<UserPasswordPageInterface>> => {
   const { query } = context;
   const { userId } = query;
-  const { db } = await getDatabase();
-  const usersCollection = db.collection<UserInterface>(COL_USERS);
+  const collections = await getDbCollections();
+  const usersCollection = collections.usersCollection();
 
   const { props } = await getAppInitialData({ context });
   if (!props || !userId) {

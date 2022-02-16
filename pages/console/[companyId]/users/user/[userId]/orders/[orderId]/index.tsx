@@ -1,16 +1,13 @@
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import ConsoleUserLayout from 'components/layout/console/ConsoleUserLayout';
 import ConsoleOrderDetails, {
   CmsOrderDetailsBaseInterface,
 } from 'components/order/ConsoleOrderDetails';
-import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
+import { COL_ROLES, COL_USER_CATEGORIES } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
-import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface, UserInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import ConsoleUserLayout from 'components/layout/console/ConsoleUserLayout';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getFullName } from 'lib/nameUtils';
@@ -20,6 +17,9 @@ import {
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface UserOrderConsumerInterface extends CmsOrderDetailsBaseInterface {
   user: UserInterface;
@@ -90,8 +90,8 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<UserOrderPageInterface>> => {
   const { query } = context;
-  const { db } = await getDatabase();
-  const usersCollection = db.collection<UserInterface>(COL_USERS);
+  const collections = await getDbCollections();
+  const usersCollection = collections.usersCollection();
   const companyId = new ObjectId(`${query.companyId}`);
   const userId = new ObjectId(`${query.userId}`);
   const { props } = await getConsoleInitialData({ context });

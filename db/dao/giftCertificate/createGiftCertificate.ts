@@ -1,15 +1,10 @@
-import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_GIFT_CERTIFICATES } from '../../collectionNames';
-import {
-  GiftCertificateModel,
-  GiftCertificatePayloadModel,
-  TranslationModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 import trim from 'trim';
+import { GiftCertificatePayloadModel, TranslationModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface CreateGiftCertificateInputInterface {
   code: string;
@@ -26,8 +21,8 @@ export async function createGiftCertificate({
 }: DaoPropsInterface<CreateGiftCertificateInputInterface>): Promise<GiftCertificatePayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
+    const collections = await getDbCollections();
+    const giftCertificatesCollection = collections.giftCertificatesCollection();
 
     // check input
     if (!input || !input.code) {

@@ -1,11 +1,10 @@
-import { ObjectId } from 'mongodb';
+import { PagePayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_PAGE_TEMPLATES, COL_PAGES } from '../../collectionNames';
-import { PageModel, PagePayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface DeletePageInputInterface {
   _id: string;
@@ -18,7 +17,7 @@ export async function deletePage({
 }: DaoPropsInterface<DeletePageInputInterface>): Promise<PagePayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
 
     // permission
     const { allow, message } = await getOperationPermission({
@@ -41,7 +40,9 @@ export async function deletePage({
     }
 
     const { isTemplate } = input;
-    const pagesCollection = db.collection<PageModel>(isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES);
+    const pagesCollection = isTemplate
+      ? collections.pageTemplatesCollection()
+      : collections.pagesCollection();
 
     // check availability
     const _id = new ObjectId(input._id);

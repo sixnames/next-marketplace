@@ -1,12 +1,10 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_PROMO } from 'lib/config/common';
-import { COL_PROMO } from 'db/collectionNames';
-import { PromoModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { storeUploads } from 'lib/assetUtils/assetUtils';
+import { ASSETS_DIST_PROMO } from 'lib/config/common';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getRequestParams } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export const config = {
   api: {
@@ -40,8 +38,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // get promo
-  const { db } = await getDatabase();
-  const promoCollection = db.collection<PromoModel>(COL_PROMO);
+  const collections = await getDbCollections();
+  const promoCollection = collections.promoCollection();
   const promo = await promoCollection.findOne({
     _id: new ObjectId(`${promoId}`),
   });

@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { useConfigContext } from 'components/context/configContext';
 import { noNaN } from 'lib/numbers';
+import * as React from 'react';
 
 interface ProductSnippetAvailabilityInterface {
   shopsCount?: number | null;

@@ -1,7 +1,5 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { CONFIRM_MODAL, GIFT_CERTIFICATE_MODAL } from '../../lib/config/modalVariants';
-import { useAppContext } from '../context/appContext';
 import {
   CompanyInterface,
   GetConsoleGiftCertificatesPayloadInterface,
@@ -10,11 +8,13 @@ import {
 } from '../../db/uiInterfaces';
 import { useDeleteGiftCertificateMutation } from '../../hooks/mutations/useGiftCertificateMutations';
 import usePageLoadingState from '../../hooks/usePageLoadingState';
+import { CONFIRM_MODAL, GIFT_CERTIFICATE_MODAL } from '../../lib/config/modalVariants';
 import { getNumWord } from '../../lib/i18n';
 import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import Currency from '../Currency';
 import WpLink from '../Link/WpLink';
 import { ConfirmModalInterface } from '../Modal/ConfirmModal';

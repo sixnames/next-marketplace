@@ -1,17 +1,12 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
 import { FILTER_SEPARATOR } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_BLOG_ATTRIBUTES, COL_BLOG_POSTS, COL_OPTIONS } from '../../collectionNames';
-import {
-  BlogAttributeModel,
-  BlogPostModel,
-  BlogPostPayloadModel,
-  OptionModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { COL_OPTIONS } from '../../collectionNames';
+import { BlogPostPayloadModel, OptionModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 
 export interface UpdateBlogPostAttributeInterface {
   blogPostId: string;
@@ -20,12 +15,12 @@ export interface UpdateBlogPostAttributeInterface {
 }
 
 export async function updateBlogPostAttribute(req: NextApiRequest, res: NextApiResponse) {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const { getApiMessage } = await getRequestParams({ req, res });
 
-  const blogAttributesCollection = db.collection<BlogAttributeModel>(COL_BLOG_ATTRIBUTES);
-  const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
-  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+  const blogAttributesCollection = collections.blogAttributesCollection();
+  const blogPostsCollection = collections.blogPostsCollection();
+  const optionsCollection = collections.optionsCollection();
 
   let payload: BlogPostPayloadModel = {
     success: false,

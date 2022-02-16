@@ -1,12 +1,12 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { getConstantOptionName, TASK_STATE_OPTIONS } from 'lib/config/constantSelects';
-import { CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { useAppContext } from 'components/context/appContext';
 import { useLocaleContext } from 'components/context/localeContext';
 import { TaskInterface } from 'db/uiInterfaces';
 import { useDeleteTask } from 'hooks/mutations/useTaskMutations';
+import { getConstantOptionName, TASK_STATE_OPTIONS } from 'lib/config/constantSelects';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getConsoleTaskLinks } from 'lib/linkUtils';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';

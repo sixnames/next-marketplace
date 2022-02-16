@@ -1,7 +1,7 @@
-import * as React from 'react';
 import Currency from 'components/Currency';
 import { PricesInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
+import * as React from 'react';
 
 interface CardPricesInterface extends PricesInterface {
   shopsCount?: number | null;

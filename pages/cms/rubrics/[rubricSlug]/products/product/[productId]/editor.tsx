@@ -1,15 +1,15 @@
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ConsoleRubricProductEditor, {
   ConsoleRubricProductEditorInterface,
 } from 'components/console/ConsoleRubricProductEditor';
-import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { getFullProductSummary } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface ProductAttributesInterface extends ConsoleRubricProductEditorInterface {}
 

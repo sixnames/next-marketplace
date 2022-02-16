@@ -1,10 +1,10 @@
-import { ObjectId } from 'mongodb';
+import { COL_OPTIONS, COL_USERS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { BlogAttributeInterface, BlogPostInterface } from 'db/uiInterfaces';
 import { DEFAULT_LOCALE, FILTER_SEPARATOR, SORT_ASC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
-import { COL_BLOG_ATTRIBUTES, COL_BLOG_POSTS, COL_OPTIONS, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { BlogAttributeInterface, BlogPostInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 interface GetBlogPostInterface {
   locale: string;
@@ -20,9 +20,9 @@ export const getBlogPost = async ({
   blogPostId,
   locale,
 }: GetBlogPostInterface): Promise<GetBlogPostPayloadInterface | null> => {
-  const { db } = await getDatabase();
-  const blogPostsCollection = db.collection<BlogPostInterface>(COL_BLOG_POSTS);
-  const blogAttributesCollection = db.collection<BlogAttributeInterface>(COL_BLOG_ATTRIBUTES);
+  const collections = await getDbCollections();
+  const blogPostsCollection = collections.blogPostsCollection();
+  const blogAttributesCollection = collections.blogAttributesCollection();
 
   const initialBlogPostAggregation = await blogPostsCollection
     .aggregate<BlogPostInterface>([

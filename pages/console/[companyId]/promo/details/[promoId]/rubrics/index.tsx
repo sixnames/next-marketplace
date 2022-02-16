@@ -1,15 +1,12 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
-import { COL_PROMO_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
-import { castRubricForUI } from 'db/cast/castRubricForUI';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, PromoInterface, RubricInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import CompanyRubricsList, {
   CompanyRubricsListInterface,
 } from 'components/layout/CompanyRubricsList';
 import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
+import { castRubricForUI } from 'db/cast/castRubricForUI';
+import { COL_PROMO_PRODUCTS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, PromoInterface, RubricInterface } from 'db/uiInterfaces';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getPromoSsr } from 'lib/promoUtils';
 import {
@@ -17,6 +14,8 @@ import {
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 
 interface ConsolePromoRubricsInterface extends Omit<CompanyRubricsListInterface, 'routeBasePath'> {
   promo: PromoInterface;
@@ -80,8 +79,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.rubricsCollection();
 
   const promo = await getPromoSsr({
     locale: props.sessionLocale,

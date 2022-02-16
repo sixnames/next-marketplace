@@ -1,15 +1,15 @@
-import { NextPage } from 'next';
-import * as React from 'react';
 import CompanyRubricProductsList, {
   CompanyRubricProductsListInterface,
 } from 'components/company/CompanyRubricProductsList';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import RequestError from 'components/RequestError';
 import { getCmsCompanyRubricProductsPageSsr } from 'db/ssr/company/getCmsCompanyRubricProductsPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { NextPage } from 'next';
+import * as React from 'react';
 
 interface RubricProductsConsumerInterface extends CompanyRubricProductsListInterface {}
 

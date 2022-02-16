@@ -1,9 +1,8 @@
-import { DEFAULT_LOCALE } from 'lib/config/common';
-import { COL_MESSAGES } from 'db/collectionNames';
 import { MessageModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { MessageSlug } from 'types/messageSlugTypes';
+import { getDbCollections } from 'db/mongodb';
+import { DEFAULT_LOCALE } from 'lib/config/common';
 import { getI18nLocaleValue } from 'lib/i18n';
+import { MessageSlug } from 'types/messageSlugTypes';
 
 interface GetApiMessageInterface {
   slug: MessageSlug;
@@ -14,8 +13,8 @@ export async function getApiMessageValue({
   slug,
   locale,
 }: GetApiMessageInterface): Promise<string> {
-  const { db } = await getDatabase();
-  const messagesCollection = db.collection<MessageModel>(COL_MESSAGES);
+  const collections = await getDbCollections();
+  const messagesCollection = collections.messagesCollection();
   const messageEntity = await messagesCollection.findOne({ slug });
 
   if (!messageEntity) {
@@ -26,8 +25,8 @@ export async function getApiMessageValue({
 }
 
 export async function getValidationMessages(): Promise<MessageModel[]> {
-  const { db } = await getDatabase();
-  const messagesCollection = db.collection<MessageModel>(COL_MESSAGES);
+  const collections = await getDbCollections();
+  const messagesCollection = collections.messagesCollection();
   const messages = await messagesCollection
     .find({
       slug: {

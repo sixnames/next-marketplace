@@ -1,7 +1,7 @@
-import * as React from 'react';
 import { Field, FieldProps } from 'formik';
-import { FormikInputPropsInterface } from '../Input/FormikInput';
 import { get } from 'lodash';
+import * as React from 'react';
+import { FormikInputPropsInterface } from '../Input/FormikInput';
 import WpImageUpload from './WpImageUpload';
 
 interface FormikImageUploadInterface extends FormikInputPropsInterface {

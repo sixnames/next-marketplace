@@ -1,13 +1,13 @@
 import { useFormikContext } from 'formik';
 import * as React from 'react';
-import { DEFAULT_COMPANY_SLUG } from '../lib/config/common';
-import { useConfigContext } from './context/configContext';
 import { MakeAnOrderInputInterface } from '../db/dao/orders/makeAnOrder';
-import LayoutCard from './layout/LayoutCard';
+import { DEFAULT_COMPANY_SLUG } from '../lib/config/common';
 import { noNaN } from '../lib/numbers';
 import { MakeOrderFormInterface, scrollToCartErrors } from '../pages/cart';
 import WpButton from './button/WpButton';
+import { useConfigContext } from './context/configContext';
 import Currency from './Currency';
+import LayoutCard from './layout/LayoutCard';
 
 export interface UseCartAsideDiscountsValuesInterface {
   giftCertificateDiscount?: number | null;

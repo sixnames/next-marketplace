@@ -1,9 +1,9 @@
-import { enumType, objectType } from 'nexus';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANTS_ENUMS,
   ATTRIBUTE_VIEW_VARIANTS_ENUMS,
 } from 'lib/config/common';
+import { enumType, objectType } from 'nexus';
 
 export const AttributeVariant = enumType({
   name: 'AttributeVariant',

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
-import * as React from 'react';
-import { ParsedUrlQuery } from 'querystring';
 import qs from 'qs';
+import { ParsedUrlQuery } from 'querystring';
+import * as React from 'react';
 import { ClientNavItemInterface } from '../types/clientTypes';
 
 interface UseTabsConfigInterface {

@@ -1,7 +1,6 @@
 import { arg, extendType, nonNull } from 'nexus';
-import { COL_ROLES } from '../db/collectionNames';
 import { RoleModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { getDbCollections } from '../db/mongodb';
 
 export const RoleQueries = extendType({
   type: 'Query',
@@ -18,8 +17,8 @@ export const RoleQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<RoleModel | null> => {
-        const { db } = await getDatabase();
-        const rolesCollection = db.collection<RoleModel>(COL_ROLES);
+        const collections = await getDbCollections();
+        const rolesCollection = collections.rolesCollection();
         const role = await rolesCollection.findOne({ _id: args._id });
         return role;
       },
@@ -30,8 +29,8 @@ export const RoleQueries = extendType({
       type: 'Role',
       description: 'Should return all roles list',
       resolve: async (): Promise<RoleModel[]> => {
-        const { db } = await getDatabase();
-        const rolesCollection = db.collection<RoleModel>(COL_ROLES);
+        const collections = await getDbCollections();
+        const rolesCollection = collections.rolesCollection();
         const role = await rolesCollection.find({}).toArray();
         return role;
       },

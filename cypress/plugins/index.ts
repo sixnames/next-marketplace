@@ -12,9 +12,7 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-import { COL_TASKS } from 'db/collectionNames';
-import { TaskModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 
 /**
  * @type {Cypress.PluginConfig}
@@ -24,8 +22,8 @@ require('dotenv').config();
 export default (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
   on('task', {
     getTaskFromDb: async (taskItemId) => {
-      const { db } = await getDatabase();
-      const tasksCollection = db.collection<TaskModel>(COL_TASKS);
+      const collections = await getDbCollections();
+      const tasksCollection = collections.tasksCollection();
       const task = await tasksCollection.findOne({
         itemId: `${taskItemId}`,
       });

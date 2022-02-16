@@ -1,8 +1,3 @@
-import {
-  REQUEST_METHOD_DELETE,
-  REQUEST_METHOD_PATCH,
-  REQUEST_METHOD_POST,
-} from 'lib/config/common';
 import { AddAttributesGroupToEventRubricInputInterface } from 'db/dao/eventRubrics/addAttributesGroupToEventRubric';
 import { CreateEventRubricInputInterface } from 'db/dao/eventRubrics/createEventRubric';
 import { DeleteAttributesGroupFromEventRubricInputInterface } from 'db/dao/eventRubrics/deleteAttributesGroupFromEventRubric';
@@ -12,6 +7,11 @@ import { ToggleCmsCardAttributeInEventRubricInputInterface } from 'db/dao/eventR
 import { UpdateEventRubricInputInterface } from 'db/dao/eventRubrics/updateEventRubric';
 import { EventRubricPayloadModel } from 'db/dbModels';
 import { useMutationHandler } from 'hooks/mutations/useFetch';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from 'lib/config/common';
 
 const basePath = '/api/event-rubrics';
 

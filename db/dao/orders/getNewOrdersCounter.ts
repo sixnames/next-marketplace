@@ -1,8 +1,7 @@
-import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { COL_ORDER_STATUSES, COL_ORDERS } from '../../collectionNames';
-import { OrderModel, OrderStatusModel, PayloadType } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ObjectId } from 'mongodb';
+import { PayloadType } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
 export type GetNewOrdersCounterPayload = PayloadType<number>;
@@ -17,10 +16,10 @@ export async function getNewOrdersCounter({
   input,
 }: DaoPropsInterface<GetNewOrdersCounterInputInterface>): Promise<GetNewOrdersCounterPayload> {
   try {
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
 
-    const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-    const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
+    const ordersCollection = collections.ordersCollection();
+    const orderStatusesCollection = collections.orderStatusesCollection();
     const companyId = input?.companyId;
     const shopId = input?.shopId;
     const customerId = input?.customerId;

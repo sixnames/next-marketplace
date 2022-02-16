@@ -1,6 +1,9 @@
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
+import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
 import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
-import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   checkBarcodeIntersects,
@@ -14,10 +17,6 @@ import {
 } from 'lib/sessionHelpers';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import { updateProductSchema } from 'validation/productSchema';
-import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
-import { ProductPayloadModel, ProductSummaryModel, SummaryDiffModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
 import { CreateProductInputInterface } from './createProduct';
 
 export interface UpdateProductInputInterface extends Omit<CreateProductInputInterface, 'rubricId'> {
@@ -30,10 +29,10 @@ export async function updateProduct({
   input,
 }: DaoPropsInterface<UpdateProductInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+  const collections = await getDbCollections();
+  const productSummariesCollection = collections.productSummariesCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ProductPayloadModel = {
     success: false,

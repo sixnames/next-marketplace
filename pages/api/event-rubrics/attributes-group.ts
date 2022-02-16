@@ -1,8 +1,8 @@
 import { addAttributesGroupToEventRubric } from 'db/dao/eventRubrics/addAttributesGroupToEventRubric';
 import { deleteAttributesGroupFromEventRubric } from 'db/dao/eventRubrics/deleteAttributesGroupFromEventRubric';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from 'lib/config/common';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from 'lib/config/common';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // add

@@ -1,9 +1,8 @@
-import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_USERS } from '../../collectionNames';
-import { UserModel, UserPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ObjectId } from 'mongodb';
+import { UserPayloadModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface SetUserCategoryInputInterface {
@@ -17,8 +16,8 @@ export async function setUserCategory({
 }: DaoPropsInterface<SetUserCategoryInputInterface>): Promise<UserPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const usersCollection = db.collection<UserModel>(COL_USERS);
+    const collections = await getDbCollections();
+    const usersCollection = collections.usersCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

@@ -1,3 +1,8 @@
+import {
+  objectIdSchema,
+  requiredStringSchema,
+  requiredStringTranslationSchema,
+} from 'validation/utils/schemaTemplates';
 import * as Yup from 'yup';
 import {
   TASK_PRICE_ACTION_ADDED,
@@ -8,11 +13,6 @@ import {
   TASK_PRICE_TARGET_TASK,
 } from '../lib/config/constantSelects';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
-import {
-  objectIdSchema,
-  requiredStringSchema,
-  requiredStringTranslationSchema,
-} from 'validation/utils/schemaTemplates';
 
 export const taskVariantIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.taskVariants.id' });

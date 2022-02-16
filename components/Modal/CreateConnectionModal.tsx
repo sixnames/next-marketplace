@@ -1,12 +1,12 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { ATTRIBUTE_VARIANT_SELECT } from '../../lib/config/common';
-import { useNotificationsContext } from '../context/notificationsContext';
+import * as React from 'react';
 import { CreateProductVariantInputInterface } from '../../db/dao/product/createProductVariant';
 import { ProductAttributeInterface, ProductSummaryInterface } from '../../db/uiInterfaces';
 import useValidationSchema from '../../hooks/useValidationSchema';
+import { ATTRIBUTE_VARIANT_SELECT } from '../../lib/config/common';
 import { createProductConnectionModalSchema } from '../../validation/productSchema';
 import WpButton from '../button/WpButton';
+import { useNotificationsContext } from '../context/notificationsContext';
 import FormikSelect from '../FormElements/Select/FormikSelect';
 import { SelectOptionInterface } from '../FormElements/Select/Select';
 import ModalFrame from './ModalFrame';

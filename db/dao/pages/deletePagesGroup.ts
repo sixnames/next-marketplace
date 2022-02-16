@@ -1,15 +1,9 @@
-import { ObjectId } from 'mongodb';
+import { PagesGroupPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import {
-  COL_PAGE_TEMPLATES,
-  COL_PAGES,
-  COL_PAGES_GROUP,
-  COL_PAGES_GROUP_TEMPLATES,
-} from '../../collectionNames';
-import { PageModel, PagesGroupModel, PagesGroupPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface DeletePagesGroupInputInterface {
   _id: string;
@@ -44,13 +38,15 @@ export async function deletePagesGroup({
 
   const { isTemplate } = input;
   const _id = new ObjectId(input._id);
-  const { db, client } = await getDatabase();
-  const pagesGroupsCollection = db.collection<PagesGroupModel>(
-    isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
-  );
-  const pagesCollection = db.collection<PageModel>(isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES);
+  const collections = await getDbCollections();
+  const pagesGroupsCollection = isTemplate
+    ? collections.pagesGroupTemplatesCollection()
+    : collections.pagesGroupsCollection();
+  const pagesCollection = isTemplate
+    ? collections.pageTemplatesCollection()
+    : collections.pagesCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: PagesGroupPayloadModel = {
     success: false,

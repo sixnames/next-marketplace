@@ -1,13 +1,13 @@
-import Head from 'next/head';
-import * as React from 'react';
 import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
 import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs, PromoInterface } from 'db/uiInterfaces';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
+import Head from 'next/head';
+import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import AppSubNav from 'components/layout/AppSubNav';
 
 interface ConsolePromoLayoutInterface {
   promo: PromoInterface;

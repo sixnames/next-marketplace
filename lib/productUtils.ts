@@ -1,26 +1,12 @@
 import { findTask } from 'db/dao/tasks/taskUtils';
-import { ObjectId } from 'mongodb';
-import trim from 'trim';
-import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
-import { COL_OPTIONS, COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import {
-  brandPipeline,
-  productAttributesPipeline,
-  productCategoriesPipeline,
-  productRubricPipeline,
-  shopProductShopPipeline,
-  shopProductSupplierProductsPipeline,
-  summaryPipeline,
-} from 'db/utils/constantPipelines';
 import {
   ObjectIdModel,
-  OptionModel,
   ProductFacetModel,
   ProductSummaryModel,
   ShopProductModel,
   TranslationModel,
 } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import {
   AttributeInterface,
   BarcodeDoublesInterface,
@@ -35,6 +21,18 @@ import {
   ShopProductInterface,
   SupplierProductInterface,
 } from 'db/uiInterfaces';
+import {
+  brandPipeline,
+  productAttributesPipeline,
+  productCategoriesPipeline,
+  productRubricPipeline,
+  shopProductShopPipeline,
+  shopProductSupplierProductsPipeline,
+  summaryPipeline,
+} from 'db/utils/constantPipelines';
+import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
+import { ObjectId } from 'mongodb';
+import trim from 'trim';
 import { getFieldStringLocale } from './i18n';
 import { noNaN } from './numbers';
 import { getSupplierPrice } from './priceUtils';
@@ -57,9 +55,9 @@ export async function getFullProductSummary({
   locale,
   companySlug,
 }: GetFullProductSummaryInterface): Promise<GetFullProductSummaryPayloadInterface | null> {
-  const { db } = await getDatabase();
-  const productSummariesCollection = db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
-  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+  const collections = await getDbCollections();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const optionsCollection = collections.optionsCollection();
 
   const productAggregation = await productSummariesCollection
     .aggregate<ProductSummaryInterface>([
@@ -300,8 +298,8 @@ export async function getConsoleShopProduct({
   locale,
   companySlug,
 }: GetConsoleShopProductInterface): Promise<ShopProductInterface | null> {
-  const { db } = await getDatabase();
-  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+  const collections = await getDbCollections();
+  const shopProductsCollection = collections.shopProductsCollection();
 
   // get shop product
   const shopProductsAggregation = await shopProductsCollection
@@ -360,8 +358,8 @@ export async function checkBarcodeIntersects({
   locale,
   productId,
 }: CheckBarcodeIntersectsInterface): Promise<BarcodeDoublesInterface[]> {
-  const { db } = await getDatabase();
-  const productSummariesCollection = db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
+  const collections = await getDbCollections();
+  const productSummariesCollection = collections.productSummariesCollection();
   const idMatch = productId
     ? {
         _id: {
@@ -413,8 +411,8 @@ export async function checkShopProductBarcodeIntersects({
   locale,
   shopProductId,
 }: CheckShopProductBarcodeIntersectsInterface): Promise<ShopProductBarcodeDoublesInterface[]> {
-  const { db } = await getDatabase();
-  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+  const collections = await getDbCollections();
+  const shopProductsCollection = collections.shopProductsCollection();
   const barcodeDoubles: ShopProductBarcodeDoublesInterface[] = [];
   const shopProduct = await shopProductsCollection.findOne({
     _id: shopProductId,

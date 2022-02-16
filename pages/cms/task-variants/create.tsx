@@ -1,14 +1,14 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
 import CreateTaskVariantForm, {
   CreateTaskVariantFormInterface,
 } from 'components/console/CreateTaskVariantForm';
-import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getCmsLinks, getConsoleTaskVariantLinks } from 'lib/linkUtils';
 import { getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 
 interface CreateTaskVariantConsumerInterface extends CreateTaskVariantFormInterface {}
 

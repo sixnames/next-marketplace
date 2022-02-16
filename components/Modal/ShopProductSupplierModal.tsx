@@ -1,11 +1,5 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { SUPPLIER_PRICE_VARIANT_CHARGE } from '../../lib/config/common';
-import {
-  getConstantOptions,
-  SUPPLIER_PRICE_VARIANT_OPTIONS,
-} from '../../lib/config/constantSelects';
-import { useLocaleContext } from '../context/localeContext';
+import * as React from 'react';
 import { ShopProductInterface, SupplierProductInterface } from '../../db/uiInterfaces';
 import {
   AddShopProductSupplierInput,
@@ -13,7 +7,13 @@ import {
   useUpdateShopProductSupplierMutation,
 } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { SUPPLIER_PRICE_VARIANT_CHARGE } from '../../lib/config/common';
+import {
+  getConstantOptions,
+  SUPPLIER_PRICE_VARIANT_OPTIONS,
+} from '../../lib/config/constantSelects';
 import WpButton from '../button/WpButton';
+import { useLocaleContext } from '../context/localeContext';
 import FormikInput from '../FormElements/Input/FormikInput';
 import FormikSelect from '../FormElements/Select/FormikSelect';
 import { SelectOptionInterface } from '../FormElements/Select/Select';

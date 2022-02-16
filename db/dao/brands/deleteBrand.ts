@@ -1,6 +1,5 @@
-import { COL_BRANDS, COL_PRODUCT_FACETS } from 'db/collectionNames';
-import { BrandModel, BrandPayloadModel, ProductFacetModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { BrandPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -16,9 +15,9 @@ export async function deleteBrand({
 }: DaoPropsInterface<DeleteBrandInputInterface>): Promise<BrandPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-    const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+    const collections = await getDbCollections();
+    const brandsCollection = collections.brandsCollection();
+    const productsCollection = collections.productFacetsCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

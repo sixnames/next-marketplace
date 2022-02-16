@@ -1,10 +1,9 @@
-import { ObjectId } from 'mongodb';
+import { TaskPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_TASKS } from '../../collectionNames';
-import { TaskModel, TaskPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface DeleteTaskInputInterface {
   _id: string;
@@ -15,8 +14,8 @@ export async function deleteTask({
   input,
 }: DaoPropsInterface<DeleteTaskInputInterface>): Promise<TaskPayloadModel> {
   try {
-    const { db } = await getDatabase();
-    const tasksCollection = db.collection<TaskModel>(COL_TASKS);
+    const collections = await getDbCollections();
+    const tasksCollection = collections.tasksCollection();
     const { getApiMessage } = await getRequestParams(context);
 
     // check permission

@@ -1,8 +1,8 @@
-import { Form, Formik } from 'formik';
-import * as React from 'react';
-import { DEFAULT_CITY } from 'lib/config/common';
 import { useConfigContext } from 'components/context/configContext';
 import { CompanyInterface, ProductFacetInterface, RubricInterface } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
+import { DEFAULT_CITY } from 'lib/config/common';
+import * as React from 'react';
 import WpButton from '../button/WpButton';
 import Inner from '../Inner';
 import WpAccordion from '../WpAccordion';

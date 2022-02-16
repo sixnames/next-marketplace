@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { RubricVariantInterface } from 'db/uiInterfaces';
 import { useConstantOptions } from 'hooks/useConstantOptions';
+import * as React from 'react';
 import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import FormikSelect from '../FormElements/Select/FormikSelect';

@@ -1,13 +1,13 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import CounterSticker from 'components/CounterSticker';
 import WpLink from 'components/Link/WpLink';
 import WpIcon from 'components/WpIcon';
 import WpTooltip from 'components/WpTooltip';
-import { CMS_ORDERS_NAV_ITEM_SLUG, CONSOLE_ORDERS_NAV_ITEM_SLUG } from 'lib/config/common';
 import { NavItemInterface } from 'db/uiInterfaces';
 import useCompact from 'hooks/useCompact';
 import { useNewOrdersCounter } from 'hooks/useNewOrdersCounter';
+import { CMS_ORDERS_NAV_ITEM_SLUG, CONSOLE_ORDERS_NAV_ITEM_SLUG } from 'lib/config/common';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import { IconType } from 'types/iconTypes';
 
 interface CmsNavItemNameInterface {

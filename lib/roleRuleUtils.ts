@@ -1,8 +1,7 @@
-import { ObjectId } from 'mongodb';
-import { COL_ROLE_RULES } from 'db/collectionNames';
 import { ObjectIdModel, RoleRuleBase, RoleRuleModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { RoleRuleInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
 import { getFieldStringLocale } from './i18n';
 
 export type RoleRuleSlugType =
@@ -1384,8 +1383,8 @@ export async function getRoleRulesAst({
   roleId,
   locale,
 }: GetRoleRulesAstInterface): Promise<RoleRuleInterface[]> {
-  const { db } = await getDatabase();
-  const roleRulesCollection = db.collection<RoleRuleInterface>(COL_ROLE_RULES);
+  const collections = await getDbCollections();
+  const roleRulesCollection = collections.roleRulesCollection();
   const initialRoleRules = await roleRulesCollection
     .find({
       roleId,
@@ -1427,8 +1426,8 @@ interface GetRoleRulesInterface {
 }
 
 export async function getRoleRules({ roleId }: GetRoleRulesInterface): Promise<RoleRuleModel[]> {
-  const { db } = await getDatabase();
-  const roleRulesCollection = db.collection<RoleRuleModel>(COL_ROLE_RULES);
+  const collections = await getDbCollections();
+  const roleRulesCollection = collections.roleRulesCollection();
 
   const rules = await roleRulesCollection
     .find(

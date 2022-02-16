@@ -1,18 +1,17 @@
-import { Form, Formik } from 'formik';
-import { ObjectId } from 'mongodb';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
 import Inner from 'components/Inner';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 interface CompanyAssetsConsumerInterface {
   pageCompany: CompanyInterface;
@@ -126,8 +125,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
   const companyAggregationResult = await companiesCollection
     .aggregate([
       {

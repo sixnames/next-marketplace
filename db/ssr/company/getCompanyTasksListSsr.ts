@@ -1,11 +1,11 @@
+import { COL_TASK_VARIANTS, COL_USERS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { getTaskNestedFieldsPipeline } from 'db/ssr/company/getCompanyTaskSsr';
+import { TaskInterface } from 'db/uiInterfaces';
 import { SORT_ASC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { COL_TASK_VARIANTS, COL_TASKS, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { TaskInterface } from 'db/uiInterfaces';
-import { getTaskNestedFieldsPipeline } from 'db/ssr/company/getCompanyTaskSsr';
 
 export interface GetCompanyTasksListSsr {
   companySlug: string;
@@ -17,8 +17,8 @@ export async function getCompanyTasksListSsr({
   locale,
 }: GetCompanyTasksListSsr): Promise<TaskInterface[] | null> {
   try {
-    const { db } = await getDatabase();
-    const tasksCollection = db.collection<TaskInterface>(COL_TASKS);
+    const collections = await getDbCollections();
+    const tasksCollection = collections.tasksCollection();
     const tasksAggregation = await tasksCollection
       .aggregate<TaskInterface>([
         {

@@ -1,27 +1,26 @@
-import Head from 'next/head';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
 import ColorPreview from 'components/ColorPreview';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { OrderStatusModalInterface } from 'components/Modal/OrderStatusModal';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { SORT_ASC } from 'lib/config/common';
-import { CONFIRM_MODAL, ORDER_STATUS_MODAL } from 'lib/config/modalVariants';
-import { COL_ORDER_STATUSES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { OrderStatusInterface } from 'db/uiInterfaces';
 import { useDeleteOrderStatusMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { SORT_ASC } from 'lib/config/common';
+import { CONFIRM_MODAL, ORDER_STATUS_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Head from 'next/head';
+import * as React from 'react';
 import { createOrderStatusSchema, updateOrderStatusSchema } from 'validation/orderStatusSchema';
 
 const pageTitle = 'Статусы заказа';
@@ -164,8 +163,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const orderStatusesCollection = db.collection<OrderStatusInterface>(COL_ORDER_STATUSES);
+  const collections = await getDbCollections();
+  const orderStatusesCollection = collections.orderStatusesCollection();
   const initialOrderStatuses = await orderStatusesCollection
     .aggregate([
       {

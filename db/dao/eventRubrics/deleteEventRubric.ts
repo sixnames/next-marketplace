@@ -1,11 +1,5 @@
-import { COL_EVENT_RUBRICS, COL_EVENT_SUMMARIES, COL_EVENT_FACETS } from 'db/collectionNames';
-import {
-  EventFacetModel,
-  EventRubricModel,
-  EventRubricPayloadModel,
-  EventSummaryModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { EventRubricPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -20,11 +14,11 @@ export async function deleteEventRubric({
   input,
 }: DaoPropsInterface<DeleteEventRubricInputInterface>): Promise<EventRubricPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const rubricsCollection = db.collection<EventRubricModel>(COL_EVENT_RUBRICS);
-  const eventsCollection = db.collection<EventSummaryModel>(COL_EVENT_SUMMARIES);
-  const eventFacetsCollection = db.collection<EventFacetModel>(COL_EVENT_FACETS);
-  const session = client.startSession();
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.eventRubricsCollection();
+  const eventsCollection = collections.eventSummariesCollection();
+  const eventFacetsCollection = collections.eventFacetsCollection();
+  const session = collections.client.startSession();
 
   let mutationPayload: EventRubricPayloadModel = {
     success: false,

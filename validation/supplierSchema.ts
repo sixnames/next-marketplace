@@ -1,11 +1,11 @@
-import * as Yup from 'yup';
-import { DEFAULT_LOCALE } from '../lib/config/common';
-import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import {
   notRequiredUrlSchema,
   objectIdSchema,
   requiredStringTranslationSchema,
 } from 'validation/utils/schemaTemplates';
+import * as Yup from 'yup';
+import { DEFAULT_LOCALE } from '../lib/config/common';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 
 export const supplierIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.suppliers.id' });

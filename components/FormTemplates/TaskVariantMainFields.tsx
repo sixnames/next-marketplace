@@ -1,5 +1,8 @@
 import { useFormikContext } from 'formik';
+import { get } from 'lodash';
 import * as React from 'react';
+import { CreateTaskVariantInputInterface } from '../../db/dao/tasks/createTaskVariant';
+import { TaskVariantPriceModel } from '../../db/dbModels';
 import {
   getConstantOptionName,
   TASK_PRICE_ACTIONS,
@@ -8,15 +11,12 @@ import {
   TASK_VARIANT_SLUGS,
 } from '../../lib/config/constantSelects';
 import { CONFIRM_MODAL, TASK_VARIANT_PRICE_MODAL } from '../../lib/config/modalVariants';
-import { useAppContext } from '../context/appContext';
-import { useLocaleContext } from '../context/localeContext';
-import { CreateTaskVariantInputInterface } from '../../db/dao/tasks/createTaskVariant';
-import { TaskVariantPriceModel } from '../../db/dbModels';
 import ContentItemControls from '../button/ContentItemControls';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
+import { useLocaleContext } from '../context/localeContext';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import FormikSelect from '../FormElements/Select/FormikSelect';
-import { get } from 'lodash';
 import { ConfirmModalInterface } from '../Modal/ConfirmModal';
 import { TaskVariantPriceModalInterface } from '../Modal/TaskVariantPriceModal';
 import WpTable, { WpTableColumn } from '../WpTable';

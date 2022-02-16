@@ -1,8 +1,8 @@
+import { usePagination } from '@material-ui/lab/Pagination';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { usePagination } from '@material-ui/lab/Pagination';
-import { FILTER_PAGE_KEY, FILTER_SEPARATOR } from '../lib/config/common';
 import { alwaysString } from '../lib/arrayUtils';
+import { FILTER_PAGE_KEY, FILTER_SEPARATOR } from '../lib/config/common';
 import { noNaN } from '../lib/numbers';
 import WpButton from './button/WpButton';
 import WpLink from './Link/WpLink';

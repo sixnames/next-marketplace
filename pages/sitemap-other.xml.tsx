@@ -1,18 +1,17 @@
 import { castConfigs } from 'db/cast/castConfigs';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
 import { getDomain } from 'tldts';
+import { CompanyModel } from '../db/dbModels';
+import { getDbCollections } from '../db/mongodb';
 import {
   DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   PAGE_STATE_PUBLISHED,
 } from '../lib/config/common';
-import { COL_BLOG_POSTS, COL_COMPANIES, COL_CONFIGS } from '../db/collectionNames';
-import { BlogPostModel, CompanyModel, ConfigModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
 import { getConfigBooleanValue } from '../lib/configsUtils';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 const SitemapXml: React.FC = () => {
   return <div />;
@@ -48,9 +47,9 @@ const createSitemap = ({
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { res, req } = context;
   const initialSlugs: string[] = [];
-  const { db } = await getDatabase();
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
+  const collections = await getDbCollections();
+  const configsCollection = collections.configsCollection();
+  const blogPostsCollection = collections.blogPostsCollection();
   const host = `${context.req.headers.host}`;
   const domain = getDomain(host, { validHosts: ['localhost'] });
 
@@ -59,7 +58,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Session company
   let company: CompanyModel | null | undefined = null;
   if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
-    company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
+    company = await collections.companiesCollection().findOne({ domain });
   }
   const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 

@@ -1,10 +1,10 @@
 import addZero from 'add-zero';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ID_COUNTER_DIGITS } from 'lib/config/common';
 import { ShopProductModel } from 'db/dbModels';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ID_COUNTER_DIGITS } from 'lib/config/common';
 import { getObjectId } from 'mongo-seeding';
 import productSummaries from '../productSummaries/productSummaries';
-import shops from '../shops/shops';
 import rubrics from '../rubrics/rubrics';
+import shops from '../shops/shops';
 
 const maxProductsCountForShop = 50;
 const shpProducts: ShopProductModel[] = [];

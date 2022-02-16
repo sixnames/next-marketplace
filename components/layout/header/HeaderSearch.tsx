@@ -1,21 +1,21 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { useDebounce } from 'use-debounce';
-import OutsideClickHandler from 'react-outside-click-handler';
 import ControlButton from 'components/button/ControlButton';
+import { useSiteContext } from 'components/context/siteContext';
 import WpInput from 'components/FormElements/Input/WpInput';
 import Inner from 'components/Inner';
+import ProductSnippetGridBigImage from 'components/layout/snippet/ProductSnippetGridBigImage';
 import WpLink from 'components/Link/WpLink';
 import Spinner from 'components/Spinner';
-import { REQUEST_METHOD_POST } from 'lib/config/common';
-import { useSiteContext } from 'components/context/siteContext';
 import { ShopProductInterface } from 'db/uiInterfaces';
+import { REQUEST_METHOD_POST } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { useRouter } from 'next/router';
 import {
   HeaderSearchInputInterface,
   HeaderSearchPayloadInterface,
 } from 'pages/api/search/header-search';
-import ProductSnippetGridBigImage from 'components/layout/snippet/ProductSnippetGridBigImage';
+import * as React from 'react';
+import OutsideClickHandler from 'react-outside-click-handler';
+import { useDebounce } from 'use-debounce';
 
 interface HeaderSearchResultInterface {
   shopProducts?: ShopProductInterface[] | null;

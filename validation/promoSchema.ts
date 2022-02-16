@@ -1,12 +1,12 @@
-import * as Yup from 'yup';
-import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
-import { companyIdSchema } from './companySchema';
 import {
   objectIdSchema,
   requiredNumberSchema,
   requiredStringSchema,
   requiredStringTranslationSchema,
 } from 'validation/utils/schemaTemplates';
+import * as Yup from 'yup';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
+import { companyIdSchema } from './companySchema';
 
 export const promoIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({

@@ -1,7 +1,7 @@
+import { objectIdSchema, requiredAssetSchema } from 'validation/utils/schemaTemplates';
 import * as Yup from 'yup';
 import { DEFAULT_CITY, DEFAULT_LOCALE } from '../lib/config/common';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
-import { objectIdSchema, requiredAssetSchema } from 'validation/utils/schemaTemplates';
 
 export const configIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.configs.id' });

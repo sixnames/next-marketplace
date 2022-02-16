@@ -1,13 +1,13 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { DEFAULT_LOCALE } from '../../lib/config/common';
-import { useAppContext } from '../context/appContext';
+import * as React from 'react';
 import { CreatePromoInputInterface } from '../../db/dao/promo/createPromo';
 import { CompanyInterface } from '../../db/uiInterfaces';
 import { useCreatePromo } from '../../hooks/mutations/usePromoMutations';
 import useValidationSchema from '../../hooks/useValidationSchema';
+import { DEFAULT_LOCALE } from '../../lib/config/common';
 import { createPromoSchema } from '../../validation/promoSchema';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import FormikDatePicker from '../FormElements/Input/FormikDatePicker';
 import FormikInput from '../FormElements/Input/FormikInput';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';

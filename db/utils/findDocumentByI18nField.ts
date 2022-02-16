@@ -1,5 +1,5 @@
+import { getDbCollections } from 'db/mongodb';
 import { LOCALES } from 'lib/config/common';
-import { getDatabase } from 'db/mongodb';
 
 export interface FindDocumentByI18nFieldInterface {
   fieldName: string;
@@ -16,7 +16,7 @@ export async function findDocumentByI18nField<TModel>({
   additionalQuery = {},
   additionalOrQuery = [],
 }: FindDocumentByI18nFieldInterface): Promise<TModel | null> {
-  const { db } = await getDatabase();
+  const { db } = await getDbCollections();
   const collection = db.collection(collectionName);
 
   const query = LOCALES.reduce((acc: Record<string, string>[], locale) => {

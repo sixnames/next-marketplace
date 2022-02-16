@@ -1,14 +1,13 @@
-import { ObjectId } from 'mongodb';
-import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'lib/config/common';
-import { castUrlFilters } from 'lib/castUrlFilters';
-import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { COL_NOT_SYNCED_PRODUCTS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import {
   AppPaginationAggregationInterface,
   AppPaginationInterface,
   NotSyncedProductInterface,
-  ShopInterface,
 } from 'db/uiInterfaces';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'lib/config/common';
+import { ObjectId } from 'mongodb';
 
 interface GetPaginatedNotSyncedProductsInterface {
   shopId?: string;
@@ -22,8 +21,8 @@ export async function getPaginatedNotSyncedProducts({
   shopId,
   filters,
 }: GetPaginatedNotSyncedProductsInterface): Promise<GetPaginatedNotSyncedProductsPayloadInterface | null> {
-  const { db } = await getDatabase();
-  const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
+  const collections = await getDbCollections();
+  const shopsCollection = collections.shopsCollection();
 
   const { page, skip, limit, clearSlug } = await castUrlFilters({
     filters: filters,

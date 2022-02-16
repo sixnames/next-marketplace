@@ -1,19 +1,17 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { EMPTY_OBJECT_AS_STRING } from 'lib/config/common';
-import { COL_SEO_CONTENTS } from 'db/collectionNames';
 import {
-  SeoContentModel,
   TextUniquenessApiParsedResponseModel,
   TextUniquenessApiResponseInterface,
 } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { alwaysArray } from 'lib/arrayUtils';
+import { EMPTY_OBJECT_AS_STRING } from 'lib/config/common';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { db } = await getDatabase();
-    const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+    const collections = await getDbCollections();
+    const seoContentsCollection = collections.seoContentsCollection();
     const initialBody = req.body as TextUniquenessApiResponseInterface;
     const [seoContentId, locale] = alwaysArray(req.query.props);
 

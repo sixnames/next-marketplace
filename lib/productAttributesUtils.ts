@@ -1,4 +1,9 @@
+import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { ObjectId } from 'mongodb';
+import { ObjectIdModel, TranslationModel } from '../db/dbModels';
+import { getDbCollections } from '../db/mongodb';
+import { AttributeInterface, ProductAttributeInterface, RubricInterface } from '../db/uiInterfaces';
+import { sortObjectsByField } from './arrayUtils';
 import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_NUMBER,
@@ -7,20 +12,14 @@ import {
   DEFAULT_LOCALE,
   LOCALES,
 } from './config/common';
-import { COL_RUBRICS } from '../db/collectionNames';
-import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
-import { ObjectIdModel, TranslationModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { AttributeInterface, ProductAttributeInterface, RubricInterface } from '../db/uiInterfaces';
-import { sortObjectsByField } from './arrayUtils';
 import { getFieldStringLocale } from './i18n';
 import { getStringValueFromOptionsList } from './optionUtils';
 
 export async function getRubricAllAttributes(
   rubricId: ObjectIdModel,
 ): Promise<AttributeInterface[]> {
-  const { db } = await getDatabase();
-  const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.rubricsCollection();
   const rubricAggregationResult = await rubricsCollection
     .aggregate<RubricInterface>([
       {

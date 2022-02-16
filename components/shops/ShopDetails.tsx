@@ -1,23 +1,23 @@
+import { ConsoleShopLayoutInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from '../../lib/config/common';
-import { ConsoleShopLayoutInterface } from '../../db/uiInterfaces';
 import {
   UpdateShopInput,
   useGenerateShopTokenMutation,
   useUpdateShopMutation,
-} from '../../generated/apolloComponents';
+} from 'generated/apolloComponents';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from 'lib/config/common';
+import { phoneToRaw } from 'lib/phoneUtils';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { updateShopSchema } from 'validation/shopSchema';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
-import { phoneToRaw } from '../../lib/phoneUtils';
-import { updateShopSchema } from '../../validation/shopSchema';
 import WpButton from '../button/WpButton';
 import FakeInput from '../FormElements/Input/FakeInput';
 import WpImageUpload from '../FormElements/Upload/WpImageUpload';
 import ShopMainFields from '../FormTemplates/ShopMainFields';
 import Inner from '../Inner';
+import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 
 export type ShopDetailsInterface = ConsoleShopLayoutInterface;
 

@@ -1,8 +1,7 @@
+import { OptionsGroupModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { getRequestParams } from 'lib/sessionHelpers';
 import { objectType } from 'nexus';
-import { COL_OPTIONS_GROUPS } from '../db/collectionNames';
-import { OptionsGroupModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { getRequestParams } from '../lib/sessionHelpers';
 
 export const RubricOption = objectType({
   name: 'RubricOption',
@@ -54,8 +53,8 @@ export const RubricAttribute = objectType({
         if (!source.optionsGroupId) {
           return null;
         }
-        const { db } = await getDatabase();
-        const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+        const collections = await getDbCollections();
+        const optionsGroupsCollection = collections.optionsGroupsCollection();
         const optionsGroup = await optionsGroupsCollection.findOne({ _id: source.optionsGroupId });
         return optionsGroup;
       },

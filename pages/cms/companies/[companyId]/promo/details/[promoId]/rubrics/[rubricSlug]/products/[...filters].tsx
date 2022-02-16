@@ -1,13 +1,13 @@
-import * as React from 'react';
 import ConsolePromoProducts, {
   ConsolePromoProductsInterface,
 } from 'components/console/ConsolePromoProducts';
-import { getCmsPromoProductsListPageSsr } from 'db/ssr/promo/getCmsPromoProductsListPageSsr';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
+import { getCmsPromoProductsListPageSsr } from 'db/ssr/promo/getCmsPromoProductsListPageSsr';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import * as React from 'react';
 
 export interface CmsPromoProductsListPageInterface
   extends GetAppInitialDataPropsInterface,

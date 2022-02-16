@@ -1,10 +1,10 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { getConsoleGiftCertificates } from 'db/ssr/company/getConsoleGiftCertificates';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { ConsoleGiftCertificatesPageInterface } from 'pages/console/[companyId]/gift-certificates/[...filters]';
-import { getConsoleGiftCertificates } from 'db/ssr/company/getConsoleGiftCertificates';
 
 export const getConsoleGiftCertificatesPageSsr = async (
   context: GetServerSidePropsContext,

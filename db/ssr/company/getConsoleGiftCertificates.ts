@@ -1,15 +1,12 @@
-import { DEFAULT_PAGE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'lib/config/common';
+import { COL_USERS } from 'db/collectionNames';
+import { ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { GetConsoleGiftCertificatesPayloadInterface } from 'db/uiInterfaces';
 import { castUrlFilters } from 'lib/castUrlFilters';
+import { DEFAULT_PAGE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { COL_GIFT_CERTIFICATES, COL_USERS } from 'db/collectionNames';
-import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import {
-  GetConsoleGiftCertificatesPayloadInterface,
-  GiftCertificateInterface,
-} from 'db/uiInterfaces';
 
 export interface GetConsoleGiftCertificatesInterface {
   companyId: ObjectIdModel;
@@ -29,9 +26,8 @@ export async function getConsoleGiftCertificates({
     totalPages: 0,
   };
   try {
-    const { db } = await getDatabase();
-    const giftCertificatesCollection =
-      db.collection<GiftCertificateInterface>(COL_GIFT_CERTIFICATES);
+    const collections = await getDbCollections();
+    const giftCertificatesCollection = collections.giftCertificatesCollection();
 
     // get pagination configs
     const { skip, limit, page } = await castUrlFilters({

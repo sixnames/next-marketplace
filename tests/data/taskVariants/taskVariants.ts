@@ -1,3 +1,4 @@
+import { TaskVariantModel } from 'db/dbModels';
 import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'lib/config/common';
 import {
   TASK_PRICE_ACTION_ADDED,
@@ -23,7 +24,6 @@ import {
   TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
   TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
 } from 'lib/config/constantSelects';
-import { TaskVariantModel } from 'db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();

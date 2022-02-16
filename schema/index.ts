@@ -11,8 +11,6 @@ export * from './Country';
 export * from './Currency';
 export * from './Language';
 export * from './Manufacturer';
-export * from './Message';
-export * from './MessagesGroup';
 export * from './Metric';
 export * from './NavItem';
 export * from './Option';

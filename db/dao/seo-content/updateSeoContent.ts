@@ -1,10 +1,9 @@
-import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { checkSeoContentUniqueness } from 'lib/seoContentUniquenessUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
-import { COL_SEO_CONTENTS } from '../../collectionNames';
-import { SeoContentModel, SeoContentPayloadModel, TranslationModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ObjectId } from 'mongodb';
+import { SeoContentPayloadModel, TranslationModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateSeoContentInputInterface {
@@ -26,8 +25,8 @@ export async function updateSeoContent({
 }: DaoPropsInterface<UpdateSeoContentInputInterface>): Promise<SeoContentPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+    const collections = await getDbCollections();
+    const seoContentsCollection = collections.seoContentsCollection();
 
     if (!input) {
       return {

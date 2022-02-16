@@ -1,15 +1,14 @@
-import { ObjectId } from 'mongodb';
-import trim from 'trim';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import trim from 'trim';
 import { updatePromoCodeSchema } from 'validation/promoSchema';
-import { COL_PROMO_CODES } from '../../collectionNames';
-import { PromoCodeModel, PromoCodePayloadModel, TranslationModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { PromoCodePayloadModel, TranslationModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdatePromoCodeInputInterface {
@@ -23,9 +22,9 @@ export async function updatePromoCode({
   input,
 }: DaoPropsInterface<UpdatePromoCodeInputInterface>): Promise<PromoCodePayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
-  const session = client.startSession();
+  const collections = await getDbCollections();
+  const promoCodesCollection = collections.promoCodesCollection();
+  const session = collections.client.startSession();
   let mutationPayload: PromoCodePayloadModel = {
     success: false,
     message: await getApiMessage('promo.update.error'),

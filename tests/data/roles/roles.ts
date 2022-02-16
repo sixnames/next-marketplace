@@ -1,5 +1,5 @@
-import { NAV_GROUP_CMS, NAV_GROUP_CONSOLE } from 'lib/config/common';
 import { RoleModel } from 'db/dbModels';
+import { NAV_GROUP_CMS, NAV_GROUP_CONSOLE } from 'lib/config/common';
 import { getObjectId } from 'mongo-seeding';
 import navItems from '../navItems/navItems';
 

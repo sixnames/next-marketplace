@@ -1,18 +1,13 @@
 import { exec } from 'child_process';
-import { COL_LANGUAGES, COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
+import { ProductFacetModel, TranslationModel } from 'db/dbModels';
+import { generateDbCollections } from 'db/mongodb';
+import { ProductSummaryInterface } from 'db/uiInterfaces';
 import {
   brandPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
 } from 'db/utils/constantPipelines';
-import {
-  LanguageModel,
-  ProductFacetModel,
-  ProductSummaryModel,
-  TranslationModel,
-} from 'db/dbModels';
-import { ProductSummaryInterface } from 'db/uiInterfaces';
 import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import {
@@ -22,6 +17,7 @@ import {
 } from 'lib/titleUtils';
 import { getTreeFromList } from 'lib/treeUtils';
 import { getProdDb } from 'tests/testUtils/getProdDb';
+
 require('dotenv').config();
 
 /*async function getLogger(fileName: string) {
@@ -62,9 +58,10 @@ export async function updateProductTitles(match?: Record<any, any>) {
     dbName: `${process.env.MONGO_DB_NAME}`,
     uri: `${process.env.MONGO_URL}`,
   });
-  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  const collections = generateDbCollections({ db, client });
+  const productFacetsCollection = collections.productFacetsCollection();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const languagesCollection = collections.languagesCollection();
   const languages = await languagesCollection.find({}).toArray();
   const locales = languages.map(({ slug }) => slug);
 

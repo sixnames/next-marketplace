@@ -1,8 +1,7 @@
 import { ObjectId } from 'mongodb';
-import { SORT_DESC } from './config/common';
-import { COL_PROMO } from '../db/collectionNames';
-import { getDatabase } from '../db/mongodb';
+import { getDbCollections } from '../db/mongodb';
 import { PromoInterface } from '../db/uiInterfaces';
+import { SORT_DESC } from './config/common';
 import { getFieldStringLocale } from './i18n';
 
 interface GetPromoListSsrInterface {
@@ -14,8 +13,8 @@ export async function getPromoListSsr({
   companyId,
   locale,
 }: GetPromoListSsrInterface): Promise<PromoInterface[]> {
-  const { db } = await getDatabase();
-  const promoCollection = db.collection<PromoInterface>(COL_PROMO);
+  const collections = await getDbCollections();
+  const promoCollection = collections.promoCollection();
   const promoAggregation = await promoCollection
     .aggregate<PromoInterface>([
       {
@@ -51,8 +50,8 @@ export async function getPromoSsr({
   promoId,
   locale,
 }: GetPromoSsrInterface): Promise<PromoInterface | null> {
-  const { db } = await getDatabase();
-  const promoCollection = db.collection<PromoInterface>(COL_PROMO);
+  const collections = await getDbCollections();
+  const promoCollection = collections.promoCollection();
   const promoAggregation = await promoCollection
     .aggregate<PromoInterface>([
       {

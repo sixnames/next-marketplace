@@ -1,11 +1,11 @@
-import { NextPage } from 'next';
-import * as React from 'react';
 import AppContentFilter from 'components/AppContentFilter';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import WpLink from 'components/Link/WpLink';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal';
@@ -15,7 +15,6 @@ import { SeoTextCitiesInfoList } from 'components/SeoTextLocalesInfoList';
 import Spinner from 'components/Spinner';
 import TableRowImage from 'components/TableRowImage';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'lib/config/modalVariants';
 import { getCmsRubricProductsListPageSsr } from 'db/ssr/products/getCmsRubricProductsListPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
@@ -25,13 +24,14 @@ import {
 import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
-import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
+import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'lib/config/modalVariants';
 import { getNumWord } from 'lib/i18n';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { noNaN } from 'lib/numbers';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { NextPage } from 'next';
+import * as React from 'react';
 
 const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   rubric,

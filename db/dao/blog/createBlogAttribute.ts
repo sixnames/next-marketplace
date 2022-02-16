@@ -1,5 +1,7 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { COL_BLOG_ATTRIBUTES } from 'db/collectionNames';
+import { BlogAttributePayloadModel, TranslationModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
@@ -8,11 +10,9 @@ import {
   getRequestParams,
 } from 'lib/sessionHelpers';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { createBlogAttributeSchema } from 'validation/blogSchema';
-import { COL_BLOG_ATTRIBUTES } from '../../collectionNames';
-import { BlogAttributeModel, BlogAttributePayloadModel, TranslationModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 
 export interface CreateBlogAttributeInputInterface {
   nameI18n: TranslationModel;
@@ -20,9 +20,9 @@ export interface CreateBlogAttributeInputInterface {
 }
 
 export async function createBlogAttribute(req: NextApiRequest, res: NextApiResponse) {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const { getApiMessage } = await getRequestParams({ req, res });
-  const blogAttributesCollection = db.collection<BlogAttributeModel>(COL_BLOG_ATTRIBUTES);
+  const blogAttributesCollection = collections.blogAttributesCollection();
   const args = JSON.parse(req.body) as CreateBlogAttributeInputInterface;
 
   let payload: BlogAttributePayloadModel = {

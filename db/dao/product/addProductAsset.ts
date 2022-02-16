@@ -1,3 +1,8 @@
+import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
+import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { NextContextInterface } from 'db/uiInterfaces';
+import { getMainImage, storeUploads } from 'lib/assetUtils/assetUtils';
 import {
   ASSETS_DIST_PRODUCTS,
   ASSETS_PRODUCT_IMAGE_WIDTH,
@@ -5,17 +10,6 @@ import {
   TASK_STATE_IN_PROGRESS,
 } from 'lib/config/common';
 import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
-import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
-import {
-  ProductPayloadModel,
-  ProductSummaryModel,
-  ShopProductModel,
-  SummaryDiffModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { NextContextInterface } from 'db/uiInterfaces';
-import { getMainImage, storeUploads } from 'lib/assetUtils/assetUtils';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { parseApiFormData } from 'lib/restApi';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -26,12 +20,12 @@ export interface AddProductAssetInterface {
 }
 
 export async function addProductAsset(context: NextContextInterface): Promise<ProductPayloadModel> {
-  const { db, client } = await getDatabase();
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const collections = await getDbCollections();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const shopProductsCollection = collections.shopProductsCollection();
   const { getApiMessage, locale } = await getRequestParams(context);
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ProductPayloadModel = {
     success: false,
@@ -57,7 +51,8 @@ export async function addProductAsset(context: NextContextInterface): Promise<Pr
       // check input
       const formData = await parseApiFormData<AddProductAssetInterface>(context.req);
       if (!formData || !formData.files || !formData.fields) {
-        return mutationPayload;
+        await session.abortTransaction();
+        return;
       }
 
       // get summary or summary draft

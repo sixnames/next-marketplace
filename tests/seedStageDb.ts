@@ -1,4 +1,5 @@
 import { Seeder } from 'mongo-seeding';
+
 const path = require('path');
 require('dotenv').config();
 

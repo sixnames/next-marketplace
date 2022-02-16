@@ -1,9 +1,9 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import { COL_RUBRICS } from 'db/collectionNames';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import { GenderModel, RubricModel, RubricPayloadModel, TranslationModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
+import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
@@ -37,8 +37,8 @@ export async function createRubric({
 }: DaoPropsInterface<CreateRubricInputInterface>): Promise<RubricPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+    const collections = await getDbCollections();
+    const rubricsCollection = collections.rubricsCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

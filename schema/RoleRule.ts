@@ -1,15 +1,15 @@
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { COL_ROLE_RULES } from '../db/collectionNames';
+import { COL_ROLE_RULES } from 'db/collectionNames';
+import { RoleRulePayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
-import { RoleRuleModel, RoleRulePayloadModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
-import { updateRoleRuleSchema } from '../validation/roleSchema';
+} from 'lib/sessionHelpers';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { updateRoleRuleSchema } from 'validation/roleSchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const RoleRule = objectType({
   name: 'RoleRule',
@@ -97,8 +97,8 @@ export const RoleRuleMutations = extendType({
           });
           await validationSchema.validate(args.input);
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const roleRulesCollection = db.collection<RoleRuleModel>(COL_ROLE_RULES);
+          const collections = await getDbCollections();
+          const roleRulesCollection = collections.roleRulesCollection();
 
           // Check if role already exist
           const exist = await findDocumentByI18nField({

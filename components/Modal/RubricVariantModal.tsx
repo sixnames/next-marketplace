@@ -1,15 +1,15 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { DEFAULT_COMPANY_SLUG } from '../../lib/config/common';
-import { useAppContext } from '../context/appContext';
+import * as React from 'react';
 import { TranslationModel } from '../../db/dbModels';
 import {
   CreateRubricVariantInput,
   UpdateRubricVariantInput,
 } from '../../generated/apolloComponents';
 import useValidationSchema from '../../hooks/useValidationSchema';
+import { DEFAULT_COMPANY_SLUG } from '../../lib/config/common';
 import { rubricVariantInModalSchema } from '../../validation/rubricVariantSchema';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import ModalButtons from './ModalButtons';
 import ModalFrame from './ModalFrame';

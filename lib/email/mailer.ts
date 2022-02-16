@@ -1,8 +1,6 @@
 import { castConfigs } from 'db/cast/castConfigs';
 import nodemailer from 'nodemailer';
-import { COL_CONFIGS } from '../../db/collectionNames';
-import { ConfigModel } from '../../db/dbModels';
-import { getDatabase } from '../../db/mongodb';
+import { getDbCollections } from '../../db/mongodb';
 import { getConfigStringValue } from '../configsUtils';
 import { getEmailTemplate } from './emailTemplate';
 
@@ -28,8 +26,8 @@ export const sendEmail = async ({
   try {
     // get email api configs for current company
     const isDev = process.env.DEV_ENV;
-    const { db } = await getDatabase();
-    const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+    const collections = await getDbCollections();
+    const configsCollection = collections.configsCollection();
     const emailApiConfigs = await configsCollection
       .find({
         slug: {

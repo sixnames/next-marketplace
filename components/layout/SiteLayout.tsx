@@ -1,18 +1,18 @@
-import * as React from 'react';
-import ErrorBoundary from 'components/ErrorBoundary';
-import WpModal from 'components/Modal/WpModal';
-import Spinner from 'components/Spinner';
 import { useAppContext } from 'components/context/appContext';
 import { useConfigContext } from 'components/context/configContext';
 import { SiteContextProvider } from 'components/context/siteContext';
 import { SiteUserContextProvider } from 'components/context/siteUserContext';
-import { PagesGroupInterface, RubricInterface } from 'db/uiInterfaces';
-import { useSetSessionNavLog } from 'hooks/mutations/useSessionLogMutations';
-import { PagePropsInterface } from 'pages/_app';
+import ErrorBoundary from 'components/ErrorBoundary';
 import Footer from 'components/layout/footer/Footer';
 import Header from 'components/layout/header/Header';
 import { StickNavInterface } from 'components/layout/header/StickyNav';
 import Meta, { MetaInterface } from 'components/layout/Meta';
+import WpModal from 'components/Modal/WpModal';
+import Spinner from 'components/Spinner';
+import { PagesGroupInterface, RubricInterface } from 'db/uiInterfaces';
+import { useSetSessionNavLog } from 'hooks/mutations/useSessionLogMutations';
+import { PagePropsInterface } from 'pages/_app';
+import * as React from 'react';
 
 export interface SiteLayoutCatalogueCreatedPages {
   footerPageGroups: PagesGroupInterface[];

@@ -1,5 +1,5 @@
-import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'lib/config/common';
 import { LanguageModel } from 'db/dbModels';
+import { DEFAULT_LOCALE, SECONDARY_LOCALE } from 'lib/config/common';
 import { getObjectId } from 'mongo-seeding';
 
 const languages: LanguageModel[] = [

@@ -1,8 +1,8 @@
-import { REQUEST_METHOD_POST } from 'lib/config/common';
 import {
   BrandAlphabetListsPayloadModel,
   BrandAlphabetModel,
 } from 'db/dao/brands/getBrandAlphabetLists';
+import { REQUEST_METHOD_POST } from 'lib/config/common';
 import * as React from 'react';
 import OptionsModal, { OptionsModalCommonPropsInterface } from './OptionsModal';
 

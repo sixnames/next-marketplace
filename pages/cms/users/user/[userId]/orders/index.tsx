@@ -1,26 +1,20 @@
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { SORT_DESC } from 'lib/config/common';
-import {
-  COL_ORDER_STATUSES,
-  COL_ORDERS,
-  COL_ROLES,
-  COL_SHOPS,
-  COL_USERS,
-} from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, OrderInterface, UserInterface } from 'db/uiInterfaces';
 import CmsUserLayout from 'components/layout/cms/CmsUserLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import WpLink from 'components/Link/WpLink';
+import WpTable, { WpTableColumn } from 'components/WpTable';
+import { COL_ORDER_STATUSES, COL_ORDERS, COL_ROLES, COL_SHOPS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, OrderInterface, UserInterface } from 'db/uiInterfaces';
+import { SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFullName } from 'lib/nameUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface UserOrdersInterface {
   user: UserInterface;
@@ -119,8 +113,8 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { userId } = query;
-  const { db } = await getDatabase();
-  const usersCollection = db.collection<UserInterface>(COL_USERS);
+  const collections = await getDbCollections();
+  const usersCollection = collections.usersCollection();
 
   const { props } = await getAppInitialData({ context });
   if (!props || !userId) {

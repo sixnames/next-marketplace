@@ -1,8 +1,8 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import WpNotification, { NotificationInterface } from 'components/WpNotification';
 import { NOTIFICATION_TIMEOUT } from 'lib/config/common';
 import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 interface StateNotificationInterface extends Omit<NotificationInterface, 'closeHandler'> {
   createdAt: number;

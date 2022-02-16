@@ -1,8 +1,7 @@
 import { objectType } from 'nexus';
-import { ROLE_SLUG_GUEST } from '../lib/config/common';
-import { COL_ROLES } from '../db/collectionNames';
 import { FormattedPhoneModel, RoleModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { getDbCollections } from '../db/mongodb';
+import { ROLE_SLUG_GUEST } from '../lib/config/common';
 import { getFullName, getShortName } from '../lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from '../lib/phoneUtils';
 
@@ -58,8 +57,8 @@ export const User = objectType({
     t.nonNull.field('role', {
       type: 'Role',
       resolve: async (source): Promise<RoleModel> => {
-        const { db } = await getDatabase();
-        const rolesCollection = db.collection<RoleModel>(COL_ROLES);
+        const collections = await getDbCollections();
+        const rolesCollection = collections.rolesCollection();
         const role = await rolesCollection.findOne({ _id: source.roleId });
         if (!role) {
           console.log('User role not found. Assigning Guest role');

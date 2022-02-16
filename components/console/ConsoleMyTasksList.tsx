@@ -1,12 +1,11 @@
+import { useAppContext } from 'components/context/appContext';
+import { useLocaleContext } from 'components/context/localeContext';
+import { useUserContext } from 'components/context/userContext';
 import WpLink from 'components/Link/WpLink';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { TASK_STATE_IN_PROGRESS } from 'lib/config/common';
-import { CONFIRM_MODAL } from 'lib/config/modalVariants';
-import { useAppContext } from 'components/context/appContext';
-import { useUserContext } from 'components/context/userContext';
+import { TaskInterface } from 'db/uiInterfaces';
 import { useUpdateTask } from 'hooks/mutations/useTaskMutations';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
-import * as React from 'react';
+import { TASK_STATE_IN_PROGRESS } from 'lib/config/common';
 import {
   getConstantOptionName,
   TASK_STATE_OPTIONS,
@@ -18,8 +17,9 @@ import {
   TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
   TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
 } from 'lib/config/constantSelects';
-import { useLocaleContext } from 'components/context/localeContext';
-import { TaskInterface } from 'db/uiInterfaces';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import * as React from 'react';
 import ContentItemControls from '../button/ContentItemControls';
 import WpTable, { WpTableColumn } from '../WpTable';
 

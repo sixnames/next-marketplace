@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { DEFAULT_PAGE, REQUEST_METHOD_POST } from '../../lib/config/common';
 import { UsersPaginationPayloadModel } from '../../db/dbModels';
 import { UserInterface } from '../../db/uiInterfaces';
+import { DEFAULT_PAGE, REQUEST_METHOD_POST } from '../../lib/config/common';
 import { ContentItemControlsInterface } from '../button/ContentItemControls';
 import FormikIndividualSearch from '../FormElements/Search/FormikIndividualSearch';
 import LinkEmail from '../Link/LinkEmail';

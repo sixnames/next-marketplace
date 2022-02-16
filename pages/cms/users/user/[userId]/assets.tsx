@@ -1,20 +1,20 @@
-import { Form, Formik } from 'formik';
-import { ObjectId } from 'mongodb';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
 import Inner from 'components/Inner';
-import { COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import CmsUserLayout from 'components/layout/cms/CmsUserLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { COL_ROLES } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFullName } from 'lib/nameUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 interface UserAssetsInterface {
   user: UserInterface;
@@ -112,8 +112,8 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { userId } = query;
-  const { db } = await getDatabase();
-  const usersCollection = db.collection<UserInterface>(COL_USERS);
+  const collections = await getDbCollections();
+  const usersCollection = collections.usersCollection();
 
   const { props } = await getAppInitialData({ context });
   if (!props || !userId) {

@@ -1,12 +1,17 @@
 import { Disclosure } from '@headlessui/react';
 import { castOrderStatus } from 'db/cast/castOrderStatus';
+import { summaryPipeline } from 'db/utils/constantPipelines';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { ObjectId } from 'mongodb';
-import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 import ControlButton from '../../components/button/ControlButton';
 import ControlButtonChevron from '../../components/button/ControlButtonChevron';
+import { useSiteContext } from '../../components/context/siteContext';
 import Currency from '../../components/Currency';
 import FormattedDate from '../../components/FormattedDate';
+import ProfileLayout from '../../components/layout/ProfileLayout/ProfileLayout';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
 import WpLink from '../../components/Link/WpLink';
 import ProductShopPrices from '../../components/ProductShopPrices';
 import RequestError from '../../components/RequestError';
@@ -14,24 +19,17 @@ import WpIcon from '../../components/WpIcon';
 import WpImage from '../../components/WpImage';
 import WpTitle from '../../components/WpTitle';
 import WpTooltip from '../../components/WpTooltip';
-import { IMAGE_FALLBACK } from '../../lib/config/common';
-import { useSiteContext } from '../../components/context/siteContext';
 import {
   COL_GIFT_CERTIFICATES,
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
-  COL_ORDERS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from '../../db/collectionNames';
-import { summaryPipeline } from 'db/utils/constantPipelines';
 import { getPageSessionUser } from '../../db/dao/user/getPageSessionUser';
-import { OrderModel } from '../../db/dbModels';
-import { getDatabase } from '../../db/mongodb';
+import { getDbCollections } from '../../db/mongodb';
 import { OrderInterface, OrderProductInterface } from '../../db/uiInterfaces';
-import ProfileLayout from '../../components/layout/ProfileLayout/ProfileLayout';
-import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { IMAGE_FALLBACK } from '../../lib/config/common';
 import { getFieldStringLocale } from '../../lib/i18n';
 import { noNaN } from '../../lib/numbers';
 import { castDbData, getSiteInitialData } from '../../lib/ssrUtils';
@@ -288,8 +286,8 @@ const Profile: NextPage<ProfileInterface> = ({ orders, ...props }) => {
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProfileInterface>> {
-  const { db } = await getDatabase();
-  const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
+  const collections = await getDbCollections();
+  const ordersCollection = collections.ordersCollection();
   const { props } = await getSiteInitialData({
     context,
   });

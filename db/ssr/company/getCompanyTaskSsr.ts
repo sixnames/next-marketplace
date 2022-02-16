@@ -1,10 +1,10 @@
-import { ObjectId } from 'mongodb';
+import { COL_PRODUCT_SUMMARIES, COL_TASK_VARIANTS, COL_USERS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { TaskInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { COL_PRODUCT_SUMMARIES, COL_TASK_VARIANTS, COL_TASKS, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { TaskInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface GetCompanyTaskSsr {
   taskId: string;
@@ -50,8 +50,8 @@ export async function getCompanyTaskSsr({
   noProduct,
 }: GetCompanyTaskSsr): Promise<TaskInterface | null> {
   try {
-    const { db } = await getDatabase();
-    const tasksCollection = db.collection<TaskInterface>(COL_TASKS);
+    const collections = await getDbCollections();
+    const tasksCollection = collections.tasksCollection();
     const tasksAggregation = await tasksCollection
       .aggregate<TaskInterface>([
         {

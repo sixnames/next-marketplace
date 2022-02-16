@@ -1,6 +1,9 @@
 import { hash } from 'bcryptjs';
+import { COL_USERS } from 'db/collectionNames';
+import { UserPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import generator from 'generate-password';
-import { ObjectId } from 'mongodb';
 import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'lib/config/common';
 import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -12,11 +15,8 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 import { createUserSchema } from 'validation/userSchema';
-import { COL_USERS } from '../../collectionNames';
-import { UserModel, UserPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface CreateUserInputInterface {
   name: string;
@@ -33,8 +33,8 @@ export async function createUser({
 }: DaoPropsInterface<CreateUserInputInterface>): Promise<UserPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const usersCollection = db.collection<UserModel>(COL_USERS);
+    const collections = await getDbCollections();
+    const usersCollection = collections.usersCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

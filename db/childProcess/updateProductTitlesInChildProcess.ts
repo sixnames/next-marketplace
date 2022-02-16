@@ -43,7 +43,7 @@ async function updateProductTitlesInChildProcess() {
   const attributeId = getCliParam('attributeId');
   if (attributeId && attributeId !== UNDEFINED_PARAM) {
     match = {
-      'attributes.attributeId': new ObjectId(attributeId),
+      attributeIds: new ObjectId(attributeId),
     };
   }
 

@@ -1,8 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_SEO } from 'lib/config/common';
 import { storeUploads } from 'lib/assetUtils/assetUtils';
+import { ASSETS_DIST_SEO } from 'lib/config/common';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getRequestParams } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export const config = {
   api: {

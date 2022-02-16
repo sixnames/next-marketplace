@@ -1,10 +1,9 @@
-import { ObjectId } from 'mongodb';
+import { AttributePayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from '../../collectionNames';
-import { AttributeModel, AttributePayloadModel, AttributesGroupModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface MoveAttributeInputInterface {
   attributeId: string;
@@ -16,11 +15,11 @@ export async function moveAttribute({
   input,
 }: DaoPropsInterface<MoveAttributeInputInterface>): Promise<AttributePayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const attributesGroupCollection = db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
-  const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+  const collections = await getDbCollections();
+  const attributesGroupCollection = collections.attributesGroupsCollection();
+  const attributesCollection = collections.attributesCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: AttributePayloadModel = {
     success: false,

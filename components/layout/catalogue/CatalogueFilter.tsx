@@ -1,8 +1,8 @@
+import WpIcon from 'components/WpIcon';
+import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
+import { CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE, DEFAULT_LAYOUT } from 'lib/config/constantSelects';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
-import WpIcon from 'components/WpIcon';
-import { CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE, DEFAULT_LAYOUT } from 'lib/config/constantSelects';
-import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
 
 export interface CatalogueFilterAttributePropsInterface {
   attribute: CatalogueFilterAttributeInterface;

@@ -1,4 +1,4 @@
-import { RoleRuleSlugType } from 'lib/roleRuleUtils';
+import { TranslationModel } from 'db/dbModels';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
@@ -22,10 +22,10 @@ import {
   TASK_STATE_MODERATION,
   TASK_STATE_PENDING,
 } from 'lib/config/common';
-import { TranslationModel } from 'db/dbModels';
-import { getFieldStringLocale } from 'lib/i18n';
-import { iconTypesList } from 'types/iconTypes';
 import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { getFieldStringLocale } from 'lib/i18n';
+import { RoleRuleSlugType } from 'lib/roleRuleUtils';
+import { iconTypesList } from 'types/iconTypes';
 
 export const DEFAULT_LAYOUT = 'default';
 

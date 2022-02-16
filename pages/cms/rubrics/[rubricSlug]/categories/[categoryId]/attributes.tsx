@@ -1,28 +1,28 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
 import WpButton from 'components/button/WpButton';
+import { useLocaleContext } from 'components/context/localeContext';
 import WpCheckbox from 'components/FormElements/Checkbox/WpCheckbox';
 import Inner from 'components/Inner';
+import CmsCategoryLayout from 'components/layout/cms/CmsCategoryLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import WpAccordion from 'components/WpAccordion';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import { getConstantTranslation } from 'lib/config/constantTranslations';
-import { useLocaleContext } from 'components/context/localeContext';
-import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
 import { castCategoryForUI } from 'db/cast/castCategoryForUI';
-import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
-import { getDatabase } from 'db/mongodb';
+import { COL_RUBRICS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   AttributeInterface,
   CategoryInterface,
 } from 'db/uiInterfaces';
+import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { useToggleCmsCardAttributeInCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import CmsCategoryLayout from 'components/layout/cms/CmsCategoryLayout';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface CategoryAttributesConsumerInterface {
   category: CategoryInterface;
@@ -188,8 +188,8 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CategoryAttributesPageInterface>> => {
   const { query } = context;
-  const { db } = await getDatabase();
-  const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
+  const collections = await getDbCollections();
+  const categoriesCollection = collections.categoriesCollection();
 
   const { props } = await getAppInitialData({ context });
   if (!props || !query.categoryId) {

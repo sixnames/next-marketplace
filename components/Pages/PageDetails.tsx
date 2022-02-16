@@ -1,6 +1,10 @@
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { CityInterface, PageInterface, PagesTemplateInterface } from '../../db/uiInterfaces';
+import { useUpdatePage } from '../../hooks/mutations/usePageMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
 import {
   PAGE_STATE_OPTIONS,
   REQUEST_METHOD_POST,
@@ -8,10 +12,6 @@ import {
   TEXT_HORIZONTAL_FLEX_OPTIONS,
   TEXT_VERTICAL_FLEX_OPTIONS,
 } from '../../lib/config/common';
-import { CityInterface, PageInterface, PagesTemplateInterface } from '../../db/uiInterfaces';
-import { useUpdatePage } from '../../hooks/mutations/usePageMutations';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import useValidationSchema from '../../hooks/useValidationSchema';
 import { noNaN } from '../../lib/numbers';
 import { updatePageSchema } from '../../validation/pagesSchema';
 import WpButton from '../button/WpButton';

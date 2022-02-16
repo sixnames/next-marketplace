@@ -1,9 +1,9 @@
 import { COL_RUBRICS } from 'db/collectionNames';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import { CreateRubricInputInterface } from 'db/dao/rubrics/createRubric';
 import { JSONObjectModel, RubricModel, RubricPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { updateCitiesSeoContent } from 'lib/seoContentUniquenessUtils';
 import {
@@ -29,8 +29,8 @@ export async function updateRubric({
 }: DaoPropsInterface<UpdateRubricInputInterface>): Promise<RubricPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+    const collections = await getDbCollections();
+    const rubricsCollection = collections.rubricsCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

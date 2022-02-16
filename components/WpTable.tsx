@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { get } from 'lodash';
+import * as React from 'react';
 import RequestError from './RequestError';
 
 export interface RenderArgs<T> {

@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ConsoleShopLayoutInterface, OrderInterface } from '../../db/uiInterfaces';
-import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import FormattedDateTime from '../FormattedDateTime';
 import Inner from '../Inner';
+import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import LinkEmail from '../Link/LinkEmail';
 import LinkPhone from '../Link/LinkPhone';
 import WpLink from '../Link/WpLink';

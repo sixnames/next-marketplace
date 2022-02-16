@@ -1,7 +1,7 @@
+import { objectIdSchema, requiredStringTranslationSchema } from 'validation/utils/schemaTemplates';
 import * as Yup from 'yup';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import { optionsGroupIdSchema } from './optionsGroupSchema';
-import { objectIdSchema, requiredStringTranslationSchema } from 'validation/utils/schemaTemplates';
 
 export const blogPostIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({

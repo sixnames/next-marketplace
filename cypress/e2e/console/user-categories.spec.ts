@@ -1,5 +1,5 @@
-import { DEFAULT_LOCALE } from 'lib/config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
+import { DEFAULT_LOCALE } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('User categories', () => {

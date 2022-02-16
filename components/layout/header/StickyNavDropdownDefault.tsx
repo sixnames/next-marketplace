@@ -1,13 +1,13 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import WpLink from 'components/Link/WpLink';
-import { FILTER_SEPARATOR } from 'lib/config/common';
 import { useConfigContext } from 'components/context/configContext';
-import { noNaN } from 'lib/numbers';
 import {
   StickyNavAttributeInterface,
   StickyNavDropdownInterface,
 } from 'components/layout/header/StickyNav';
+import WpLink from 'components/Link/WpLink';
+import { FILTER_SEPARATOR } from 'lib/config/common';
+import { noNaN } from 'lib/numbers';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,

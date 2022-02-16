@@ -1,5 +1,5 @@
-import { DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE } from 'lib/config/common';
 import { BlogAttributeModel } from 'db/dbModels';
+import { DEFAULT_COUNTERS_OBJECT, DEFAULT_LOCALE } from 'lib/config/common';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();

@@ -1,4 +1,7 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { getDbCollections } from 'db/mongodb';
+import { ManufacturerInterface } from 'db/uiInterfaces';
+import { alwaysArray } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
 import {
   CMS_BRANDS_LIMIT,
   DEFAULT_LOCALE,
@@ -7,17 +10,13 @@ import {
   SORT_DESC,
 } from 'lib/config/common';
 import { ISO_LANGUAGES } from 'lib/config/constantSelects';
-import { alwaysArray } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/castUrlFilters';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import {
   CmsManufacturersListConsumerInterface,
   CmsManufacturersListPageInterface,
 } from 'pages/cms/manufacturers/[...filters]';
-import { COL_MANUFACTURERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { ManufacturerInterface } from 'db/uiInterfaces';
 
 export const getCmsManufacturersListPageSsr = async (
   context: GetServerSidePropsContext,
@@ -76,8 +75,8 @@ export const getCmsManufacturersListPageSsr = async (
       ]
     : [];
 
-  const { db } = await getDatabase();
-  const manufacturersCollection = db.collection<ManufacturerInterface>(COL_MANUFACTURERS);
+  const collections = await getDbCollections();
+  const manufacturersCollection = collections.manufacturersCollection();
 
   const manufacturersAggregationResult = await manufacturersCollection
     .aggregate<CmsManufacturersListConsumerInterface>(

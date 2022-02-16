@@ -1,31 +1,30 @@
-import { useAppContext } from 'components/context/appContext';
-import { useNotificationsContext } from 'components/context/notificationsContext';
-import { UpdateBrandInputInterface } from 'db/dao/brands/updateBrand';
-import { Form, Formik } from 'formik';
-import { useUpdateBrand } from 'hooks/mutations/useBrandMutations';
-import { ObjectId } from 'mongodb';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
+import { useAppContext } from 'components/context/appContext';
+import { useNotificationsContext } from 'components/context/notificationsContext';
 import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import BrandMainFields from 'components/FormTemplates/BrandMainFields';
 import Inner from 'components/Inner';
-import WpTitle from 'components/WpTitle';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from 'lib/config/common';
-import { COL_BRANDS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, BrandInterface } from 'db/uiInterfaces';
-import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import AppSubNav from 'components/layout/AppSubNav';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
-import { getFieldStringLocale } from 'lib/i18n';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { updateBrandSchema } from 'validation/brandSchema';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import WpTitle from 'components/WpTitle';
+import { UpdateBrandInputInterface } from 'db/dao/brands/updateBrand';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, BrandInterface } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
+import { useUpdateBrand } from 'hooks/mutations/useBrandMutations';
+import useValidationSchema from 'hooks/useValidationSchema';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from 'lib/config/common';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { updateBrandSchema } from 'validation/brandSchema';
 
 interface BrandDetailsConsumerInterface {
   brand: BrandInterface;
@@ -203,8 +202,8 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<BrandDetailsPageInterface>> => {
   const { query } = context;
   const { brandId } = query;
-  const { db } = await getDatabase();
-  const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
+  const collections = await getDbCollections();
+  const brandsCollection = collections.brandsCollection();
 
   const { props } = await getAppInitialData({ context });
   if (!props || !brandId) {

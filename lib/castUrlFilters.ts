@@ -1,3 +1,4 @@
+import { ObjectIdModel } from 'db/dbModels';
 import {
   DEFAULT_SORT_STAGE,
   SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
@@ -5,7 +6,6 @@ import {
   SORT_DESC,
   SORT_DESC_STR,
 } from 'lib/config/common';
-import { ObjectIdModel } from 'db/dbModels';
 import { getAlgoliaProductsSearch } from './algolia/productAlgoliaUtils';
 import { alwaysString } from './arrayUtils';
 import {

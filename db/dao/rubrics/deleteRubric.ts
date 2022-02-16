@@ -1,19 +1,5 @@
-import {
-  COL_CATEGORIES,
-  COL_PRODUCT_FACETS,
-  COL_PRODUCT_SUMMARIES,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import {
-  CategoryModel,
-  ProductFacetModel,
-  ProductSummaryModel,
-  RubricModel,
-  RubricPayloadModel,
-  ShopProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { RubricPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -28,14 +14,14 @@ export async function deleteRubric({
   input,
 }: DaoPropsInterface<DeleteRubricInputInterface>): Promise<RubricPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.rubricsCollection();
+  const productFacetsCollection = collections.productFacetsCollection();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const shopProductsCollection = collections.shopProductsCollection();
+  const categoriesCollection = collections.categoriesCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: RubricPayloadModel = {
     success: false,

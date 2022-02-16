@@ -1,11 +1,11 @@
-import { GeocodeResultInterface, ReverseGeocodePayload } from 'lib/addressUtils';
-import * as React from 'react';
-import { get } from 'lodash';
 import { useLocaleContext } from 'components/context/localeContext';
+import { Field, FieldProps } from 'formik';
+import { GeocodeResultInterface, ReverseGeocodePayload } from 'lib/addressUtils';
+import { get } from 'lodash';
+import * as React from 'react';
+import { useDebounce } from 'use-debounce';
 import Spinner from '../../Spinner';
 import WpInput, { WpInputPropsInterface } from './WpInput';
-import { Field, FieldProps } from 'formik';
-import { useDebounce } from 'use-debounce';
 
 type AddressInputType = Omit<WpInputPropsInterface, 'autoComplete' | 'type'>;
 

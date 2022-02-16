@@ -1,6 +1,7 @@
-import { DEFAULT_LOCALE, ONE_WEEK } from 'lib/config/common';
 import { PromoCodeModel } from 'db/dbModels';
+import { DEFAULT_LOCALE, ONE_WEEK } from 'lib/config/common';
 import { getObjectId } from 'mongo-seeding';
+
 require('dotenv').config();
 
 const promoCodes: PromoCodeModel[] = [

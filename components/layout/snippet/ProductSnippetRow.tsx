@@ -1,7 +1,7 @@
+import { ProductSnippetLayoutInterface } from 'db/uiInterfaces';
+import { ROW_SNIPPET_LAYOUT_BIG_IMAGE } from 'lib/config/constantSelects';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
-import { ROW_SNIPPET_LAYOUT_BIG_IMAGE } from 'lib/config/constantSelects';
-import { ProductSnippetLayoutInterface } from 'db/uiInterfaces';
 
 const ProductSnippetRowDefault = dynamic(
   () => import('components/layout/snippet/ProductSnippetRowDefault'),

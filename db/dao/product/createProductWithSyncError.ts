@@ -1,4 +1,7 @@
-import { ObjectId } from 'mongodb';
+import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { ProductPayloadModel, ShopProductModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { DEFAULT_LOCALE, IMAGE_FALLBACK } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
@@ -9,26 +12,7 @@ import {
 } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
-import {
-  COL_NOT_SYNCED_PRODUCTS,
-  COL_PRODUCT_FACETS,
-  COL_PRODUCT_SUMMARIES,
-  COL_RUBRIC_VARIANTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-} from '../../collectionNames';
-import {
-  ProductFacetModel,
-  ProductPayloadModel,
-  ProductSummaryModel,
-  RubricModel,
-  RubricVariantModel,
-  ShopModel,
-  ShopProductModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 import { CreateProductInputInterface } from './createProduct';
 
 export interface CreateProductWithSyncErrorInputInterface {
@@ -43,16 +27,16 @@ export async function createProductWithSyncError({
   input,
 }: DaoPropsInterface<CreateProductWithSyncErrorInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-  const notSyncedProductsCollection = db.collection<ShopModel>(COL_NOT_SYNCED_PRODUCTS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
+  const collections = await getDbCollections();
+  const productFacetsCollection = collections.productFacetsCollection();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const shopProductsCollection = collections.shopProductsCollection();
+  const shopsCollection = collections.shopsCollection();
+  const notSyncedProductsCollection = collections.notSyncedProductsCollection();
+  const rubricsCollection = collections.rubricsCollection();
+  const rubricVariantsCollection = collections.rubricVariantsCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ProductPayloadModel = {
     success: false,

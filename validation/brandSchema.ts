@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import { DEFAULT_LOCALE } from 'lib/config/common';
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import {
@@ -6,6 +5,7 @@ import {
   objectIdSchema,
   requiredStringTranslationSchema,
 } from 'validation/utils/schemaTemplates';
+import * as Yup from 'yup';
 
 export const brandCollectionIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.brandCollections.id' });

@@ -1,7 +1,7 @@
 import { castConfigs } from 'db/cast/castConfigs';
-import { GetServerSidePropsContext } from 'next';
-import * as React from 'react';
-import { getDomain } from 'tldts';
+import { CompanyModel, ConfigModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { getCatalogueData } from 'db/utils/catalogueUtils';
 import {
   CATALOGUE_PRODUCTS_LIMIT,
   CONFIG_GROUP_PROJECT,
@@ -12,12 +12,11 @@ import {
   FILTER_CATEGORY_KEY,
   FILTER_SEPARATOR,
 } from 'lib/config/common';
-import { COL_COMPANIES, COL_CONFIGS, COL_RUBRICS, COL_SEO_CONTENTS } from 'db/collectionNames';
-import { CompanyModel, ConfigModel, RubricModel, SeoContentModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getCatalogueData } from 'db/utils/catalogueUtils';
 import { getConfigBooleanValue, getConfigListValue, getConfigNumberValue } from 'lib/configsUtils';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { GetServerSidePropsContext } from 'next';
+import * as React from 'react';
+import { getDomain } from 'tldts';
 
 const SitemapXml: React.FC = () => {
   return <div />;
@@ -50,11 +49,11 @@ const createSitemap = ({
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { res, req } = context;
   const initialSlugs: string[] = [];
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
+  const rubricsCollection = collections.rubricsCollection();
+  const configsCollection = collections.configsCollection();
+  const seoContentsCollection = collections.seoContentsCollection();
   const host = `${req.headers.host}`;
   const domain = getDomain(host, { validHosts: ['localhost'] });
   const locale = DEFAULT_LOCALE;

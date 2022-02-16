@@ -1,9 +1,8 @@
-import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_GIFT_CERTIFICATES } from '../../collectionNames';
-import { GiftCertificateModel, GiftCertificatePayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ObjectId } from 'mongodb';
+import { GiftCertificatePayloadModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface DeleteGiftCertificateInputInterface {
@@ -16,8 +15,8 @@ export async function deleteGiftCertificate({
 }: DaoPropsInterface<DeleteGiftCertificateInputInterface>): Promise<GiftCertificatePayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
+    const collections = await getDbCollections();
+    const giftCertificatesCollection = collections.giftCertificatesCollection();
 
     // check input
     if (!input) {

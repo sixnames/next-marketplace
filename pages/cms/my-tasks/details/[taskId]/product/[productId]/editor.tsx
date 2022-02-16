@@ -1,19 +1,19 @@
 import ConsoleRubricProductEditor, {
   ConsoleRubricProductEditorInterface,
 } from 'components/console/ConsoleRubricProductEditor';
-import { TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT } from 'lib/config/constantSelects';
-import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import CmsTaskProductLayout, {
   CmsTaskProductLayoutInterface,
 } from 'components/layout/cms/CmsTaskProductLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT } from 'lib/config/constantSelects';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFullProductSummary } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface ProductEditorInterface
   extends ConsoleRubricProductEditorInterface,

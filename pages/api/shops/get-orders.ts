@@ -1,14 +1,6 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ORDER_DELIVERY_VARIANT_COURIER } from 'lib/config/common';
-import {
-  COL_ORDER_CUSTOMERS,
-  COL_ORDER_PRODUCTS,
-  COL_ORDER_STATUSES,
-  COL_ORDERS,
-  COL_SHOPS,
-} from 'db/collectionNames';
-import { ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { COL_ORDER_CUSTOMERS, COL_ORDER_PRODUCTS, COL_ORDER_STATUSES } from 'db/collectionNames';
+
+import { getDbCollections } from 'db/mongodb';
 import {
   GetOrdersParamsInterface,
   SyncOrderInterface,
@@ -16,6 +8,8 @@ import {
 } from 'db/syncInterfaces';
 import { OrderInterface } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
+import { ORDER_DELIVERY_VARIANT_COURIER } from 'lib/config/common';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
@@ -45,9 +39,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const { db } = await getDatabase();
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-  const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
+  const collections = await getDbCollections();
+  const shopsCollection = collections.shopsCollection();
+  const ordersCollection = collections.ordersCollection();
 
   // get shop
   const shop = await shopsCollection.findOne({ token });

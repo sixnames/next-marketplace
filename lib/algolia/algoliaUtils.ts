@@ -1,5 +1,6 @@
 import algoliasearch from 'algoliasearch';
 import { SearchClient, SearchIndex } from 'algoliasearch/dist/algoliasearch';
+
 require('dotenv').config();
 
 interface GetAlgoliaClientPayloadInterface {

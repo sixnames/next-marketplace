@@ -1,13 +1,13 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
 import ConsoleTasksList, { ConsoleTasksListInterface } from 'components/console/ConsoleTasksList';
 import Inner from 'components/Inner';
-import WpTitle from 'components/WpTitle';
-import { getCompanyTasksListSsr } from 'db/ssr/company/getCompanyTasksListSsr';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import WpTitle from 'components/WpTitle';
+import { getCompanyTasksListSsr } from 'db/ssr/company/getCompanyTasksListSsr';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 
 const pageTitle = 'Задачи';
 interface TasksListConsumerInterface extends ConsoleTasksListInterface {}

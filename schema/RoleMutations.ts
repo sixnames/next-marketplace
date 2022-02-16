@@ -1,17 +1,17 @@
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { ROLE_SLUG_GUEST } from '../lib/config/common';
-import { COL_NAV_ITEMS, COL_ROLES, COL_USERS } from '../db/collectionNames';
+import { COL_ROLES } from 'db/collectionNames';
+import { RolePayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
-import { NavItemModel, RoleModel, RolePayloadModel, UserModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { ROLE_SLUG_GUEST } from 'lib/config/common';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
-import { generateDefaultLangSlug } from '../lib/slugUtils';
-import { createRoleSchema, updateRoleSchema } from '../validation/roleSchema';
+} from 'lib/sessionHelpers';
+import { generateDefaultLangSlug } from 'lib/slugUtils';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { createRoleSchema, updateRoleSchema } from 'validation/roleSchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const RolePayload = objectType({
   name: 'RolePayload',
@@ -97,8 +97,8 @@ export const RoleMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rolesCollection = db.collection<RoleModel>(COL_ROLES);
+          const collections = await getDbCollections();
+          const rolesCollection = collections.rolesCollection();
 
           // Check if role already exist
           const exist = await findDocumentByI18nField({
@@ -177,8 +177,8 @@ export const RoleMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rolesCollection = db.collection<RoleModel>(COL_ROLES);
+          const collections = await getDbCollections();
+          const rolesCollection = collections.rolesCollection();
           const { input } = args;
           const { roleId, ...values } = input;
 
@@ -255,11 +255,11 @@ export const RoleMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<RolePayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const rolesCollection = db.collection<RoleModel>(COL_ROLES);
-        const usersCollection = db.collection<UserModel>(COL_USERS);
+        const collections = await getDbCollections();
+        const rolesCollection = collections.rolesCollection();
+        const usersCollection = collections.usersCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: RolePayloadModel = {
           success: false,
@@ -374,9 +374,9 @@ export const RoleMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rolesCollection = db.collection<RoleModel>(COL_ROLES);
-          const navItemsCollection = db.collection<NavItemModel>(COL_NAV_ITEMS);
+          const collections = await getDbCollections();
+          const rolesCollection = collections.rolesCollection();
+          const navItemsCollection = collections.navItemsCollection();
           const {
             input: { roleId, navItemId, checked },
           } = args;

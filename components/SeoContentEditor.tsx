@@ -1,14 +1,14 @@
+import { useConfigContext } from 'components/context/configContext';
+import { SeoContentInterface } from 'db/uiInterfaces';
 import { useFormikContext } from 'formik';
-import * as React from 'react';
-import { get } from 'lodash';
 import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   DEFAULT_CITY,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   REQUEST_METHOD_POST,
 } from 'lib/config/common';
-import { useConfigContext } from 'components/context/configContext';
-import { SeoContentInterface } from 'db/uiInterfaces';
+import { get } from 'lodash';
+import * as React from 'react';
 import InputLine from './FormElements/Input/InputLine';
 import PageEditor from './PageEditor';
 import SeoContentNoIndexTrigger from './SeoContentNoIndexTrigger';

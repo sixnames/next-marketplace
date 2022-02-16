@@ -5,6 +5,7 @@ import {
   COL_BRANDS,
   COL_CATEGORIES,
   COL_COMPANIES,
+  COL_EVENT_SUMMARIES,
   COL_MANUFACTURERS,
   COL_OPTIONS,
   COL_ORDERS,
@@ -15,7 +16,6 @@ import {
   COL_SUPPLIERS,
   COL_TASKS,
   COL_USERS,
-  COL_EVENT_SUMMARIES,
 } from 'db/collectionNames';
 import { IdCounterModel } from 'db/dbModels';
 

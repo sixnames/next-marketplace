@@ -1,27 +1,26 @@
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateRoleModalInterface } from 'components/Modal/CreateRoleModal';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { SORT_DESC } from 'lib/config/common';
-import { CONFIRM_MODAL, CREATE_ROLE_MODAL } from 'lib/config/modalVariants';
-import { COL_ROLES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { RoleInterface } from 'db/uiInterfaces';
 import { useCreateRoleMutation, useDeleteRoleMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { SORT_DESC } from 'lib/config/common';
+import { CONFIRM_MODAL, CREATE_ROLE_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 interface RolesConsumerInterface {
   roles: RoleInterface[];
@@ -167,8 +166,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
+  const collections = await getDbCollections();
+  const rolesCollection = collections.rolesCollection();
   const rolesAggregationResult = await rolesCollection
     .aggregate([
       {

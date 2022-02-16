@@ -1,34 +1,28 @@
-import { useAppContext } from 'components/context/appContext';
-import { useDeleteRubric } from 'hooks/mutations/useRubricMutations';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
+import { useAppContext } from 'components/context/appContext';
 import { RubricMainFieldsInterface } from 'components/FormTemplates/RubricMainFields';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
+import { COL_PRODUCT_FACETS, COL_RUBRIC_VARIANTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { RubricInterface } from 'db/uiInterfaces';
+import { useDeleteRubric } from 'hooks/mutations/useRubricMutations';
+import { sortObjectsByField } from 'lib/arrayUtils';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'lib/config/modalVariants';
-import {
-  COL_PRODUCT_FACETS,
-  COL_RUBRIC_VARIANTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { RubricInterface, RubricVariantInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 interface RubricsRouteInterface extends RubricMainFieldsInterface {
   rubrics: RubricInterface[];
@@ -156,9 +150,9 @@ const Rubrics: NextPage<RubricsInterface> = ({ layoutProps, ...props }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricsInterface>> => {
-  const { db } = await getDatabase();
-  const rubricVariantsCollection = db.collection<RubricVariantInterface>(COL_RUBRIC_VARIANTS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const collections = await getDbCollections();
+  const rubricVariantsCollection = collections.rubricVariantsCollection();
+  const rubricsCollection = collections.rubricsCollection();
 
   const { props } = await getAppInitialData({ context });
   if (!props) {

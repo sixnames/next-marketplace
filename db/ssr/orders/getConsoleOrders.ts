@@ -1,20 +1,19 @@
 import { castOrderStatus } from 'db/cast/castOrderStatus';
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext } from 'next';
-import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'lib/config/common';
-import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/castUrlFilters';
-import { getShortName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { getRequestParams } from 'lib/sessionHelpers';
-import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
-import { OrderModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_SHOPS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import {
   AppPaginationAggregationInterface,
   AppPaginationInterface,
   OrderInterface,
 } from 'db/uiInterfaces';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { castUrlFilters } from 'lib/castUrlFilters';
+import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'lib/config/common';
+import { getShortName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { getRequestParams } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext } from 'next';
 
 export interface OrderPaginationAggregationInterface
   extends AppPaginationAggregationInterface<OrderInterface> {}
@@ -30,8 +29,8 @@ export async function getConsoleOrders({
 }: GetConsoleOrdersInputInterface): Promise<GetConsoleOrdersPayloadType | null> {
   try {
     const { locale } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
+    const collections = await getDbCollections();
+    const ordersCollection = collections.ordersCollection();
     const { query } = context;
     const { companyId } = query;
 

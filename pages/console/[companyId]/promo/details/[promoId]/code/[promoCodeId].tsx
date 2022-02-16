@@ -1,18 +1,16 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
 import ConsolePromoCodeDetails, {
   ConsolePromoCodeDetailsInterface,
 } from 'components/console/ConsolePromoCodeDetails';
-import { COL_PROMO_CODES } from 'db/collectionNames';
-import { PromoCodeModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface, PromoInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface, PromoInterface } from 'db/uiInterfaces';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 
 interface PromoDetailsPageInterface
   extends GetAppInitialDataPropsInterface,
@@ -61,7 +59,7 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<PromoDetailsPageInterface>> => {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const { query } = context;
   const { props } = await getConsoleInitialData({ context });
   if (!props) {
@@ -80,7 +78,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
+  const promoCodesCollection = collections.promoCodesCollection();
   const promoCodesAggregation = await promoCodesCollection
     .aggregate([
       {

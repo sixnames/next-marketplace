@@ -1,7 +1,6 @@
 import { objectType } from 'nexus';
-import { COL_USERS } from '../db/collectionNames';
 import { FormattedPhoneModel, UserModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { getDbCollections } from '../db/mongodb';
 import { getFullName, getShortName } from '../lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from '../lib/phoneUtils';
 
@@ -21,8 +20,8 @@ export const OrderCustomer = objectType({
     t.field('user', {
       type: 'User',
       resolve: async (source): Promise<UserModel | null> => {
-        const { db } = await getDatabase();
-        const usersCollection = db.collection<UserModel>(COL_USERS);
+        const collections = await getDbCollections();
+        const usersCollection = collections.usersCollection();
         const user = await usersCollection.findOne({ _id: source.userId });
         return user;
       },

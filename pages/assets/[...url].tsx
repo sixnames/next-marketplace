@@ -1,13 +1,13 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import path from 'path';
 import fs from 'fs';
-import * as React from 'react';
-import { AvailableFormatInfo, FormatEnum } from 'sharp';
-import { ASSETS_DIST, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK, ONE_WEEK } from 'lib/config/common';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { checkIfWatermarkNeeded, getSharpImage } from 'lib/assetUtils/assetUtils';
+import { ASSETS_DIST, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK, ONE_WEEK } from 'lib/config/common';
 import { noNaN } from 'lib/numbers';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import path from 'path';
 import qs from 'qs';
+import * as React from 'react';
+import { AvailableFormatInfo, FormatEnum } from 'sharp';
 
 const SitemapXml: React.FC = () => {
   return <div style={{ background: 'black', height: '100vh' }} />;

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import WpAccordion from './WpAccordion';
 import CheckBoxFilter, { CheckBoxFilterInterface } from './CheckBoxFilter';
 import WpLink from './Link/WpLink';
+import WpAccordion from './WpAccordion';
 
 interface AppContentFilterInterface extends Omit<CheckBoxFilterInterface, 'filterListClassName'> {}
 

@@ -1,14 +1,13 @@
-import * as React from 'react';
+import { getDbCollections } from 'db/mongodb';
+import { PromoInterface } from 'db/uiInterfaces';
+import { getFieldStringLocale } from 'lib/i18n';
+import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 import Inner from '../../components/Inner';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
 import PageEditor from '../../components/PageEditor';
 import WpBreadcrumbs from '../../components/WpBreadcrumbs';
-import { COL_PROMO } from '../../db/collectionNames';
-import { getDatabase } from '../../db/mongodb';
-import { PromoInterface } from '../../db/uiInterfaces';
-import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
-import { getFieldStringLocale } from '../../lib/i18n';
-import { castDbData, getSiteInitialData } from '../../lib/ssrUtils';
 
 interface PromoPageConsumerInterface {
   promo: PromoInterface;
@@ -54,8 +53,8 @@ export async function getServerSideProps(
     };
   }
 
-  const { db } = await getDatabase();
-  const promoCollection = db.collection<PromoInterface>(COL_PROMO);
+  const collections = await getDbCollections();
+  const promoCollection = collections.promoCollection();
   const initialPromo = await promoCollection.findOne({
     slug: `${query?.promoSlug}`,
   });

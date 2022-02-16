@@ -1,13 +1,13 @@
 import { get } from 'lodash';
 import * as React from 'react';
+import { ConfigModel } from '../../db/dbModels';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import {
   DEFAULT_CITY,
   DEFAULT_LOCALE,
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_POST,
 } from '../../lib/config/common';
-import { ConfigModel } from '../../db/dbModels';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import WpNotification from '../WpNotification';
 import WpImageUpload from './Upload/WpImageUpload';
 

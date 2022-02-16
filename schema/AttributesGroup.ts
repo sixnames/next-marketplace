@@ -1,19 +1,20 @@
-import { ObjectId } from 'mongodb';
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
+import { COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
+import { AttributesGroupModel, AttributesGroupPayloadModel } from 'db/dbModels';
+
+import { getDbCollections } from 'db/mongodb';
 import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
-import { AttributeModel, AttributesGroupModel, AttributesGroupPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   createAttributesGroupSchema,
   updateAttributesGroupSchema,
 } from 'validation/attributesGroupSchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const AttributesGroup = objectType({
   name: 'AttributesGroup',
@@ -86,9 +87,8 @@ export const attributesGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const attributesGroupCollection =
-            db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
+          const collections = await getDbCollections();
+          const attributesGroupCollection = collections.attributesGroupsCollection();
 
           // Check if attributes group exist
           const exist = await findDocumentByI18nField<AttributesGroupModel>({
@@ -163,9 +163,8 @@ export const attributesGroupMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const attributesGroupCollection =
-            db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
+          const collections = await getDbCollections();
+          const attributesGroupCollection = collections.attributesGroupsCollection();
 
           // Check if attributes group exist
           const exist = await findDocumentByI18nField<AttributesGroupModel>({
@@ -234,12 +233,11 @@ export const attributesGroupMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const attributesGroupCollection =
-          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
-        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+        const collections = await getDbCollections();
+        const attributesGroupCollection = collections.attributesGroupsCollection();
+        const attributesCollection = collections.attributesCollection();
 
-        const session = client.startSession();
+        const session = collections.client.startSession();
 
         let mutationPayload: AttributesGroupPayloadModel | null = {
           success: false,

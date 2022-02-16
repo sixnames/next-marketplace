@@ -7,8 +7,8 @@ import {
   resetServerContext,
 } from 'react-beautiful-dnd';
 import { CONFIRM_MODAL } from '../lib/config/modalVariants';
-import { useAppContext } from './context/appContext';
 import ButtonCross from './button/ButtonCross';
+import { useAppContext } from './context/appContext';
 import InputLine from './FormElements/Input/InputLine';
 import { ConfirmModalInterface } from './Modal/ConfirmModal';
 import WpImage from './WpImage';

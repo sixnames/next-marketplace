@@ -1,27 +1,16 @@
-import { ObjectId } from 'mongodb';
+import { COL_PAGE_TEMPLATES, COL_PAGES } from 'db/collectionNames';
+import { PagePayloadModel, PageStateModel, TranslationModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 import { updatePageSchema } from 'validation/pagesSchema';
-import {
-  COL_PAGE_TEMPLATES,
-  COL_PAGES,
-  COL_PAGES_GROUP,
-  COL_PAGES_GROUP_TEMPLATES,
-} from '../../collectionNames';
-import {
-  PageModel,
-  PagePayloadModel,
-  PagesGroupModel,
-  PageStateModel,
-  TranslationModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 
 export interface UpdatePageInputInterface {
   _id: string;
@@ -56,7 +45,7 @@ export async function updatePage({
 }: DaoPropsInterface<UpdatePageInputInterface>): Promise<PagePayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
 
     // permission
     const { allow, message } = await getOperationPermission({
@@ -88,10 +77,12 @@ export async function updatePage({
     const { _id, isTemplate, pagesGroupId, ...values } = input;
     const pageId = new ObjectId(input._id);
     const pagesGroupObjectId = new ObjectId(input.pagesGroupId);
-    const pagesGroupsCollection = db.collection<PagesGroupModel>(
-      isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
-    );
-    const pagesCollection = db.collection<PageModel>(isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES);
+    const pagesGroupsCollection = isTemplate
+      ? collections.pagesGroupTemplatesCollection()
+      : collections.pagesGroupsCollection();
+    const pagesCollection = isTemplate
+      ? collections.pageTemplatesCollection()
+      : collections.pagesCollection();
 
     // check availability
     const page = await pagesCollection.findOne({ _id: pageId });

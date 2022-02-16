@@ -1,13 +1,13 @@
-import Head from 'next/head';
-import * as React from 'react';
 import WpButton from 'components/button/WpButton';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
 import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs, ShopProductInterface } from 'db/uiInterfaces';
 import { getCmsCompanyLinks, getConsoleRubricLinks } from 'lib/linkUtils';
+import Head from 'next/head';
+import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import AppSubNav from 'components/layout/AppSubNav';
 
 interface ConsoleShopProductLayoutInterface {
   shopProduct: ShopProductInterface;

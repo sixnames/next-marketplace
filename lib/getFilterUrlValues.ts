@@ -1,3 +1,4 @@
+import { noImageStage } from 'db/utils/constantPipelines';
 import {
   CATALOGUE_FILTER_LIMIT,
   CATALOGUE_PRODUCTS_LIMIT,
@@ -14,7 +15,6 @@ import {
   SORT_BY_KEY,
   SORT_DIR_KEY,
 } from './config/common';
-import { noImageStage } from 'db/utils/constantPipelines';
 import { noNaN } from './numbers';
 
 export interface GetFilterUrlValuesInterface {

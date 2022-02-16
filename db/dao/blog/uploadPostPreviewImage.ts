@@ -1,13 +1,12 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_BLOG } from 'lib/config/common';
 import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
+import { ASSETS_DIST_BLOG } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { parseApiFormData, UploadRestApiImageInterface } from 'lib/restApi';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_BLOG_POSTS } from '../../collectionNames';
-import { BlogPostModel, BlogPostPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { BlogPostPayloadModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 
 export interface UpdateBlogPostPreviewFieldsInterface {
   blogPostId: string;
@@ -18,9 +17,9 @@ export interface UpdateBlogPostPreviewInputInterface
     UpdateBlogPostPreviewFieldsInterface {}
 
 export async function updatePostPreviewImage(req: NextApiRequest, res: NextApiResponse) {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const { getApiMessage } = await getRequestParams({ req, res });
-  const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
+  const blogPostsCollection = collections.blogPostsCollection();
   const formData = await parseApiFormData<UpdateBlogPostPreviewFieldsInterface>(req);
 
   let payload: BlogPostPayloadModel = {

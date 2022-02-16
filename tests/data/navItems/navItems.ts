@@ -1,7 +1,7 @@
-import { NAV_GROUP_CONSOLE, NAV_GROUP_CMS } from 'lib/config/common';
 import { NavItemModel } from 'db/dbModels';
-import { getObjectId } from 'mongo-seeding';
+import { NAV_GROUP_CMS, NAV_GROUP_CONSOLE } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { getObjectId } from 'mongo-seeding';
 
 const navItemsDefaultSlug = 'navItem';
 const links = getProjectLinks();

@@ -1,21 +1,20 @@
-import { ObjectId } from 'mongodb';
-import { SORT_ASC, SORT_DESC } from './config/common';
 import {
   COL_CITIES,
   COL_PAGE_TEMPLATES,
   COL_PAGES,
   COL_PAGES_GROUP,
   COL_PAGES_GROUP_TEMPLATES,
-} from '../db/collectionNames';
-import { PagesGroupModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+} from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import {
   CityInterface,
   PageInterface,
   PagesGroupInterface,
   PagesGroupTemplateInterface,
   PagesTemplateInterface,
-} from '../db/uiInterfaces';
+} from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
+import { SORT_ASC, SORT_DESC } from './config/common';
 import { getFieldStringLocale } from './i18n';
 
 // Page groups list
@@ -30,10 +29,10 @@ export async function getPageGroupsSsr({
   companySlug,
   isTemplate,
 }: GetPageGroupsSsrInterface): Promise<PagesGroupInterface[] | PagesGroupTemplateInterface[]> {
-  const { db } = await getDatabase();
-  const pagesGroupsCollection = db.collection<PagesGroupModel>(
-    isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
-  );
+  const collections = await getDbCollections();
+  const pagesGroupsCollection = isTemplate
+    ? collections.pagesGroupTemplatesCollection()
+    : collections.pagesGroupsCollection();
 
   const pagesGroupsAggregationResult = await pagesGroupsCollection
     .aggregate<PagesGroupInterface>([
@@ -73,10 +72,10 @@ export async function getPagesListSsr({
   isTemplate,
   pagesGroupId,
 }: GetPagesListSsrInterface): Promise<PagesGroupInterface | PagesGroupTemplateInterface | null> {
-  const { db } = await getDatabase();
-  const pagesGroupsCollection = db.collection<PagesGroupInterface>(
-    isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
-  );
+  const collections = await getDbCollections();
+  const pagesGroupsCollection = isTemplate
+    ? collections.pagesGroupTemplatesCollection()
+    : collections.pagesGroupsCollection();
 
   const pagesGroupsAggregationResult = await pagesGroupsCollection
     .aggregate<PagesGroupInterface>([
@@ -187,9 +186,11 @@ export async function getPageSsr({
   isTemplate,
   pageId,
 }: GetPageSsrInterface): Promise<GetPageSsrPayloadInterface | null> {
-  const { db } = await getDatabase();
-  const pagesCollection = db.collection<PageInterface>(isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES);
-  const citiesCollection = db.collection<CityInterface>(COL_CITIES);
+  const collections = await getDbCollections();
+  const pagesCollection = isTemplate
+    ? collections.pageTemplatesCollection()
+    : collections.pagesCollection();
+  const citiesCollection = collections.citiesCollection();
 
   const initialPageAggregation = await pagesCollection
     .aggregate<PageInterface>([

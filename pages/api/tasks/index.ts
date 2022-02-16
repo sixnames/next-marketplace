@@ -1,13 +1,13 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { createTask } from 'db/dao/tasks/createTask';
+import { deleteTask } from 'db/dao/tasks/deleteTask';
+import { updateTask } from 'db/dao/tasks/updateTask';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
 } from 'lib/config/common';
-import { createTask } from 'db/dao/tasks/createTask';
-import { deleteTask } from 'db/dao/tasks/deleteTask';
-import { updateTask } from 'db/dao/tasks/updateTask';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // create

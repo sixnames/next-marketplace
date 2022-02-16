@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { DEFAULT_CITY } from '../lib/config/common';
 import { useConfigContext } from '../components/context/configContext';
 import { InitialCardDataInterface, ProductAttributeInterface } from '../db/uiInterfaces';
 import { alwaysArray } from '../lib/arrayUtils';
+import { DEFAULT_CITY } from '../lib/config/common';
 import { noNaN } from '../lib/numbers';
 import useGetSimilarProducts, {
   UseGetSimilarProductsPayloadInterface,

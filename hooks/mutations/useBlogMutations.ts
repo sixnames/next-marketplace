@@ -1,9 +1,4 @@
 import { useRouter } from 'next/router';
-import {
-  REQUEST_METHOD_DELETE,
-  REQUEST_METHOD_PATCH,
-  REQUEST_METHOD_POST,
-} from '../../lib/config/common';
 import { AddBlogPostLikeInputInterface } from '../../db/dao/blog/addPostLike';
 import { CreateBlogAttributeInputInterface } from '../../db/dao/blog/createBlogAttribute';
 import { CreateBlogPostInputInterface } from '../../db/dao/blog/createBlogPost';
@@ -14,6 +9,11 @@ import { UpdateBlogAttributeInputInterface } from '../../db/dao/blog/updateBlogA
 import { UpdateBlogPostInputInterface } from '../../db/dao/blog/updateBlogPost';
 import { UpdateBlogPostAttributeInterface } from '../../db/dao/blog/updateBlogPostAttribute';
 import { BlogAttributePayloadModel, BlogPostPayloadModel } from '../../db/dbModels';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from '../../lib/config/common';
 import { getConsoleBlogLinks } from '../../lib/linkUtils';
 import { UseMutationConsumerPayload, useMutationHandler } from './useFetch';
 

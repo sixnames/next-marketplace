@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
+import * as React from 'react';
 import DatePickerInput, { DatePickerInputInterface } from '../DatePickerInput';
 
 export interface FormikDatePickerInterface

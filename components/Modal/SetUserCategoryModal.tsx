@@ -1,5 +1,5 @@
+import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { Formik, Form } from 'formik';
 import { CompanyInterface } from '../../db/uiInterfaces';
 import { useSetUserCategoryMutation } from '../../hooks/mutations/useUserMutations';
 import WpButton from '../button/WpButton';

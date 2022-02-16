@@ -1,27 +1,27 @@
-import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
-import * as React from 'react';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
+import { useAppContext } from 'components/context/appContext';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { BlogAttributeModalInterface } from 'components/Modal/BlogAttributeModal';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
-import { BLOG_ATTRIBUTE_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
-import { useAppContext } from 'components/context/appContext';
-import { COL_BLOG_ATTRIBUTES, COL_OPTIONS_GROUPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { COL_OPTIONS_GROUPS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import { BlogAttributeInterface, OptionsGroupInterface } from 'db/uiInterfaces';
 import { useDeleteBlogAttribute } from 'hooks/mutations/useBlogMutations';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import AppSubNav from 'components/layout/AppSubNav';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { sortObjectsByField } from 'lib/arrayUtils';
+import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
+import { BLOG_ATTRIBUTE_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface BlogAttributesListConsumerInterface {
@@ -178,9 +178,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const blogAttributesCollection = db.collection<BlogAttributeInterface>(COL_BLOG_ATTRIBUTES);
-  const optionGroupsCollection = db.collection<OptionsGroupInterface>(COL_OPTIONS_GROUPS);
+  const collections = await getDbCollections();
+  const blogAttributesCollection = collections.blogAttributesCollection();
+  const optionGroupsCollection = collections.optionsGroupsCollection();
 
   const initialBlogAttributesAggregation = await blogAttributesCollection
     .aggregate([

@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { CONFIRM_MODAL, CREATE_PROMO_MODAL } from '../../lib/config/modalVariants';
-import { useAppContext } from '../context/appContext';
 import { CompanyInterface, PromoInterface } from '../../db/uiInterfaces';
 import { useDeletePromo } from '../../hooks/mutations/usePromoMutations';
+import { CONFIRM_MODAL, CREATE_PROMO_MODAL } from '../../lib/config/modalVariants';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import FormattedDateTime from '../FormattedDateTime';
 import { ConfirmModalInterface } from '../Modal/ConfirmModal';
 import { CreatePromoModalInterface } from '../Modal/CreatePromoModal';

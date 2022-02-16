@@ -1,10 +1,9 @@
-import { ObjectId } from 'mongodb';
+import { GiftCertificatePayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams } from 'lib/sessionHelpers';
-import { COL_GIFT_CERTIFICATES } from '../../collectionNames';
-import { GiftCertificateModel, GiftCertificatePayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 import { updateCartGiftCertificate } from '../cart/updateCartGiftCertificate';
 
 export interface CheckGiftCertificateAvailabilityInputInterface {
@@ -20,8 +19,8 @@ export async function checkGiftCertificateAvailability({
 }: DaoPropsInterface<CheckGiftCertificateAvailabilityInputInterface>): Promise<GiftCertificatePayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
+    const collections = await getDbCollections();
+    const giftCertificatesCollection = collections.giftCertificatesCollection();
 
     // check input
     if (!input) {

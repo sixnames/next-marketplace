@@ -1,23 +1,11 @@
-import { ObjectId } from 'mongodb';
 import { DEFAULT_DIFF } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { countDiscountedPrice } from 'lib/priceUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import {
-  COL_ORDER_LOGS,
-  COL_ORDER_PRODUCTS,
-  COL_ORDERS,
-  COL_SHOP_PRODUCTS,
-} from '../../collectionNames';
-import {
-  OrderLogModel,
-  OrderModel,
-  OrderProductModel,
-  OrderProductPayloadModel,
-  ShopProductModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ObjectId } from 'mongodb';
+import { OrderLogModel, OrderProductPayloadModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateOrderProductInputInterface {
@@ -31,13 +19,13 @@ export async function updateOrderProduct({
   input,
 }: DaoPropsInterface<UpdateOrderProductInputInterface>): Promise<OrderProductPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-  const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
-  const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const collections = await getDbCollections();
+  const ordersCollection = collections.ordersCollection();
+  const orderLogsCollection = collections.ordersLogsCollection();
+  const orderProductsCollection = collections.ordersProductsCollection();
+  const shopProductsCollection = collections.shopProductsCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: OrderProductPayloadModel = {
     success: false,

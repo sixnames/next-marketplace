@@ -1,3 +1,4 @@
+import { ConfigModel } from 'db/dbModels';
 import {
   ASSETS_DIST,
   CONFIG_VARIANT_ADDRESS,
@@ -18,7 +19,6 @@ import {
   MAIN_BANNER_AUTOPLAY_SPEED,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
 } from 'lib/config/common';
-import { ConfigModel } from 'db/dbModels';
 import { ObjectId } from 'mongodb';
 
 export interface GetConfigTemplatesInterface {

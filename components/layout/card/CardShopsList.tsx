@@ -1,20 +1,20 @@
-import * as React from 'react';
 import ArrowTrigger from 'components/ArrowTrigger';
 import WpButton from 'components/button/WpButton';
+import { useAppContext } from 'components/context/appContext';
+import { useConfigContext } from 'components/context/configContext';
+import { useSiteContext } from 'components/context/siteContext';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
+import LayoutCard from 'components/layout/LayoutCard';
 import LinkPhone from 'components/Link/LinkPhone';
 import { MapModalInterface } from 'components/Modal/MapModal';
 import ProductShopPrices from 'components/ProductShopPrices';
 import RatingStars from 'components/RatingStars';
 import ShopsMap from 'components/ShopsMap';
 import WpImage from 'components/WpImage';
-import { MAP_MODAL } from 'lib/config/modalVariants';
-import { useAppContext } from 'components/context/appContext';
-import { useConfigContext } from 'components/context/configContext';
-import { useSiteContext } from 'components/context/siteContext';
 import { ShopInterface } from 'db/uiInterfaces';
+import { MAP_MODAL } from 'lib/config/modalVariants';
 import { noNaN } from 'lib/numbers';
-import LayoutCard from 'components/layout/LayoutCard';
+import * as React from 'react';
 
 interface CardShopInterface {
   shop: ShopInterface;

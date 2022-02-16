@@ -1,7 +1,6 @@
 import { arg, extendType, inputObjectType, objectType } from 'nexus';
-import { COL_CATEGORIES } from '../db/collectionNames';
 import { CategoriesAlphabetListModel, CategoryModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
+import { getDbCollections } from '../db/mongodb';
 import { getAlphabetList } from '../lib/optionUtils';
 import { getRequestParams } from '../lib/sessionHelpers';
 
@@ -26,8 +25,8 @@ export const Category = objectType({
     t.nonNull.list.nonNull.field('categories', {
       type: 'Category',
       resolve: async (source): Promise<CategoryModel[]> => {
-        const { db } = await getDatabase();
-        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+        const collections = await getDbCollections();
+        const categoriesCollection = collections.categoriesCollection();
         return categoriesCollection
           .find({
             parentId: source._id,
@@ -68,8 +67,8 @@ export const CategoryQueries = extendType({
       },
       resolve: async (_root, args, context): Promise<CategoriesAlphabetListModel[]> => {
         const { locale } = await getRequestParams(context);
-        const { db } = await getDatabase();
-        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+        const collections = await getDbCollections();
+        const categoriesCollection = collections.categoriesCollection();
         const { input } = args;
         let query: Record<string, any> = {
           parentId: null,

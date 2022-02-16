@@ -1,11 +1,10 @@
-import { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import WpLink from 'components/Link/WpLink';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateShopModalInterface } from 'components/Modal/CreateShopModal';
@@ -14,17 +13,18 @@ import Spinner from 'components/Spinner';
 import TableRowImage from 'components/TableRowImage';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'lib/config/modalVariants';
 import { getConsoleShopsListPageSsr } from 'db/ssr/shops/getConsoleShopsListPageSsr';
 import { AppPaginationInterface, CompanyInterface, ShopInterface } from 'db/uiInterfaces';
 import { useDeleteShopFromCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'lib/config/modalVariants';
 import { getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
+import { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 const pageTitle = 'Магазины компании';
 

@@ -1,5 +1,5 @@
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, GENDER_SHE } from 'lib/config/common';
 import { EventRubricModel, GenderModel, ObjectIdModel } from 'db/dbModels';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, GENDER_SHE } from 'lib/config/common';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 import attributes from '../attributes/attributes';
 

@@ -1,26 +1,12 @@
-import { ObjectId } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, ONE_HOUR, SORT_DESC } from 'lib/config/common';
-import { getTreeFromList } from 'lib/treeUtils';
-import {
-  COL_ATTRIBUTES,
-  COL_CATALOGUE_NAV,
-  COL_CATEGORIES,
-  COL_OPTIONS,
-  COL_RUBRIC_VARIANTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import {
-  AttributeModel,
-  CatalogueNavModel,
-  CategoryModel,
-  ObjectIdModel,
-  ShopProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { castRubricForUI } from 'db/cast/castRubricForUI';
+import { COL_OPTIONS, COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { AttributeModel, CatalogueNavModel, CategoryModel, ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { ignoreNoImageStage } from 'db/utils/constantPipelines';
-import { castRubricForUI } from 'db/cast/castRubricForUI';
+import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, ONE_HOUR, SORT_DESC } from 'lib/config/common';
+import { getTreeFromList } from 'lib/treeUtils';
+import { ObjectId } from 'mongodb';
 
 interface CatalogueGroupedNavConfigItemInterface {
   attributeSlug: string;
@@ -71,11 +57,11 @@ export const createCatalogueNavRubrics = async ({
   // console.log(' ');
   // console.log('=================== createCatalogueNavRubrics =======================');
   // const timeStart = new Date().getTime();
-  const { db } = await getDatabase();
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
-  const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-  const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+  const collections = await getDbCollections();
+  const shopProductsCollection = collections.shopProductsCollection();
+  const rubricsCollection = collections.rubricsCollection();
+  const categoriesCollection = collections.categoriesCollection();
+  const attributesCollection = collections.attributesCollection();
 
   // get nav rubric categories config
   let categoryConfigs: CatalogueNavCategoriesConfigInterface[] = [];
@@ -486,8 +472,8 @@ export const updateCatalogueNavRubrics = async ({
   // console.log(' ');
   // console.log('=================== updateCatalogueNavRubrics =======================');
   // const timeStart = new Date().getTime();
-  const { db } = await getDatabase();
-  const catalogueNavCollection = db.collection<CatalogueNavModel>(COL_CATALOGUE_NAV);
+  const collections = await getDbCollections();
+  const catalogueNavCollection = collections.catalogueNavCollection();
   const newCatalogueNavRubrics = await createCatalogueNavRubrics({
     citySlug,
     locale,
@@ -531,8 +517,8 @@ export const getCatalogueNavRubrics = async ({
   // console.log(' ');
   // console.log('=================== getCatalogueNavRubrics =======================');
   // const timeStart = new Date().getTime();
-  const { db } = await getDatabase();
-  const catalogueNavCollection = db.collection<CatalogueNavModel>(COL_CATALOGUE_NAV);
+  const collections = await getDbCollections();
+  const catalogueNavCollection = collections.catalogueNavCollection();
   let catalogueNav = await catalogueNavCollection.findOne({
     companySlug,
     citySlug,

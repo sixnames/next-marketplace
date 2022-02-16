@@ -1,7 +1,14 @@
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { debounce } from 'lodash';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { CatalogueBreadcrumbModel, SeoContentModel } from '../db/dbModels';
+import { CatalogueDataInterface, CategoryInterface } from '../db/uiInterfaces';
+import { useUpdateCatalogueCountersMutation } from '../generated/apolloComponents';
+import usePageLoadingState from '../hooks/usePageLoadingState';
+import { alwaysArray } from '../lib/arrayUtils';
+import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from '../lib/catalogueHelpers';
 import {
   CATALOGUE_VIEW_GRID,
   CATALOGUE_VIEW_ROW,
@@ -16,26 +23,19 @@ import {
   SORT_DIR_KEY,
 } from '../lib/config/common';
 import { CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES } from '../lib/config/constantSelects';
+import { getNumWord } from '../lib/i18n';
+import { CatalogueApiInputInterface } from '../pages/api/catalogue/[...filters]';
+import WpButton from './button/WpButton';
 import { useConfigContext } from './context/configContext';
 import { useLocaleContext } from './context/localeContext';
 import { useSiteUserContext } from './context/siteUserContext';
-import { CatalogueBreadcrumbModel, SeoContentModel } from '../db/dbModels';
-import { CatalogueDataInterface, CategoryInterface } from '../db/uiInterfaces';
-import { useUpdateCatalogueCountersMutation } from '../generated/apolloComponents';
-import usePageLoadingState from '../hooks/usePageLoadingState';
+import ErrorBoundaryFallback from './ErrorBoundaryFallback';
+import HeadlessMenuButton from './HeadlessMenuButton';
+import Inner from './Inner';
 import CatalogueFilter from './layout/catalogue/CatalogueFilter';
 import SiteLayout, { SiteLayoutProviderInterface } from './layout/SiteLayout';
 import ProductSnippetGrid from './layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from './layout/snippet/ProductSnippetRow';
-import { alwaysArray } from '../lib/arrayUtils';
-import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from '../lib/catalogueHelpers';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
-import { getNumWord } from '../lib/i18n';
-import { CatalogueApiInputInterface } from '../pages/api/catalogue/[...filters]';
-import WpButton from './button/WpButton';
-import ErrorBoundaryFallback from './ErrorBoundaryFallback';
-import HeadlessMenuButton from './HeadlessMenuButton';
-import Inner from './Inner';
 import MenuButtonWithName from './MenuButtonWithName';
 import PageEditor from './PageEditor';
 import Pager from './Pager';

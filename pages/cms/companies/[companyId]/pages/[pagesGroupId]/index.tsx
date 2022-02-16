@@ -1,18 +1,17 @@
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from 'components/Inner';
-import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
-import { COL_CITIES, COL_COMPANIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CityInterface, CompanyInterface } from 'db/uiInterfaces';
 import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getPagesListSsr } from 'lib/pageUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface PagesListPageInterface
   extends GetAppInitialDataPropsInterface,
@@ -70,9 +69,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const citiesCollection = db.collection<CityInterface>(COL_CITIES);
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const citiesCollection = collections.citiesCollection();
+  const companiesCollection = collections.companiesCollection();
 
   const company = await companiesCollection.findOne({
     _id: new ObjectId(`${companyId}`),

@@ -1,7 +1,7 @@
-import * as React from 'react';
 import ConsoleRubricProductEditor, {
   ConsoleRubricProductEditorInterface,
 } from 'components/console/ConsoleRubricProductEditor';
+import * as React from 'react';
 import Inner from '../Inner';
 import WpImage from '../WpImage';
 

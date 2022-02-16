@@ -1,24 +1,20 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
 import ConsoleGiftCertificateDetails, {
   ConsoleGiftCertificateDetailsInterface,
 } from 'components/console/ConsoleGiftCertificateDetails';
 import Inner from 'components/Inner';
-import { COL_COMPANIES, COL_GIFT_CERTIFICATES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-  GiftCertificateInterface,
-} from 'db/uiInterfaces';
 import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { COL_USERS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 
 interface GiftCertificateDetailsConsumerInterface extends ConsoleGiftCertificateDetailsInterface {}
 
@@ -89,9 +85,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
-  const giftCertificatesCollection = db.collection<GiftCertificateInterface>(COL_GIFT_CERTIFICATES);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
+  const giftCertificatesCollection = collections.giftCertificatesCollection();
 
   const companyAggregationResult = await companiesCollection
     .aggregate<CompanyInterface>([

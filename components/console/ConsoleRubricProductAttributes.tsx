@@ -1,20 +1,20 @@
-import { Form, Formik } from 'formik';
-import { alwaysString } from 'lib/arrayUtils';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { ATTRIBUTE_OPTIONS_MODAL } from 'lib/config/modalVariants';
 import { useAppContext } from 'components/context/appContext';
 import {
   OptionInterface,
   ProductAttributeInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
 import {
   useUpdateProductNumberAttribute,
   useUpdateProductSelectAttribute,
   useUpdateProductTextAttribute,
 } from 'hooks/mutations/useProductMutations';
+import { alwaysString } from 'lib/arrayUtils';
+import { ATTRIBUTE_OPTIONS_MODAL } from 'lib/config/modalVariants';
 import { noNaN } from 'lib/numbers';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import FakeInput from '../FormElements/Input/FakeInput';

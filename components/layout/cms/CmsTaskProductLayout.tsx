@@ -1,15 +1,15 @@
-import WpNotification from 'components/WpNotification';
 import { useUserContext } from 'components/context/userContext';
-import Head from 'next/head';
-import * as React from 'react';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import WpNotification from 'components/WpNotification';
 import WpTitle from 'components/WpTitle';
 import {
   AppContentWrapperBreadCrumbs,
   ProductSummaryInterface,
   TaskInterface,
 } from 'db/uiInterfaces';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
+import Head from 'next/head';
+import * as React from 'react';
 
 export interface CmsTaskProductLayoutInterface {
   product: ProductSummaryInterface;

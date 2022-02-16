@@ -1,4 +1,6 @@
-import { ObjectId } from 'mongodb';
+import { TranslationModel, UserCategoryPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import {
@@ -6,16 +8,8 @@ import {
   getOperationPermission,
   getRequestParams,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 import { createUserCategorySchema } from 'validation/userCategorySchema';
-import { COL_COMPANIES, COL_USER_CATEGORIES } from '../../collectionNames';
-import {
-  CompanyModel,
-  TranslationModel,
-  UserCategoryModel,
-  UserCategoryPayloadModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface CreateUserCategoryInputInterface {
   companyId: string;
@@ -33,9 +27,9 @@ export async function createUserCategory({
 }: DaoPropsInterface<CreateUserCategoryInputInterface>): Promise<UserCategoryPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-    const userCategoriesCollection = db.collection<UserCategoryModel>(COL_USER_CATEGORIES);
+    const collections = await getDbCollections();
+    const companiesCollection = collections.companiesCollection();
+    const userCategoriesCollection = collections.userCategoriesCollection();
     const errorPayload = {
       success: false,
       message: await getApiMessage('userCategories.create.error'),

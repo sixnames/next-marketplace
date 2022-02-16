@@ -1,8 +1,8 @@
 import { AddAttributesGroupToRubricInputInterface } from 'db/dao/rubrics/addAttributesGroupToRubric';
+import { AttributesGroupInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { useAddAttributesGroupToRubric } from 'hooks/mutations/useRubricMutations';
 import * as React from 'react';
-import { AttributesGroupInterface } from 'db/uiInterfaces';
 import WpButton from '../button/WpButton';
 import FormikSelect from '../FormElements/Select/FormikSelect';
 import ModalButtons from './ModalButtons';

@@ -1,5 +1,5 @@
-import { SUPPLIER_PRICE_VARIANT_DISCOUNT, SUPPLIER_PRICE_VARIANT_CHARGE } from 'lib/config/common';
 import { SupplierProductModel } from 'db/dbModels';
+import { SUPPLIER_PRICE_VARIANT_CHARGE, SUPPLIER_PRICE_VARIANT_DISCOUNT } from 'lib/config/common';
 import { getObjectId } from 'mongo-seeding';
 
 const supplierProducts: SupplierProductModel[] = [

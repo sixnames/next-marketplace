@@ -1,9 +1,9 @@
 import { useFormikContext } from 'formik';
 import * as React from 'react';
-import { getConstantTranslation } from '../../lib/config/constantTranslations';
-import { useLocaleContext } from '../context/localeContext';
 import { CreateCategoryInput } from '../../generated/apolloComponents';
 import { useConstantOptions } from '../../hooks/useConstantOptions';
+import { getConstantTranslation } from '../../lib/config/constantTranslations';
+import { useLocaleContext } from '../context/localeContext';
 import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import InputLine from '../FormElements/Input/InputLine';

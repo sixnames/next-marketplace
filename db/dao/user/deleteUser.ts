@@ -1,10 +1,9 @@
-import { ObjectId } from 'mongodb';
+import { UserPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_USERS } from '../../collectionNames';
-import { UserModel, UserPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface DeleteUserInputInterface {
   _id: string;
@@ -16,8 +15,8 @@ export async function deleteUser({
 }: DaoPropsInterface<DeleteUserInputInterface>): Promise<UserPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const usersCollection = db.collection<UserModel>(COL_USERS);
+    const collections = await getDbCollections();
+    const usersCollection = collections.usersCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

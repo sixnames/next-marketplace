@@ -1,3 +1,6 @@
+import { TaskVariantModel, TaskVariantPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
@@ -5,10 +8,6 @@ import {
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
 import { createTaskVariantSchema } from 'validation/taskSchema';
-import { COL_TASK_VARIANTS } from '../../collectionNames';
-import { TaskVariantModel, TaskVariantPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface CreateTaskVariantInputInterface extends Omit<TaskVariantModel, '_id'> {}
 
@@ -17,8 +16,8 @@ export async function createTaskVariant({
   input,
 }: DaoPropsInterface<CreateTaskVariantInputInterface>): Promise<TaskVariantPayloadModel> {
   try {
-    const { db } = await getDatabase();
-    const taskVariantsCollection = db.collection<TaskVariantModel>(COL_TASK_VARIANTS);
+    const collections = await getDbCollections();
+    const taskVariantsCollection = collections.taskVariantsCollection();
     const { getApiMessage } = await getRequestParams(context);
 
     // check permission

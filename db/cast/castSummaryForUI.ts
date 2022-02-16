@@ -1,15 +1,15 @@
-import { FILTER_SEPARATOR } from 'lib/config/common';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/treeUtils';
+import { castProductVariantForUI } from 'db/cast/castProductVariantForUI';
 import {
   AttributeInterface,
   BrandInterface,
   CategoryInterface,
   ProductAttributeInterface,
-  ProductVariantInterface,
   ProductSummaryInterface,
+  ProductVariantInterface,
 } from 'db/uiInterfaces';
-import { castProductVariantForUI } from './castProductVariantForUI';
+import { FILTER_SEPARATOR } from 'lib/config/common';
+import { getFieldStringLocale } from 'lib/i18n';
+import { getTreeFromList } from 'lib/treeUtils';
 
 interface CastProductForUI {
   summary: ProductSummaryInterface;

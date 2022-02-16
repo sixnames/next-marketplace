@@ -1,9 +1,8 @@
 import { FILTER_PAGE_KEY, FILTER_SEPARATOR, VIEWS_COUNTER_STEP } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
-import { COL_BLOG_ATTRIBUTES, COL_OPTIONS } from '../../collectionNames';
-import { BlogAttributeModel, BlogAttributePayloadModel, OptionModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { BlogAttributePayloadModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateBlogAttributeCountersInputInterface {
@@ -34,9 +33,9 @@ export async function updateBlogAttributeCounters({
       };
     }
 
-    const { db } = await getDatabase();
-    const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-    const blogAttributesCollection = db.collection<BlogAttributeModel>(COL_BLOG_ATTRIBUTES);
+    const collections = await getDbCollections();
+    const optionsCollection = collections.optionsCollection();
+    const blogAttributesCollection = collections.blogAttributesCollection();
 
     const { companySlug, sessionCity, filters } = input;
     const selectedAttributesSlugs: string[] = [];

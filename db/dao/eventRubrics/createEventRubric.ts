@@ -1,14 +1,14 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import { COL_EVENT_RUBRICS } from 'db/collectionNames';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import {
   EventRubricModel,
   EventRubricPayloadModel,
   GenderModel,
   TranslationModel,
 } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
+import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
@@ -40,8 +40,8 @@ export async function createEventRubric({
 }: DaoPropsInterface<CreateEventRubricInputInterface>): Promise<EventRubricPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const rubricsCollection = db.collection<EventRubricModel>(COL_EVENT_RUBRICS);
+    const collections = await getDbCollections();
+    const rubricsCollection = collections.eventRubricsCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

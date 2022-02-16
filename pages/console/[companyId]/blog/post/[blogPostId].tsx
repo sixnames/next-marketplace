@@ -1,7 +1,7 @@
-import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
-import * as React from 'react';
 import BlogPostsDetails from 'components/blog/BlogPostsDetails';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import WpTitle from 'components/WpTitle';
 import { getBlogPost } from 'db/ssr/blog/getBlogPost';
 import {
@@ -10,14 +10,14 @@ import {
   BlogPostInterface,
   CompanyInterface,
 } from 'db/uiInterfaces';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 
 interface BlogPostConsumerInterface {
   post: BlogPostInterface;

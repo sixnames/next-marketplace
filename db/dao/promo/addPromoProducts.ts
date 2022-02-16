@@ -1,11 +1,10 @@
-import { ObjectId } from 'mongodb';
+import { PromoProductModel, ShopProductModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { castUrlFilters } from 'lib/castUrlFilters';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_PROMO, COL_PROMO_PRODUCTS, COL_SHOP_PRODUCTS } from '../../collectionNames';
-import { PromoModel, PromoProductModel, ShopProductModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface AddPromoProductsInputInterface {
   promoId: string;
@@ -22,11 +21,11 @@ export async function addPromoProducts({
   context,
 }: DaoPropsInterface<AddPromoProductsInputInterface>) {
   try {
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
     const { getApiMessage } = await getRequestParams(context);
-    const promoCollection = db.collection<PromoModel>(COL_PROMO);
-    const promoProductsCollection = db.collection<PromoProductModel>(COL_PROMO_PRODUCTS);
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const promoCollection = collections.promoCollection();
+    const promoProductsCollection = collections.promoProductsCollection();
+    const shopProductsCollection = collections.shopProductsCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

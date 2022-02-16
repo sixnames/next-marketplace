@@ -1,12 +1,12 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import qs from 'qs';
-import { REQUEST_METHOD_GET } from 'lib/config/common';
 import {
   getRubricProductsList,
   GetRubricProductsListInputInterface,
 } from 'db/ssr/rubrics/getRubricProductsList';
 import { alwaysString } from 'lib/arrayUtils';
+import { REQUEST_METHOD_GET } from 'lib/config/common';
 import { getRequestParams } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
+import qs from 'qs';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // get list of rubrics

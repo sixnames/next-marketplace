@@ -1,10 +1,9 @@
-import { ObjectId } from 'mongodb';
+import { CartPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams } from 'lib/sessionHelpers';
-import { COL_CARTS } from '../../collectionNames';
-import { CartModel, CartPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 import { getSessionCart } from './getSessionCart';
 
 export interface DeleteCartProductInputInterface {
@@ -19,8 +18,8 @@ export async function deleteCartProduct({
   try {
     const { getApiMessage } = await getRequestParams(context);
     const cart = await getSessionCart({ context });
-    const { db } = await getDatabase();
-    const cartsCollection = db.collection<CartModel>(COL_CARTS);
+    const collections = await getDbCollections();
+    const cartsCollection = collections.cartsCollection();
     if (!cart) {
       return {
         success: false,

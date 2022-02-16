@@ -1,5 +1,14 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext } from 'next';
+import { COL_ATTRIBUTES } from 'db/collectionNames';
+import { ObjectIdModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import {
+  AttributesGroupInterface,
+  OptionInterface,
+  ProductAttributeInterface,
+  ProductAttributesGroupInterface,
+  ProductSummaryInterface,
+} from 'db/uiInterfaces';
+import { sortObjectsByField } from 'lib/arrayUtils';
 import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_NUMBER,
@@ -8,30 +17,21 @@ import {
   DEFAULT_COMPANY_SLUG,
   SORT_DESC,
 } from 'lib/config/common';
-import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext } from 'next';
 import { CmsProductAttributesPageInterface } from 'pages/cms/rubrics/[rubricSlug]/products/product/[productId]/attributes';
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS } from 'db/collectionNames';
-import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import {
-  AttributesGroupInterface,
-  OptionInterface,
-  ProductAttributeInterface,
-  ProductAttributesGroupInterface,
-  ProductSummaryInterface,
-} from 'db/uiInterfaces';
 
 export const getCmsProductAttributesPageSsr = async (
   context: GetServerSidePropsContext,
 ): Promise<CmsProductAttributesPageInterface | null> => {
   const { query } = context;
   const { productId, taskId } = query;
-  const { db } = await getDatabase();
-  const attributesGroupsCollection = db.collection<AttributesGroupInterface>(COL_ATTRIBUTES_GROUPS);
-  const optionsCollection = db.collection<OptionInterface>(COL_OPTIONS);
+  const collections = await getDbCollections();
+  const attributesGroupsCollection = collections.attributesGroupsCollection();
+  const optionsCollection = collections.optionsCollection();
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return null;

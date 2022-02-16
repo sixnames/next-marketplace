@@ -1,8 +1,8 @@
+import { LanguageModel } from 'db/dbModels';
+import { DEFAULT_CURRENCY, DEFAULT_LOCALE } from 'lib/config/common';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { createContext } from 'react';
-import { useRouter } from 'next/router';
-import { DEFAULT_CURRENCY, DEFAULT_LOCALE } from 'lib/config/common';
-import { LanguageModel } from 'db/dbModels';
 
 interface LocaleContextInterface {
   languagesList: LanguageModel[];

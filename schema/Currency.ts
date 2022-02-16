@@ -1,15 +1,14 @@
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { SORT_ASC } from '../lib/config/common';
-import { COL_COUNTRIES, COL_CURRENCIES } from '../db/collectionNames';
-import { CountryModel, CurrencyModel, CurrencyPayloadModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { CurrencyModel, CurrencyPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { SORT_ASC } from 'lib/config/common';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
-import { createCurrencySchema, updateCurrencySchema } from '../validation/currencySchema';
+} from 'lib/sessionHelpers';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { createCurrencySchema, updateCurrencySchema } from 'validation/currencySchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const Currency = objectType({
   name: 'Currency',
@@ -26,8 +25,8 @@ export const CurrencyQueries = extendType({
     t.nonNull.list.nonNull.field('getAllCurrencies', {
       type: 'Currency',
       resolve: async (): Promise<CurrencyModel[]> => {
-        const { db } = await getDatabase();
-        const currenciesCollection = db.collection<CurrencyModel>(COL_CURRENCIES);
+        const collections = await getDbCollections();
+        const currenciesCollection = collections.currenciesCollection();
         const currencies = await currenciesCollection
           .find(
             {},
@@ -106,8 +105,8 @@ export const CurrencyMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const currenciesCollection = db.collection<CurrencyModel>(COL_CURRENCIES);
+          const collections = await getDbCollections();
+          const currenciesCollection = collections.currenciesCollection();
           const { input } = args;
 
           // Check if currency already exist
@@ -176,8 +175,8 @@ export const CurrencyMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const currenciesCollection = db.collection<CurrencyModel>(COL_CURRENCIES);
+          const collections = await getDbCollections();
+          const currenciesCollection = collections.currenciesCollection();
           const { input } = args;
           const { currencyId, ...values } = input;
 
@@ -259,9 +258,9 @@ export const CurrencyMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const currenciesCollection = db.collection<CurrencyModel>(COL_CURRENCIES);
-          const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
+          const collections = await getDbCollections();
+          const currenciesCollection = collections.currenciesCollection();
+          const countriesCollection = collections.countriesCollection();
           const { _id } = args;
 
           // Check currency availability

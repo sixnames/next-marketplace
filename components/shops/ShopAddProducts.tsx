@@ -1,7 +1,6 @@
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useUserContext } from '../context/userContext';
 import {
   AppContentWrapperBreadCrumbs,
   CatalogueFilterAttributeInterface,
@@ -16,7 +15,6 @@ import {
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import { useReloadListener } from '../../hooks/useReloadListener';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import { alwaysArray } from '../../lib/arrayUtils';
 import { getNumWord } from '../../lib/i18n';
 import { getCmsCompanyLinks, getConsoleRubricLinks } from '../../lib/linkUtils';
@@ -25,11 +23,13 @@ import AppContentFilter from '../AppContentFilter';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
+import { useUserContext } from '../context/userContext';
 import Currency from '../Currency';
 import WpCheckbox from '../FormElements/Checkbox/WpCheckbox';
 import FormikInput from '../FormElements/Input/FormikInput';
 import FormikRouterSearch from '../FormElements/Search/FormikRouterSearch';
 import Inner from '../Inner';
+import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import WpLink from '../Link/WpLink';
 import Pager from '../Pager';
 import TableRowImage from '../TableRowImage';

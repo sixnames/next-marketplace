@@ -1,6 +1,6 @@
 import { CreateProductInputInterface } from 'db/dao/product/createProduct';
-import { ObjectId } from 'mongodb';
 import { GEO_POINT_TYPE } from 'lib/config/common';
+import { ObjectId } from 'mongodb';
 import { IpInfoInterface } from 'types/clientTypes';
 import { IconType } from 'types/iconTypes';
 import {

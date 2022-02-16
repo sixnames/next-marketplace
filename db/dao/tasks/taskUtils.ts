@@ -1,5 +1,3 @@
-import { DEFAULT_COMPANY_SLUG, ROLE_SLUG_ADMIN, TASK_STATE_PENDING } from 'lib/config/common';
-import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import { COL_TASKS } from 'db/collectionNames';
 import {
   JSONObjectModel,
@@ -9,7 +7,9 @@ import {
   TaskModel,
   TaskStateModel,
 } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
+import { DEFAULT_COMPANY_SLUG, ROLE_SLUG_ADMIN, TASK_STATE_PENDING } from 'lib/config/common';
+import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { getRoleRules, RoleRuleSlugType } from 'lib/roleRuleUtils';
 import { ObjectId } from 'mongodb';
@@ -57,8 +57,8 @@ export async function findTask({ taskId }: FindTaskInterface): Promise<TaskModel
   if (!taskId) {
     return null;
   }
-  const { db } = await getDatabase();
-  const tasksCollection = db.collection<TaskModel>(COL_TASKS);
+  const collections = await getDbCollections();
+  const tasksCollection = collections.tasksCollection();
   const task = await tasksCollection.findOne({
     _id: new ObjectId(taskId),
   });
@@ -81,8 +81,8 @@ export async function findOrCreateUserTask({
   companySlug,
 }: FindOrCreateUserTaskInterface): Promise<TaskModel | null> {
   try {
-    const { db } = await getDatabase();
-    const tasksCollection = db.collection<TaskModel>(COL_TASKS);
+    const collections = await getDbCollections();
+    const tasksCollection = collections.tasksCollection();
     let task = await findTask({
       taskId,
     });
@@ -136,8 +136,8 @@ export async function addTaskLogItem({
   prevStateEnum,
   taskId,
 }: AddTaskLogItemInterface): Promise<boolean> {
-  const { db } = await getDatabase();
-  const tasksCollection = db.collection<TaskModel>(COL_TASKS);
+  const collections = await getDbCollections();
+  const tasksCollection = collections.tasksCollection();
   const task = await tasksCollection.findOne({
     _id: new ObjectId(taskId),
   });

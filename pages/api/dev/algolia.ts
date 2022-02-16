@@ -1,5 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (_req: NextApiRequest, res: NextApiResponse) => {
   // const start = new Date().getTime();

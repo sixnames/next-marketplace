@@ -1,47 +1,19 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-import { CmsCompanyShopSyncErrorsPageInterface } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/sync-errors/[...filters]';
-import { COL_COMPANIES, COL_SHOPS } from 'db/collectionNames';
-import { ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getConsoleShopSsr } from 'db/ssr/shops/getConsoleShopSsr';
 import { getPaginatedNotSyncedProducts } from 'db/ssr/shops/getPaginatedNotSyncedProducts';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { CmsCompanyShopSyncErrorsPageInterface } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/sync-errors/[...filters]';
 
 export const getCmsCompanyShopSyncErrorsPageSsr = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CmsCompanyShopSyncErrorsPageInterface>> => {
-  const { db } = await getDatabase();
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const { query } = context;
   const { shopId } = query;
   const initialProps = await getAppInitialData({ context });
 
-  const shopAggregation = await shopsCollection
-    .aggregate([
-      {
-        $match: { _id: new ObjectId(`${shopId}`) },
-      },
-      {
-        $lookup: {
-          from: COL_COMPANIES,
-          as: 'company',
-          foreignField: '_id',
-          localField: 'companyId',
-        },
-      },
-      {
-        $addFields: {
-          company: {
-            $arrayElemAt: ['$company', 0],
-          },
-        },
-      },
-    ])
-    .toArray();
-  const shop = shopAggregation[0];
-
+  const shop = await getConsoleShopSsr(`${shopId}`);
   if (!initialProps.props || !shop) {
     return {
       notFound: true,

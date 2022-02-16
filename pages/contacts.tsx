@@ -1,16 +1,16 @@
 import { GetServerSidePropsContext, NextPage } from 'next';
 import * as React from 'react';
+import { useConfigContext } from '../components/context/configContext';
+import { useThemeContext } from '../components/context/themeContext';
 import Inner from '../components/Inner';
+import SiteLayout, { SiteLayoutProviderInterface } from '../components/layout/SiteLayout';
 import LinkEmail from '../components/Link/LinkEmail';
 import LinkPhone from '../components/Link/LinkPhone';
 import PageEditor from '../components/PageEditor';
 import Socials from '../components/Socials';
 import WpMap from '../components/WpMap';
 import WpTitle from '../components/WpTitle';
-import { useConfigContext } from '../components/context/configContext';
-import { useThemeContext } from '../components/context/themeContext';
 import { AddressModel } from '../db/dbModels';
-import SiteLayout, { SiteLayoutProviderInterface } from '../components/layout/SiteLayout';
 import { phoneToReadable } from '../lib/phoneUtils';
 import { getSiteInitialData } from '../lib/ssrUtils';
 

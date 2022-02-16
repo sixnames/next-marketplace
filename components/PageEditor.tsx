@@ -1,25 +1,24 @@
-import * as React from 'react';
-
+import type { ImageUploadType, Value } from '@react-page/editor';
 // editor
 import Editor, { ColorPickerField } from '@react-page/editor';
-import type { ImageUploadType, Value } from '@react-page/editor';
-import '@react-page/editor/lib/index.css';
-
-// plugins
-import spacer from '@react-page/plugins-spacer';
-import divider from '@react-page/plugins-divider';
-import slate, { pluginFactories } from '@react-page/plugins-slate';
-import '@react-page/plugins-slate/lib/index.css';
-
-import { imagePlugin } from '@react-page/plugins-image';
-import '@react-page/plugins-image/lib/index.css';
 
 import { Languages } from '@react-page/editor/lib/core/EditorStore';
 import { CellPlugin } from '@react-page/editor/lib/core/types/plugins';
+import '@react-page/editor/lib/index.css';
+import divider from '@react-page/plugins-divider';
+
+import { imagePlugin } from '@react-page/plugins-image';
+import '@react-page/plugins-image/lib/index.css';
+import slate, { pluginFactories } from '@react-page/plugins-slate';
+import '@react-page/plugins-slate/lib/index.css';
+
+// plugins
+import spacer from '@react-page/plugins-spacer';
 
 // video
 // import html5video from '@react-page/plugins-html5-video';
 import video from '@react-page/plugins-video';
+import * as React from 'react';
 import { PAGE_EDITOR_DEFAULT_VALUE } from '../lib/config/common';
 import { useLocaleContext } from './context/localeContext';
 

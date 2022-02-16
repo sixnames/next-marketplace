@@ -1,7 +1,7 @@
 import trim from 'trim';
-import { ALL_ALPHABETS, GENDER_ENUMS, GENDER_HE } from './config/common';
 import { AlphabetListModelType, OptionVariantsModel, TranslationModel } from '../db/dbModels';
 import { OptionInterface } from '../db/uiInterfaces';
+import { ALL_ALPHABETS, GENDER_ENUMS, GENDER_HE } from './config/common';
 import { getFieldStringLocale, trimTranslationField } from './i18n';
 import { noNaN } from './numbers';
 

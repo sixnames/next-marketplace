@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { useRouter } from 'next/router';
+import CmsNavItem from 'components/layout/cms/CmsNavItem';
 import { NavItemModel } from 'db/dbModels';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { UseCompactReturnInterface } from 'hooks/useCompact';
-import CmsNavItem from 'components/layout/cms/CmsNavItem';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 interface AppNavInterface {
   compact: UseCompactReturnInterface;

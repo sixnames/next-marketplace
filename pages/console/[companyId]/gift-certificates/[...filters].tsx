@@ -1,15 +1,15 @@
-import { NextPage } from 'next';
-import * as React from 'react';
 import ConsoleGiftCertificatesList, {
   ConsoleGiftCertificatesListInterface,
 } from 'components/console/ConsoleGiftCertificatesList';
 import Inner from 'components/Inner';
-import WpTitle from 'components/WpTitle';
-import { getConsoleGiftCertificatesPageSsr } from 'db/ssr/company/getConsoleGiftCertificatesPageSsr';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import WpTitle from 'components/WpTitle';
+import { getConsoleGiftCertificatesPageSsr } from 'db/ssr/company/getConsoleGiftCertificatesPageSsr';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { NextPage } from 'next';
+import * as React from 'react';
 
 interface CompanyGiftCertificatesConsumerInterface extends ConsoleGiftCertificatesListInterface {}
 

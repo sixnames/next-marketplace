@@ -1,11 +1,3 @@
-import { alwaysString } from 'lib/arrayUtils';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import {
-  BRAND_COLLECTION_OPTIONS_MODAL,
-  BRAND_OPTIONS_MODAL,
-  MANUFACTURER_OPTIONS_MODAL,
-} from 'lib/config/modalVariants';
 import { useAppContext } from 'components/context/appContext';
 import { useNotificationsContext } from 'components/context/notificationsContext';
 import {
@@ -19,6 +11,14 @@ import {
   useUpdateProductBrandCollection,
   useUpdateProductManufacturer,
 } from 'hooks/mutations/useProductMutations';
+import { alwaysString } from 'lib/arrayUtils';
+import {
+  BRAND_COLLECTION_OPTIONS_MODAL,
+  BRAND_OPTIONS_MODAL,
+  MANUFACTURER_OPTIONS_MODAL,
+} from 'lib/config/modalVariants';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import FakeInput from '../FormElements/Input/FakeInput';
 import InputLine from '../FormElements/Input/InputLine';
 import Inner from '../Inner';

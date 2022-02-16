@@ -1,44 +1,45 @@
-import { ObjectId } from 'mongodb';
+import {
+  CategoryModel,
+  ObjectIdModel,
+  OptionModel,
+  ProductSummaryAttributeModel,
+  ProductSummaryModel,
+  ProductVariantModel,
+} from 'db/dbModels';
+import { OptionInterface, ProductAttributeInterface } from 'db/uiInterfaces';
 import {
   ASSETS_DIST_PRODUCTS,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
-  ATTRIBUTE_VARIANT_SELECT,
-  FILTER_SEPARATOR,
-  CATEGORY_SLUG_PREFIX,
-  ID_COUNTER_DIGITS,
-  GENDER_IT,
   ATTRIBUTE_VARIANT_NUMBER,
+  ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
+  CATEGORY_SLUG_PREFIX,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
+  FILTER_SEPARATOR,
+  GENDER_IT,
+  ID_COUNTER_DIGITS,
 } from 'lib/config/common';
-import {
-  ObjectIdModel,
-  OptionModel,
-  ProductSummaryModel,
-  ProductSummaryAttributeModel,
-  CategoryModel,
-  ProductVariantModel,
-} from 'db/dbModels';
-import { getObjectId } from 'mongo-seeding';
-import { OptionInterface, ProductAttributeInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
 import {
   generateCardTitle,
   GenerateCardTitleInterface,
   generateSnippetTitle,
 } from 'lib/titleUtils';
 import { getTreeFromList } from 'lib/treeUtils';
-const addZero = require('add-zero');
+import { getObjectId } from 'mongo-seeding';
+import { ObjectId } from 'mongodb';
+import attributes from '../attributes/attributes';
+import brandCollections from '../brandCollections/brandCollections';
+import brands from '../brands/brands';
+import categories from '../categories/categories';
+import manufacturers from '../manufacturers/manufacturers';
+import options from '../options/options';
 import rubrics from '../rubrics/rubrics';
 import rubricVariants from '../rubricVariants/rubricVariants';
-import options from '../options/options';
-import attributes from '../attributes/attributes';
-import manufacturers from '../manufacturers/manufacturers';
-import brands from '../brands/brands';
-import brandCollections from '../brandCollections/brandCollections';
-import categories from '../categories/categories';
-import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
+
+const addZero = require('add-zero');
 
 const attributeText = `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi debitis eligendi eum, excepturi iure libero molestias quas quis ratione reiciendis sed sequi sint sit! Architecto minus modi officia provident voluptates.`;
 

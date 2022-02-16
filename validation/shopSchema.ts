@@ -1,6 +1,4 @@
-import * as Yup from 'yup';
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
-import { productIdSchema } from './productSchema';
 import {
   addressSchema,
   contactsInputSchema,
@@ -8,6 +6,8 @@ import {
   requiredNumberSchema,
   requiredStringSchema,
 } from 'validation/utils/schemaTemplates';
+import * as Yup from 'yup';
+import { productIdSchema } from './productSchema';
 
 export const shopIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.shops.id' });

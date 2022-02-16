@@ -1,19 +1,18 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_BLOG_ATTRIBUTES } from '../../collectionNames';
-import { BlogAttributeModel, BlogAttributePayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { BlogAttributePayloadModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 
 export interface DeleteBlogAttributeInputInterface {
   _id: string;
 }
 
 export async function deleteBlogAttribute(req: NextApiRequest, res: NextApiResponse) {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const { getApiMessage } = await getRequestParams({ req, res });
-  const blogAttributesCollection = db.collection<BlogAttributeModel>(COL_BLOG_ATTRIBUTES);
+  const blogAttributesCollection = collections.blogAttributesCollection();
   const args = JSON.parse(req.body) as DeleteBlogAttributeInputInterface;
 
   let payload: BlogAttributePayloadModel = {

@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { UserInterface } from 'db/uiInterfaces';
+import * as React from 'react';
 
 interface UserContextInterface {
   sessionUser?: UserInterface | null;

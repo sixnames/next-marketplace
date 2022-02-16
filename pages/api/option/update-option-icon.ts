@@ -1,13 +1,12 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import fs from 'fs';
-import { COL_ICONS, COL_OPTIONS } from 'db/collectionNames';
-import { IconModel, OptionModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { COL_OPTIONS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import { getApiMessageValue } from 'db/utils/apiMessageUtils';
+import fs from 'fs';
 import { alwaysArray } from 'lib/arrayUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export const config = {
   api: {
@@ -16,9 +15,9 @@ export const config = {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { db } = await getDatabase();
-  const iconsCollection = db.collection<IconModel>(COL_ICONS);
-  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+  const collections = await getDbCollections();
+  const iconsCollection = collections.iconsCollection();
+  const optionsCollection = collections.optionsCollection();
   const formData = await parseRestApiFormData(req);
   const { locale } = req.cookies;
 

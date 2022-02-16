@@ -1,42 +1,3 @@
-import { ISR_ONE_WEEK, ISR_SIX_MONTHS } from 'lib/config/common';
-import {
-  AttributeModel,
-  BlogAttributeModel,
-  BrandCollectionModel,
-  BrandModel,
-  CartModel,
-  CategoryModel,
-  CityModel,
-  CompanyModel,
-  ConfigModel,
-  ManufacturerModel,
-  OptionModel,
-  OrderCustomerModel,
-  OrderLogModel,
-  OrderModel,
-  OrderProductModel,
-  RubricModel,
-  ShopModel,
-  SupplierModel,
-  UserModel,
-  UserCategoryModel,
-  PromoModel,
-  PromoProductModel,
-  SupplierProductModel,
-  SeoContentModel,
-  BlackListProductModel,
-  PromoCodeModel,
-  GiftCertificateModel,
-  UserPaybackLogModel,
-  UserCashbackLogModel,
-  ShopProductModel,
-  ProductFacetModel,
-  ProductSummaryModel,
-  CatalogueNavModel,
-  SessionLogModel,
-  TaskModel,
-  TaskVariantModel,
-} from 'db/dbModels';
 import {
   COL_ATTRIBUTES,
   COL_BLACKLIST_PRODUCTS,
@@ -45,6 +6,7 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CARTS,
+  COL_CATALOGUE_NAV,
   COL_CATEGORIES,
   COL_CITIES,
   COL_COMPANIES,
@@ -56,28 +18,29 @@ import {
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,
   COL_ORDERS,
+  COL_PRODUCT_FACETS,
+  COL_PRODUCT_SUMMARIES,
   COL_PROMO,
   COL_PROMO_CODES,
   COL_PROMO_PRODUCTS,
   COL_RUBRICS,
   COL_SEO_CONTENTS,
+  COL_SESSION_LOGS,
+  COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_SUPPLIER_PRODUCTS,
   COL_SUPPLIERS,
-  COL_USER_CASHBACK_LOGS,
+  COL_TASK_VARIANTS,
+  COL_TASKS,
   COL_USER_CATEGORIES,
   COL_USER_PAYBACK_LOGS,
   COL_USERS,
-  COL_SHOP_PRODUCTS,
-  COL_PRODUCT_FACETS,
-  COL_PRODUCT_SUMMARIES,
-  COL_CATALOGUE_NAV,
-  COL_SESSION_LOGS,
-  COL_TASKS,
-  COL_TASK_VARIANTS,
 } from 'db/collectionNames';
+import { generateDbCollections } from 'db/mongodb';
+import { ISR_ONE_WEEK, ISR_SIX_MONTHS } from 'lib/config/common';
 import { Db, MongoClient } from 'mongodb';
 import path from 'path';
+
 require('dotenv').config();
 
 export interface GetProdDd {
@@ -142,7 +105,9 @@ export const dbsConfig: GetProdDd[] = [
   },*/
 ];
 
-export async function updateIndexes(db: Db) {
+export async function updateIndexes(db: Db, client: MongoClient) {
+  const collections = generateDbCollections({ db, client });
+
   async function createCollectionIfNotExist(name: string) {
     const collectionsResult = await db
       .listCollections(
@@ -162,7 +127,7 @@ export async function updateIndexes(db: Db) {
 
   // Options
   await createCollectionIfNotExist(COL_OPTIONS);
-  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+  const optionsCollection = collections.optionsCollection();
   await optionsCollection.createIndex({ slug: 1 }, { unique: true });
   await optionsCollection.createIndex({ parentId: 1, views: -1, _id: -1 });
   await optionsCollection.createIndex({
@@ -181,18 +146,18 @@ export async function updateIndexes(db: Db) {
 
   // Logs
   await createCollectionIfNotExist(COL_SESSION_LOGS);
-  const sessionLogsCollection = db.collection<SessionLogModel>(COL_SESSION_LOGS);
+  const sessionLogsCollection = collections.sessionLogsCollection();
   await sessionLogsCollection.createIndex({ companySlug: 1, citySlug: 1 });
   await sessionLogsCollection.createIndex({ userId: 1 });
 
   // Carts
   await createCollectionIfNotExist(COL_CARTS);
-  const cartsCollection = db.collection<CartModel>(COL_CARTS);
+  const cartsCollection = collections.cartsCollection();
   await cartsCollection.createIndex({ updatedAt: 1 }, { expireAfterSeconds: ISR_ONE_WEEK });
 
   // Tasks
   await createCollectionIfNotExist(COL_TASKS);
-  const tasksCollection = db.collection<TaskModel>(COL_TASKS);
+  const tasksCollection = collections.tasksCollection();
   await tasksCollection.createIndex({
     companySlug: 1,
     variantId: 1,
@@ -205,35 +170,35 @@ export async function updateIndexes(db: Db) {
 
   // Task variants
   await createCollectionIfNotExist(COL_TASK_VARIANTS);
-  const taskVariantsCollection = db.collection<TaskVariantModel>(COL_TASK_VARIANTS);
+  const taskVariantsCollection = collections.taskVariantsCollection();
   await taskVariantsCollection.createIndex({ companySlug: 1, _id: 1 });
 
   // Seo contents
   await createCollectionIfNotExist(COL_SEO_CONTENTS);
-  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  const seoContentsCollection = collections.seoContentsCollection();
   await seoContentsCollection.createIndex({ slug: 1 }, { unique: true });
   await seoContentsCollection.createIndex({ companySlug: 1, rubricSlug: 1, content: 1 });
 
   // Blacklist
   await createCollectionIfNotExist(COL_BLACKLIST_PRODUCTS);
-  const blacklistProductsCollection = db.collection<BlackListProductModel>(COL_BLACKLIST_PRODUCTS);
+  const blacklistProductsCollection = collections.blackListProductsCollection();
   await blacklistProductsCollection.createIndex({ shopId: 1 });
   await blacklistProductsCollection.createIndex({ shopProductId: 1 });
 
   // Users
   await createCollectionIfNotExist(COL_USERS);
-  const usersCollection = db.collection<UserModel>(COL_USERS);
+  const usersCollection = collections.usersCollection();
   await usersCollection.createIndex({ email: 1 }, { unique: true });
   await usersCollection.createIndex({ roleId: 1 });
 
   // User categories
   await createCollectionIfNotExist(COL_USER_CATEGORIES);
-  const userCategoriesCollection = db.collection<UserCategoryModel>(COL_USER_CATEGORIES);
+  const userCategoriesCollection = collections.userCategoriesCollection();
   await userCategoriesCollection.createIndex({ companyId: 1 });
 
   // Brands
   await createCollectionIfNotExist(COL_BRANDS);
-  const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
+  const brandsCollection = collections.brandsCollection();
   await brandsCollection.createIndex({ itemId: 1 }, { unique: true });
   await brandsCollection.createIndex({
     itemId: -1,
@@ -243,7 +208,7 @@ export async function updateIndexes(db: Db) {
 
   // Brand collections
   await createCollectionIfNotExist(COL_BRAND_COLLECTIONS);
-  const brandCollectionsCollection = db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
+  const brandCollectionsCollection = collections.brandCollectionsCollection();
   await brandCollectionsCollection.createIndex({ itemId: 1 }, { unique: true });
   await brandCollectionsCollection.createIndex({ brandId: 1 });
   await brandCollectionsCollection.createIndex({
@@ -254,7 +219,7 @@ export async function updateIndexes(db: Db) {
 
   // Manufacturers
   await createCollectionIfNotExist(COL_MANUFACTURERS);
-  const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
+  const manufacturersCollection = collections.manufacturersCollection();
   await manufacturersCollection.createIndex({ itemId: 1 }, { unique: true });
   await manufacturersCollection.createIndex({
     itemId: -1,
@@ -264,7 +229,7 @@ export async function updateIndexes(db: Db) {
 
   // Suppliers
   await createCollectionIfNotExist(COL_SUPPLIERS);
-  const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
+  const suppliersCollection = collections.suppliersCollection();
   await suppliersCollection.createIndex({ itemId: 1 }, { unique: true });
   await suppliersCollection.createIndex({
     itemId: -1,
@@ -274,7 +239,7 @@ export async function updateIndexes(db: Db) {
 
   // Supplier products
   await createCollectionIfNotExist(COL_SUPPLIER_PRODUCTS);
-  const supplierProductsCollection = db.collection<SupplierProductModel>(COL_SUPPLIER_PRODUCTS);
+  const supplierProductsCollection = collections.supplierProductsCollection();
   await supplierProductsCollection.createIndex({ supplierId: 1, shopProductId: 1, price: -1 });
   await supplierProductsCollection.createIndex({ shopProductId: 1, price: -1 });
   await supplierProductsCollection.createIndex({ companySlug: 1, shopId: 1, price: -1 });
@@ -283,7 +248,7 @@ export async function updateIndexes(db: Db) {
 
   // Blog posts
   await createCollectionIfNotExist(COL_BLOG_POSTS);
-  const blogPostsCollection = db.collection<BlogAttributeModel>(COL_BLOG_POSTS);
+  const blogPostsCollection = collections.blogPostsCollection();
   await blogPostsCollection.createIndex({ companySlug: 1, slug: 1 }, { unique: true });
   await blogPostsCollection.createIndex({
     companySlug: 1,
@@ -301,12 +266,12 @@ export async function updateIndexes(db: Db) {
 
   // Blog attributes
   await createCollectionIfNotExist(COL_BLOG_ATTRIBUTES);
-  const blogAttributesCollection = db.collection<BlogAttributeModel>(COL_BLOG_ATTRIBUTES);
+  const blogAttributesCollection = collections.blogAttributesCollection();
   await blogAttributesCollection.createIndex({ slug: 1 }, { unique: true });
 
   // User Cashback Log
   await createCollectionIfNotExist(COL_USER_PAYBACK_LOGS);
-  const userCashbackLogsCollection = db.collection<UserCashbackLogModel>(COL_USER_CASHBACK_LOGS);
+  const userCashbackLogsCollection = collections.userCashbackLogsCollection();
   await userCashbackLogsCollection.createIndex({ userId: 1, createdAt: 1 });
   await userCashbackLogsCollection.createIndex({ companyId: 1, userId: 1, createdAt: 1 });
   await userCashbackLogsCollection.createIndex({ companyId: 1, createdAt: 1 });
@@ -315,7 +280,7 @@ export async function updateIndexes(db: Db) {
 
   // User Payback Log
   await createCollectionIfNotExist(COL_USER_PAYBACK_LOGS);
-  const userPaybackLogsCollection = db.collection<UserPaybackLogModel>(COL_USER_PAYBACK_LOGS);
+  const userPaybackLogsCollection = collections.userPaybackLogsCollection();
   await userPaybackLogsCollection.createIndex({ userId: 1, createdAt: 1 });
   await userPaybackLogsCollection.createIndex({ companyId: 1, userId: 1, createdAt: 1 });
   await userPaybackLogsCollection.createIndex({ companyId: 1, createdAt: 1 });
@@ -324,7 +289,7 @@ export async function updateIndexes(db: Db) {
 
   // Gift Certificate
   await createCollectionIfNotExist(COL_GIFT_CERTIFICATES);
-  const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
+  const giftCertificatesCollection = collections.giftCertificatesCollection();
   await giftCertificatesCollection.createIndex({ userId: 1, createdAt: 1 });
   await giftCertificatesCollection.createIndex({ companyId: 1, userId: 1, createdAt: 1 });
   await giftCertificatesCollection.createIndex({ companyId: 1, createdAt: 1 });
@@ -334,14 +299,14 @@ export async function updateIndexes(db: Db) {
 
   // Promo
   await createCollectionIfNotExist(COL_PROMO);
-  const promoCollection = db.collection<PromoModel>(COL_PROMO);
+  const promoCollection = collections.promoCollection();
   await promoCollection.createIndex({ slug: 1 }, { unique: true });
   await promoCollection.createIndex({ shopId: 1 });
   await promoCollection.createIndex({ companyId: 1, shopId: 1 });
 
   // Promo codes
   await createCollectionIfNotExist(COL_PROMO_CODES);
-  const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
+  const promoCodesCollection = collections.promoCodesCollection();
   await promoCodesCollection.createIndex({ companyId: 1 });
   await promoCodesCollection.createIndex({ companySlug: 1 });
   await promoCodesCollection.createIndex({ promoId: 1 });
@@ -350,7 +315,7 @@ export async function updateIndexes(db: Db) {
 
   // Promo products
   await createCollectionIfNotExist(COL_PROMO_PRODUCTS);
-  const promoProductsCollection = db.collection<PromoProductModel>(COL_PROMO_PRODUCTS);
+  const promoProductsCollection = collections.promoProductsCollection();
   await promoProductsCollection.createIndex({ promoId: 1 });
   await promoProductsCollection.createIndex({ shopId: 1 });
   await promoProductsCollection.createIndex({ companyId: 1 });
@@ -360,43 +325,43 @@ export async function updateIndexes(db: Db) {
 
   // Rubrics
   await createCollectionIfNotExist(COL_RUBRICS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const rubricsCollection = collections.rubricsCollection();
   await rubricsCollection.createIndex({ slug: 1 }, { unique: true });
 
   // Categories
   await createCollectionIfNotExist(COL_CATEGORIES);
-  const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+  const categoriesCollection = collections.categoriesCollection();
   await categoriesCollection.createIndex({ slug: 1 }, { unique: true });
   await categoriesCollection.createIndex({ rubricId: 1 });
   await categoriesCollection.createIndex({ rubricId: 1, parentId: 1 });
 
   // Attributes
   await createCollectionIfNotExist(COL_ATTRIBUTES);
-  const rubricAttributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+  const rubricAttributesCollection = collections.attributesCollection();
   await rubricAttributesCollection.createIndex({ attributesGroupId: 1, slug: 1 });
   await rubricAttributesCollection.createIndex({ attributesGroupId: 1 });
 
   // Configs
   await createCollectionIfNotExist(COL_CONFIGS);
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const configsCollection = collections.configsCollection();
   await configsCollection.createIndex({ slug: 1 });
   await configsCollection.createIndex({ companySlug: 1 });
   await configsCollection.createIndex({ companySlug: 1, group: 1 });
 
   // Cities
   await createCollectionIfNotExist(COL_CITIES);
-  const citiesCollection = db.collection<CityModel>(COL_CITIES);
+  const citiesCollection = collections.citiesCollection();
   await citiesCollection.createIndex({ slug: 1 });
   await citiesCollection.createIndex({ countryId: 1 });
 
   // Companies
   await createCollectionIfNotExist(COL_COMPANIES);
-  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  const companiesCollection = collections.companiesCollection();
   await companiesCollection.createIndex({ domain: 1 });
 
   // Shops
   await createCollectionIfNotExist(COL_SHOPS);
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const shopsCollection = collections.shopsCollection();
   await shopsCollection.createIndex({ companyId: 1 });
   await shopsCollection.createIndex({ slug: 1 });
   await shopsCollection.createIndex({ name: 1 });
@@ -405,7 +370,7 @@ export async function updateIndexes(db: Db) {
 
   // Orders
   await createCollectionIfNotExist(COL_ORDERS);
-  const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
+  const ordersCollection = collections.ordersCollection();
   await ordersCollection.createIndex({ userId: 1, _id: -1 });
   await ordersCollection.createIndex({ customerId: 1, _id: -1 });
   await ordersCollection.createIndex({ productIds: 1, _id: -1 });
@@ -421,13 +386,13 @@ export async function updateIndexes(db: Db) {
 
   // Orders customer
   await createCollectionIfNotExist(COL_ORDER_CUSTOMERS);
-  const orderCustomersCollection = db.collection<OrderCustomerModel>(COL_ORDER_CUSTOMERS);
-  await orderCustomersCollection.createIndex({ userId: 1, _id: -1 });
-  await orderCustomersCollection.createIndex({ orderId: 1, _id: -1 });
+  const ordersCustomersCollection = collections.ordersCustomersCollection();
+  await ordersCustomersCollection.createIndex({ userId: 1, _id: -1 });
+  await ordersCustomersCollection.createIndex({ orderId: 1, _id: -1 });
 
   // Orders products
   await createCollectionIfNotExist(COL_ORDER_PRODUCTS);
-  const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
+  const orderProductsCollection = collections.ordersProductsCollection();
   await orderProductsCollection.createIndex({ productId: 1, _id: -1 });
   await orderProductsCollection.createIndex({ shopProductId: 1, _id: -1 });
   await orderProductsCollection.createIndex({ shopId: 1, _id: -1 });
@@ -436,7 +401,7 @@ export async function updateIndexes(db: Db) {
 
   // Orders logs
   await createCollectionIfNotExist(COL_ORDER_LOGS);
-  const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
+  const orderLogsCollection = collections.ordersLogsCollection();
   await orderLogsCollection.createIndex({ orderId: 1, _id: -1 });
   await orderLogsCollection.createIndex({ userId: 1, _id: -1 });
   await orderLogsCollection.createIndex({ variant: 1, _id: -1 });
@@ -472,7 +437,7 @@ export async function updateIndexes(db: Db) {
 
   // Catalogue nav
   await createCollectionIfNotExist(COL_CATALOGUE_NAV);
-  const catalogueNavCollection = db.collection<CatalogueNavModel>(COL_CATALOGUE_NAV);
+  const catalogueNavCollection = collections.catalogueNavCollection();
   await catalogueNavCollection.createIndex(
     {
       companySlug: 1,
@@ -485,7 +450,7 @@ export async function updateIndexes(db: Db) {
 
   // Shop products
   await createCollectionIfNotExist(COL_SHOP_PRODUCTS);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const shopProductsCollection = collections.shopProductsCollection();
 
   // card for company domain
   await shopProductsCollection.createIndex({
@@ -590,7 +555,7 @@ export async function updateIndexes(db: Db) {
 
   // Facets
   await createCollectionIfNotExist(COL_PRODUCT_FACETS);
-  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+  const productFacetsCollection = collections.productFacetsCollection();
   await productFacetsCollection.createIndex(productsFilterFull);
   await productFacetsCollection.createIndex(productsFilterNoBrandCollection);
   await productFacetsCollection.createIndex(productsFilterWithBrandNoFilters);
@@ -599,7 +564,7 @@ export async function updateIndexes(db: Db) {
 
   // Summaries
   await createCollectionIfNotExist(COL_PRODUCT_SUMMARIES);
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+  const productSummariesCollection = collections.productSummariesCollection();
   await productSummariesCollection.createIndex(
     {
       slug: 1,

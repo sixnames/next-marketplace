@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useAppContext } from '../context/appContext';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import ModalButtons from './ModalButtons';
 import ModalFrame from './ModalFrame';
 import ModalText from './ModalText';

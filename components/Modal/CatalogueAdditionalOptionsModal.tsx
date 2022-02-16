@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { ALL_ALPHABETS, FILTER_PAGE_KEY, FILTER_SEPARATOR } from '../../lib/config/common';
-import { useAppContext } from '../context/appContext';
 import { AlphabetListModelType } from '../../db/dbModels';
 import { CatalogueFilterAttributeOptionInterface } from '../../db/uiInterfaces';
 import { alwaysArray } from '../../lib/arrayUtils';
+import { ALL_ALPHABETS, FILTER_PAGE_KEY, FILTER_SEPARATOR } from '../../lib/config/common';
 import { noNaN } from '../../lib/numbers';
+import { useAppContext } from '../context/appContext';
 import OptionsModal, { OptionsModalInterface } from './OptionsModal';
 
 interface GetFilterOptionsAlphabetListInterface {

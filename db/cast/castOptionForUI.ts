@@ -1,6 +1,6 @@
-import { getFieldStringLocale } from 'lib/i18n';
 import { GenderModel } from 'db/dbModels';
 import { OptionInterface } from 'db/uiInterfaces';
+import { getFieldStringLocale } from 'lib/i18n';
 
 interface CastOptionForUI {
   option: OptionInterface;

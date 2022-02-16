@@ -1,4 +1,7 @@
-import { ObjectId } from 'mongodb';
+import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
+import { ProductPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { IMAGE_FALLBACK } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
@@ -9,11 +12,8 @@ import {
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
+import { ObjectId } from 'mongodb';
 import { updateProductSchema } from 'validation/productSchema';
-import { COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from '../../collectionNames';
-import { ProductFacetModel, ProductPayloadModel, ProductSummaryModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
 import { CreateProductInputInterface } from './createProduct';
 
 export interface CopyProductInputInterface extends CreateProductInputInterface {
@@ -25,11 +25,11 @@ export async function copyProduct({
   context,
 }: DaoPropsInterface<CopyProductInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+  const collections = await getDbCollections();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const productFacetsCollection = collections.productFacetsCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ProductPayloadModel = {
     success: false,

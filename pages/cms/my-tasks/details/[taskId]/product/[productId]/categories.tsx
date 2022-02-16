@@ -1,24 +1,19 @@
 import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProductCategories';
-import { TASK_VARIANT_SLUG_PRODUCT_CATEGORIES } from 'lib/config/constantSelects';
-import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import CmsTaskProductLayout, {
   CmsTaskProductLayoutInterface,
 } from 'components/layout/cms/CmsTaskProductLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { getDbCollections } from 'db/mongodb';
+import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
+import { AppContentWrapperBreadCrumbs, ProductCategoryInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { COL_CATEGORIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  CategoryInterface,
-  ProductCategoryInterface,
-} from 'db/uiInterfaces';
+import { TASK_VARIANT_SLUG_PRODUCT_CATEGORIES } from 'lib/config/constantSelects';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { getTreeFromList } from 'lib/treeUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface ProductCategoriesInterface extends CmsTaskProductLayoutInterface {
   categoriesTree: ProductCategoryInterface[];
@@ -67,8 +62,8 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { productId } = query;
-  const { db } = await getDatabase();
-  const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
+  const collections = await getDbCollections();
+  const categoriesCollection = collections.categoriesCollection();
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {

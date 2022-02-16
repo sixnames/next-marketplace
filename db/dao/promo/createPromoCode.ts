@@ -1,21 +1,15 @@
-import { ObjectId } from 'mongodb';
+import { PromoCodePayloadModel, TranslationModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
-import { createPromoCodeSchema } from 'validation/promoSchema';
-import { COL_PROMO, COL_PROMO_CODES } from '../../collectionNames';
-import {
-  PromoCodeModel,
-  PromoCodePayloadModel,
-  PromoModel,
-  TranslationModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 import trim from 'trim';
+import { createPromoCodeSchema } from 'validation/promoSchema';
 
 export interface CreatePromoCodeInputInterface {
   promoId: string;
@@ -29,7 +23,7 @@ export async function createPromoCode({
 }: DaoPropsInterface<CreatePromoCodeInputInterface>): Promise<PromoCodePayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
 
     // permission
     const { allow, message } = await getOperationPermission({
@@ -59,7 +53,7 @@ export async function createPromoCode({
     await validationSchema.validate(input);
 
     // get promo
-    const promoCollection = db.collection<PromoModel>(COL_PROMO);
+    const promoCollection = collections.promoCollection();
     const promo = await promoCollection.findOne({
       _id: new ObjectId(input.promoId),
     });
@@ -71,7 +65,7 @@ export async function createPromoCode({
     }
 
     // check code intersects
-    const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
+    const promoCodesCollection = collections.promoCodesCollection();
     const exist = await promoCodesCollection.findOne({
       promoId: promo._id,
       code: input.code,

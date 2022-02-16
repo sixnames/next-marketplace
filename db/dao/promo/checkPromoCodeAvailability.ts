@@ -1,17 +1,10 @@
-import { ObjectId } from 'mongodb';
-import trim from 'trim';
+import { ObjectIdModel, PayloadType } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface, PromoCodeInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams } from 'lib/sessionHelpers';
-import { COL_CARTS, COL_PROMO_CODES, COL_PROMO_PRODUCTS } from '../../collectionNames';
-import {
-  CartModel,
-  ObjectIdModel,
-  PayloadType,
-  PromoCodeModel,
-  PromoProductModel,
-} from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface, PromoCodeInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
+import trim from 'trim';
 
 export interface CheckPromoCodeAvailabilityPayloadInterface {
   promoCode: PromoCodeInterface;
@@ -35,10 +28,10 @@ export async function checkPromoCodeAvailability({
 }: DaoPropsInterface<CheckPromoCodeAvailabilityInputInterface>): Promise<CheckPromoCodeAvailabilityPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
-    const promoProductsCollection = db.collection<PromoProductModel>(COL_PROMO_PRODUCTS);
-    const cartsCollection = db.collection<CartModel>(COL_CARTS);
+    const collections = await getDbCollections();
+    const promoCodesCollection = collections.promoCodesCollection();
+    const promoProductsCollection = collections.promoProductsCollection();
+    const cartsCollection = collections.cartsCollection();
 
     // check input
     if (!input) {

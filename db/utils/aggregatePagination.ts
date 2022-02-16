@@ -1,4 +1,5 @@
-import { AggregateOptions } from 'mongodb';
+import { PaginationInputModel, PaginationPayloadType } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import {
   DEFAULT_PAGE,
   PAGINATION_DEFAULT_LIMIT,
@@ -6,8 +7,7 @@ import {
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
 } from 'lib/config/common';
-import { PaginationInputModel, PaginationPayloadType } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { AggregateOptions } from 'mongodb';
 
 interface CastPaginationInputPayload {
   search?: string | null;
@@ -62,7 +62,7 @@ export async function aggregatePagination<TModel>({
   citySlug,
 }: AggregatePaginationPropsInterface): Promise<PaginationPayloadType<TModel>> {
   try {
-    const { db } = await getDatabase();
+    const { db } = await getDbCollections();
     const { page, sortDir, sortBy, limit, skip } = castPaginationInput(input);
 
     const aggregated = await db

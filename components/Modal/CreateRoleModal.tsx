@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { useAppContext } from '../context/appContext';
+import * as React from 'react';
 import { CreateRoleInput } from '../../generated/apolloComponents';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { createRoleSchema } from '../../validation/roleSchema';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import RoleMainFields from '../FormTemplates/RoleMainFields';
 import ModalButtons from './ModalButtons';
 import ModalFrame from './ModalFrame';

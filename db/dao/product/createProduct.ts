@@ -1,27 +1,14 @@
-import { ObjectId } from 'mongodb';
+import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
+import { GenderModel, ProductPayloadModel, TranslationModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { DEFAULT_LOCALE, IMAGE_FALLBACK } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
-import {
-  COL_PRODUCT_FACETS,
-  COL_PRODUCT_SUMMARIES,
-  COL_RUBRIC_VARIANTS,
-  COL_RUBRICS,
-} from 'db/collectionNames';
-import {
-  GenderModel,
-  ProductFacetModel,
-  ProductPayloadModel,
-  ProductSummaryModel,
-  RubricModel,
-  RubricVariantModel,
-  TranslationModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface CreateProductInputInterface {
   active: boolean;
@@ -39,13 +26,13 @@ export async function createProduct({
   input,
 }: DaoPropsInterface<CreateProductInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const rubricVariantCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
+  const collections = await getDbCollections();
+  const productFacetsCollection = collections.productFacetsCollection();
+  const productSummariesCollection = collections.productSummariesCollection();
+  const rubricsCollection = collections.rubricsCollection();
+  const rubricVariantCollection = collections.rubricVariantsCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ProductPayloadModel = {
     success: false,

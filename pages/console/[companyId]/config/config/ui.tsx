@@ -1,20 +1,20 @@
-import { getConfigPageData } from 'db/ssr/configs/getConfigPageData';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
 import ConfigsFormTemplate, {
   ConfigsFormTemplateInterface,
 } from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
-import { CONFIG_GROUP_UI } from 'lib/config/common';
-import { getConfigRubrics } from 'db/ssr/rubrics/getConfigRubrics';
-import { CompanyInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsoleCompanyLayout from 'components/layout/console/ConsoleCompanyLayout';
+import { getConfigPageData } from 'db/ssr/configs/getConfigPageData';
+import { getConfigRubrics } from 'db/ssr/rubrics/getConfigRubrics';
+import { CompanyInterface } from 'db/uiInterfaces';
+import { CONFIG_GROUP_UI } from 'lib/config/common';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface ConfigConsumerInterface extends ConfigsFormTemplateInterface {
   pageCompany: CompanyInterface;

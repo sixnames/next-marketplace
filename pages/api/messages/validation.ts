@@ -1,8 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { REQUEST_METHOD_GET } from 'lib/config/common';
-import { getValidationMessages } from 'db/utils/apiMessageUtils';
 import { MessageModel, PayloadType } from 'db/dbModels';
+import { getValidationMessages } from 'db/utils/apiMessageUtils';
+import { REQUEST_METHOD_GET } from 'lib/config/common';
 import { sendApiRouteResponse, sendApiRouteWrongMethod } from 'lib/sessionHelpers';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export type GetValidationMessagesPayloadType = PayloadType<MessageModel[]>;
 

@@ -1,6 +1,6 @@
-import * as React from 'react';
 import WpBreadcrumbs from 'components/WpBreadcrumbs';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import * as React from 'react';
 
 interface AppContentWrapperInterface {
   testId?: string | number;

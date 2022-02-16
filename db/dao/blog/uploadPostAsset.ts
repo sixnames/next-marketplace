@@ -1,22 +1,21 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_BLOG_CONTENT } from 'lib/config/common';
+import { ConstructorAssetPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { storeUploads } from 'lib/assetUtils/assetUtils';
+import { ASSETS_DIST_BLOG_CONTENT } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { parseApiFormData } from 'lib/restApi';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_BLOG_POSTS } from 'db/collectionNames';
-import { BlogPostModel, ConstructorAssetPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export interface UpdateBlogPostFieldsInterface {
   blogPostId: string;
 }
 
 export async function uploadPostAsset(req: NextApiRequest, res: NextApiResponse) {
-  const { db } = await getDatabase();
+  const collections = await getDbCollections();
   const { getApiMessage } = await getRequestParams({ req, res });
-  const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
+  const blogPostsCollection = collections.blogPostsCollection();
   const formData = await parseApiFormData<UpdateBlogPostFieldsInterface>(req);
 
   let payload: ConstructorAssetPayloadModel = {

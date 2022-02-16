@@ -1,8 +1,6 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { NotSyncedProductModel, ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { SyncParamsInterface } from 'db/syncInterfaces';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
@@ -32,9 +30,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const { db } = await getDatabase();
-  const notSyncedProductsCollection = db.collection<NotSyncedProductModel>(COL_NOT_SYNCED_PRODUCTS);
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const collections = await getDbCollections();
+  const notSyncedProductsCollection = collections.notSyncedProductsCollection();
+  const shopsCollection = collections.shopsCollection();
 
   // get shop
   const shop = await shopsCollection.findOne({ token });

@@ -1,17 +1,10 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
 import CompanyRubricCategoriesList, {
   CompanyRubricCategoriesListInterface,
 } from 'components/company/CompanyRubricCategoriesList';
-import {
-  COL_CATEGORIES,
-  COL_COMPANIES,
-  COL_ICONS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { COL_CATEGORIES, COL_ICONS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CategoryInterface,
@@ -19,13 +12,14 @@ import {
   RubricInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
-import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { getTreeFromList } from 'lib/treeUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface RubricCategoriesConsumerInterface extends CompanyRubricCategoriesListInterface {}
 const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
@@ -93,10 +87,10 @@ const RubricCategoriesPage: NextPage<RubricCategoriesPageInterface> = ({
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricCategoriesPageInterface>> => {
-  const { db } = await getDatabase();
-  const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
-  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.rubricsCollection();
+  const companiesCollection = collections.companiesCollection();
+  const shopProductsCollection = collections.shopProductsCollection();
   const { query } = context;
   const initialProps = await getAppInitialData({ context });
   if (!initialProps) {

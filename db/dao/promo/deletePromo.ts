@@ -1,11 +1,10 @@
-import { ObjectId } from 'mongodb';
+import { PromoPayloadModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_PROMO, COL_PROMO_CODES, COL_PROMO_PRODUCTS } from '../../collectionNames';
-import { PromoCodeModel, PromoModel, PromoPayloadModel, PromoProductModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { ObjectId } from 'mongodb';
 
 export interface DeletePromoInputInterface {
   _id: string;
@@ -16,11 +15,11 @@ export async function deletePromo({
   input,
 }: DaoPropsInterface<DeletePromoInputInterface>): Promise<PromoPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const promoCollection = db.collection<PromoModel>(COL_PROMO);
-  const promoProductsCollection = db.collection<PromoProductModel>(COL_PROMO_PRODUCTS);
-  const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
-  const session = client.startSession();
+  const collections = await getDbCollections();
+  const promoCollection = collections.promoCollection();
+  const promoProductsCollection = collections.promoProductsCollection();
+  const promoCodesCollection = collections.promoCodesCollection();
+  const session = collections.client.startSession();
   let mutationPayload: PromoPayloadModel = {
     success: false,
     message: await getApiMessage('promo.delete.error'),

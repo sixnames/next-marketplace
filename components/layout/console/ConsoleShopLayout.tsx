@@ -1,11 +1,12 @@
-import Head from 'next/head';
-import * as React from 'react';
+import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import AppSubNav from 'components/layout/AppSubNav';
 import WpTitle from 'components/WpTitle';
 import { ConsoleShopLayoutInterface } from 'db/uiInterfaces';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import AppSubNav from 'components/layout/AppSubNav';
+import Head from 'next/head';
+import * as React from 'react';
 
 const ConsoleShopLayout: React.FC<ConsoleShopLayoutInterface> = ({
   shop,
@@ -59,6 +60,11 @@ const ConsoleShopLayout: React.FC<ConsoleShopLayoutInterface> = ({
 
       <Inner lowBottom>
         <WpTitle>Магазин {shop.name}</WpTitle>
+        {shop.lastSyncLog ? (
+          <div>
+            Последняя синхронизация <FormattedDateTime value={shop.lastSyncLog.createdAt} />
+          </div>
+        ) : null}
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}

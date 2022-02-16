@@ -1,8 +1,7 @@
-import { ObjectId } from 'mongodb';
-import { getFieldStringLocale } from 'lib/i18n';
-import { COL_TASK_VARIANTS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { TaskVariantInterface } from 'db/uiInterfaces';
+import { getFieldStringLocale } from 'lib/i18n';
+import { ObjectId } from 'mongodb';
 
 export interface GetCompanyTaskVariantSsr {
   locale: string;
@@ -14,8 +13,8 @@ export async function getCompanyTaskVariantSsr({
   locale,
 }: GetCompanyTaskVariantSsr): Promise<TaskVariantInterface | null> {
   try {
-    const { db } = await getDatabase();
-    const taskVariantsCollection = db.collection<TaskVariantInterface>(COL_TASK_VARIANTS);
+    const collections = await getDbCollections();
+    const taskVariantsCollection = collections.taskVariantsCollection();
     const taskVariant = await taskVariantsCollection.findOne({
       _id: new ObjectId(taskVariantId),
     });

@@ -1,12 +1,12 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { createBlogPost } from 'db/dao/blog/createBlogPost';
+import { deleteBlogPost } from 'db/dao/blog/deleteBlogPost';
+import { updateBlogPost } from 'db/dao/blog/updateBlogPost';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
 } from 'lib/config/common';
-import { createBlogPost } from 'db/dao/blog/createBlogPost';
-import { deleteBlogPost } from 'db/dao/blog/deleteBlogPost';
-import { updateBlogPost } from 'db/dao/blog/updateBlogPost';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_POST) {

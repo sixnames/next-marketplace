@@ -1,31 +1,31 @@
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { OptionsGroupModalInterface } from 'components/Modal/OptionsGroupModal';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
-import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
-import { getConstantTranslation } from 'lib/config/constantTranslations';
-import { CONFIRM_MODAL, OPTIONS_GROUP_MODAL } from 'lib/config/modalVariants';
-import { COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { COL_OPTIONS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import { OptionsGroupInterface } from 'db/uiInterfaces';
 import {
   useCreateOptionsGroupMutation,
   useDeleteOptionsGroupMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { CONFIRM_MODAL, OPTIONS_GROUP_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 interface OptionsGroupsConsumerInterface {
   optionsGroups: OptionsGroupInterface[];
@@ -174,8 +174,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const optionsGroupsCollection = await db.collection<OptionsGroupInterface>(COL_OPTIONS_GROUPS);
+  const collections = await getDbCollections();
+  const optionsGroupsCollection = await collections.optionsGroupsCollection();
 
   const optionsGroupsAggregationResult = await optionsGroupsCollection
     .aggregate<OptionsGroupInterface>([

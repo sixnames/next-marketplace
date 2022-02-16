@@ -1,25 +1,24 @@
-import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
-import { DEFAULT_COUNTERS_OBJECT } from '../lib/config/common';
-import { COL_SUPPLIER_PRODUCTS, COL_SUPPLIERS } from '../db/collectionNames';
-import { aggregatePagination } from 'db/utils/aggregatePagination';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
+import { COL_SUPPLIERS } from 'db/collectionNames';
 import {
   SupplierModel,
   SupplierPayloadModel,
-  SupplierProductModel,
   SuppliersAlphabetListModel,
   SuppliersPaginationPayloadModel,
-} from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { getNextNumberItemId } from '../lib/itemIdUtils';
-import { getAlphabetList } from '../lib/optionUtils';
+} from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { aggregatePagination } from 'db/utils/aggregatePagination';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
+import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
+import { getNextNumberItemId } from 'lib/itemIdUtils';
+import { getAlphabetList } from 'lib/optionUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from '../lib/sessionHelpers';
-import { createSupplierSchema, updateSupplierSchema } from '../validation/supplierSchema';
+} from 'lib/sessionHelpers';
+import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
+import { createSupplierSchema, updateSupplierSchema } from 'validation/supplierSchema';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 
 export const Supplier = objectType({
   name: 'Supplier',
@@ -97,8 +96,8 @@ export const SupplierQueries = extendType({
         ),
       },
       resolve: async (_root, args): Promise<SupplierModel> => {
-        const { db } = await getDatabase();
-        const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
+        const collections = await getDbCollections();
+        const suppliersCollection = collections.suppliersCollection();
         const supplier = await suppliersCollection.findOne({ _id: args._id });
         if (!supplier) {
           throw Error('Supplier not found by given id');
@@ -115,8 +114,8 @@ export const SupplierQueries = extendType({
         slug: nonNull(stringArg()),
       },
       resolve: async (_root, args): Promise<SupplierModel> => {
-        const { db } = await getDatabase();
-        const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
+        const collections = await getDbCollections();
+        const suppliersCollection = collections.suppliersCollection();
         const supplier = await suppliersCollection.findOne({ itemId: args.slug });
         if (!supplier) {
           throw Error('Supplier not found by given slug');
@@ -156,8 +155,8 @@ export const SupplierQueries = extendType({
       },
       resolve: async (_root, args, context): Promise<SuppliersAlphabetListModel[]> => {
         const { locale } = await getRequestParams(context);
-        const { db } = await getDatabase();
-        const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
+        const collections = await getDbCollections();
+        const suppliersCollection = collections.suppliersCollection();
         const { input } = args;
         let query: Record<string, any> = {};
         if (input) {
@@ -254,8 +253,8 @@ export const SupplierMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
+          const collections = await getDbCollections();
+          const suppliersCollection = collections.suppliersCollection();
           const { input } = args;
 
           // Check if supplier already exist
@@ -336,8 +335,8 @@ export const SupplierMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
+          const collections = await getDbCollections();
+          const suppliersCollection = collections.suppliersCollection();
           const { input } = args;
           const { supplierId, ...values } = input;
 
@@ -428,10 +427,9 @@ export const SupplierMutations = extendType({
           }
 
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
-          const supplierProductsCollection =
-            db.collection<SupplierProductModel>(COL_SUPPLIER_PRODUCTS);
+          const collections = await getDbCollections();
+          const suppliersCollection = collections.suppliersCollection();
+          const supplierProductsCollection = collections.supplierProductsCollection();
           const { _id } = args;
 
           // Check supplier availability

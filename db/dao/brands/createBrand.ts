@@ -1,6 +1,4 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import { COL_BRANDS } from 'db/collectionNames';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import {
   BrandBaseModel,
   BrandModel,
@@ -8,8 +6,10 @@ import {
   TranslationModel,
   URLModel,
 } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
+import { DEFAULT_COUNTERS_OBJECT } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextNumberItemId } from 'lib/itemIdUtils';
 import {
@@ -32,8 +32,8 @@ export async function createBrand({
 }: DaoPropsInterface<CreateBrandInputInterface>): Promise<BrandPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
+    const collections = await getDbCollections();
+    const brandsCollection = collections.brandsCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

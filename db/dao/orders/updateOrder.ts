@@ -1,22 +1,15 @@
+import { DiffModel, ObjectIdModel, OrderLogModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
+import { DaoPropsInterface, OrderInterface, OrderInterfacePayloadModel } from 'db/uiInterfaces';
 import { detailedDiff } from 'deep-object-diff';
-import { ObjectId } from 'mongodb';
-import { get } from 'lodash';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { countDiscountedPrice, getOrderDiscountedPrice } from 'lib/priceUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { castDbData } from 'lib/ssrUtils';
-import { COL_ORDER_LOGS, COL_ORDER_PRODUCTS, COL_ORDERS } from 'db/collectionNames';
-import {
-  ObjectIdModel,
-  DiffModel,
-  OrderLogModel,
-  OrderModel,
-  OrderProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface, OrderInterface, OrderInterfacePayloadModel } from 'db/uiInterfaces';
-import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
+import { get } from 'lodash';
+import { ObjectId } from 'mongodb';
 
 export interface UpdateOrderInterface {
   order: OrderInterface;
@@ -27,12 +20,12 @@ export async function updateOrder({
   input,
 }: DaoPropsInterface<UpdateOrderInterface>): Promise<OrderInterfacePayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
-  const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
-  const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
+  const collections = await getDbCollections();
+  const orderLogsCollection = collections.ordersLogsCollection();
+  const orderProductsCollection = collections.ordersProductsCollection();
+  const ordersCollection = collections.ordersCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: OrderInterfacePayloadModel = {
     success: false,

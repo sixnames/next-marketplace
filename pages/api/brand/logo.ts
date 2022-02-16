@@ -1,13 +1,11 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_BRANDS, REQUEST_METHOD_DELETE } from 'lib/config/common';
-import { COL_BRANDS } from 'db/collectionNames';
-import { BrandModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { getApiMessageValue } from 'db/utils/apiMessageUtils';
 import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
+import { ASSETS_DIST_BRANDS, REQUEST_METHOD_DELETE } from 'lib/config/common';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export const config = {
   api: {
@@ -16,8 +14,8 @@ export const config = {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { db } = await getDatabase();
-  const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
+  const collections = await getDbCollections();
+  const brandsCollection = collections.brandsCollection();
   const formData = await parseRestApiFormData(req);
   const { locale } = req.cookies;
 

@@ -1,7 +1,7 @@
-import * as React from 'react';
 import { Field, FieldProps } from 'formik';
-import WpCheckbox, { WpCheckboxInterface } from './WpCheckbox';
 import { get } from 'lodash';
+import * as React from 'react';
+import WpCheckbox, { WpCheckboxInterface } from './WpCheckbox';
 
 export type FormikCheckboxInterface = Omit<WpCheckboxInterface, 'onChange'>;
 

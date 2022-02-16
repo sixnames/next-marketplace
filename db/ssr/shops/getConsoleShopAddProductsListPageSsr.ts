@@ -1,8 +1,8 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { getAddShopProductSsrData } from 'db/ssr/shops/getAddShopProductSsrData';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { ConsoleShopAddProductsListPageInterface } from 'pages/console/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/add/[...filters]';
-import { getAddShopProductSsrData } from 'db/ssr/shops/getAddShopProductSsrData';
 
 export const getConsoleShopAddProductsListPageSsr = async (
   context: GetServerSidePropsContext,

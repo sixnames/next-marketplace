@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from '../../lib/config/modalVariants';
 import {
   CompanyInterface,
   PagesGroupInterface,
@@ -9,6 +8,7 @@ import {
 import { useDeletePagesGroup } from '../../hooks/mutations/usePageMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
+import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from '../../lib/config/modalVariants';
 import { createPagesGroupSchema, updatePagesGroupSchema } from '../../validation/pagesSchema';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';

@@ -1,11 +1,10 @@
-import { ObjectId } from 'mongodb';
+import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams } from 'lib/sessionHelpers';
-import { COL_CARTS, COL_PRODUCT_FACETS } from '../../collectionNames';
-import { CartModel, CartPayloadModel, CartProductModel, ProductFacetModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ObjectId } from 'mongodb';
+import { CartPayloadModel, CartProductModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
-import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
 import { getSessionCart } from './getSessionCart';
 
 export interface RepeatOrderInputInterface {
@@ -19,9 +18,9 @@ export async function repeatOrder({
   try {
     const { getApiMessage, locale } = await getRequestParams(context);
     const cart = await getSessionCart({ context });
-    const { db } = await getDatabase();
-    const cartsCollection = db.collection<CartModel>(COL_CARTS);
-    const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+    const collections = await getDbCollections();
+    const cartsCollection = collections.cartsCollection();
+    const productsCollection = collections.productFacetsCollection();
     if (!cart) {
       return {
         success: false,

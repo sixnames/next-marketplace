@@ -1,33 +1,32 @@
-import Head from 'next/head';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import ContentItemControls from '../../components/button/ContentItemControls';
-import FixedButtons from '../../components/button/FixedButtons';
-import WpButton from '../../components/button/WpButton';
-import Inner from '../../components/Inner';
-import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal';
-import { NavItemModalInterface } from '../../components/Modal/NavItemModal';
-import WpIcon from '../../components/WpIcon';
-import WpTable, { WpTableColumn } from '../../components/WpTable';
-import WpTitle from '../../components/WpTitle';
-import { SORT_ASC, SORT_DESC } from '../../lib/config/common';
-import { getConstantTranslation } from '../../lib/config/constantTranslations';
-import { CONFIRM_MODAL, NAV_ITEM_MODAL } from '../../lib/config/modalVariants';
-import { COL_NAV_ITEMS } from '../../db/collectionNames';
-import { getDatabase } from '../../db/mongodb';
-import { NavGroupInterface, NavItemInterface } from '../../db/uiInterfaces';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { NavItemModalInterface } from 'components/Modal/NavItemModal';
+import { getDbCollections } from 'db/mongodb';
+import { NavGroupInterface, NavItemInterface } from 'db/uiInterfaces';
 import {
   CreateNavItemInput,
   UpdateNavItemInput,
   useCreateNavItemMutation,
   useDeleteNavItemMutation,
   useUpdateNavItemMutation,
-} from '../../generated/apolloComponents';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+} from 'generated/apolloComponents';
+import { SORT_ASC, SORT_DESC } from 'lib/config/common';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { CONFIRM_MODAL, NAV_ITEM_MODAL } from 'lib/config/modalVariants';
+import { getFieldStringLocale } from 'lib/i18n';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Head from 'next/head';
+import * as React from 'react';
+import ContentItemControls from '../../components/button/ContentItemControls';
+import FixedButtons from '../../components/button/FixedButtons';
+import WpButton from '../../components/button/WpButton';
+import Inner from '../../components/Inner';
 import AppContentWrapper from '../../components/layout/AppContentWrapper';
 import ConsoleLayout from '../../components/layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from '../../lib/i18n';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from '../../lib/ssrUtils';
+import WpIcon from '../../components/WpIcon';
+import WpTable, { WpTableColumn } from '../../components/WpTable';
+import WpTitle from '../../components/WpTitle';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 
 const pageTitle = 'Навигация';
 
@@ -212,8 +211,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const navItemsCollection = db.collection<NavGroupInterface>(COL_NAV_ITEMS);
+  const collections = await getDbCollections();
+  const navItemsCollection = collections.navItemsCollection();
 
   // get grouped nav items ast
   const navItemGroupsAggregationResult = await navItemsCollection

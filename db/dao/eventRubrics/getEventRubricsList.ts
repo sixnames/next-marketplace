@@ -1,10 +1,9 @@
-import { SORT_DESC } from 'lib/config/common';
-import { COL_EVENT_RUBRICS } from 'db/collectionNames';
-import { sortObjectsByField } from 'lib/arrayUtils';
-import { getRequestParams } from 'lib/sessionHelpers';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface, EventRubricInterface } from 'db/uiInterfaces';
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface, EventRubricInterface } from 'db/uiInterfaces';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { SORT_DESC } from 'lib/config/common';
+import { getRequestParams } from 'lib/sessionHelpers';
 
 export interface GetRubricsListInputInterface {}
 
@@ -13,8 +12,8 @@ export async function getEventRubricsList({
 }: DaoPropsInterface<GetRubricsListInputInterface>): Promise<EventRubricInterface[]> {
   try {
     const { locale } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const rubricsCollection = db.collection<EventRubricInterface>(COL_EVENT_RUBRICS);
+    const collections = await getDbCollections();
+    const rubricsCollection = collections.eventRubricsCollection();
 
     const rubricsAggregationResult = await rubricsCollection
       .aggregate<EventRubricInterface>([

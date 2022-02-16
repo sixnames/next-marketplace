@@ -1,7 +1,6 @@
+import { ObjectIdModel, UserModel } from '../../db/dbModels';
+import { getDbCollections } from '../../db/mongodb';
 import { DEFAULT_COMPANY_SLUG } from '../config/common';
-import { COL_COMPANIES, COL_USERS } from '../../db/collectionNames';
-import { CompanyModel, ObjectIdModel, UserModel } from '../../db/dbModels';
-import { getDatabase } from '../../db/mongodb';
 import { smsSender, SmsSenderInterface } from './smsUtils';
 
 interface SendOrderConfirmedSmsInterface extends Omit<SmsSenderInterface, 'text' | 'numbers'> {
@@ -18,9 +17,9 @@ export async function sendOrderConfirmedSms({
   citySlug,
   companyId,
 }: SendOrderConfirmedSmsInterface) {
-  const { db } = await getDatabase();
-  const usersCollection = db.collection<UserModel>(COL_USERS);
-  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const usersCollection = collections.usersCollection();
+  const companiesCollection = collections.companiesCollection();
   const company = await companiesCollection.findOne({
     _id: companyId,
   });

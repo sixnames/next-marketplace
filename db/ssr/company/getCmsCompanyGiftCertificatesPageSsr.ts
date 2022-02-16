@@ -1,13 +1,13 @@
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { COL_USERS } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
+import { getConsoleGiftCertificates } from 'db/ssr/company/getConsoleGiftCertificates';
+import { CompanyInterface } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { CmsCompanyGiftCertificatesPageInterface } from 'pages/cms/companies/[companyId]/gift-certificates/[...filters]';
-import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
-import { getConsoleGiftCertificates } from 'db/ssr/company/getConsoleGiftCertificates';
 
 export const getCmsCompanyGiftCertificatesPageSsr = async (
   context: GetServerSidePropsContext,
@@ -20,8 +20,8 @@ export const getCmsCompanyGiftCertificatesPageSsr = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const collections = await getDbCollections();
+  const companiesCollection = collections.companiesCollection();
   const { filters, companyId } = query;
 
   const companyAggregationResult = await companiesCollection

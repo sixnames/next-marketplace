@@ -1,10 +1,10 @@
 import { useFormikContext } from 'formik';
 import * as React from 'react';
+import { AddOptionToGroupInput, OptionsGroupVariant } from '../../generated/apolloComponents';
+import { useConstantOptions } from '../../hooks/useConstantOptions';
 import { OPTIONS_GROUP_VARIANT_COLOR } from '../../lib/config/common';
 import { getConstantTranslation } from '../../lib/config/constantTranslations';
 import { useLocaleContext } from '../context/localeContext';
-import { AddOptionToGroupInput, OptionsGroupVariant } from '../../generated/apolloComponents';
-import { useConstantOptions } from '../../hooks/useConstantOptions';
 import FormikInput from '../FormElements/Input/FormikInput';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import InputLine from '../FormElements/Input/InputLine';

@@ -1,16 +1,13 @@
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CompanyProductSuppliers, {
   CompanyProductSuppliersInterface,
 } from 'components/company/CompanyProductSuppliers';
 import { SelectOptionInterface } from 'components/FormElements/Select/Select';
-import RequestError from 'components/RequestError';
-import { SORT_ASC } from 'lib/config/common';
-import { COL_SUPPLIERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, SupplierInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'components/layout/console/ConsoleShopProductLayout';
+import RequestError from 'components/RequestError';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, SupplierInterface } from 'db/uiInterfaces';
+import { SORT_ASC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
 import { getConsoleShopProduct } from 'lib/productUtils';
@@ -19,6 +16,8 @@ import {
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 
 interface ProductDetailsInterface extends CompanyProductSuppliersInterface {}
 
@@ -104,8 +103,8 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { props } = await getConsoleInitialData({ context });
-  const { db } = await getDatabase();
-  const suppliersCollection = db.collection<SupplierInterface>(COL_SUPPLIERS);
+  const collections = await getDbCollections();
+  const suppliersCollection = collections.suppliersCollection();
   if (!props) {
     return {
       notFound: true,

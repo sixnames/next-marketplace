@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ADULT_KEY, ADULT_TRUE } from '../../lib/config/common';
-import { useAppContext } from '../context/appContext';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import ModalFrame from './ModalFrame';
 import ModalText from './ModalText';
 import ModalTitle from './ModalTitle';

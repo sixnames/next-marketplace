@@ -1,18 +1,18 @@
+import { castPaginationInput } from 'db/utils/aggregatePagination';
 import { DEFAULT_PAGE, SORT_BY_ID_DIRECTION } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
-import { COL_ROLES, COL_USERS } from '../../collectionNames';
+import { COL_ROLES } from '../../collectionNames';
 import {
   PaginationInputModel,
   PaginationPayloadType,
   UsersPaginationPayloadModel,
 } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface, UserInterface } from '../../uiInterfaces';
-import { castPaginationInput } from 'db/utils/aggregatePagination';
 
 export async function getPaginatedUsers({
   context,
@@ -20,8 +20,8 @@ export async function getPaginatedUsers({
 }: DaoPropsInterface<PaginationInputModel>): Promise<UsersPaginationPayloadModel> {
   try {
     const { locale } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const usersCollection = db.collection<UserInterface>(COL_USERS);
+    const collections = await getDbCollections();
+    const usersCollection = collections.usersCollection();
     const { search, limit, page, skip, sortBy, sortDir } = castPaginationInput(input);
 
     // search

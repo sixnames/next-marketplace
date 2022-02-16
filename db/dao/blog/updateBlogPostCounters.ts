@@ -1,11 +1,10 @@
-import { ObjectId } from 'mongodb';
 import { VIEWS_COUNTER_STEP } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
-import { COL_BLOG_POSTS } from '../../collectionNames';
+import { ObjectId } from 'mongodb';
 import { BlogPostPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
-import { BlogPostInterface, DaoPropsInterface } from '../../uiInterfaces';
+import { getDbCollections } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateBlogPostCountersInputInterface {
   blogPostId: string;
@@ -18,8 +17,8 @@ export async function updateBlogPostCounters({
   input,
 }: DaoPropsInterface<UpdateBlogPostCountersInputInterface>): Promise<BlogPostPayloadModel> {
   try {
-    const { db } = await getDatabase();
-    const blogPostsCollection = db.collection<BlogPostInterface>(COL_BLOG_POSTS);
+    const collections = await getDbCollections();
+    const blogPostsCollection = collections.blogPostsCollection();
     const { getApiMessage } = await getRequestParams(context);
     const { role } = await getSessionRole(context);
 

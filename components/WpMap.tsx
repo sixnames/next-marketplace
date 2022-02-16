@@ -1,10 +1,10 @@
 import { GoogleMap, InfoWindow, Marker, useLoadScript } from '@react-google-maps/api';
 import * as React from 'react';
+import { AddressModel } from '../db/dbModels';
 import { MAP_DEFAULT_CENTER } from '../lib/config/common';
 import { darkMapStyles, lightMapStyles } from '../lib/config/mapsConfig';
 import { useConfigContext } from './context/configContext';
 import { useThemeContext } from './context/themeContext';
-import { AddressModel } from '../db/dbModels';
 import RequestError from './RequestError';
 import Spinner from './Spinner';
 

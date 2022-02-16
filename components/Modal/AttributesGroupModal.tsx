@@ -1,6 +1,5 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { useAppContext } from '../context/appContext';
+import * as React from 'react';
 import { TranslationModel } from '../../db/dbModels';
 import {
   CreateAttributesGroupInput,
@@ -9,6 +8,7 @@ import {
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { attributesGroupModalSchema } from '../../validation/attributesGroupSchema';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import ModalButtons from './ModalButtons';
 import ModalFrame from './ModalFrame';

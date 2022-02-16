@@ -1,22 +1,22 @@
-import { GetServerSidePropsContext, Redirect } from 'next';
+import {
+  SiteLayoutCatalogueCreatedPages,
+  SiteLayoutProviderInterface,
+} from 'components/layout/SiteLayout';
+import { COL_PAGES } from 'db/collectionNames';
+import { getPageSessionUser, SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
+import { getDbCollections } from 'db/mongodb';
+import { getCatalogueNavRubrics } from 'db/ssr/catalogue/getCatalogueNavRubrics';
+import { CompanyInterface, PageInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import {
   DEFAULT_COMPANY_SLUG,
   PAGE_STATE_PUBLISHED,
   ROLE_SLUG_ADMIN,
   SORT_ASC,
 } from 'lib/config/common';
-import { COL_PAGES, COL_PAGES_GROUP } from 'db/collectionNames';
-import { getCatalogueNavRubrics } from 'db/ssr/catalogue/getCatalogueNavRubrics';
-import { getPageSessionUser, SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
-import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, PageInterface, PagesGroupInterface } from 'db/uiInterfaces';
-import {
-  SiteLayoutCatalogueCreatedPages,
-  SiteLayoutProviderInterface,
-} from 'components/layout/SiteLayout';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { GetServerSidePropsContext, Redirect } from 'next';
 import { PagePropsInterface } from 'pages/_app';
 import { getPageCompanySsr } from './getPageCompanySsr';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getI18nLocaleValue } from './i18n';
 
 const links = getProjectLinks();
@@ -327,8 +327,8 @@ export async function getCatalogueCreatedPages({
   citySlug,
   sessionLocale,
 }: GetCatalogueCreatedPagesInterface): Promise<SiteLayoutCatalogueCreatedPages> {
-  const { db } = await getDatabase();
-  const pageGroupsCollection = db.collection<PagesGroupInterface>(COL_PAGES_GROUP);
+  const collections = await getDbCollections();
+  const pageGroupsCollection = collections.pagesGroupsCollection();
   const pageGroupsAggregationInterface = await pageGroupsCollection
     .aggregate<PagesGroupInterface>([
       {

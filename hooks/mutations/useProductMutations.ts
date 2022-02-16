@@ -1,13 +1,6 @@
-import { useRouter } from 'next/router';
-import { BarcodeIntersectsModalInterface } from 'components/Modal/BarcodeIntersectsModal';
-import {
-  REQUEST_METHOD_DELETE,
-  REQUEST_METHOD_PATCH,
-  REQUEST_METHOD_POST,
-} from 'lib/config/common';
-import { BARCODE_INTERSECTS_MODAL } from 'lib/config/modalVariants';
 import { useAppContext } from 'components/context/appContext';
 import { useNotificationsContext } from 'components/context/notificationsContext';
+import { BarcodeIntersectsModalInterface } from 'components/Modal/BarcodeIntersectsModal';
 import { AddProductToVariantInputInterface } from 'db/dao/product/addProductToVariant';
 import { CopyProductInputInterface } from 'db/dao/product/copyProduct';
 import { CreateProductInputInterface } from 'db/dao/product/createProduct';
@@ -28,7 +21,14 @@ import { UpdateProductSelectAttributeInputInterface } from 'db/dao/product/updat
 import { UpdateProductTextAttributeInputInterface } from 'db/dao/product/updateProductTextAttribute';
 import { UpdateProductWithSyncErrorInputInterface } from 'db/dao/product/updateProductWithSyncError';
 import { ProductPayloadModel } from 'db/dbModels';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from 'lib/config/common';
+import { BARCODE_INTERSECTS_MODAL } from 'lib/config/modalVariants';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { useRouter } from 'next/router';
 import { useReloadListener } from '../useReloadListener';
 import { useMutationHandler } from './useFetch';
 
@@ -169,7 +169,7 @@ export const useCreateProductWithSyncError = () => {
   });
 };
 
-// create with sync error
+// update with sync error
 export const useUpdateProductWithSyncError = () => {
   const { showModal } = useAppContext();
   const router = useRouter();

@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { checkShopProductBarcodeIntersects } from 'lib/productUtils';
 import {
@@ -7,10 +6,10 @@ import {
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
 import { getUpdatedShopProductPrices } from 'lib/shopUtils';
+import { ObjectId } from 'mongodb';
 import { updateManyShopProductsSchema } from 'validation/shopSchema';
-import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../../collectionNames';
-import { ProductFacetModel, ShopProductModel, ShopProductPayloadModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ShopProductPayloadModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface, ShopProductBarcodeDoublesInterface } from '../../uiInterfaces';
 
 export interface UpdateShopProductInputInterface {
@@ -27,11 +26,11 @@ export async function updateManyShopProducts({
   context,
 }: DaoPropsInterface<UpdateManyShopProductsInputType>): Promise<ShopProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
-  const { db, client } = await getDatabase();
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+  const collections = await getDbCollections();
+  const shopProductsCollection = collections.shopProductsCollection();
+  const productsCollection = collections.productFacetsCollection();
 
-  const session = client.startSession();
+  const session = collections.client.startSession();
 
   let mutationPayload: ShopProductPayloadModel = {
     success: false,

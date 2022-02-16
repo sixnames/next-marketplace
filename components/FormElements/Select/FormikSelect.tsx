@@ -1,7 +1,7 @@
-import * as React from 'react';
 import { Field, FieldProps } from 'formik';
-import Select, { SelectInterface } from './Select';
 import { get } from 'lodash';
+import * as React from 'react';
+import Select, { SelectInterface } from './Select';
 
 export interface FormikSelectInterface extends SelectInterface {
   frameClass?: string;

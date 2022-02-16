@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
+import * as React from 'react';
 import FormikSearch from './FormikSearch';
 
 interface FormikIndividualSearchInterface {

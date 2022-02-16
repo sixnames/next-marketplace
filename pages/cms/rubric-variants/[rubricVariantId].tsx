@@ -1,8 +1,3 @@
-import { Form, Formik } from 'formik';
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Head from 'next/head';
-import * as React from 'react';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
@@ -10,7 +5,18 @@ import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikLayoutSelect from 'components/FormElements/Select/FormikLayoutSelect';
 import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
+import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import WpTitle from 'components/WpTitle';
+import { getDbCollections } from 'db/mongodb';
+import { AppContentWrapperBreadCrumbs, RubricVariantInterface } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
+import {
+  UpdateRubricVariantInput,
+  useUpdateRubricVariantMutation,
+} from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
 import {
   CARD_LAYOUT_OPTIONS,
   CATALOGUE_FILTER_LAYOUT_OPTIONS,
@@ -20,20 +26,13 @@ import {
   NAV_DROPDOWN_LAYOUT_OPTIONS,
   ROW_SNIPPET_LAYOUT_OPTIONS,
 } from 'lib/config/constantSelects';
-import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, RubricVariantInterface } from 'db/uiInterfaces';
-import {
-  UpdateRubricVariantInput,
-  useUpdateRubricVariantMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'components/layout/AppContentWrapper';
-import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Head from 'next/head';
+import * as React from 'react';
 import { updateRubricVariantSchema } from 'validation/rubricVariantSchema';
 
 interface RubricVariantConsumerInterface {
@@ -287,8 +286,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { db } = await getDatabase();
-  const rubricVariantsCollection = db.collection(COL_RUBRIC_VARIANTS);
+  const collections = await getDbCollections();
+  const rubricVariantsCollection = collections.rubricVariantsCollection();
   const initialRubricVariant = await rubricVariantsCollection.findOne({
     _id: new ObjectId(`${query.rubricVariantId}`),
   });

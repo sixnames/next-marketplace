@@ -1,6 +1,17 @@
+import { useAppContext } from 'components/context/appContext';
+import { useConfigContext } from 'components/context/configContext';
+import { useLocaleContext } from 'components/context/localeContext';
+import { AddressModel, ConfigModel, JSONObjectModel, TranslationModel } from 'db/dbModels';
+import { CategoryInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik, useField, useFormikContext } from 'formik';
-import { get } from 'lodash';
-import * as React from 'react';
+import {
+  useUpdateConfigMutation,
+  useUpdateRubricNavItemConfigMutation,
+  useUpdateVisibleCategoriesInNavDropdownMutation,
+  useUpdateVisibleNavRubricConfigMutation,
+} from 'generated/apolloComponents';
+import { GeocodeResultInterface, getReadableAddress } from 'lib/addressUtils';
+import { alwaysArray } from 'lib/arrayUtils';
 import {
   CONFIG_VARIANT_ADDRESS,
   CONFIG_VARIANT_BOOLEAN,
@@ -16,25 +27,14 @@ import {
   GEO_POINT_TYPE,
 } from 'lib/config/common';
 import { CONFIRM_MODAL } from 'lib/config/modalVariants';
-import { useAppContext } from 'components/context/appContext';
-import { useConfigContext } from 'components/context/configContext';
-import { useLocaleContext } from 'components/context/localeContext';
-import { AddressModel, ConfigModel, JSONObjectModel, TranslationModel } from 'db/dbModels';
-import { CategoryInterface, RubricInterface } from 'db/uiInterfaces';
-import {
-  useUpdateConfigMutation,
-  useUpdateRubricNavItemConfigMutation,
-  useUpdateVisibleCategoriesInNavDropdownMutation,
-  useUpdateVisibleNavRubricConfigMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import useValidationSchema from '../../hooks/useValidationSchema';
-import { GeocodeResultInterface, getReadableAddress } from 'lib/addressUtils';
-import { alwaysArray } from 'lib/arrayUtils';
 import { getEditorDefaultValue } from 'lib/editorUtils';
 import { noNaN } from 'lib/numbers';
+import { get } from 'lodash';
+import * as React from 'react';
 import { InputType } from 'types/clientTypes';
 import { updateConfigSchema } from 'validation/configSchema';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
 import ButtonCross from '../button/ButtonCross';
 import WpButton from '../button/WpButton';
 import { ConfirmModalInterface } from '../Modal/ConfirmModal';

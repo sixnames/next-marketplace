@@ -1,15 +1,14 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import fs from 'fs';
-import { optimize } from 'svgo';
-import { REQUEST_METHOD_DELETE } from 'lib/config/common';
-import { COL_CATEGORIES, COL_ICONS } from 'db/collectionNames';
-import { CategoryModel, IconModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { COL_CATEGORIES } from 'db/collectionNames';
+import { getDbCollections } from 'db/mongodb';
 import { getApiMessageValue } from 'db/utils/apiMessageUtils';
+import fs from 'fs';
 import { alwaysArray } from 'lib/arrayUtils';
+import { REQUEST_METHOD_DELETE } from 'lib/config/common';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { optimize } from 'svgo';
 
 export const config = {
   api: {
@@ -18,9 +17,9 @@ export const config = {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { db } = await getDatabase();
-  const iconsCollection = db.collection<IconModel>(COL_ICONS);
-  const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+  const collections = await getDbCollections();
+  const iconsCollection = collections.iconsCollection();
+  const categoriesCollection = collections.categoriesCollection();
   const formData = await parseRestApiFormData(req);
   const { locale } = req.cookies;
 

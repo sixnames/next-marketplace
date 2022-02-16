@@ -1,14 +1,13 @@
 import { COL_BRAND_COLLECTIONS } from 'db/collectionNames';
-import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import {
   BrandBaseModel,
-  BrandCollectionModel,
   BrandCollectionPayloadModel,
   BrandModel,
   TranslationModel,
 } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import {
   getOperationPermission,
@@ -31,8 +30,8 @@ export async function updateBrandCollection({
 }: DaoPropsInterface<UpdateBrandCollectionInputInterface>): Promise<BrandCollectionPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const brandCollectionsCollection = db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
+    const collections = await getDbCollections();
+    const brandCollectionsCollection = collections.brandCollectionsCollection();
 
     // permission
     const { allow, message } = await getOperationPermission({

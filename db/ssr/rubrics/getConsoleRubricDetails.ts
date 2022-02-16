@@ -1,13 +1,11 @@
+import { getDbCollections } from 'db/mongodb';
+import { RubricInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
 } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getRubricAllSeoContents } from 'lib/seoContentUtils';
-import { COL_RUBRICS } from 'db/collectionNames';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { RubricInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 
 interface GetConsoleRubricDetailsPayloadInterface {
   rubric: RubricInterface;
@@ -26,8 +24,8 @@ export async function getConsoleRubricDetails({
   companySlug,
   locale,
 }: GetConsoleRubricDetailsInterface): Promise<GetConsoleRubricDetailsPayloadInterface | null> {
-  const { db } = await getDatabase();
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const collections = await getDbCollections();
+  const rubricsCollection = collections.rubricsCollection();
   const initialRubrics = await rubricsCollection
     .aggregate<RubricInterface>([
       {

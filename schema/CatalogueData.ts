@@ -1,4 +1,5 @@
-import { arg, extendType, inputObjectType, nonNull } from 'nexus';
+import { getDbCollections } from 'db/mongodb';
+import { castCatalogueParamToObject } from 'db/utils/catalogueUtils';
 import {
   DEFAULT_COMPANY_SLUG,
   FILTER_BRAND_COLLECTION_KEY,
@@ -7,27 +8,8 @@ import {
   FILTER_MANUFACTURER_KEY,
   VIEWS_COUNTER_STEP,
 } from 'lib/config/common';
-import {
-  COL_ATTRIBUTES,
-  COL_BRAND_COLLECTIONS,
-  COL_BRANDS,
-  COL_CATEGORIES,
-  COL_MANUFACTURERS,
-  COL_OPTIONS,
-  COL_RUBRICS,
-} from 'db/collectionNames';
-import {
-  AttributeModel,
-  BrandCollectionModel,
-  BrandModel,
-  CategoryModel,
-  ManufacturerModel,
-  OptionModel,
-  RubricModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { castCatalogueParamToObject } from 'db/utils/catalogueUtils';
 import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
+import { arg, extendType, inputObjectType, nonNull } from 'nexus';
 
 export const CatalogueAdditionalOptionsInput = inputObjectType({
   name: 'CatalogueAdditionalOptionsInput',
@@ -65,17 +47,16 @@ export const CatalogueMutations = extendType({
       },
       resolve: async (_root, args, context): Promise<boolean> => {
         try {
-          const { db } = await getDatabase();
+          const collections = await getDbCollections();
           const { role } = await getSessionRole(context);
           const { citySlug } = await getRequestParams(context);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-          const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-          const brandCollectionsCollection =
-            db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
-          const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
+          const rubricsCollection = collections.rubricsCollection();
+          const categoriesCollection = collections.categoriesCollection();
+          const attributesCollection = collections.attributesCollection();
+          const optionsCollection = collections.optionsCollection();
+          const brandsCollection = collections.brandsCollection();
+          const brandCollectionsCollection = collections.brandCollectionsCollection();
+          const manufacturersCollection = collections.manufacturersCollection();
 
           // Args
           const { input } = args;

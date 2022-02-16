@@ -1,28 +1,28 @@
 import { Form, Formik } from 'formik';
 import { get } from 'lodash';
 import * as React from 'react';
+import { CartInterface, CompanyInterface } from '../../db/uiInterfaces';
+import useValidationSchema from '../../hooks/useValidationSchema';
 import {
   ORDER_DELIVERY_VARIANT_COURIER,
   ORDER_DELIVERY_VARIANT_PICKUP,
   ORDER_PAYMENT_VARIANT_RECEIPT,
 } from '../../lib/config/common';
-import { useConfigContext } from '../context/configContext';
-import { useSiteContext } from '../context/siteContext';
-import { useSiteUserContext } from '../context/siteUserContext';
-import { CartInterface, CompanyInterface } from '../../db/uiInterfaces';
-import useValidationSchema from '../../hooks/useValidationSchema';
-import LayoutCard from '../layout/LayoutCard';
 import { noNaN } from '../../lib/numbers';
 import { phoneToRaw } from '../../lib/phoneUtils';
 import { CartTabIndexType, MakeOrderFormInterface } from '../../pages/cart';
 import { makeAnOrderSchema } from '../../validation/orderSchema';
 import WpButton from '../button/WpButton';
 import CartAside from '../CartAside';
+import { useConfigContext } from '../context/configContext';
+import { useSiteContext } from '../context/siteContext';
+import { useSiteUserContext } from '../context/siteUserContext';
 import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikDatePicker from '../FormElements/Input/FormikDatePicker';
 import FormikInput from '../FormElements/Input/FormikInput';
 import InputLine from '../FormElements/Input/InputLine';
 import FormikTextarea from '../FormElements/Textarea/FormikTextarea';
+import LayoutCard from '../layout/LayoutCard';
 import RequestError from '../RequestError';
 import WpNotification from '../WpNotification';
 import { CartProduct } from './CartProduct';

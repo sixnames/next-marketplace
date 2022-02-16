@@ -1,9 +1,8 @@
-import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { COL_TASKS } from '../../collectionNames';
-import { TaskModel, TaskPayloadModel, TaskStateModel } from '../../dbModels';
-import { getDatabase } from '../../mongodb';
+import { ObjectId } from 'mongodb';
+import { TaskPayloadModel, TaskStateModel } from '../../dbModels';
+import { getDbCollections } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 import { CreateTaskInputInterface } from './createTask';
 
@@ -17,8 +16,8 @@ export async function updateTask({
   input,
 }: DaoPropsInterface<UpdateTaskInputInterface>): Promise<TaskPayloadModel> {
   try {
-    const { db } = await getDatabase();
-    const tasksCollection = db.collection<TaskModel>(COL_TASKS);
+    const collections = await getDbCollections();
+    const tasksCollection = collections.tasksCollection();
     const { getApiMessage } = await getRequestParams(context);
 
     // check permission

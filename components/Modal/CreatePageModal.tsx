@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { DEFAULT_LOCALE } from '../../lib/config/common';
+import * as React from 'react';
 import { CityInterface } from '../../db/uiInterfaces';
 import { useCreatePage } from '../../hooks/mutations/usePageMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
+import { DEFAULT_LOCALE } from '../../lib/config/common';
 import { noNaN } from '../../lib/numbers';
 import { createPageSchema } from '../../validation/pagesSchema';
 import WpButton from '../button/WpButton';

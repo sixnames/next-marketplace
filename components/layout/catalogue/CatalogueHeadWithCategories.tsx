@@ -1,14 +1,14 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import { CatalogueHeadDefaultInterface } from 'components/Catalogue';
 import Inner from 'components/Inner';
 import WpLink from 'components/Link/WpLink';
 import WpBreadcrumbs from 'components/WpBreadcrumbs';
 import WpTitle from 'components/WpTitle';
-import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from 'lib/config/common';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { sortStringArray } from 'lib/stringUtils';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 const minCategoriesCount = 1;
 const links = getProjectLinks();

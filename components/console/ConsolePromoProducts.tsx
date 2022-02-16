@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useAppContext } from '../context/appContext';
 import {
   CompanyInterface,
   GetConsoleRubricPromoProductsPayloadInterface,
@@ -15,6 +14,7 @@ import usePageLoadingState from '../../hooks/usePageLoadingState';
 import { alwaysArray } from '../../lib/arrayUtils';
 import AppContentFilter from '../AppContentFilter';
 import WpButton from '../button/WpButton';
+import { useAppContext } from '../context/appContext';
 import WpCheckbox from '../FormElements/Checkbox/WpCheckbox';
 import FormikRouterSearch from '../FormElements/Search/FormikRouterSearch';
 import Inner from '../Inner';

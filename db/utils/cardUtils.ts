@@ -1,5 +1,34 @@
-import { get } from 'lodash';
-import { ObjectId } from 'mongodb';
+import { castAttributeForUI } from 'db/cast/castAttributesGroupForUI';
+import { castOptionForUI } from 'db/cast/castOptionForUI';
+import { castSummaryForUI } from 'db/cast/castSummaryForUI';
+import {
+  COL_BRAND_COLLECTIONS,
+  COL_BRANDS,
+  COL_MANUFACTURERS,
+  COL_RUBRIC_VARIANTS,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from 'db/collectionNames';
+import { CatalogueBreadcrumbModel, ObjectIdModel, ProductCardBreadcrumbModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import {
+  CategoryInterface,
+  InitialCardDataInterface,
+  ProductAttributeInterface,
+  ProductAttributesGroupInterface,
+  ProductSummaryInterface,
+  ProductVariantInterface,
+  ProductVariantItemInterface,
+  ShopInterface,
+  ShopProductInterface,
+} from 'db/uiInterfaces';
+import {
+  ignoreNoImageStage,
+  productAttributesPipeline,
+  productCategoriesPipeline,
+} from 'db/utils/constantPipelines';
+import { sortObjectsByField } from 'lib/arrayUtils';
 import {
   ATTRIBUTE_VIEW_VARIANT_ICON,
   ATTRIBUTE_VIEW_VARIANT_LIST,
@@ -15,50 +44,8 @@ import {
 } from 'lib/config/common';
 import { DEFAULT_LAYOUT } from 'lib/config/constantSelects';
 import { getConstantTranslation } from 'lib/config/constantTranslations';
-import {
-  COL_ATTRIBUTES,
-  COL_BRAND_COLLECTIONS,
-  COL_BRANDS,
-  COL_MANUFACTURERS,
-  COL_OPTIONS,
-  COL_RUBRIC_VARIANTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-  COL_PRODUCT_SUMMARIES,
-  COL_ATTRIBUTES_GROUPS,
-} from 'db/collectionNames';
-import { castAttributeForUI } from 'db/dao/attributes/castAttributesGroupForUI';
-import {
-  ignoreNoImageStage,
-  productAttributesPipeline,
-  productCategoriesPipeline,
-} from 'db/utils/constantPipelines';
-import { castOptionForUI } from 'db/cast/castOptionForUI';
-import { castSummaryForUI } from 'db/dao/product/castSummaryForUI';
-import {
-  AttributesGroupModel,
-  CatalogueBreadcrumbModel,
-  ObjectIdModel,
-  ProductCardBreadcrumbModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import {
-  CategoryInterface,
-  InitialCardDataInterface,
-  ProductAttributeInterface,
-  ProductAttributesGroupInterface,
-  ProductVariantInterface,
-  ProductVariantItemInterface,
-  ShopInterface,
-  ProductSummaryInterface,
-  ShopProductInterface,
-  AttributeInterface,
-  OptionInterface,
-} from 'db/uiInterfaces';
-import { sortObjectsByField } from 'lib/arrayUtils';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import {
@@ -67,6 +54,8 @@ import {
 } from 'lib/productAttributesUtils';
 import { getProductSeoContent } from 'lib/seoContentUtils';
 import { getTreeFromList } from 'lib/treeUtils';
+import { get } from 'lodash';
+import { ObjectId } from 'mongodb';
 
 interface CastOptionsForBreadcrumbsInterface {
   category: CategoryInterface;
@@ -120,11 +109,11 @@ async function getCardVariants({
   variants,
   summaryId,
 }: GetCardVariantsInterface): Promise<ProductVariantInterface[]> {
-  const { db } = await getDatabase();
-  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
-  const attributesCollection = db.collection<AttributeInterface>(COL_ATTRIBUTES);
-  const optionsCollection = db.collection<OptionInterface>(COL_OPTIONS);
-  const productSummariesCollection = db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
+  const collections = await getDbCollections();
+  const shopProductsCollection = collections.shopProductsCollection();
+  const attributesCollection = collections.attributesCollection();
+  const optionsCollection = collections.optionsCollection();
+  const productSummariesCollection = collections.productSummariesCollection();
   const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
 
   const productVariants: ProductVariantInterface[] = [];
@@ -208,10 +197,9 @@ export async function getCardData({
 }: GetCardDataInterface): Promise<InitialCardDataInterface | null> {
   try {
     // const startTime = new Date().getTime();
-    const { db } = await getDatabase();
-    const productSummariesCollection =
-      db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
-    const attributeGroupsCollection = db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
+    const collections = await getDbCollections();
+    const productSummariesCollection = collections.productSummariesCollection();
+    const attributeGroupsCollection = collections.attributesGroupsCollection();
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const companySlug = props.companySlug;
 

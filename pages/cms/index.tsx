@@ -1,9 +1,9 @@
-import * as React from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
+import * as React from 'react';
 import Inner from '../../components/Inner';
-import WpTitle from '../../components/WpTitle';
 import AppContentWrapper from '../../components/layout/AppContentWrapper';
 import ConsoleLayout from '../../components/layout/cms/ConsoleLayout';
+import WpTitle from '../../components/WpTitle';
 import { getAppInitialData, GetAppInitialDataPropsInterface } from '../../lib/ssrUtils';
 
 const Cms: NextPage<GetAppInitialDataPropsInterface> = ({ layoutProps }) => {

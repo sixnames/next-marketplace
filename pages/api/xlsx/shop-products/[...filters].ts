@@ -1,23 +1,22 @@
-import { ROLE_SLUG_ADMIN, SORT_DESC } from 'lib/config/common';
-import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { ignoreNoImageStage } from 'db/utils/constantPipelines';
+import addZero from 'add-zero';
 import { ProductSummaryModel, ShopProductModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
+import { ignoreNoImageStage } from 'db/utils/constantPipelines';
 import xlsx, { IJsonSheet, ISettings } from 'json-as-xlsx';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
+import { ROLE_SLUG_ADMIN, SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
-import addZero from 'add-zero';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
     const { locale } = await getRequestParams({ req, res });
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-    const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+    const shopProductsCollection = collections.shopProductsCollection();
+    const productSummariesCollection = collections.productSummariesCollection();
 
     const { role } = await getSessionRole({ req, res });
     if (role.slug !== ROLE_SLUG_ADMIN) {

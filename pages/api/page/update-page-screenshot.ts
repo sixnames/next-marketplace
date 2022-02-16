@@ -1,13 +1,11 @@
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ASSETS_DIST_PAGES, ASSETS_DIST_TEMPLATES } from 'lib/config/common';
-import { COL_PAGE_TEMPLATES, COL_PAGES } from 'db/collectionNames';
-import { PageModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import { getApiMessageValue } from 'db/utils/apiMessageUtils';
 import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
+import { ASSETS_DIST_PAGES, ASSETS_DIST_TEMPLATES } from 'lib/config/common';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export const config = {
   api: {
@@ -50,8 +48,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { isTemplate } = fields;
   const pageId = new ObjectId(`${formData.fields.pageId}`);
 
-  const { db } = await getDatabase();
-  const pagesCollection = db.collection<PageModel>(isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES);
+  const collections = await getDbCollections();
+  const pagesCollection = isTemplate
+    ? collections.pageTemplatesCollection()
+    : collections.pagesCollection();
 
   // Check page availability
   const page = await pagesCollection.findOne({ _id: pageId });

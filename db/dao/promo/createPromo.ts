@@ -1,4 +1,8 @@
-import { ObjectId } from 'mongodb';
+import { COL_PROMO } from 'db/collectionNames';
+import { DateModel, PromoPayloadModel, TranslationModel } from 'db/dbModels';
+
+import { getDbCollections } from 'db/mongodb';
+import { DaoPropsInterface } from 'db/uiInterfaces';
 import {
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   TEXT_HORIZONTAL_ALIGN_OPTIONS,
@@ -12,11 +16,8 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
+import { ObjectId } from 'mongodb';
 import { createPromoSchema } from 'validation/promoSchema';
-import { COL_PROMO } from 'db/collectionNames';
-import { DateModel, PromoModel, PromoPayloadModel, TranslationModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
 
 export interface CreatePromoInputInterface {
   nameI18n: TranslationModel;
@@ -35,7 +36,7 @@ export async function createPromo({
 }: DaoPropsInterface<CreatePromoInputInterface>): Promise<PromoPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
+    const collections = await getDbCollections();
 
     // permission
     const { allow, message } = await getOperationPermission({
@@ -71,7 +72,7 @@ export async function createPromo({
     });
     await validationSchema.validate(input);
 
-    const promoCollection = db.collection<PromoModel>(COL_PROMO);
+    const promoCollection = collections.promoCollection();
 
     // create
     const createdPromoResult = await promoCollection.insertOne({

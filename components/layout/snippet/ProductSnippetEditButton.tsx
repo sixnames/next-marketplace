@@ -1,8 +1,8 @@
-import * as React from 'react';
 import ControlButton from 'components/button/ControlButton';
 import { useSiteUserContext } from 'components/context/siteUserContext';
 import { ProductFacetInterface } from 'db/uiInterfaces';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
+import * as React from 'react';
 
 interface ProductSnippetEditButtonInterface {
   product: ProductFacetInterface;

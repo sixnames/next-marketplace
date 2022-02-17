@@ -1,11 +1,5 @@
 import { COL_EVENT_SUMMARIES } from 'db/collectionNames';
-import {
-  AddressModel,
-  DateModel,
-  EventPayloadModel,
-  ObjectIdModel,
-  TranslationModel,
-} from 'db/dbModels';
+import { AddressModel, DateModel, EventPayloadModel, TranslationModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import { IMAGE_FALLBACK } from 'lib/config/common';
@@ -23,9 +17,9 @@ import { createEventSchema } from 'validation/eventSchema';
 export interface CreateEventInputInterface {
   _id: string;
   companySlug: string;
-  companyId: ObjectIdModel;
+  companyId: string;
   citySlug: string;
-  rubricId: ObjectIdModel;
+  rubricId: string;
   startAt: DateModel;
   endAt?: DateModel | null;
   nameI18n?: TranslationModel | null;

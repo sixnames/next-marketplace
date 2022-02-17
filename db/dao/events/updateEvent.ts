@@ -14,6 +14,7 @@ import { updateEventSchema } from 'validation/eventSchema';
 
 export interface UpdateEventInputInterface extends CreateEventInputInterface {
   _id: string;
+  videos?: string[];
 }
 
 export async function updateEvent({

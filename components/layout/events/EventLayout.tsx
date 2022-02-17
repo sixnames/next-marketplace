@@ -7,6 +7,7 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs, EventSummaryInterface } from 'db/uiInterfaces';
 import { useDeleteEvent } from 'hooks/mutations/useEventMutations';
+import { useBasePath } from 'hooks/useBasePath';
 import { CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
 import Head from 'next/head';
@@ -16,15 +17,10 @@ import { ClientNavItemInterface } from 'types/clientTypes';
 export interface EventLayoutInterface {
   event: EventSummaryInterface;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
-  routeBasePath: string;
 }
 
-const EventLayout: React.FC<EventLayoutInterface> = ({
-  event,
-  breadcrumbs,
-  children,
-  routeBasePath,
-}) => {
+const EventLayout: React.FC<EventLayoutInterface> = ({ event, breadcrumbs, children }) => {
+  const routeBasePath = useBasePath('companyId');
   const { showModal } = useAppContext();
   const links = getConsoleCompanyLinks({
     basePath: routeBasePath,

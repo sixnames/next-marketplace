@@ -1,3 +1,4 @@
+import EventDetails from 'components/company/EventDetails';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import EventLayout from 'components/layout/events/EventLayout';
 import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
@@ -47,13 +48,8 @@ const EventDetailsConsumer: React.FC<EventDetailsConsumerInterface> = ({ event, 
   };
 
   return (
-    <EventLayout
-      event={event}
-      routeBasePath={links.cms.companies.companyId.url}
-      breadcrumbs={breadcrumbs}
-    >
-      lorem
-      {/*<ConsoleRubricEventDetails event={event} />*/}
+    <EventLayout event={event} breadcrumbs={breadcrumbs}>
+      <EventDetails event={event} />
     </EventLayout>
   );
 };

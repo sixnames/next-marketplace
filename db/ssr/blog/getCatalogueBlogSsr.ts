@@ -14,7 +14,6 @@ import { castUrlFilters } from 'lib/castUrlFilters';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   CATALOGUE_PRODUCTS_LIMIT,
-  DEFAULT_PAGE,
   FILTER_SEPARATOR,
   PAGE_STATE_PUBLISHED,
   SORT_DESC,
@@ -45,7 +44,6 @@ export const getCatalogueBlogSsr = async (
   // Cast selected filters
   const { realFilters, noFiltersSelected } = await castUrlFilters({
     filters,
-    initialPage: DEFAULT_PAGE,
     initialLimit: CATALOGUE_PRODUCTS_LIMIT,
     searchFieldName: '_id',
   });

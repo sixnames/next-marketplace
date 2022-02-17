@@ -632,7 +632,6 @@ export const getCatalogueData = async ({
     } = await castUrlFilters({
       search,
       filters: input.filters,
-      initialPage: input.page,
       initialLimit: props.limit,
       searchFieldName: 'productId',
     });

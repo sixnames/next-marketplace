@@ -54,7 +54,6 @@ export const getConsoleRubricProducts = async ({
   excludedProductsIds,
   attributesIds,
   excludedOptionsSlugs,
-  ...props
 }: GetConsoleRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   let fallbackPayload: ConsoleRubricProductsInterface = {
     clearSlug: basePath,
@@ -106,7 +105,6 @@ export const getConsoleRubricProducts = async ({
     } = await castUrlFilters({
       filters,
       search,
-      initialPage: props.page,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
       searchFieldName: '_id',
       excludedSearchIds: (excludedProductsIds || []).map((_id) => new ObjectId(_id)),

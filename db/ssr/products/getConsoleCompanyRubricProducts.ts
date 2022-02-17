@@ -49,7 +49,6 @@ export const getConsoleCompanyRubricProducts = async ({
   excludedProductsIds,
   companySlug,
   companyId,
-  ...props
 }: GetConsoleCompanyRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   let fallbackPayload: ConsoleRubricProductsInterface = {
     clearSlug: basePath,
@@ -101,7 +100,6 @@ export const getConsoleCompanyRubricProducts = async ({
       sortStage,
     } = await castUrlFilters({
       filters,
-      initialPage: props.page,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
       searchFieldName: 'productId',
       search: query.search,

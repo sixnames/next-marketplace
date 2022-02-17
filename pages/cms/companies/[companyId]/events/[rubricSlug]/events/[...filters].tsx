@@ -1,75 +1,66 @@
-import CompanyRubricProductsList, {
-  CompanyRubricProductsListInterface,
-} from 'components/company/CompanyRubricProductsList';
-import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import CompanyEvents, { CompanyEventsInterface } from 'components/company/CompanyEvents';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import RequestError from 'components/RequestError';
-import { getCmsCompanyRubricProductsPageSsr } from 'db/ssr/company/getCmsCompanyRubricProductsPageSsr';
+import EventRubricLayout from 'components/layout/cms/EventRubricLayout';
+import { getRubricEventsListSsr } from 'db/ssr/events/getRubricEventsListSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { NextPage } from 'next';
 import * as React from 'react';
 
-interface RubricProductsConsumerInterface extends CompanyRubricProductsListInterface {}
+interface RubricEventsConsumerInterface extends CompanyEventsInterface {}
 
-const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props) => {
-  const links = getCmsCompanyLinks({
+const RubricEventsConsumer: React.FC<RubricEventsConsumerInterface> = (props) => {
+  const links = getProjectLinks({
     companyId: props.pageCompany._id,
-    rubricSlug: props.rubric?.slug,
+    rubricSlug: props.rubric.slug,
   });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Товары`,
+    currentPageName: `Мероприятия`,
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
-        name: `${props.pageCompany?.name}`,
-        href: links.root,
+        name: `${props.pageCompany.name}`,
+        href: links.cms.companies.companyId.url,
       },
       {
-        name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        name: `Мероприятия`,
+        href: links.cms.companies.companyId.events.url,
       },
       {
-        name: `${props.rubric?.name}`,
-        href: links.rubrics.root,
+        name: `${props.rubric.name}`,
+        href: links.cms.companies.companyId.events.rubricSlug.url,
       },
     ],
   };
 
-  if (!props.rubric) {
-    return <RequestError />;
-  }
-
   return (
-    <CmsRubricLayout
-      hideAttributesPath
+    <EventRubricLayout
       rubric={props.rubric}
       breadcrumbs={breadcrumbs}
-      basePath={props.routeBasePath}
+      routeBasePath={props.routeBasePath}
+      pageCompany={props.pageCompany}
     >
-      <CompanyRubricProductsList {...props} />
-    </CmsRubricLayout>
+      <CompanyEvents {...props} />
+    </EventRubricLayout>
   );
 };
 
-export interface CmsCompanyRubricProductsPageInterface
+export interface CmsRubricEventsPageInterface
   extends GetAppInitialDataPropsInterface,
-    RubricProductsConsumerInterface {}
+    RubricEventsConsumerInterface {}
 
-const CmsCompanyRubricProductsPage: NextPage<CmsCompanyRubricProductsPageInterface> = ({
-  layoutProps,
-  ...props
-}) => {
+const CmsRubricEventsPage: NextPage<CmsRubricEventsPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <RubricProductsConsumer {...props} />
+      <RubricEventsConsumer {...props} />
     </ConsoleLayout>
   );
 };
 
-export const getServerSideProps = getCmsCompanyRubricProductsPageSsr;
-export default CmsCompanyRubricProductsPage;
+export const getServerSideProps = getRubricEventsListSsr;
+export default CmsRubricEventsPage;

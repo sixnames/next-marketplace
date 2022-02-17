@@ -1,13 +1,13 @@
-import * as React from 'react';
 import {
   CompanyInterface,
   ConsoleRubricProductsInterface,
   ProductSummaryInterface,
-} from '../../db/uiInterfaces';
+} from 'db/uiInterfaces';
+import { alwaysArray } from 'lib/arrayUtils';
+import { getNumWord } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
+import * as React from 'react';
 import usePageLoadingState from '../../hooks/usePageLoadingState';
-import { alwaysArray } from '../../lib/arrayUtils';
-import { getNumWord } from '../../lib/i18n';
-import { noNaN } from '../../lib/numbers';
 import AppContentFilter from '../AppContentFilter';
 import ContentItemControls from '../button/ContentItemControls';
 import FormikRouterSearch from '../FormElements/Search/FormikRouterSearch';

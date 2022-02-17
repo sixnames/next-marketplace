@@ -26,7 +26,6 @@ export interface GetRubricEventsListInputInterface {
   query: ParsedUrlQuery;
   page?: number;
   companySlug: string;
-  companyId: string;
 }
 
 export const getRubricEventsList = async ({
@@ -35,8 +34,6 @@ export const getRubricEventsList = async ({
   query,
   currency,
   companySlug,
-  companyId,
-  ...props
 }: GetRubricEventsListInputInterface): Promise<RubricEventsListInterface | null> => {
   try {
     const collections = await getDbCollections();
@@ -80,7 +77,6 @@ export const getRubricEventsList = async ({
       noSearchResults,
     } = await castUrlFilters({
       filters,
-      initialPage: props.page,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
       searchFieldName: '_id',
       search: query.search,

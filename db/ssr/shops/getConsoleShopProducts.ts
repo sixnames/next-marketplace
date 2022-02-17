@@ -52,7 +52,6 @@ export const getConsoleShopProducts = async ({
   currency,
   excludedProductsIds,
   companySlug,
-  ...props
 }: GetConsoleShopProductsInputInterface): Promise<CompanyShopProductsPageInterface | null> => {
   try {
     const collections = await getDbCollections();
@@ -106,7 +105,6 @@ export const getConsoleShopProducts = async ({
       sortStage,
     } = await castUrlFilters({
       filters,
-      initialPage: props.page,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
       search: query.search,
       searchFieldName: 'productId',

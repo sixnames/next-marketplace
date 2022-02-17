@@ -37,7 +37,7 @@ const EventRubricLayout: React.FC<EventRubricLayoutInterface> = ({
 
     return [
       {
-        name: 'Товары',
+        name: 'Мероприятия',
         testId: 'events',
         path: links.events.rubricSlug.events.url,
       },

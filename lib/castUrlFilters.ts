@@ -39,7 +39,6 @@ interface CastUrlFiltersInterface extends GetFilterUrlValuesInterface {
 
 export async function castUrlFilters({
   filters,
-  initialPage,
   initialLimit,
   excludedSearchIds,
   searchFieldName,
@@ -67,7 +66,6 @@ export async function castUrlFilters({
   } = getFilterUrlValues({
     filters,
     initialLimit,
-    initialPage,
   });
   const noFiltersSelected = noCategoryFilters.length < 1;
   const castedSortDir = sortDirString === SORT_DESC_STR ? SORT_DESC : SORT_ASC;

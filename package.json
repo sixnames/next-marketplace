@@ -10,9 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate": "graphql-codegen --config codegen.yml",
     "cy:open": "cypress open",
-    "cy:run-file": "cypress run --spec cypress/e2e/cms/product-attributes.spec.ts",
     "test": "cypress run",
     "ci": "server-test 3000",
     "build-and-test": "yarn build && yarn ci",
@@ -21,7 +19,8 @@
     "fast-update-prods": "node -r esbuild-register tests/testUtils/fastUpdateProds.ts",
     "update-prods": "node -r esbuild-register tests/testUtils/updateProds.ts",
     "seed-new-db": "node -r esbuild-register tests/testUtils/seedNewDb.ts",
-    "seed-test-db": "node -r esbuild-register tests/seedTestDb.ts"
+    "seed-test-db": "node -r esbuild-register tests/seedTestDb.ts",
+    "generate-gql": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "@apollo/client": "3.3.20",

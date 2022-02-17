@@ -31,5 +31,15 @@ describe('Event rubric attributes', () => {
     cy.getByCy('confirm').click();
     cy.wait(1500);
     cy.getByCy(`Характеристики вина-delete`).should('not.exist');
+
+    // Should toggle attribute flags
+    // filterVisibleAttributeIds
+    cy.getByCy('Виноград-filterVisibleAttributeIds-checkbox').click();
+    cy.wait(1500);
+    cy.getByCy('Виноград-filterVisibleAttributeIds-checkbox').should('not.be.checked');
+    // cmsCardAttributeIds
+    cy.getByCy('Виноград-cmsCardAttributeIds-checkbox').click();
+    cy.wait(1500);
+    cy.getByCy('Виноград-cmsCardAttributeIds-checkbox').should('not.be.checked');
   });
 });

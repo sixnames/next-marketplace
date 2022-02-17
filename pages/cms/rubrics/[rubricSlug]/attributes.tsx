@@ -20,6 +20,7 @@ import {
 } from 'db/uiInterfaces';
 import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import {
+  useAddAttributesGroupToRubric,
   useDeleteAttributesGroupFromRubric,
   useToggleAttributeInRubricFilter,
   useToggleCmsCardAttributeInRubric,
@@ -45,6 +46,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
   const { locale } = useLocaleContext();
   const { showModal } = useAppContext();
 
+  const [addAttributesGroupToRubricMutation] = useAddAttributesGroupToRubric();
   const [deleteAttributesGroupFromRubricMutation] = useDeleteAttributesGroupFromRubric();
   const [toggleCmsCardAttributeInRubricMutation] = useToggleCmsCardAttributeInRubric();
   const [toggleAttributeInRubricFilterMutation] = useToggleAttributeInRubricFilter();
@@ -207,6 +209,9 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                   testId: 'add-attributes-group-to-rubric-modal',
                   rubricId: `${rubric._id}`,
                   attributeGroups,
+                  confirm: (values) => {
+                    addAttributesGroupToRubricMutation(values).catch(console.log);
+                  },
                 },
               });
             }}

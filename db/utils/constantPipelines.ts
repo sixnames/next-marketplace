@@ -563,6 +563,33 @@ export function shopProductDocsFacetPipeline({
   ];
 }
 
+interface EventDocsFacetPipelineInterface {
+  skip: number;
+  limit: number;
+  sortStage: Record<any, any>;
+}
+
+export function eventDocsFacetPipeline({
+  limit,
+  skip,
+  sortStage,
+}: EventDocsFacetPipelineInterface) {
+  return [
+    {
+      $sort: sortStage,
+    },
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
+    },
+
+    // get summary
+    ...eventSummaryPipeline('$_id'),
+  ];
+}
+
 export interface PaginatedAggregationFacetsInputInterface {
   companySlug: string;
   citySlug: string;

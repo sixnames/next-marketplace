@@ -68,6 +68,17 @@ export async function updateEvent({
 
       // update summary
       const { _id, ...values } = input;
+
+      // check fields
+      if (!values.address || !values.seatsCount || !values.startAt) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('events.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
       const eventId = new ObjectId(_id);
       const nameI18n = trimTranslationField(values.nameI18n);
       const descriptionI18n = trimTranslationField(values.descriptionI18n);

@@ -7,9 +7,9 @@ import {
 } from 'db/uiInterfaces';
 import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import {
+  eventDocsFacetPipeline,
   eventsPaginatedAggregationFacetsPipeline,
   paginatedAggregationFinalPipeline,
-  shopProductDocsFacetPipeline,
 } from 'db/utils/constantPipelines';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
@@ -119,7 +119,7 @@ export const getRubricEventsList = async ({
           $facet: {
             // docs facet
             docs: [
-              ...shopProductDocsFacetPipeline({
+              ...eventDocsFacetPipeline({
                 sortStage: {
                   _id: SORT_DESC,
                 },

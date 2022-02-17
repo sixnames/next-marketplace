@@ -32,8 +32,6 @@ const EventDetails: React.FC<EventDetailsInterface> = ({ event }) => {
           address: event.address,
           seatsCount: event.seatsCount,
           price: event.price,
-          companySlug: event.companySlug,
-          companyId: `${event.companyId}`,
           citySlug: event.citySlug,
           nameI18n: event.nameI18n,
           descriptionI18n: event.descriptionI18n,

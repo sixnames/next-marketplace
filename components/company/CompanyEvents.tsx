@@ -1,9 +1,13 @@
 import AppContentFilter from 'components/AppContentFilter';
 import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import WpButton from 'components/button/WpButton';
+import { useAppContext } from 'components/context/appContext';
 import FormattedDateTime from 'components/FormattedDateTime';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
 import WpLink from 'components/Link/WpLink';
+import { CreateEventModalInterface } from 'components/Modal/CreateEventModal';
 import Pager from 'components/Pager';
 import RequestError from 'components/RequestError';
 import WpTable, { WpTableColumn } from 'components/WpTable';
@@ -13,6 +17,7 @@ import {
   RubricEventsListInterface,
 } from 'db/uiInterfaces';
 import { useDeleteEvent } from 'hooks/mutations/useEventMutations';
+import { CREATE_EVENT_MODAL } from 'lib/config/modalVariants';
 import { getNumWord } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
 import { noNaN } from 'lib/numbers';
@@ -35,6 +40,7 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
   routeBasePath,
   pageCompany,
 }) => {
+  const { showModal } = useAppContext();
   const [deleteEventMutation] = useDeleteEvent();
   function getEventLink(eventId: string) {
     const links = getConsoleCompanyLinks({
@@ -144,6 +150,22 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
 
           <Pager page={page} totalPages={totalPages} />
         </div>
+
+        <FixedButtons>
+          <WpButton
+            size={'small'}
+            onClick={() => {
+              showModal<CreateEventModalInterface>({
+                variant: CREATE_EVENT_MODAL,
+                props: {
+                  rubric,
+                },
+              });
+            }}
+          >
+            Создать мероприятие
+          </WpButton>
+        </FixedButtons>
       </div>
     </Inner>
   );

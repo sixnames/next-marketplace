@@ -15,17 +15,14 @@ import { ObjectId } from 'mongodb';
 import { createEventSchema } from 'validation/eventSchema';
 
 export interface CreateEventInputInterface {
-  _id: string;
-  companySlug: string;
-  companyId: string;
   citySlug: string;
   rubricId: string;
-  startAt: DateModel;
+  startAt?: DateModel | null;
   endAt?: DateModel | null;
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
-  address: AddressModel;
-  seatsCount: number;
+  address?: AddressModel | null;
+  seatsCount?: number | null;
   price?: number | null;
 }
 
@@ -93,30 +90,38 @@ export async function createEvent({
         return;
       }
 
+      // check fields
+      if (!input.address || !input.seatsCount || !input.startAt) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('events.create.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
       // create summary
       const itemId = await getNextItemId(COL_EVENT_SUMMARIES);
-      const eventId = new ObjectId();
       const nameI18n = trimTranslationField(input.nameI18n);
       const descriptionI18n = trimTranslationField(input.descriptionI18n);
       const createdEventSummaryResult = await eventSummariesCollection.insertOne({
-        _id: eventId,
         itemId,
         slug: itemId,
         descriptionI18n,
         nameI18n,
         citySlug: input.citySlug,
-        companyId: new ObjectId(input.companyId),
-        companySlug: input.companySlug,
+        companyId: rubric.companyId,
+        companySlug: rubric.companySlug,
         mainImage: IMAGE_FALLBACK,
-        filterSlugs: [],
         address: input.address,
         seatsAvailable: input.seatsCount,
+        seatsCount: input.seatsCount,
+        filterSlugs: [],
         attributeIds: [],
         assets: [],
         videos: [],
         attributes: [],
         price: input.price,
-        seatsCount: input.seatsCount,
         rubricId: rubric._id,
         rubricSlug: rubric.slug,
         startAt: new Date(input.startAt),

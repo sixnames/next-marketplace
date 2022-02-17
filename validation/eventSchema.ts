@@ -24,6 +24,8 @@ export const eventCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => 
       ...args,
       slug: 'validation.events.seatsCount',
     }),
+    address: Yup.mixed().nullable().required('address'),
+    startAt: Yup.mixed().nullable().required('startAt'),
   };
 };
 

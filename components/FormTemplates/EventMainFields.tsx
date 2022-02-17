@@ -1,4 +1,5 @@
 import FormikAddressInput from 'components/FormElements/Input/FormikAddressInput';
+import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import * as React from 'react';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
@@ -17,9 +18,28 @@ const EventMainFields: React.FC = () => {
 
       <FormikAddressInput label={'Адрес'} name={'address'} testId={'address'} />
 
-      <FormikInput name={'seatsCount'} testId={'seatsCount'} label={'Кол-во посадочных мест'} />
+      <FormikInput
+        name={'seatsCount'}
+        testId={'seatsCount'}
+        label={'Кол-во посадочных мест'}
+        type={'number'}
+      />
 
-      <FormikInput name={'price'} testId={'price'} label={'Цена билета'} />
+      <FormikInput name={'price'} testId={'price'} label={'Цена билета'} type={'number'} />
+
+      <FormikDatePicker
+        name={'startAt'}
+        testId={'startAt'}
+        label={'Начало мероприятия'}
+        showTimeSelect
+      />
+
+      <FormikDatePicker
+        name={'endAt'}
+        testId={'endAt'}
+        label={'Окончание мероприятия'}
+        showTimeSelect
+      />
     </React.Fragment>
   );
 };

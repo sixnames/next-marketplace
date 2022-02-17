@@ -15,6 +15,7 @@ const eventFacets: EventFacetModel[] = eventSummaries.map((summary) => {
     citySlug: summary.citySlug,
     endAt: summary.endAt,
     startAt: summary.startAt,
+    price: summary.price,
     views: {},
   };
   return product;

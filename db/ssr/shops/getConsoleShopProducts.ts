@@ -11,9 +11,9 @@ import {
 } from 'db/uiInterfaces';
 import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import {
+  PaginatedAggregationFacetsInputInterface,
   paginatedAggregationFinalPipeline,
   productsPaginatedAggregationFacetsPipeline,
-  ProductsPaginatedAggregationInterface,
   shopProductDocsFacetPipeline,
 } from 'db/utils/constantPipelines';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
@@ -142,7 +142,7 @@ export const getConsoleShopProducts = async ({
       ...photoStage,
     };
 
-    const pipelineConfig: ProductsPaginatedAggregationInterface = {
+    const pipelineConfig: PaginatedAggregationFacetsInputInterface = {
       citySlug: DEFAULT_CITY,
       companySlug,
     };

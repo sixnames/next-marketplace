@@ -109,6 +109,7 @@ export async function updateEvent({
         },
         {
           $set: {
+            price: updatedSummary.price,
             citySlug: updatedSummary.citySlug,
             endAt: updatedSummary.endAt,
             startAt: updatedSummary.startAt,

@@ -90,7 +90,7 @@ export async function createEventRubric({
     const slug = generateDefaultLangSlug(input.nameI18n);
     const createdRubricResult = await rubricsCollection.insertOne({
       ...input,
-      slug,
+      slug: `e${slug}`,
       companyId,
       active: true,
       attributesGroupIds: [],

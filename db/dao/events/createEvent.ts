@@ -154,6 +154,7 @@ export async function createEvent({
         citySlug: createdSummary.citySlug,
         rubricSlug: createdSummary.rubricSlug,
         rubricId: createdSummary.rubricId,
+        price: createdSummary.price,
         endAt: createdSummary.endAt,
         startAt: createdSummary.startAt,
         views: {},

@@ -11,9 +11,9 @@ import {
 } from 'db/uiInterfaces';
 import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import {
+  PaginatedAggregationFacetsInputInterface,
   paginatedAggregationFinalPipeline,
   productsPaginatedAggregationFacetsPipeline,
-  ProductsPaginatedAggregationInterface,
   summaryPipeline,
 } from 'db/utils/constantPipelines';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
@@ -221,7 +221,7 @@ export const getConsoleRubricProducts = async ({
         : [];
 
     // aggregate catalogue initial data
-    const pipelineConfig: ProductsPaginatedAggregationInterface = {
+    const pipelineConfig: PaginatedAggregationFacetsInputInterface = {
       citySlug: DEFAULT_CITY,
       companySlug,
     };

@@ -1323,6 +1323,7 @@ export interface EventFacetBaseModel {
   attributeIds: ObjectIdModel[];
   startAt: DateModel;
   endAt?: DateModel | null;
+  price?: number | null;
 }
 
 export interface EventFacetModel extends EventFacetBaseModel, CountersModel {}
@@ -1337,7 +1338,6 @@ export interface EventSummaryModel extends TimestampModel, EventFacetBaseModel {
   address: AddressModel;
   seatsCount: number;
   seatsAvailable: number;
-  price?: number | null;
 }
 
 // Payload

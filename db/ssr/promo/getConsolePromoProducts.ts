@@ -10,9 +10,9 @@ import {
 } from 'db/uiInterfaces';
 import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import {
+  PaginatedAggregationFacetsInputInterface,
   paginatedAggregationFinalPipeline,
   productsPaginatedAggregationFacetsPipeline,
-  ProductsPaginatedAggregationInterface,
   shopProductDocsFacetPipeline,
 } from 'db/utils/constantPipelines';
 import { castUrlFilters } from 'lib/castUrlFilters';
@@ -149,7 +149,7 @@ export async function getConsolePromoProducts({
       ...excludedIdsStage,
     };
 
-    const pipelineConfig: ProductsPaginatedAggregationInterface = {
+    const pipelineConfig: PaginatedAggregationFacetsInputInterface = {
       citySlug: DEFAULT_CITY,
       companySlug: DEFAULT_COMPANY_SLUG,
     };

@@ -384,6 +384,8 @@ export interface EventRubricInterface extends EventRubricModel {
 export interface EventSummaryInterface extends EventSummaryModel {
   // ui
   cardContent?: SeoContentModel | null;
+  name?: string | null;
+  description?: string | null;
 
   // parents
   rubric?: EventRubricInterface | null;
@@ -578,18 +580,26 @@ export interface CatalogueProductOptionInterface {
   optionsSlugs: string[];
 }
 
-export interface CatalogueProductPricesInterface {
+export interface AggregationPriceInterface {
   _id: number;
 }
 
 export interface CatalogueProductsAggregationInterface {
   totalDocs: number;
-  prices: CatalogueProductPricesInterface[];
+  prices: AggregationPriceInterface[];
   docs: ShopProductInterface[];
   rubrics: RubricInterface[];
   attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[];
   brands?: BrandInterface[];
+  totalPages: number;
+}
+
+export interface EventsAggregationInterface {
+  totalDocs: number;
+  prices: AggregationPriceInterface[];
+  docs: EventSummaryInterface[];
+  attributes?: AttributeInterface[] | null;
   totalPages: number;
 }
 
@@ -893,7 +903,7 @@ export interface ShopProductsAggregationInterface {
   rubric: RubricInterface;
   totalDocs: number;
   totalPages: number;
-  prices: CatalogueProductPricesInterface[];
+  prices: AggregationPriceInterface[];
   options: CatalogueProductOptionInterface[];
   hasPrevPage: boolean;
   hasNextPage: boolean;
@@ -907,7 +917,7 @@ export interface ProductsAggregationInterface {
   docs: ProductSummaryInterface[];
   totalDocs: number;
   totalPages: number;
-  prices: CatalogueProductPricesInterface[];
+  prices: AggregationPriceInterface[];
   hasPrevPage: boolean;
   hasNextPage: boolean;
   attributes?: AttributeInterface[] | null;
@@ -940,6 +950,12 @@ export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationI
 export interface ConsoleRubricProductsInterface
   extends AppPaginationWithFiltersInterface<ProductSummaryInterface> {
   rubric?: RubricInterface | null;
+  companySlug: string;
+}
+
+export interface RubricEventsListInterface
+  extends AppPaginationWithFiltersInterface<EventSummaryInterface> {
+  rubric: EventRubricInterface;
   companySlug: string;
 }
 

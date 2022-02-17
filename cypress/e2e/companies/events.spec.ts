@@ -18,11 +18,13 @@ describe('Event rubric events', () => {
 
     // Should add event to rubric
     cy.getByCy(`${mainRubricName}-update`).click();
+    cy.wait(1500);
+    cy.getByCy(`events`).click();
+    cy.wait(1500);
     cy.getByCy('rubric-events-list').should('exist');
     cy.getByCy(`create-rubric-event`).click();
     cy.getByCy('create-new-event-modal').should('exist');
     cy.getByCy('nameI18n-ru').type(newEventName);
-    cy.getByCy('originalName').type(newEventName);
     cy.getByCy('descriptionI18n-ru').type(newEventDescription);
     cy.getByCy(`submit-new-event`).click();
     cy.wait(1500);

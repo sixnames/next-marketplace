@@ -118,10 +118,10 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
   }
 
   return (
-    <Inner testId={'rubric-products-list'}>
+    <Inner testId={'rubric-events-list'}>
       <div className={`mb-2 text-xl font-medium`}>{catalogueCounterString}</div>
 
-      <FormikRouterSearch testId={'products'} />
+      <FormikRouterSearch testId={'events'} />
 
       <div className={`max-w-full`}>
         <div className={'mb-8'}>
@@ -153,6 +153,7 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
 
         <FixedButtons>
           <WpButton
+            testId={'create-rubric-event'}
             size={'small'}
             onClick={() => {
               showModal<CreateEventModalInterface>({

@@ -2,22 +2,27 @@ import Inner from 'components/Inner';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import AppSubNav from 'components/layout/AppSubNav';
 import WpTitle from 'components/WpTitle';
-import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  EventRubricInterface,
+} from 'db/uiInterfaces';
 import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
-interface EventRubricLayoutInterface {
-  rubric: RubricInterface;
-  basePath: string;
+export interface EventRubricLayoutInterface {
+  rubric: EventRubricInterface;
+  routeBasePath: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
+  pageCompany: CompanyInterface;
 }
 
 const EventRubricLayout: React.FC<EventRubricLayoutInterface> = ({
   rubric,
-  basePath,
+  routeBasePath,
   breadcrumbs,
   children,
 }) => {
@@ -25,7 +30,7 @@ const EventRubricLayout: React.FC<EventRubricLayoutInterface> = ({
 
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     const links = getConsoleCompanyLinks({
-      basePath,
+      basePath: routeBasePath,
       companyId: `${query.companyId}`,
       rubricSlug: rubric.slug,
     });
@@ -54,7 +59,7 @@ const EventRubricLayout: React.FC<EventRubricLayoutInterface> = ({
         path: links.events.rubricSlug.seoContent.url,
       },
     ];
-  }, [basePath, query.companyId, rubric.slug]);
+  }, [routeBasePath, query.companyId, rubric.slug]);
 
   const title = query.title || rubric.name;
 

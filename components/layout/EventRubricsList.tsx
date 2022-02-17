@@ -29,13 +29,13 @@ const EventRubricsList: React.FC<EventRubricsListInterface> = ({
 
   const [deleteEventRubricMutation] = useDeleteEventRubric();
 
-  function navigateToEvents(dataItem: EventRubricInterface) {
+  function navigateToTheRubricDetails(dataItem: EventRubricInterface) {
     const links = getConsoleCompanyLinks({
       companyId: pageCompany._id,
       rubricSlug: dataItem.slug,
       basePath: routeBasePath,
     });
-    router.push(links.events.rubricSlug.events.url).catch(console.log);
+    router.push(links.events.rubricSlug.url).catch(console.log);
   }
 
   const columns: WpTableColumn<EventRubricInterface>[] = [
@@ -59,7 +59,7 @@ const EventRubricsList: React.FC<EventRubricsListInterface> = ({
             justifyContent={'flex-end'}
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
-              navigateToEvents(dataItem);
+              navigateToTheRubricDetails(dataItem);
             }}
             deleteTitle={'Удалить рубрику'}
             deleteHandler={() => {
@@ -91,7 +91,7 @@ const EventRubricsList: React.FC<EventRubricsListInterface> = ({
           testIdKey={'name'}
           emptyMessage={'Список пуст'}
           onRowDoubleClick={(dataItem) => {
-            navigateToEvents(dataItem);
+            navigateToTheRubricDetails(dataItem);
           }}
         />
       </div>

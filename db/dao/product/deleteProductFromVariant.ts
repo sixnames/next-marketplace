@@ -6,11 +6,14 @@ import {
   SummaryDiffModel,
 } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import {
+  getProductFullSummary,
+  getProductFullSummaryWithDraft,
+} from 'db/ssr/products/getProductFullSummary';
 import { DaoPropsInterface, ProductVariantInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
 import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getFullProductSummary, getFullProductSummaryWithDraft } from 'lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
@@ -79,7 +82,7 @@ export async function deleteProductFromVariant({
       // check all entities availability
       const variantId = new ObjectId(input.variantId);
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductVariants');
-      const summaryPayload = await getFullProductSummaryWithDraft({
+      const summaryPayload = await getProductFullSummaryWithDraft({
         locale,
         taskId: input.taskId,
         productId: input.productId,
@@ -98,7 +101,7 @@ export async function deleteProductFromVariant({
       const updatedSummary = { ...summary };
       const diff: SummaryDiffModel = {};
 
-      const deleteSummaryPayload = await getFullProductSummary({
+      const deleteSummaryPayload = await getProductFullSummary({
         locale,
         productId: input.deleteProductId,
         companySlug: DEFAULT_COMPANY_SLUG,

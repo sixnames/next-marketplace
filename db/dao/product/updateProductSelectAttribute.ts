@@ -2,12 +2,12 @@ import { COL_OPTIONS } from 'db/collectionNames';
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { ObjectIdModel, ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import { getProductFullSummaryWithDraft } from 'db/ssr/products/getProductFullSummary';
 import { DaoPropsInterface, ProductAttributeInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
 import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { getParentTreeIds } from 'lib/treeUtils';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
@@ -72,7 +72,7 @@ export async function updateProductSelectAttribute({
 
       // get summary or summary draft
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductAttributes');
-      const summaryPayload = await getFullProductSummaryWithDraft({
+      const summaryPayload = await getProductFullSummaryWithDraft({
         locale,
         taskId: input.taskId,
         productId: input.productId,

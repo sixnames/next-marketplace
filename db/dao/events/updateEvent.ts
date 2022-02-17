@@ -3,7 +3,7 @@ import { EventPayloadModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { trimTranslationField } from 'lib/productUtils';
+import { trimTranslationField } from 'lib/i18n';
 import {
   getOperationPermission,
   getRequestParams,

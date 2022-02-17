@@ -1,76 +1,54 @@
 import ConsoleRubricProductAttributes from 'components/console/ConsoleRubricProductAttributes';
 import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getDbCollections } from 'db/mongodb';
 import { getCmsProductAttributesPageSsr } from 'db/ssr/products/getCmsProductAttributesPageSsr';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-  ProductSummaryInterface,
-} from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
-import { castDbData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
+import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
 interface CmsProductAttributesPageConsumerInterface {
   product: ProductSummaryInterface;
-  pageCompany: CompanyInterface;
 }
 
 const CmsProductAttributesPageConsumer: React.FC<CmsProductAttributesPageConsumerInterface> = ({
   product,
-  pageCompany,
 }) => {
-  const links = getCmsCompanyLinks({
-    companyId: pageCompany._id,
-    rubricSlug: product.rubricSlug,
+  const links = getConsoleRubricLinks({
     productId: product._id,
+    rubricSlug: product.rubricSlug,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Атрибуты`,
+    currentPageName: 'Атрибуты',
     config: [
       {
-        name: 'Компании',
+        name: 'Рубрикатор',
         href: links.parentLink,
       },
       {
-        name: `${pageCompany.name}`,
+        name: `${product.rubric?.name}`,
         href: links.root,
       },
       {
-        name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
-      },
-      {
-        name: `${product.rubric?.name}`,
-        href: links.rubrics.root,
-      },
-      {
         name: `Товары`,
-        href: links.rubrics.product.parentLink,
+        href: links.product.parentLink,
       },
       {
-        name: `${product.snippetTitle}`,
-        href: links.rubrics.product.root,
+        name: `${product.cardTitle}`,
+        href: links.product.root,
       },
     ],
   };
 
   return (
-    <CmsProductLayout
-      companySlug={pageCompany.slug}
-      product={product}
-      breadcrumbs={breadcrumbs}
-      basePath={links.root}
-    >
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductAttributes product={product} />
     </CmsProductLayout>
   );
 };
 
-interface CmsProductAttributesPageInterface
+export interface CmsProductAttributesPageInterface
   extends GetAppInitialDataPropsInterface,
     CmsProductAttributesPageConsumerInterface {}
 
@@ -94,33 +72,8 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
-
-  // get company
-  const collections = await getDbCollections();
-  const companiesCollection = collections.companiesCollection();
-  const companyId = new ObjectId(`${context.query.companyId}`);
-  const companyAggregationResult = await companiesCollection
-    .aggregate([
-      {
-        $match: {
-          _id: companyId,
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
-    return {
-      notFound: true,
-    };
-  }
-
   return {
-    props: {
-      ...props,
-      pageCompany: castDbData(companyResult),
-    },
+    props,
   };
 };
-
 export default CmsProductAttributesPage;

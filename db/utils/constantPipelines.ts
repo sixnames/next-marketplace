@@ -4,6 +4,7 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
+  COL_EVENT_RUBRICS,
   COL_EVENT_SUMMARIES,
   COL_ICONS,
   COL_OPTIONS,
@@ -47,7 +48,7 @@ interface ProductAttributesPipelineInterface {
   getOptionIcon?: boolean;
 }
 
-export const productAttributesPipeline = (props?: ProductAttributesPipelineInterface) => {
+export const summaryAttributesPipeline = (props?: ProductAttributesPipelineInterface) => {
   const getOptionIcon = props?.getOptionIcon;
 
   const optionIconPipeline = getOptionIcon
@@ -264,6 +265,34 @@ export const productRubricPipeline = [
   {
     $lookup: {
       from: COL_RUBRICS,
+      as: 'rubric',
+      let: {
+        rubricId: '$rubricId',
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ['$_id', '$$rubricId'],
+            },
+          },
+        },
+      ],
+    },
+  },
+  {
+    $addFields: {
+      rubric: {
+        $arrayElemAt: ['$rubric', 0],
+      },
+    },
+  },
+];
+
+export const eventSummaryRubricPipeline = [
+  {
+    $lookup: {
+      from: COL_EVENT_RUBRICS,
       as: 'rubric',
       let: {
         rubricId: '$rubricId',

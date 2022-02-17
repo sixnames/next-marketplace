@@ -10,8 +10,8 @@ import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import { IMAGE_FALLBACK } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { trimTranslationField } from 'lib/i18n';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { trimTranslationField } from 'lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,

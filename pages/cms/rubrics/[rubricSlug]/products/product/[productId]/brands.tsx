@@ -2,6 +2,7 @@ import ConsoleRubricProductBrands from 'components/console/ConsoleRubricProductB
 import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getDbCollections } from 'db/mongodb';
+import { getProductFullSummaryWithDraft } from 'db/ssr/products/getProductFullSummary';
 import {
   AppContentWrapperBreadCrumbs,
   BrandCollectionInterface,
@@ -12,7 +13,6 @@ import {
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -94,7 +94,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getFullProductSummaryWithDraft({
+  const payload = await getProductFullSummaryWithDraft({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,

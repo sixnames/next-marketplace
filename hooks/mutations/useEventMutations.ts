@@ -35,10 +35,16 @@ export const useUpdateEvent = () => {
 };
 
 // delete
-export const useDeleteEvent = () => {
+interface UseDeleteEventPropsInterface {
+  reload?: boolean;
+  redirectUrl?: string;
+}
+export const useDeleteEvent = (props?: UseDeleteEventPropsInterface | undefined) => {
+  const mutationProps = props || {};
   return useMutationHandler<EventPayloadModel, DeleteEventInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_DELETE,
+    ...mutationProps,
   });
 };
 

@@ -5,6 +5,7 @@ import CmsTaskProductLayout, {
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getDbCollections } from 'db/mongodb';
 import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
+import { getProductFullSummaryWithDraft } from 'db/ssr/products/getProductFullSummary';
 import {
   AppContentWrapperBreadCrumbs,
   BrandCollectionInterface,
@@ -15,7 +16,6 @@ import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { TASK_VARIANT_SLUG_PRODUCT_BRANDS } from 'lib/config/constantSelects';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -96,7 +96,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getFullProductSummaryWithDraft({
+  const payload = await getProductFullSummaryWithDraft({
     taskId: task._id.toHexString(),
     locale: props.sessionLocale,
     productId: `${productId}`,

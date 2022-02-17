@@ -3,13 +3,13 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'components/layout/console/ConsoleShopProductLayout';
 import RequestError from 'components/RequestError';
 import { getDbCollections } from 'db/mongodb';
+import { getConsoleShopProduct } from 'db/ssr/shops/getConsoleShopProduct';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
-import { getConsoleShopProduct } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';

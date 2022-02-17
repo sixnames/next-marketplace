@@ -2,6 +2,7 @@ import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProd
 import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getDbCollections } from 'db/mongodb';
+import { getProductFullSummary } from 'db/ssr/products/getProductFullSummary';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
@@ -9,7 +10,6 @@ import {
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
-import { getFullProductSummary } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
@@ -121,7 +121,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getFullProductSummary({
+  const payload = await getProductFullSummary({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: companyResult.slug,

@@ -1,6 +1,7 @@
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import { getProductFullSummaryWithDraft } from 'db/ssr/products/getProductFullSummary';
 import { NextContextInterface } from 'db/uiInterfaces';
 import { getMainImage, storeUploads } from 'lib/assetUtils/assetUtils';
 import {
@@ -10,7 +11,6 @@ import {
   TASK_STATE_IN_PROGRESS,
 } from 'lib/config/common';
 import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { parseApiFormData } from 'lib/restApi';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 
@@ -57,7 +57,7 @@ export async function addProductAsset(context: NextContextInterface): Promise<Pr
 
       // get summary or summary draft
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductAssets');
-      const summaryPayload = await getFullProductSummaryWithDraft({
+      const summaryPayload = await getProductFullSummaryWithDraft({
         locale,
         taskId: formData.fields.taskId,
         productId: formData.fields.productId,

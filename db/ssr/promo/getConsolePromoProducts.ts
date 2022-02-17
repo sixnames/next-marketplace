@@ -1,4 +1,5 @@
 import { castSummaryForUI } from 'db/cast/castSummaryForUI';
+import { castSupplierProductsList } from 'db/cast/castSupplierProductsList';
 import { COL_PROMO_PRODUCTS } from 'db/collectionNames';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
@@ -30,7 +31,6 @@ import {
   getPriceAttribute,
 } from 'lib/config/constantAttributes';
 import { noNaN } from 'lib/numbers';
-import { castSupplierProductsList } from 'lib/productUtils';
 import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 

@@ -300,6 +300,9 @@ export function getProjectLinks(props?: LinkPropsInterface) {
                     attributes: {
                       url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event/${eventId}/attributes`,
                     },
+                    editor: {
+                      url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event/${eventId}/editor`,
+                    },
                   },
                 },
               },
@@ -887,6 +890,7 @@ export function getConsoleCompanyLinks(props: ConsoleCompanyLinkPropsInterface) 
               attributes: {
                 url: `${basePath}/events/${rubricSlug}/events/event/${eventId}/attributes`,
               },
+              editor: { url: `${basePath}/events/${rubricSlug}/events/event/${eventId}/editor` },
             },
           },
         },

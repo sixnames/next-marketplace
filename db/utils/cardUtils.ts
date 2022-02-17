@@ -25,8 +25,8 @@ import {
 } from 'db/uiInterfaces';
 import {
   ignoreNoImageStage,
-  productAttributesPipeline,
   productCategoriesPipeline,
+  summaryAttributesPipeline,
 } from 'db/utils/constantPipelines';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import {
@@ -263,7 +263,7 @@ export async function getCardData({
         ...productCategoriesPipeline(),
 
         // get product attributes
-        ...productAttributesPipeline({ getOptionIcon: true }),
+        ...summaryAttributesPipeline({ getOptionIcon: true }),
 
         // get product manufacturer
         {

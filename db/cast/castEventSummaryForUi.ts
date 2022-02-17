@@ -1,3 +1,4 @@
+import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import {
   AttributeInterface,
   EventSummaryInterface,
@@ -67,10 +68,19 @@ export function castEventSummaryForUi({
     [],
   );
 
+  // rubric
+  const rubric = summary.rubric
+    ? castEventRubricForUI({
+        rubric: summary.rubric,
+        locale,
+      })
+    : null;
+
   return {
     ...summary,
     attributes: productAttributes,
     name: getFieldStringLocale(summary.nameI18n, locale),
     description: getFieldStringLocale(summary.descriptionI18n, locale),
+    rubric,
   };
 }

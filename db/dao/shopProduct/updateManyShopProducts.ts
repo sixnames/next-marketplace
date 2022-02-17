@@ -1,5 +1,5 @@
+import { checkShopProductBarcodeIntersects } from 'lib/barcode';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { checkShopProductBarcodeIntersects } from 'lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,

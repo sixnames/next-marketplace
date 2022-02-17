@@ -1,10 +1,11 @@
+import { castSummaryToShopProduct } from 'db/cast/castSummaryToShopProduct';
 import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { ProductPayloadModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import { checkBarcodeIntersects } from 'lib/barcode';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { castSummaryToShopProduct, checkBarcodeIntersects } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import { ObjectId } from 'mongodb';

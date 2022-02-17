@@ -1,73 +1,47 @@
 import ConsoleRubricProductAssets from 'components/console/ConsoleRubricProductAssets';
 import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getDbCollections } from 'db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-  ProductSummaryInterface,
-} from 'db/uiInterfaces';
+import { getProductFullSummaryWithDraft } from 'db/ssr/products/getProductFullSummary';
+import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
 interface ProductAssetsInterface {
   product: ProductSummaryInterface;
-  pageCompany: CompanyInterface;
-  routeBasePath: string;
 }
 
-const ProductAssets: React.FC<ProductAssetsInterface> = ({
-  product,
-  pageCompany,
-  routeBasePath,
-}) => {
-  const links = getCmsCompanyLinks({
-    companyId: pageCompany._id,
-    rubricSlug: product.rubricSlug,
+const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
+  const links = getConsoleRubricLinks({
     productId: product._id,
+    rubricSlug: product.rubricSlug,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Изображения`,
+    currentPageName: 'Изображения',
     config: [
       {
-        name: 'Компании',
+        name: 'Рубрикатор',
         href: links.parentLink,
       },
       {
-        name: `${pageCompany.name}`,
-        href: links.root,
-      },
-      {
-        name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
-      },
-      {
         name: `${product.rubric?.name}`,
-        href: links.rubrics.root,
+        href: links.parentLink,
       },
       {
         name: `Товары`,
-        href: links.rubrics.product.parentLink,
+        href: links.product.parentLink,
       },
       {
-        name: `${product.snippetTitle}`,
-        href: links.rubrics.product.root,
+        name: `${product.cardTitle}`,
+        href: links.product.root,
       },
     ],
   };
 
   return (
-    <CmsProductLayout
-      companySlug={pageCompany.slug}
-      product={product}
-      breadcrumbs={breadcrumbs}
-      basePath={routeBasePath}
-    >
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductAssets summary={product} />
     </CmsProductLayout>
   );
@@ -88,8 +62,6 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { productId } = query;
-  const collections = await getDbCollections();
-  const companiesCollection = collections.companiesCollection();
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -97,25 +69,7 @@ export const getServerSideProps = async (
     };
   }
 
-  // get company
-  const companyId = new ObjectId(`${query.companyId}`);
-  const companyAggregationResult = await companiesCollection
-    .aggregate([
-      {
-        $match: {
-          _id: companyId,
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const payload = await getFullProductSummaryWithDraft({
+  const payload = await getProductFullSummaryWithDraft({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
@@ -128,16 +82,10 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
       product: castDbData(payload.summary),
-      pageCompany: castDbData(companyResult),
-      routeBasePath: links.root,
     },
   };
 };

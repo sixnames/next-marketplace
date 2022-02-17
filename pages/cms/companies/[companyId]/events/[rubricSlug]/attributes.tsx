@@ -4,7 +4,7 @@ import EventRubricAttributes, {
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import EventRubricLayout, {
   EventRubricLayoutInterface,
-} from 'components/layout/cms/EventRubricLayout';
+} from 'components/layout/events/EventRubricLayout';
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { getDbCollections } from 'db/mongodb';
 import { getCompanySsr } from 'db/ssr/company/getCompanySsr';

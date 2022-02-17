@@ -1,4 +1,5 @@
 import { castSummaryForUI } from 'db/cast/castSummaryForUI';
+import { castSupplierProductsList } from 'db/cast/castSupplierProductsList';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { getConsoleShopSsr } from 'db/ssr/shops/getConsoleShopSsr';
@@ -31,7 +32,6 @@ import {
   getPriceAttribute,
 } from 'lib/config/constantAttributes';
 import { getFieldStringLocale } from 'lib/i18n';
-import { castSupplierProductsList } from 'lib/productUtils';
 import { getTreeFromList } from 'lib/treeUtils';
 import { ParsedUrlQuery } from 'querystring';
 

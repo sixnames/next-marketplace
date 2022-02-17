@@ -1,6 +1,6 @@
 import CompanyEvents, { CompanyEventsInterface } from 'components/company/CompanyEvents';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import EventRubricLayout from 'components/layout/cms/EventRubricLayout';
+import EventRubricLayout from 'components/layout/events/EventRubricLayout';
 import { getRubricEventsListSsr } from 'db/ssr/events/getRubricEventsListSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { getProjectLinks } from 'lib/links/getProjectLinks';

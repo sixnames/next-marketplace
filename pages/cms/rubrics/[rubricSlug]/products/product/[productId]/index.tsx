@@ -1,10 +1,10 @@
 import ConsoleRubricProductDetails from 'components/console/ConsoleRubricProductDetails';
 import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getProductFullSummaryWithDraft } from 'db/ssr/products/getProductFullSummary';
 import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -65,7 +65,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getFullProductSummaryWithDraft({
+  const payload = await getProductFullSummaryWithDraft({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,

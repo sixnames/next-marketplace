@@ -1,6 +1,7 @@
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import { getProductFullSummaryWithDraft } from 'db/ssr/products/getProductFullSummary';
 import { DaoPropsInterface, ProductVariantInterface } from 'db/uiInterfaces';
 import {
   ATTRIBUTE_VARIANT_SELECT,
@@ -10,7 +11,6 @@ import {
 import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
@@ -77,7 +77,7 @@ export async function createProductVariant({
       // get summary or summary draft
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductVariants');
       const attributeId = new ObjectId(input.attributeId);
-      const summaryPayload = await getFullProductSummaryWithDraft({
+      const summaryPayload = await getProductFullSummaryWithDraft({
         locale,
         productId: input.productId,
         companySlug: DEFAULT_COMPANY_SLUG,

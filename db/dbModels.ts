@@ -1310,7 +1310,7 @@ export interface EventRubricModel extends RubricBaseModel {
   image?: string;
 }
 
-export interface EventFacetModel {
+export interface EventFacetBaseModel {
   _id: ObjectIdModel;
   itemId: string;
   slug: string;
@@ -1325,7 +1325,9 @@ export interface EventFacetModel {
   endAt?: DateModel | null;
 }
 
-export interface EventSummaryModel extends CountersModel, TimestampModel, EventFacetModel {
+export interface EventFacetModel extends EventFacetBaseModel, CountersModel {}
+
+export interface EventSummaryModel extends TimestampModel, EventFacetBaseModel {
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
   mainImage: string;

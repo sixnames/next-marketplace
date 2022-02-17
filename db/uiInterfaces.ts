@@ -378,6 +378,7 @@ export interface EventRubricInterface extends EventRubricModel {
   textBottom?: string | null;
   seoDescriptionTop?: SeoContentModel | null;
   seoDescriptionBottom?: SeoContentModel | null;
+  events?: EventSummaryInterface[] | [];
 }
 
 export interface EventSummaryInterface extends EventSummaryModel {

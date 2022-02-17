@@ -129,7 +129,6 @@ export async function createEvent({
         endAt: input.endAt ? new Date(input.endAt) : null,
         createdAt: new Date(),
         updatedAt: new Date(),
-        views: {},
       });
       const createdSummary = await eventSummariesCollection.findOne({
         _id: createdEventSummaryResult.insertedId,
@@ -157,6 +156,7 @@ export async function createEvent({
         rubricId: createdSummary.rubricId,
         endAt: createdSummary.endAt,
         startAt: createdSummary.startAt,
+        views: {},
       });
       if (!createdFacetResult.acknowledged) {
         mutationPayload = {

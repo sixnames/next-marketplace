@@ -32,24 +32,27 @@ const common = {
   },
 };
 
+const eventRubricA = 'Лекции';
+const eventRubricB = 'Мастер-классы';
+
 const eventRubrics: EventRubricModel[] = [
   {
     _id: getObjectId('event_rubric_a'),
     slug: 'event_rubric_a',
     nameI18n: {
-      ru: 'Event rubric A',
+      ru: eventRubricA,
     },
     descriptionI18n: {
-      ru: 'Event rubric A',
+      ru: eventRubricA,
     },
     shortDescriptionI18n: {
-      ru: 'Event rubric A',
+      ru: eventRubricA,
     },
     defaultTitleI18n: {
-      ru: 'Event rubric A',
+      ru: eventRubricA,
     },
     keywordI18n: {
-      ru: 'Event rubric A',
+      ru: eventRubricA,
     },
     prefixI18n: {
       ru: '',
@@ -60,19 +63,19 @@ const eventRubrics: EventRubricModel[] = [
     _id: getObjectId('event_rubric_b'),
     slug: 'event_rubric_b',
     nameI18n: {
-      ru: 'Event rubric B',
+      ru: eventRubricB,
     },
     descriptionI18n: {
-      ru: 'Event rubric B',
+      ru: eventRubricB,
     },
     shortDescriptionI18n: {
-      ru: 'Event rubric B',
+      ru: eventRubricB,
     },
     defaultTitleI18n: {
-      ru: 'Event rubric B',
+      ru: eventRubricB,
     },
     keywordI18n: {
-      ru: 'Event rubric B',
+      ru: eventRubricB,
     },
     prefixI18n: {
       ru: '',

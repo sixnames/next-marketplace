@@ -11,7 +11,7 @@ describe('Event rubrics', () => {
   });
 
   it('Should CRUD rubrics', () => {
-    const mainRubricName = 'Event rubric A';
+    const mainRubricName = 'Лекции';
     const newRubricName = 'newRubricName';
     const updatedRubricName = 'updatedRubricName';
 

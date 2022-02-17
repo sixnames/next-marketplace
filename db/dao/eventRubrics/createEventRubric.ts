@@ -17,7 +17,7 @@ import {
 } from 'lib/sessionHelpers';
 import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { ObjectId } from 'mongodb';
-import { createRubricSchema } from 'validation/rubricSchema';
+import { createEventRubricSchema } from 'validation/rubricSchema';
 
 export interface CreateEventRubricInputInterface {
   companySlug: string;
@@ -31,7 +31,6 @@ export interface CreateEventRubricInputInterface {
   gender: GenderModel;
   capitalise?: boolean | null;
   showRubricNameInProductTitle?: boolean | null;
-  showCategoryInProductTitle?: boolean | null;
 }
 
 export async function createEventRubric({
@@ -66,7 +65,7 @@ export async function createEventRubric({
     // validate
     const validationSchema = await getResolverValidationSchema({
       context,
-      schema: createRubricSchema,
+      schema: createEventRubricSchema,
     });
     await validationSchema.validate(input);
 

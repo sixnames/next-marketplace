@@ -230,12 +230,12 @@ export const getServerSideProps = async (
         $lookup: {
           from: COL_PRODUCT_FACETS,
           as: 'products',
-          let: { rubricId: '$_id' },
+          let: { rubricSlug: '$slug' },
           pipeline: [
             {
               $match: {
                 $expr: {
-                  $eq: ['$$rubricId', '$rubricId'],
+                  $eq: ['$$rubricSlug', '$rubricSlug'],
                 },
               },
             },

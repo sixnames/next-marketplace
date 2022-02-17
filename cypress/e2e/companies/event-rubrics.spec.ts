@@ -38,8 +38,10 @@ describe('Event rubrics', () => {
 
     // Should have event rubric details tab and should update rubric
     cy.getByCy(`${mainRubricName}-update`).click();
+    cy.wait(1500);
     cy.getByCy(`details`).click();
-    cy.getByCy(`rubric-details`).should('exist');
+    cy.wait(1500);
+    cy.getByCy(`event-rubric-details`).should('exist');
     cy.getByCy(`nameI18n-accordion-${SECONDARY_LOCALE}`).click();
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
     cy.getByCy(`nameI18n-${SECONDARY_LOCALE}`).clear().type(updatedRubricName);
@@ -51,7 +53,7 @@ describe('Event rubrics', () => {
     cy.getByCy(`gender`).select(GENDER_HE);
     cy.getByCy('event-rubric-submit').click();
     cy.wait(1500);
-    cy.visit(links.cms.rubrics.url);
+    cy.visit(links.cms.companies.companyId.events.url);
     cy.getByCy(`${updatedRubricName}-row`).should('exist');
   });
 });

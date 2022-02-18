@@ -1,6 +1,7 @@
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { ProductPayloadModel, SummaryDiffModel, TranslationModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import { getProductFullSummaryWithDraft } from 'db/ssr/products/getProductFullSummary';
 import {
   DaoPropsInterface,
   ProductAttributeInterface,
@@ -15,7 +16,6 @@ import {
 import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getAttributeReadableValueLocales } from 'lib/productAttributesUtils';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
@@ -87,7 +87,7 @@ export async function updateProductTextAttribute({
         },
       };
       const taskVariantSlug = getTaskVariantSlugByRule('updateProductAttributes');
-      const summaryPayload = await getFullProductSummaryWithDraft({
+      const summaryPayload = await getProductFullSummaryWithDraft({
         locale,
         productId: input.productId,
         taskId: input.taskId,

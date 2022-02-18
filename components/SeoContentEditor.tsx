@@ -16,19 +16,19 @@ import SeoTextLocalesInfoList from './SeoTextLocalesInfoList';
 import WpAccordion from './WpAccordion';
 
 interface SingleSeoContentEditorInterface {
-  filedName: string;
+  fieldName: string;
   seoContentId: string;
   label?: string;
 }
 
 export const SingleSeoContentEditor: React.FC<SingleSeoContentEditorInterface> = ({
-  filedName,
+  fieldName,
   seoContentId,
   label,
 }) => {
   const { setFieldValue, values } = useFormikContext();
-  const contentFieldName = filedName ? `${filedName}.content` : 'content';
-  const seoLocalesFieldName = filedName ? `${filedName}.seoLocales` : 'seoLocales';
+  const contentFieldName = fieldName ? `${fieldName}.content` : 'content';
+  const seoLocalesFieldName = fieldName ? `${fieldName}.seoLocales` : 'seoLocales';
   const value = get(values, contentFieldName) || PAGE_EDITOR_DEFAULT_VALUE_STRING;
   const seoLocales = get(values, seoLocalesFieldName) || [];
 
@@ -108,7 +108,7 @@ const SeoContentEditor: React.FC<SeoContentEditorInterface> = ({
                 ) : null}
 
                 <SingleSeoContentEditor
-                  filedName={cityFieldName}
+                  fieldName={cityFieldName}
                   seoContentId={`${seoContent._id}`}
                 />
               </div>

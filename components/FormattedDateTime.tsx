@@ -1,3 +1,4 @@
+import { formatDateTime } from 'lib/dateFormatUtils';
 import * as React from 'react';
 import { useLocaleContext } from './context/localeContext';
 
@@ -12,23 +13,15 @@ const FormattedDateTime: React.FC<FormattedDateTimeInterface> = ({ value, classN
   const fallback = <span className={dateClass}>--</span>;
 
   if (!value) {
+    return <span className={dateClass}>{fallback}</span>;
+  }
+
+  const payload = formatDateTime({ value, locale });
+  if (!payload) {
     return fallback;
   }
 
-  try {
-    const date = new Date(value);
-    const formattedDate = Intl.DateTimeFormat(locale, {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      dateStyle: 'short',
-      timeStyle: 'short',
-      hour12: false,
-    }).format(date);
-
-    return <span className={dateClass}>{formattedDate}</span>;
-  } catch {
-    return fallback;
-  }
+  return <span className={dateClass}>{payload}</span>;
 };
 
 export default FormattedDateTime;

@@ -1,3 +1,4 @@
+import { castSummaryToFacet } from 'db/cast/castSummaryToFacet';
 import { COL_PRODUCT_SUMMARIES } from 'db/collectionNames';
 import { ProductPayloadModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
@@ -5,7 +6,6 @@ import { DaoPropsInterface } from 'db/uiInterfaces';
 import { IMAGE_FALLBACK } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { castSummaryToFacet } from 'lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,

@@ -1,8 +1,8 @@
+import { CreateProductInputInterface } from 'db/dao/product/createProduct';
 import { useFormikContext } from 'formik';
+import { useConstantOptions } from 'hooks/useConstantOptions';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
 import * as React from 'react';
-import { CreateProductInputInterface } from '../../db/dao/product/createProduct';
-import { useConstantOptions } from '../../hooks/useConstantOptions';
-import { CONFIRM_MODAL } from '../../lib/config/modalVariants';
 import WpButton from '../button/WpButton';
 import { useAppContext } from '../context/appContext';
 import FormikBarcodeInput from '../FormElements/FormikBarcodeInput/FormikBarcodeInput';

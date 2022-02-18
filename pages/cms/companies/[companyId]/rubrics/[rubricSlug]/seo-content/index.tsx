@@ -9,7 +9,7 @@ import { getDbCollections } from 'db/mongodb';
 import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
 import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'lib/config/common';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -17,25 +17,25 @@ import * as React from 'react';
 
 interface RubricDetailsInterface extends ConsoleSeoContentsListInterface {
   rubric: RubricInterface;
-  companySlug: string;
+  pageCompany: CompanyInterface;
   seoContents: SeoContentModel[];
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({
-  rubric,
-  seoContents,
-  routeBasePath,
-}) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents, pageCompany }) => {
+  const links = getProjectLinks({
+    companyId: pageCompany._id,
+    rubricSlug: rubric.slug,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
       {
         name: 'Рубрикатор',
-        href: `${routeBasePath}/rubrics`,
+        href: links.cms.companies.companyId.rubrics.url,
       },
       {
         name: `${rubric.name}`,
-        href: `${routeBasePath}/rubrics/${rubric._id}`,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.url,
       },
     ],
   };
@@ -45,14 +45,10 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
       hideAttributesPath
       rubric={rubric}
       breadcrumbs={breadcrumbs}
-      basePath={routeBasePath}
+      basePath={links.cms.companies.companyId.url}
     >
       <Inner>
-        <ConsoleSeoContentsList
-          seoContents={seoContents}
-          routeBasePath={routeBasePath}
-          rubricSlug={rubric.slug}
-        />
+        <ConsoleSeoContentsList seoContents={seoContents} />
       </Inner>
     </CmsRubricLayout>
   );
@@ -122,18 +118,12 @@ export const getServerSideProps = async (
     })
     .toArray();
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
       rubric: castDbData(payload.rubric),
       seoContents: castDbData(seoContents),
-      routeBasePath: links.root,
-      rubricSlug: `${payload.rubric.slug}`,
-      companySlug,
+      pageCompany: castDbData(companyResult),
     },
   };
 };

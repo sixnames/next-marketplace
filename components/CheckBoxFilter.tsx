@@ -1,15 +1,15 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import {
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
-} from '../db/uiInterfaces';
+} from 'db/uiInterfaces';
 import {
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
   FILTER_BRAND_COLLECTION_KEY,
   FILTER_BRAND_KEY,
-} from '../lib/config/common';
-import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from '../lib/config/modalVariants';
+} from 'lib/config/common';
+import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'lib/config/modalVariants';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import { useAppContext } from './context/appContext';
 import { useConfigContext } from './context/configContext';
 import FilterSelectedAttributes from './FilterSelectedAttributes';

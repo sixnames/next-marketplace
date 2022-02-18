@@ -1,15 +1,13 @@
 import { addTaskLogItem, findOrCreateUserTask } from 'db/dao/tasks/taskUtils';
 import { ProductPayloadModel, SummaryDiffModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import { getProductFullSummaryWithDraft } from 'db/ssr/products/getProductFullSummary';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import { checkBarcodeIntersects } from 'lib/barcode';
 import { DEFAULT_COMPANY_SLUG, TASK_STATE_IN_PROGRESS } from 'lib/config/common';
 import { getTaskVariantSlugByRule } from 'lib/config/constantSelects';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import {
-  checkBarcodeIntersects,
-  getFullProductSummaryWithDraft,
-  trimProductName,
-} from 'lib/productUtils';
+import { trimProductName } from 'lib/i18n';
 import {
   getOperationPermission,
   getRequestParams,
@@ -72,7 +70,7 @@ export async function updateProduct({
 
       // get summary or summary draft
       const taskVariantSlug = getTaskVariantSlugByRule('updateProduct');
-      const summaryPayload = await getFullProductSummaryWithDraft({
+      const summaryPayload = await getProductFullSummaryWithDraft({
         taskId,
         locale,
         productId,

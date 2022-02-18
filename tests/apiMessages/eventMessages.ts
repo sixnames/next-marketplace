@@ -12,14 +12,14 @@ export const eventMessages: MessageBaseInterface[] = [
   {
     slug: 'events.create.success',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Мероприятие создан.`,
+      [DEFAULT_LOCALE]: `Мероприятие создано.`,
       [SECONDARY_LOCALE]: `Event created.`,
     },
   },
   {
     slug: 'events.update.notFound',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Мероприятие не найден.`,
+      [DEFAULT_LOCALE]: `Мероприятие не найдено.`,
       [SECONDARY_LOCALE]: `Event not found.`,
     },
   },
@@ -33,14 +33,14 @@ export const eventMessages: MessageBaseInterface[] = [
   {
     slug: 'events.update.success',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Мероприятие обновлён.`,
+      [DEFAULT_LOCALE]: `Мероприятие обновлёно.`,
       [SECONDARY_LOCALE]: `Event updated.`,
     },
   },
   {
     slug: 'events.delete.notFound',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Мероприятие не найден.`,
+      [DEFAULT_LOCALE]: `Мероприятие не найдено.`,
       [SECONDARY_LOCALE]: `Event not found.`,
     },
   },
@@ -54,7 +54,7 @@ export const eventMessages: MessageBaseInterface[] = [
   {
     slug: 'events.delete.success',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Мероприятие удалён.`,
+      [DEFAULT_LOCALE]: `Мероприятие удалёно.`,
       [SECONDARY_LOCALE]: `Event removed.`,
     },
   },
@@ -91,6 +91,13 @@ export const eventMessages: MessageBaseInterface[] = [
     messageI18n: {
       [DEFAULT_LOCALE]: `Количество билетов мероприятия обязательно.`,
       [SECONDARY_LOCALE]: `Event seats count is required.`,
+    },
+  },
+  {
+    slug: 'validation.events.city',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Город обязателен.`,
+      [SECONDARY_LOCALE]: `Event city is required.`,
     },
   },
 ];

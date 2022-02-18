@@ -11,9 +11,8 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
-import { execUpdateProductTitles } from 'lib/updateProductTitles';
 import { ObjectId } from 'mongodb';
-import { updateRubricSchema } from 'validation/rubricSchema';
+import { updateEventRubricSchema } from 'validation/rubricSchema';
 
 export interface UpdateEventRubricInputInterface extends CreateEventRubricInputInterface {
   _id: string;
@@ -55,7 +54,7 @@ export async function updateEventRubric({
     // validate
     const validationSchema = await getResolverValidationSchema({
       context,
-      schema: updateRubricSchema,
+      schema: updateEventRubricSchema,
     });
     await validationSchema.validate(input);
 
@@ -120,15 +119,12 @@ export async function updateEventRubric({
       });
     }
 
-    // update product titles
-    execUpdateProductTitles(`rubricSlug=${rubric.slug}`);
-
     return {
       success: true,
       message: await getApiMessage('rubrics.update.success'),
     };
   } catch (e) {
-    console.log('updateRubric error', e);
+    console.log('updateEventRubric error', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

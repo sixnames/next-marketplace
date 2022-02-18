@@ -4,12 +4,12 @@ import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { CatalogueBreadcrumbModel, ObjectIdModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import {
+  AggregationPriceInterface,
   AttributeInterface,
   BrandInterface,
   CatalogueDataInterface,
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
-  CatalogueProductPricesInterface,
   CatalogueProductsAggregationInterface,
   CategoryInterface,
   OptionInterface,
@@ -19,9 +19,9 @@ import {
 } from 'db/uiInterfaces';
 import {
   ignoreNoImageStage,
+  PaginatedAggregationFacetsInputInterface,
   paginatedAggregationFinalPipeline,
   productsPaginatedAggregationFacetsPipeline,
-  ProductsPaginatedAggregationInterface,
   shopProductDocsFacetPipeline,
   shopProductsGroupPipeline,
 } from 'db/utils/constantPipelines';
@@ -143,7 +143,7 @@ export interface GetCatalogueAttributesInterface {
   filters: string[];
   attributes: AttributeInterface[];
   locale: string;
-  productsPrices: CatalogueProductPricesInterface[];
+  productsPrices: AggregationPriceInterface[];
   basePath: string;
   visibleAttributesCount?: number | null;
   rubricGender?: string;
@@ -632,7 +632,6 @@ export const getCatalogueData = async ({
     } = await castUrlFilters({
       search,
       filters: input.filters,
-      initialPage: input.page,
       initialLimit: props.limit,
       searchFieldName: 'productId',
     });
@@ -708,7 +707,7 @@ export const getCatalogueData = async ({
     };
 
     // aggregate catalogue initial data
-    const pipelineConfig: ProductsPaginatedAggregationInterface = {
+    const pipelineConfig: PaginatedAggregationFacetsInputInterface = {
       citySlug: citySlug,
       companySlug,
     };

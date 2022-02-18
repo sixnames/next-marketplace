@@ -1,94 +1,74 @@
-import ConsoleRubricProductAttributes from 'components/console/ConsoleRubricProductAttributes';
-import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
+import EventAttributes from 'components/company/EventAttributes';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getDbCollections } from 'db/mongodb';
-import { getCmsProductAttributesPageSsr } from 'db/ssr/products/getCmsProductAttributesPageSsr';
+import EventLayout from 'components/layout/events/EventLayout';
+import { getEventAttributesPageSsr } from 'db/ssr/events/getEventAttributesPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
-  ProductSummaryInterface,
+  EventSummaryInterface,
 } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
-import { castDbData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface CmsProductAttributesPageConsumerInterface {
-  product: ProductSummaryInterface;
+interface EventAttributesPageConsumerInterface {
   pageCompany: CompanyInterface;
+  event: EventSummaryInterface;
 }
 
-const CmsProductAttributesPageConsumer: React.FC<CmsProductAttributesPageConsumerInterface> = ({
-  product,
+const EventAttributesPageConsumer: React.FC<EventAttributesPageConsumerInterface> = ({
+  event,
   pageCompany,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
-    rubricSlug: product.rubricSlug,
-    productId: product._id,
+    rubricSlug: event.rubricSlug,
+    eventId: event._id,
   });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Атрибуты`,
     config: [
       {
-        name: 'Компании',
-        href: links.parentLink,
+        name: `Мероприятия`,
+        href: links.console.companyId.events.url,
       },
       {
-        name: `${pageCompany.name}`,
-        href: links.root,
+        name: `${event.rubric?.name}`,
+        href: links.console.companyId.events.rubricSlug.url,
       },
       {
-        name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
-      },
-      {
-        name: `${product.rubric?.name}`,
-        href: links.rubrics.root,
-      },
-      {
-        name: `Товары`,
-        href: links.rubrics.product.parentLink,
-      },
-      {
-        name: `${product.snippetTitle}`,
-        href: links.rubrics.product.root,
+        name: `${event.name}`,
+        href: links.console.companyId.events.rubricSlug.events.event.eventId.url,
       },
     ],
   };
 
   return (
-    <CmsProductLayout
-      companySlug={pageCompany.slug}
-      product={product}
-      breadcrumbs={breadcrumbs}
-      basePath={links.root}
-    >
-      <ConsoleRubricProductAttributes product={product} />
-    </CmsProductLayout>
+    <EventLayout event={event} breadcrumbs={breadcrumbs}>
+      <EventAttributes event={event} />
+    </EventLayout>
   );
 };
 
-interface CmsProductAttributesPageInterface
+export interface EventAttributesPageInterface
   extends GetAppInitialDataPropsInterface,
-    CmsProductAttributesPageConsumerInterface {}
+    EventAttributesPageConsumerInterface {}
 
-const CmsProductAttributesPage: NextPage<CmsProductAttributesPageInterface> = ({
-  layoutProps,
-  ...props
-}) => {
+const EventAttributesPage: NextPage<EventAttributesPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <CmsProductAttributesPageConsumer {...props} />
+      <EventAttributesPageConsumer {...props} />
     </ConsoleLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CmsProductAttributesPageInterface>> => {
-  const props = await getCmsProductAttributesPageSsr(context);
+): Promise<GetServerSidePropsResult<EventAttributesPageInterface>> => {
+  const { query } = context;
+  const { props } = await getConsoleInitialData({ context });
   if (!props) {
     return {
       notFound: true,
@@ -96,20 +76,14 @@ export const getServerSideProps = async (
   }
 
   // get company
-  const collections = await getDbCollections();
-  const companiesCollection = collections.companiesCollection();
-  const companyId = new ObjectId(`${context.query.companyId}`);
-  const companyAggregationResult = await companiesCollection
-    .aggregate([
-      {
-        $match: {
-          _id: companyId,
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
+  const company = props.layoutProps.pageCompany;
+
+  const payload = await getEventAttributesPageSsr({
+    locale: props.sessionLocale,
+    eventId: `${query.eventId}`,
+  });
+
+  if (!payload) {
     return {
       notFound: true,
     };
@@ -118,9 +92,9 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      pageCompany: castDbData(companyResult),
+      event: castDbData(payload.summary),
+      pageCompany: castDbData(company),
     },
   };
 };
-
-export default CmsProductAttributesPage;
+export default EventAttributesPage;

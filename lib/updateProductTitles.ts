@@ -4,9 +4,9 @@ import { generateDbCollections } from 'db/mongodb';
 import { ProductSummaryInterface } from 'db/uiInterfaces';
 import {
   brandPipeline,
-  productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
+  summaryAttributesPipeline,
 } from 'db/utils/constantPipelines';
 import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -105,7 +105,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
           ...productRubricPipeline,
 
           // get product attributes
-          ...productAttributesPipeline(),
+          ...summaryAttributesPipeline(),
 
           // get product brand
           ...brandPipeline,

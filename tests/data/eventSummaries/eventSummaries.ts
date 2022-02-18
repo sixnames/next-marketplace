@@ -310,7 +310,6 @@ const eventSummaries = eventRubrics.reduce((acc: EventSummaryModel[], rubric) =>
       filterSlugs,
       attributeIds,
       citySlug: DEFAULT_CITY,
-      views: {},
       seatsCount: 100,
       seatsAvailable: 80,
       price: 1000,

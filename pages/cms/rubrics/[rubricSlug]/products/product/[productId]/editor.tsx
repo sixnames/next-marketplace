@@ -3,10 +3,10 @@ import ConsoleRubricProductEditor, {
 } from 'components/console/ConsoleRubricProductEditor';
 import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import { getProductFullSummary } from 'db/ssr/products/getProductFullSummary';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
-import { getFullProductSummary } from 'lib/productUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -81,7 +81,7 @@ export const getServerSideProps = async (
 
   const companySlug = DEFAULT_COMPANY_SLUG;
 
-  const payload = await getFullProductSummary({
+  const payload = await getProductFullSummary({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug,

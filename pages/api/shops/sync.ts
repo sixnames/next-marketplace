@@ -1,3 +1,4 @@
+import { castSummaryToShopProduct } from 'db/cast/castSummaryToShopProduct';
 import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { ObjectIdModel, ShopProductModel, SyncIntersectModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
@@ -7,7 +8,6 @@ import { REQUEST_METHOD_POST } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { noNaN } from 'lib/numbers';
-import { castSummaryToShopProduct } from 'lib/productUtils';
 import { getUpdatedShopProductPrices } from 'lib/shopUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';

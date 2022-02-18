@@ -554,6 +554,7 @@ export type MessageSlug =
   | 'validation.events.description'
   | 'validation.events.rubrics'
   | 'validation.events.seatsCount'
+  | 'validation.events.city'
 
   // Brands ----------
   | 'brands.create.duplicate'

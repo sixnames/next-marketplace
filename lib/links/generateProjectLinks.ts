@@ -207,5 +207,5 @@ function iterPages({ pagesPath, replacePath, addBasePathVariable }: IterPagesInt
     });
   }
   `;
-  fs.writeFileSync('./lib/getProjectLinks.ts', output);
+  fs.writeFileSync('./lib/links/getProjectLinks.ts', output);
 })();

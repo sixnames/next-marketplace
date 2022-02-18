@@ -2,9 +2,9 @@ import CompanyProductDetails from 'components/company/CompanyProductDetails';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'components/layout/console/ConsoleShopProductLayout';
 import RequestError from 'components/RequestError';
+import { getConsoleShopProduct } from 'db/ssr/shops/getConsoleShopProduct';
 import { AppContentWrapperBreadCrumbs, ShopProductInterface } from 'db/uiInterfaces';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
-import { getConsoleShopProduct } from 'lib/productUtils';
 import {
   castDbData,
   getConsoleInitialData,

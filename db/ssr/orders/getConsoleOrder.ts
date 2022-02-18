@@ -1,4 +1,5 @@
 import { castOrderStatus } from 'db/cast/castOrderStatus';
+import { castSupplierProductsList } from 'db/cast/castSupplierProductsList';
 import {
   COL_GIFT_CERTIFICATES,
   COL_ORDER_CUSTOMERS,
@@ -20,7 +21,6 @@ import { SORT_ASC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { castSupplierProductsList } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 
 interface GetConsoleOrderInterface {

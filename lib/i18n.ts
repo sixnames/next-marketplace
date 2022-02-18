@@ -1,5 +1,5 @@
+import { TranslationModel } from 'db/dbModels';
 import trim from 'trim';
-import { TranslationModel } from '../db/dbModels';
 import { DEFAULT_CITY, DEFAULT_LOCALE, SECONDARY_LOCALE } from './config/common';
 
 export function getI18nLocaleValue<T>(i18nField: Record<string, T>, locale: string): T {
@@ -93,13 +93,26 @@ export function getNumWord(value: number | undefined, words: string[]): string {
   return words[2];
 }
 
-export function trimTranslationField(fieldII18n: TranslationModel) {
-  return Object.keys(fieldII18n).reduce((acc: TranslationModel, key) => {
-    const value = fieldII18n[key];
+export function trimTranslationField(fieldII18n?: TranslationModel | null) {
+  const field = fieldII18n || {};
+  return Object.keys(field).reduce((acc: TranslationModel, key) => {
+    const value = field[key];
     if (!value) {
       return acc;
     }
     acc[key] = trim(value);
     return acc;
   }, {});
+}
+
+interface TrimProductNameInterface {
+  originalName?: string | null;
+  nameI18n?: TranslationModel | null;
+}
+
+export function trimProductName({ originalName, nameI18n }: TrimProductNameInterface) {
+  return {
+    originalName: originalName ? trim(originalName) : '',
+    nameI18n: trimTranslationField(nameI18n),
+  };
 }

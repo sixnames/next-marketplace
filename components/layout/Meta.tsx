@@ -34,7 +34,6 @@ const Meta: React.FC<MetaInterface> = ({
   const [showCanonical, setShowCanonical] = React.useState<boolean>(false);
   const { configs } = useConfigContext();
   const { sortBy } = getFilterUrlValues({
-    initialPage: 1,
     initialLimit: 1,
     filters: alwaysArray(router.query.filters),
   });

@@ -3,7 +3,7 @@ import { EventPayloadModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { trimTranslationField } from 'lib/productUtils';
+import { trimTranslationField } from 'lib/i18n';
 import {
   getOperationPermission,
   getRequestParams,
@@ -14,6 +14,7 @@ import { updateEventSchema } from 'validation/eventSchema';
 
 export interface UpdateEventInputInterface extends CreateEventInputInterface {
   _id: string;
+  videos?: string[];
 }
 
 export async function updateEvent({
@@ -67,6 +68,17 @@ export async function updateEvent({
 
       // update summary
       const { _id, ...values } = input;
+
+      // check fields
+      if (!values.address || !values.seatsCount || !values.startAt) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('events.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
       const eventId = new ObjectId(_id);
       const nameI18n = trimTranslationField(values.nameI18n);
       const descriptionI18n = trimTranslationField(values.descriptionI18n);
@@ -109,6 +121,7 @@ export async function updateEvent({
         },
         {
           $set: {
+            price: updatedSummary.price,
             citySlug: updatedSummary.citySlug,
             endAt: updatedSummary.endAt,
             startAt: updatedSummary.startAt,

@@ -9,20 +9,38 @@ import { UpdateEventSelectAttributeInputInterface } from 'db/dao/events/updateEv
 import { UpdateEventTextAttributeInputInterface } from 'db/dao/events/updateEventTextAttribute';
 import { EventPayloadModel } from 'db/dbModels';
 import { useMutationHandler } from 'hooks/mutations/useFetch';
+import { useBasePath } from 'hooks/useBasePath';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
 } from 'lib/config/common';
+import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
+import { useRouter } from 'next/router';
 
 const basePath = '/api/events';
 
 // event
 // create
 export const useCreateEvent = () => {
+  const routeBasePath = useBasePath('companyId');
+  const router = useRouter();
+
   return useMutationHandler<EventPayloadModel, CreateEventInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_POST,
+    reload: false,
+    onSuccess: (payload) => {
+      if (payload.success && payload.payload) {
+        const links = getConsoleCompanyLinks({
+          basePath: routeBasePath,
+          companyId: payload.payload.companyId,
+          rubricSlug: payload.payload.rubricSlug,
+          eventId: payload.payload._id,
+        });
+        router.push(links.events.rubricSlug.events.event.eventId.url).catch(console.log);
+      }
+    },
   });
 };
 
@@ -35,10 +53,16 @@ export const useUpdateEvent = () => {
 };
 
 // delete
-export const useDeleteEvent = () => {
+interface UseDeleteEventPropsInterface {
+  reload?: boolean;
+  redirectUrl?: string;
+}
+export const useDeleteEvent = (props?: UseDeleteEventPropsInterface | undefined) => {
+  const mutationProps = props || {};
   return useMutationHandler<EventPayloadModel, DeleteEventInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_DELETE,
+    ...mutationProps,
   });
 };
 

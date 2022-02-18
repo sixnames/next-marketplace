@@ -1,19 +1,17 @@
 import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import CompanyRubricsList, {
-  CompanyRubricsListInterface,
-} from 'components/layout/CompanyRubricsList';
-import { castRubricForUI } from 'db/cast/castRubricForUI';
-import { COL_RUBRIC_VARIANTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import EventRubricsList, { EventRubricsListInterface } from 'components/layout/EventRubricsList';
+import { castEventRubricForUI } from 'db/cast/castRubricForUI';
+import { COL_EVENT_FACETS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
+import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
+import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface RubricsRouteInterface extends CompanyRubricsListInterface {}
+interface RubricsRouteInterface extends EventRubricsListInterface {}
 
 const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany }) => {
   const links = getCmsCompanyLinks({
@@ -36,7 +34,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany })
 
   return (
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
-      <CompanyRubricsList rubrics={rubrics} pageCompany={pageCompany} routeBasePath={links.root} />
+      <EventRubricsList rubrics={rubrics} pageCompany={pageCompany} routeBasePath={links.root} />
     </CmsCompanyLayout>
   );
 };
@@ -56,8 +54,7 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<RubricsInterface>> => {
   const collections = await getDbCollections();
   const { query } = context;
-  const rubricsCollection = collections.rubricsCollection();
-  const companiesCollection = collections.companiesCollection();
+  const rubricsCollection = collections.eventRubricsCollection();
 
   const { props } = await getAppInitialData({ context });
   if (!props) {
@@ -67,18 +64,10 @@ export const getServerSideProps = async (
   }
 
   // get company
-  const companyId = new ObjectId(`${query.companyId}`);
-  const companyAggregationResult = await companiesCollection
-    .aggregate([
-      {
-        $match: {
-          _id: companyId,
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
+  const company = await getCompanySsr({
+    companyId: `${query.companyId}`,
+  });
+  if (!company) {
     return {
       notFound: true,
     };
@@ -86,7 +75,12 @@ export const getServerSideProps = async (
 
   // get rubrics
   const initialRubrics = await rubricsCollection
-    .aggregate<RubricInterface>([
+    .aggregate<EventRubricInterface>([
+      {
+        $match: {
+          companyId: company._id,
+        },
+      },
       {
         $project: {
           attributes: false,
@@ -98,34 +92,20 @@ export const getServerSideProps = async (
       },
       {
         $lookup: {
-          from: COL_RUBRIC_VARIANTS,
-          as: 'variants',
-          localField: 'variantId',
-          foreignField: '_id',
-        },
-      },
-      {
-        $addFields: {
-          variant: { $arrayElemAt: ['$variants', 0] },
-        },
-      },
-      {
-        $lookup: {
-          from: COL_SHOP_PRODUCTS,
-          as: 'shopProducts',
-          let: { rubricId: '$_id' },
+          from: COL_EVENT_FACETS,
+          as: 'events',
+          let: { rubricSlug: '$slug' },
           pipeline: [
             {
               $match: {
                 $expr: {
-                  $eq: ['$$rubricId', '$rubricId'],
+                  $eq: ['$$rubricSlug', '$rubricSlug'],
                 },
-                companyId,
               },
             },
             {
-              $group: {
-                _id: '$productId',
+              $project: {
+                _id: true,
               },
             },
             {
@@ -136,44 +116,37 @@ export const getServerSideProps = async (
       },
       {
         $addFields: {
-          totalShopProductsObject: { $arrayElemAt: ['$shopProducts', 0] },
+          totalEventsObject: { $arrayElemAt: ['$events', 0] },
         },
       },
       {
         $addFields: {
-          productsCount: '$totalShopProductsObject.totalDocs',
+          eventsCount: '$totalEventsObject.totalDocs',
         },
       },
       {
         $project: {
           variants: false,
-          shopProducts: false,
-          totalShopProductsObject: false,
-        },
-      },
-      {
-        $match: {
-          productsCount: {
-            $gt: 0,
-          },
+          events: false,
+          totalEventsObject: false,
         },
       },
     ])
     .toArray();
 
   const rawRubrics = initialRubrics.map((rubric) => {
-    return castRubricForUI({ rubric, locale: props.sessionLocale });
+    return castEventRubricForUI({ rubric, locale: props.sessionLocale });
   });
 
   const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
+    companyId: company._id,
   });
 
   return {
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
-      pageCompany: castDbData(companyResult),
+      pageCompany: castDbData(company),
       routeBasePath: links.root,
     },
   };

@@ -4,6 +4,8 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
+  COL_EVENT_RUBRICS,
+  COL_EVENT_SUMMARIES,
   COL_ICONS,
   COL_OPTIONS,
   COL_PRODUCT_SUMMARIES,
@@ -46,7 +48,7 @@ interface ProductAttributesPipelineInterface {
   getOptionIcon?: boolean;
 }
 
-export const productAttributesPipeline = (props?: ProductAttributesPipelineInterface) => {
+export const summaryAttributesPipeline = (props?: ProductAttributesPipelineInterface) => {
   const getOptionIcon = props?.getOptionIcon;
 
   const optionIconPipeline = getOptionIcon
@@ -287,6 +289,34 @@ export const productRubricPipeline = [
   },
 ];
 
+export const eventSummaryRubricPipeline = [
+  {
+    $lookup: {
+      from: COL_EVENT_RUBRICS,
+      as: 'rubric',
+      let: {
+        rubricId: '$rubricId',
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ['$_id', '$$rubricId'],
+            },
+          },
+        },
+      ],
+    },
+  },
+  {
+    $addFields: {
+      rubric: {
+        $arrayElemAt: ['$rubric', 0],
+      },
+    },
+  },
+];
+
 export const rubricAttributesGroupAttributesPipeline = [
   {
     $lookup: {
@@ -436,6 +466,34 @@ export const summaryPipeline = (idFieldName: string) => {
   ];
 };
 
+export const eventSummaryPipeline = (idFieldName: string) => {
+  return [
+    {
+      $lookup: {
+        from: COL_EVENT_SUMMARIES,
+        as: 'summary',
+        let: {
+          productId: idFieldName,
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$$productId', '$_id'],
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        summary: { $arrayElemAt: ['$summary', 0] },
+      },
+    },
+  ];
+};
+
 export const paginatedAggregationFinalPipeline = (limit: number) => {
   return [
     {
@@ -505,7 +563,34 @@ export function shopProductDocsFacetPipeline({
   ];
 }
 
-export interface ProductsPaginatedAggregationInterface {
+interface EventDocsFacetPipelineInterface {
+  skip: number;
+  limit: number;
+  sortStage: Record<any, any>;
+}
+
+export function eventDocsFacetPipeline({
+  limit,
+  skip,
+  sortStage,
+}: EventDocsFacetPipelineInterface) {
+  return [
+    {
+      $sort: sortStage,
+    },
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
+    },
+
+    // get summary
+    ...eventSummaryPipeline('$_id'),
+  ];
+}
+
+export interface PaginatedAggregationFacetsInputInterface {
   companySlug: string;
   citySlug: string;
 }
@@ -513,7 +598,7 @@ export interface ProductsPaginatedAggregationInterface {
 export function shopProductsGroupPipeline({
   citySlug,
   companySlug,
-}: ProductsPaginatedAggregationInterface) {
+}: PaginatedAggregationFacetsInputInterface) {
   return [
     // group shop products by productId field
     {
@@ -566,7 +651,7 @@ export function shopProductsGroupPipeline({
 export function productsPaginatedAggregationFacetsPipeline({
   companySlug,
   citySlug,
-}: ProductsPaginatedAggregationInterface) {
+}: PaginatedAggregationFacetsInputInterface) {
   const sortPipeline = [
     {
       $addFields: {
@@ -821,6 +906,168 @@ export function productsPaginatedAggregationFacetsPipeline({
           newRoot: {
             $arrayElemAt: ['$rubric', 0],
           },
+        },
+      },
+    ],
+
+    // attributes facet
+    attributes: [
+      {
+        $unwind: {
+          path: '$filterSlugs',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          filterSlugs: {
+            $addToSet: '$filterSlugs',
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: '$filterSlugs',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $match: {
+          filterSlugs: {
+            $exists: true,
+          },
+        },
+      },
+      {
+        $addFields: {
+          slugArray: {
+            $split: ['$filterSlugs', FILTER_SEPARATOR],
+          },
+        },
+      },
+      {
+        $addFields: {
+          attributeSlug: {
+            $arrayElemAt: ['$slugArray', 0],
+          },
+          optionSlug: {
+            $arrayElemAt: ['$slugArray', 1],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$attributeSlug',
+          optionSlugs: {
+            $addToSet: '$optionSlug',
+          },
+        },
+      },
+
+      // get attributes
+      {
+        $lookup: {
+          from: COL_ATTRIBUTES,
+          as: 'attribute',
+          let: {
+            attributeSlug: '$_id',
+            optionSlugs: '$optionSlugs',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    {
+                      $eq: ['$slug', '$$attributeSlug'],
+                    },
+                  ],
+                },
+              },
+            },
+            // get attribute options
+            {
+              $lookup: {
+                from: COL_OPTIONS,
+                as: 'options',
+                let: {
+                  optionsGroupId: '$optionsGroupId',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $and: [
+                          {
+                            $eq: ['$$optionsGroupId', '$optionsGroupId'],
+                          },
+                          {
+                            $in: ['$slug', '$$optionSlugs'],
+                          },
+                        ],
+                      },
+                    },
+                  },
+                  ...sortPipeline,
+                ],
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          attribute: {
+            $arrayElemAt: ['$attribute', 0],
+          },
+        },
+      },
+      {
+        $match: {
+          attribute: {
+            $exists: true,
+          },
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: '$attribute',
+        },
+      },
+      ...sortPipeline,
+    ],
+
+    // countAllDocs facet
+    countAllDocs: [
+      {
+        $count: 'totalDocs',
+      },
+    ],
+  };
+}
+
+export function eventsPaginatedAggregationFacetsPipeline({
+  companySlug,
+  citySlug,
+}: PaginatedAggregationFacetsInputInterface) {
+  const sortPipeline = [
+    {
+      $addFields: {
+        views: { $max: `$views.${companySlug}.${citySlug}` },
+      },
+    },
+    {
+      $sort: DEFAULT_SORT_STAGE,
+    },
+  ];
+
+  return {
+    // prices facet
+    prices: [
+      {
+        $group: {
+          _id: '$minPrice',
         },
       },
     ],

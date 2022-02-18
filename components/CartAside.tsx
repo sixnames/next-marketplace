@@ -1,5 +1,6 @@
 import { useAppContext } from 'components/context/appContext';
 import { useLocaleContext } from 'components/context/localeContext';
+import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import { InfoModalInterface } from 'components/Modal/InfoModal';
 import { useFormikContext } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
@@ -85,6 +86,13 @@ const CartAside: React.FC<CartAsideInterface> = ({
             <Currency testId={'cart-aside-total'} value={totalPrice} />
           </div>
         </div>
+
+        <FormikCheckboxLine
+          low
+          testId={'order-form-privacy'}
+          label={'Даю согласие на обработку личных данных'}
+          name={'privacy'}
+        />
 
         <WpButton
           type={'submit'}

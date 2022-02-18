@@ -23,7 +23,6 @@ import { useAppContext } from '../context/appContext';
 import { useConfigContext } from '../context/configContext';
 import { useSiteContext } from '../context/siteContext';
 import { useSiteUserContext } from '../context/siteUserContext';
-import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikInput from '../FormElements/Input/FormikInput';
 import InputLine from '../FormElements/Input/InputLine';
 import FormikSelect from '../FormElements/Select/FormikSelect';
@@ -526,13 +525,6 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           showInlineError
                         />
 
-                        <FormikCheckboxLine
-                          lineClassName='self-end'
-                          testId={'order-form-privacy'}
-                          label={'Даю согласие на обработку личных данных'}
-                          name={'privacy'}
-                        />
-
                         <FormikTextarea
                           testId={'order-form-comment'}
                           name={'comment'}
@@ -682,13 +674,6 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           disabled={disabled}
                           isRequired
                           showInlineError
-                        />
-
-                        <FormikCheckboxLine
-                          lineClassName='self-end'
-                          testId={'order-form-privacy'}
-                          label={'Даю согласие на обработку личных данных'}
-                          name={'privacy'}
                         />
 
                         <FormikTextarea

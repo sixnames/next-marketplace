@@ -1,5 +1,5 @@
-import { getCmsCompanyRubricProductsPageSsr } from 'db/ssr/company/getCmsCompanyRubricProductsPageSsr';
-import CmsCompanyRubricProductsPage from './[...filters]';
+import { getRubricEventsListSsr } from 'db/ssr/events/getRubricEventsListSsr';
+import CmsRubricEventsPage from './[...filters]';
 
-export const getServerSideProps = getCmsCompanyRubricProductsPageSsr;
-export default CmsCompanyRubricProductsPage;
+export const getServerSideProps = getRubricEventsListSsr;
+export default CmsRubricEventsPage;

@@ -1,4 +1,5 @@
 import { castSummaryForUI } from 'db/cast/castSummaryForUI';
+import { castSupplierProductsList } from 'db/cast/castSupplierProductsList';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { getConsoleShopSsr } from 'db/ssr/shops/getConsoleShopSsr';
@@ -11,9 +12,9 @@ import {
 } from 'db/uiInterfaces';
 import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import {
+  PaginatedAggregationFacetsInputInterface,
   paginatedAggregationFinalPipeline,
   productsPaginatedAggregationFacetsPipeline,
-  ProductsPaginatedAggregationInterface,
   shopProductDocsFacetPipeline,
 } from 'db/utils/constantPipelines';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
@@ -31,7 +32,6 @@ import {
   getPriceAttribute,
 } from 'lib/config/constantAttributes';
 import { getFieldStringLocale } from 'lib/i18n';
-import { castSupplierProductsList } from 'lib/productUtils';
 import { getTreeFromList } from 'lib/treeUtils';
 import { ParsedUrlQuery } from 'querystring';
 
@@ -52,7 +52,6 @@ export const getConsoleShopProducts = async ({
   currency,
   excludedProductsIds,
   companySlug,
-  ...props
 }: GetConsoleShopProductsInputInterface): Promise<CompanyShopProductsPageInterface | null> => {
   try {
     const collections = await getDbCollections();
@@ -106,7 +105,6 @@ export const getConsoleShopProducts = async ({
       sortStage,
     } = await castUrlFilters({
       filters,
-      initialPage: props.page,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
       search: query.search,
       searchFieldName: 'productId',
@@ -142,7 +140,7 @@ export const getConsoleShopProducts = async ({
       ...photoStage,
     };
 
-    const pipelineConfig: ProductsPaginatedAggregationInterface = {
+    const pipelineConfig: PaginatedAggregationFacetsInputInterface = {
       citySlug: DEFAULT_CITY,
       companySlug,
     };

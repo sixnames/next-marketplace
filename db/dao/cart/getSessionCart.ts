@@ -1,7 +1,7 @@
 import {
   brandPipeline,
-  productAttributesPipeline,
   productCategoriesPipeline,
+  summaryAttributesPipeline,
   summaryPipeline,
 } from 'db/utils/constantPipelines';
 import { CART_COOKIE_KEY } from 'lib/config/common';
@@ -315,7 +315,7 @@ export const getSessionCart = async ({
             },
 
             // get product attributes
-            ...productAttributesPipeline(),
+            ...summaryAttributesPipeline(),
 
             // get product brand
             ...brandPipeline,

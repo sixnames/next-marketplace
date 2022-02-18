@@ -1,17 +1,11 @@
 import { COL_EVENT_SUMMARIES } from 'db/collectionNames';
-import {
-  AddressModel,
-  DateModel,
-  EventPayloadModel,
-  ObjectIdModel,
-  TranslationModel,
-} from 'db/dbModels';
+import { AddressModel, DateModel, EventPayloadModel, TranslationModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import { IMAGE_FALLBACK } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { trimTranslationField } from 'lib/i18n';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { trimTranslationField } from 'lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
@@ -21,17 +15,14 @@ import { ObjectId } from 'mongodb';
 import { createEventSchema } from 'validation/eventSchema';
 
 export interface CreateEventInputInterface {
-  _id: string;
-  companySlug: string;
-  companyId: ObjectIdModel;
   citySlug: string;
-  rubricId: ObjectIdModel;
-  startAt: DateModel;
+  rubricId: string;
+  startAt?: DateModel | null;
   endAt?: DateModel | null;
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
-  address: AddressModel;
-  seatsCount: number;
+  address?: AddressModel | null;
+  seatsCount?: number | null;
   price?: number | null;
 }
 
@@ -99,37 +90,44 @@ export async function createEvent({
         return;
       }
 
+      // check fields
+      if (!input.address || !input.seatsCount || !input.startAt) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('events.create.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
       // create summary
       const itemId = await getNextItemId(COL_EVENT_SUMMARIES);
-      const eventId = new ObjectId();
       const nameI18n = trimTranslationField(input.nameI18n);
       const descriptionI18n = trimTranslationField(input.descriptionI18n);
       const createdEventSummaryResult = await eventSummariesCollection.insertOne({
-        _id: eventId,
         itemId,
         slug: itemId,
         descriptionI18n,
         nameI18n,
         citySlug: input.citySlug,
-        companyId: new ObjectId(input.companyId),
-        companySlug: input.companySlug,
+        companyId: rubric.companyId,
+        companySlug: rubric.companySlug,
         mainImage: IMAGE_FALLBACK,
-        filterSlugs: [],
         address: input.address,
         seatsAvailable: input.seatsCount,
+        seatsCount: input.seatsCount,
+        filterSlugs: [],
         attributeIds: [],
         assets: [],
         videos: [],
         attributes: [],
         price: input.price,
-        seatsCount: input.seatsCount,
         rubricId: rubric._id,
         rubricSlug: rubric.slug,
         startAt: new Date(input.startAt),
         endAt: input.endAt ? new Date(input.endAt) : null,
         createdAt: new Date(),
         updatedAt: new Date(),
-        views: {},
       });
       const createdSummary = await eventSummariesCollection.findOne({
         _id: createdEventSummaryResult.insertedId,
@@ -155,8 +153,10 @@ export async function createEvent({
         citySlug: createdSummary.citySlug,
         rubricSlug: createdSummary.rubricSlug,
         rubricId: createdSummary.rubricId,
+        price: createdSummary.price,
         endAt: createdSummary.endAt,
         startAt: createdSummary.startAt,
+        views: {},
       });
       if (!createdFacetResult.acknowledged) {
         mutationPayload = {
@@ -170,6 +170,7 @@ export async function createEvent({
       mutationPayload = {
         success: true,
         message: await getApiMessage('events.create.success'),
+        payload: createdSummary,
       };
     });
 

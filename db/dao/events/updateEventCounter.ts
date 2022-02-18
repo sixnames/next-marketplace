@@ -20,7 +20,7 @@ export async function updateEventCounter({
     const { getApiMessage } = await getRequestParams(context);
     const { role } = await getSessionRole(context);
     const collections = await getDbCollections();
-    const eventSummariesCollection = collections.eventSummariesCollection();
+    const eventFacetsCollection = collections.eventFacetsCollection();
 
     // check input
     if (!input) {
@@ -30,25 +30,25 @@ export async function updateEventCounter({
       };
     }
 
-    // get summary
-    const summary = await eventSummariesCollection.findOne({
+    // get facet
+    const facet = await eventFacetsCollection.findOne({
       _id: new ObjectId(input.eventId),
     });
-    if (!summary) {
+    if (!facet) {
       return {
         success: false,
         message: await getApiMessage('events.update.notFound'),
       };
     }
 
-    if (!role.isStaff && summary) {
+    if (!role.isStaff && facet) {
       const companySlug = input.companySlug || DEFAULT_COMPANY_SLUG;
       const citySlug = input.citySlug;
 
-      if (!summary.views) {
-        await eventSummariesCollection.findOneAndUpdate(
+      if (!facet.views) {
+        await eventFacetsCollection.findOneAndUpdate(
           {
-            _id: summary._id,
+            _id: facet._id,
           },
           {
             $set: {
@@ -61,9 +61,9 @@ export async function updateEventCounter({
           },
         );
       } else {
-        await eventSummariesCollection.findOneAndUpdate(
+        await eventFacetsCollection.findOneAndUpdate(
           {
-            _id: summary._id,
+            _id: facet._id,
           },
           {
             $inc: {

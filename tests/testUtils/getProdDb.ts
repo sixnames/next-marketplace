@@ -11,6 +11,8 @@ import {
   COL_CITIES,
   COL_COMPANIES,
   COL_CONFIGS,
+  COL_EVENT_FACETS,
+  COL_EVENT_RUBRICS,
   COL_GIFT_CERTIFICATES,
   COL_MANUFACTURERS,
   COL_OPTIONS,
@@ -65,12 +67,6 @@ export async function getProdDb({ uri, dbName }: GetProdDd) {
     useUnifiedTopology: true,
     authSource: dbName,
     ...sslOptions,
-    // useNewUrlParser: true,
-    // useUnifiedTopology: true,
-    // authSource: dbName,
-    // tls: true,
-    // tlsCAFile,
-    // replicaSet: process.env.MONGO_DB_RS,
   };
 
   // Create connection
@@ -405,6 +401,68 @@ export async function updateIndexes(db: Db, client: MongoClient) {
   await orderLogsCollection.createIndex({ orderId: 1, _id: -1 });
   await orderLogsCollection.createIndex({ userId: 1, _id: -1 });
   await orderLogsCollection.createIndex({ variant: 1, _id: -1 });
+
+  // Event rubrics
+  await createCollectionIfNotExist(COL_EVENT_RUBRICS);
+  const eventRubricsCollection = collections.eventRubricsCollection();
+  await eventRubricsCollection.createIndex({ slug: 1 }, { unique: true });
+  await eventRubricsCollection.createIndex({ companyId: 1 });
+
+  // Events
+  await createCollectionIfNotExist(COL_EVENT_FACETS);
+  const eventFacetsCollection = collections.eventFacetsCollection();
+
+  // catalogue events
+  await eventFacetsCollection.createIndex({
+    citySlug: 1,
+    rubricSlug: 1,
+    filterSlugs: 1,
+    price: 1,
+    views: -1,
+    _id: -1,
+  });
+  await eventFacetsCollection.createIndex({
+    citySlug: 1,
+    rubricSlug: 1,
+    filterSlugs: 1,
+    views: -1,
+    _id: -1,
+  });
+  await eventFacetsCollection.createIndex({
+    citySlug: 1,
+    rubricSlug: 1,
+    price: 1,
+    views: -1,
+    _id: -1,
+  });
+  await eventFacetsCollection.createIndex({
+    citySlug: 1,
+    rubricSlug: 1,
+    views: -1,
+    _id: -1,
+  });
+
+  // console events
+  await eventFacetsCollection.createIndex({
+    rubricSlug: 1,
+    filterSlugs: 1,
+    price: 1,
+    _id: -1,
+  });
+  await eventFacetsCollection.createIndex({
+    rubricSlug: 1,
+    price: 1,
+    _id: -1,
+  });
+  await eventFacetsCollection.createIndex({
+    rubricSlug: 1,
+    filterSlugs: 1,
+    _id: -1,
+  });
+  await eventFacetsCollection.createIndex({
+    rubricSlug: 1,
+    _id: -1,
+  });
 
   // product filters
   const productsFilterFull = {

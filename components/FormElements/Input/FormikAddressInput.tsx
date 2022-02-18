@@ -3,7 +3,6 @@ import { Field, FieldProps } from 'formik';
 import { GeocodeResultInterface, ReverseGeocodePayload } from 'lib/addressUtils';
 import { get } from 'lodash';
 import * as React from 'react';
-import { useDebounce } from 'use-debounce';
 import Spinner from '../../Spinner';
 import WpInput, { WpInputPropsInterface } from './WpInput';
 
@@ -30,9 +29,10 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
   const { locale } = useLocaleContext();
   const [isOpen, setIsOpen] = React.useState(false);
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [string, setString] = React.useState<string | null>(null);
-  const [value] = useDebounce(string, 1000);
+  const [value, setString] = React.useState<string | null>(null);
+  // const [value] = useDebounce(string, 100);
   const [results, setResults] = React.useState<GeocodeResultInterface[]>([]);
+  // console.log({ value, string });
 
   React.useEffect(() => {
     const getGeoResult = async (value: string) => {
@@ -107,8 +107,10 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
         disabled={disabled}
         name={name}
         className='relative z-10'
-        value={fieldValue ? fieldValue.formattedAddress : string}
-        onChange={(e) => setString(e.target.value)}
+        value={fieldValue ? fieldValue.formattedAddress : value}
+        onChange={(e) => {
+          setString(e.target.value);
+        }}
         onClear={disabled ? clearInputHandler : null}
         autoComplete={'off'}
         notValid={notValid}

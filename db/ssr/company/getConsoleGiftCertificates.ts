@@ -32,7 +32,6 @@ export async function getConsoleGiftCertificates({
     // get pagination configs
     const { skip, limit, page } = await castUrlFilters({
       filters,
-      initialPage: DEFAULT_PAGE,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
       searchFieldName: '',
     });

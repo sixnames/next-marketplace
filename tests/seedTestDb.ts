@@ -36,6 +36,17 @@ function prepareTestAssets() {
           fs.copyFileSync(pathToSrc, path.join(pathToDist, fileName));
         });
       }
+
+      console.log('creating event assets');
+      for (let i = 1; i <= maxProductsCount; i = i + 1) {
+        const itemId: string = addZero(i, ID_COUNTER_DIGITS);
+        const pathToSrc = path.join(process.cwd(), 'tests/assets/test-image-0.png');
+        const fileName = `${itemId}.png`;
+        const pathToDist = path.join(process.cwd(), `assets/events/${itemId}`);
+        mkdirp(pathToDist).then(() => {
+          fs.copyFileSync(pathToSrc, path.join(pathToDist, fileName));
+        });
+      }
     }
   });
   return;

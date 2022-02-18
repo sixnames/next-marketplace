@@ -1,5 +1,3 @@
-import dynamic from 'next/dynamic';
-import * as React from 'react';
 import {
   ADD_ASSETS_MODAL,
   ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
@@ -20,6 +18,7 @@ import {
   CREATE_BRAND_MODAL,
   CREATE_CATEGORY_MODAL,
   CREATE_CONNECTION_MODAL,
+  CREATE_EVENT_RUBRIC_MODAL,
   CREATE_NEW_PRODUCT_MODAL,
   CREATE_PAGE_MODAL,
   CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
@@ -56,7 +55,9 @@ import {
   UPDATE_MY_PASSWORD_MODAL,
   USER_CATEGORY_MODAL,
   USERS_SEARCH_MODAL,
-} from '../../lib/config/modalVariants';
+} from 'lib/config/modalVariants';
+import dynamic from 'next/dynamic';
+import * as React from 'react';
 import Spinner from '../Spinner';
 
 const AdultModal = dynamic(() => import('./AdultModal'));
@@ -85,6 +86,7 @@ const AttributesGroupModal = dynamic(() => import('./AttributesGroupModal'));
 const RubricVariantModal = dynamic(() => import('./RubricVariantModal'));
 const OptionInGroupModal = dynamic(() => import('./OptionInGroupModal'));
 const CreateRubricModal = dynamic(() => import('./CreateRubricModal'));
+const CreateEventRubricModal = dynamic(() => import('./CreateEventRubricModal'));
 const CreateCategoryModal = dynamic(() => import('./CreateCategoryModal'));
 const CreateUserModal = dynamic(() => import('./CreateUserModal'));
 const PagesGroupModal = dynamic(() => import('./PagesGroupModal'));
@@ -149,6 +151,8 @@ const WpModal: React.FC<WpModalInterface> = ({ modalType, modalProps = {} }) => 
           {modalType === RUBRIC_VARIANT_MODAL && <RubricVariantModal {...modalProps} />}
 
           {modalType === CREATE_RUBRIC_MODAL && <CreateRubricModal {...modalProps} />}
+
+          {modalType === CREATE_EVENT_RUBRIC_MODAL && <CreateEventRubricModal {...modalProps} />}
 
           {modalType === CREATE_CATEGORY_MODAL && <CreateCategoryModal {...modalProps} />}
 

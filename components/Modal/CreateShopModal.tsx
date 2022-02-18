@@ -1,14 +1,14 @@
 import { Form, Formik } from 'formik';
-import * as React from 'react';
 import {
   AddressInput,
   AddShopToCompanyInput,
   useAddShopToCompanyMutation,
-} from '../../generated/apolloComponents';
+} from 'generated/apolloComponents';
+import { phoneToRaw } from 'lib/phoneUtils';
+import * as React from 'react';
+import { addShopToCompanySchema } from 'validation/companySchema';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { phoneToRaw } from '../../lib/phoneUtils';
-import { addShopToCompanySchema } from '../../validation/companySchema';
 import WpButton from '../button/WpButton';
 import ShopMainFields from '../FormTemplates/ShopMainFields';
 import ModalFrame from './ModalFrame';

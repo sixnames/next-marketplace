@@ -1,4 +1,5 @@
 import ru from 'date-fns/locale/ru';
+import { DATE_FORMAT_DATE, DATE_FORMAT_FULL, DEFAULT_LOCALE } from 'lib/config/common';
 import * as React from 'react';
 import DatePicker, {
   ReactDatePickerProps,
@@ -6,9 +7,8 @@ import DatePicker, {
   setDefaultLocale,
 } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { DATE_FORMAT_DATE, DEFAULT_LOCALE } from '../../lib/config/common';
-import { InputTheme } from '../../types/clientTypes';
-import { IconType } from '../../types/iconTypes';
+import { InputTheme } from 'types/clientTypes';
+import { IconType } from 'types/iconTypes';
 import ButtonCross from '../button/ButtonCross';
 import WpIcon from '../WpIcon';
 import InputLine, { InputLinePropsInterface } from './Input/InputLine';
@@ -63,6 +63,7 @@ const DatePickerInput: React.FC<DatePickerInputInterface> = ({
   showInlineError,
   error,
   testId,
+  showTimeSelect,
   ...props
 }) => {
   const inputTheme = theme === 'primary' ? 'bg-primary' : 'bg-secondary';
@@ -97,7 +98,8 @@ const DatePickerInput: React.FC<DatePickerInputInterface> = ({
       ) : null}
 
       <DatePicker
-        selected={selected}
+        showTimeSelect={showTimeSelect}
+        selected={selected ? new Date(selected) : null}
         name={name}
         onChange={(value) => {
           onChange({
@@ -111,7 +113,7 @@ const DatePickerInput: React.FC<DatePickerInputInterface> = ({
         readOnly={readOnly}
         disabled={disabled}
         id={testId}
-        dateFormat={DATE_FORMAT_DATE}
+        dateFormat={showTimeSelect ? DATE_FORMAT_FULL : DATE_FORMAT_DATE}
         autoComplete={'off'}
         // locale={locale}
         {...props}

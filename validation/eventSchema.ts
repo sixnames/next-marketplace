@@ -3,6 +3,7 @@ import {
   objectIdSchema,
   requiredNumberSchema,
   requiredStringSchema,
+  requiredStringTranslationSchema,
 } from 'validation/utils/schemaTemplates';
 import * as Yup from 'yup';
 
@@ -12,11 +13,11 @@ export const eventIdSchema = (args: ValidationSchemaArgsInterface) => {
 
 export const eventCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => {
   return {
-    nameI18n: requiredStringSchema({
+    nameI18n: requiredStringTranslationSchema({
       ...args,
       slug: 'validation.events.name',
     }),
-    descriptionI18n: requiredStringSchema({
+    descriptionI18n: requiredStringTranslationSchema({
       ...args,
       slug: 'validation.events.description',
     }),
@@ -24,6 +25,12 @@ export const eventCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => 
       ...args,
       slug: 'validation.events.seatsCount',
     }),
+    citySlug: requiredStringSchema({
+      ...args,
+      slug: 'validation.events.city',
+    }),
+    address: Yup.mixed().nullable().required('address'),
+    startAt: Yup.mixed().nullable().required('startAt'),
   };
 };
 

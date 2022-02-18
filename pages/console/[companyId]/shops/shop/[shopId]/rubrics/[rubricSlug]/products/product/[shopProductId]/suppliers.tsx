@@ -6,11 +6,11 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'components/layout/console/ConsoleShopProductLayout';
 import RequestError from 'components/RequestError';
 import { getDbCollections } from 'db/mongodb';
+import { getConsoleShopProduct } from 'db/ssr/shops/getConsoleShopProduct';
 import { AppContentWrapperBreadCrumbs, SupplierInterface } from 'db/uiInterfaces';
 import { SORT_ASC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/linkUtils';
-import { getConsoleShopProduct } from 'lib/productUtils';
 import {
   castDbData,
   getConsoleInitialData,

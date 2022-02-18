@@ -8,8 +8,7 @@ import { ObjectId } from 'mongodb';
 
 export interface UpdateEventCardContentInputInterface {
   taskId?: string | null;
-  seoContent: SeoContentInterface;
-  companySlug: string;
+  cardContent: SeoContentInterface;
   eventId: string;
 }
 
@@ -52,11 +51,10 @@ export async function updateEventCardContent({
       };
     }
 
-    const { seoContent } = input;
-
+    const { cardContent } = input;
     await updateCitiesSeoContent({
       seoContentsList: {
-        [summary.citySlug]: seoContent,
+        [summary.citySlug]: cardContent,
       },
       companySlug: summary.companySlug,
     });

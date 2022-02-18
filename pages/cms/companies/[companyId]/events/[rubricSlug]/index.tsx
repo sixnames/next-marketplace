@@ -1,32 +1,33 @@
-import CompanyRubricDetails, {
-  CompanyRubricDetailsInterface,
-} from 'components/company/CompanyRubricDetails';
-import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
+import EventRubricDetails, {
+  EventRubricDetailsInterface,
+} from 'components/company/EventRubricDetails';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import EventRubricLayout, {
+  EventRubricLayoutInterface,
+} from 'components/layout/events/EventRubricLayout';
+import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { getDbCollections } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
+import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
+import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
 } from 'lib/config/common';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getRubricAllSeoContents } from 'lib/seoContentUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface RubricDetailsInterface extends CompanyRubricDetailsInterface {}
+interface RubricDetailsInterface extends EventRubricDetailsInterface, EventRubricLayoutInterface {}
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({
   rubric,
-  seoDescriptionTop,
-  seoDescriptionBottom,
+  textBottom,
+  textTop,
   pageCompany,
-  routeBasePath,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -34,34 +35,23 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.parentLink,
+        href: links.cms.companies.companyId.url,
       },
       {
-        name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        name: `Мероприятия`,
+        href: links.cms.companies.companyId.events.url,
       },
     ],
   };
 
   return (
-    <CmsRubricLayout
-      hideAttributesPath
-      rubric={rubric}
-      breadcrumbs={breadcrumbs}
-      basePath={routeBasePath}
-    >
-      <CompanyRubricDetails
-        rubric={rubric}
-        pageCompany={pageCompany}
-        routeBasePath={routeBasePath}
-        seoDescriptionTop={seoDescriptionTop}
-        seoDescriptionBottom={seoDescriptionBottom}
-      />
-    </CmsRubricLayout>
+    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} pageCompany={pageCompany}>
+      <EventRubricDetails rubric={rubric} textBottom={textBottom} textTop={textTop} />
+    </EventRubricLayout>
   );
 };
 
@@ -80,8 +70,7 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
   const { query } = context;
   const collections = await getDbCollections();
-  const companiesCollection = collections.companiesCollection();
-  const rubricsCollection = collections.rubricsCollection();
+  const rubricsCollection = collections.eventRubricsCollection();
 
   const { props } = await getAppInitialData({ context });
   if (!props) {
@@ -91,35 +80,21 @@ export const getServerSideProps = async (
   }
 
   // get company
-  const companyId = new ObjectId(`${query.companyId}`);
-  const companyAggregationResult = await companiesCollection
-    .aggregate([
-      {
-        $match: {
-          _id: companyId,
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
+  const company = await getCompanySsr({
+    companyId: `${query.companyId}`,
+  });
+  if (!company) {
     return {
       notFound: true,
     };
   }
-  const companySlug = companyResult.slug;
+  const companySlug = company.slug;
 
   const initialRubrics = await rubricsCollection
-    .aggregate<RubricInterface>([
+    .aggregate<EventRubricInterface>([
       {
         $match: {
           slug: `${query.rubricSlug}`,
-        },
-      },
-      {
-        $project: {
-          attributes: false,
-          views: false,
         },
       },
     ])
@@ -131,11 +106,10 @@ export const getServerSideProps = async (
     };
   }
 
-  const { sessionLocale } = props;
-  const rubric = {
-    ...initialRubric,
-    name: getFieldStringLocale(initialRubric.nameI18n, sessionLocale),
-  };
+  const rubric = castEventRubricForUI({
+    rubric: initialRubric,
+    locale: props.sessionLocale,
+  });
 
   const seoDescriptionTop = await getRubricAllSeoContents({
     rubricSlug: rubric.slug,
@@ -159,18 +133,13 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
-      seoDescriptionBottom: castDbData(seoDescriptionBottom),
-      seoDescriptionTop: castDbData(seoDescriptionTop),
+      textBottom: castDbData(seoDescriptionBottom),
+      textTop: castDbData(seoDescriptionTop),
       rubric: castDbData(rubric),
-      pageCompany: castDbData(companyResult),
-      routeBasePath: links.root,
+      pageCompany: castDbData(company),
     },
   };
 };

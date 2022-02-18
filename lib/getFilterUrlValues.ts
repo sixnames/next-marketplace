@@ -20,7 +20,6 @@ import { noNaN } from './numbers';
 export interface GetFilterUrlValuesInterface {
   filters: string[];
   initialLimit?: number;
-  initialPage?: number;
 }
 
 export interface GetFilterUrlValuesPayloadInterface {
@@ -45,7 +44,6 @@ export interface GetFilterUrlValuesPayloadInterface {
 }
 
 export function getFilterUrlValues({
-  initialPage,
   initialLimit,
   filters,
 }: GetFilterUrlValuesInterface): GetFilterUrlValuesPayloadInterface {
@@ -62,8 +60,7 @@ export function getFilterUrlValues({
   let sortDirString: string | null = null;
 
   // pagination
-  const defaultPage = initialPage || DEFAULT_PAGE;
-  let page = defaultPage;
+  let page = DEFAULT_PAGE;
 
   const defaultLimit = initialLimit || CATALOGUE_PRODUCTS_LIMIT;
   let limit = defaultLimit;
@@ -98,7 +95,7 @@ export function getFilterUrlValues({
       }
 
       if (filterAttributeSlug === FILTER_PAGE_KEY) {
-        page = noNaN(filterOptionSlug) || defaultPage;
+        page = noNaN(filterOptionSlug) || DEFAULT_PAGE;
         return;
       }
 

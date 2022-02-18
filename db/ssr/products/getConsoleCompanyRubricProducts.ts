@@ -9,9 +9,9 @@ import {
 } from 'db/uiInterfaces';
 import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import {
+  PaginatedAggregationFacetsInputInterface,
   paginatedAggregationFinalPipeline,
   productsPaginatedAggregationFacetsPipeline,
-  ProductsPaginatedAggregationInterface,
   shopProductDocsFacetPipeline,
   shopProductsGroupPipeline,
 } from 'db/utils/constantPipelines';
@@ -49,7 +49,6 @@ export const getConsoleCompanyRubricProducts = async ({
   excludedProductsIds,
   companySlug,
   companyId,
-  ...props
 }: GetConsoleCompanyRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   let fallbackPayload: ConsoleRubricProductsInterface = {
     clearSlug: basePath,
@@ -101,7 +100,6 @@ export const getConsoleCompanyRubricProducts = async ({
       sortStage,
     } = await castUrlFilters({
       filters,
-      initialPage: props.page,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
       searchFieldName: 'productId',
       search: query.search,
@@ -148,7 +146,7 @@ export const getConsoleCompanyRubricProducts = async ({
       ...excludedIdsStage,
     };
 
-    const pipelineConfig: ProductsPaginatedAggregationInterface = {
+    const pipelineConfig: PaginatedAggregationFacetsInputInterface = {
       citySlug: DEFAULT_CITY,
       companySlug,
     };
@@ -302,7 +300,7 @@ export const getConsoleCompanyRubricProducts = async ({
 
     return payload;
   } catch (e) {
-    console.log(e);
+    console.log('getConsoleCompanyRubricProducts error', e);
     return fallbackPayload;
   }
 };

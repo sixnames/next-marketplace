@@ -76,7 +76,7 @@ const ConsoleSeoContentDetails: React.FC<ConsoleSeoContentDetailsInterface> = ({
 
               <SingleSeoContentEditor
                 label={'SEO блок'}
-                filedName={''}
+                fieldName={''}
                 seoContentId={`${seoContent._id}`}
               />
               <WpButton type={'submit'} testId={'rubric-seo-content-submit'}>

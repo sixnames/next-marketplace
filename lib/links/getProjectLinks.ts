@@ -121,6 +121,18 @@ export function getProjectLinks(props?: LinkPropsInterface) {
         cmsProductAttributes: { url: `/api/event-rubrics/cms-product-attributes` },
         filterAttributes: { url: `/api/event-rubrics/filter-attributes` },
       },
+      events: {
+        url: `/api/events`,
+        assets: { url: `/api/events/assets`, add: { url: `/api/events/assets/add` } },
+        attributes: {
+          url: `/api/events/attributes`,
+          number: { url: `/api/events/attributes/number` },
+          select: { url: `/api/events/attributes/select` },
+          text: { url: `/api/events/attributes/text` },
+        },
+        cardContent: { url: `/api/events/card-content` },
+        counter: { url: `/api/events/counter` },
+      },
       giftCertificates: {
         url: `/api/gift-certificates`,
         check: { url: `/api/gift-certificates/check` },
@@ -275,8 +287,10 @@ export function getProjectLinks(props?: LinkPropsInterface) {
             url: `/cms/companies/${companyId}/events`,
             rubricSlug: {
               url: `/cms/companies/${companyId}/events/${rubricSlug}`,
+              attributes: { url: `/cms/companies/${companyId}/events/${rubricSlug}/attributes` },
               events: {
                 url: `/cms/companies/${companyId}/events/${rubricSlug}/events`,
+                create: { url: `/cms/companies/${companyId}/events/${rubricSlug}/events/create` },
                 event: {
                   url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event`,
                   eventId: {
@@ -286,6 +300,9 @@ export function getProjectLinks(props?: LinkPropsInterface) {
                     },
                     attributes: {
                       url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event/${eventId}/attributes`,
+                    },
+                    editor: {
+                      url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event/${eventId}/editor`,
                     },
                   },
                 },
@@ -610,8 +627,10 @@ export function getProjectLinks(props?: LinkPropsInterface) {
           url: `/console/${companyId}/events`,
           rubricSlug: {
             url: `/console/${companyId}/events/${rubricSlug}`,
+            attributes: { url: `/console/${companyId}/events/${rubricSlug}/attributes` },
             events: {
               url: `/console/${companyId}/events/${rubricSlug}/events`,
+              create: { url: `/console/${companyId}/events/${rubricSlug}/events/create` },
               event: {
                 url: `/console/${companyId}/events/${rubricSlug}/events/event`,
                 eventId: {
@@ -621,6 +640,9 @@ export function getProjectLinks(props?: LinkPropsInterface) {
                   },
                   attributes: {
                     url: `/console/${companyId}/events/${rubricSlug}/events/event/${eventId}/attributes`,
+                  },
+                  editor: {
+                    url: `/console/${companyId}/events/${rubricSlug}/events/event/${eventId}/editor`,
                   },
                 },
               },
@@ -863,8 +885,10 @@ export function getConsoleCompanyLinks(props: ConsoleCompanyLinkPropsInterface) 
       url: `${basePath}/events`,
       rubricSlug: {
         url: `${basePath}/events/${rubricSlug}`,
+        attributes: { url: `${basePath}/events/${rubricSlug}/attributes` },
         events: {
           url: `${basePath}/events/${rubricSlug}/events`,
+          create: { url: `${basePath}/events/${rubricSlug}/events/create` },
           event: {
             url: `${basePath}/events/${rubricSlug}/events/event`,
             eventId: {
@@ -873,6 +897,7 @@ export function getConsoleCompanyLinks(props: ConsoleCompanyLinkPropsInterface) 
               attributes: {
                 url: `${basePath}/events/${rubricSlug}/events/event/${eventId}/attributes`,
               },
+              editor: { url: `${basePath}/events/${rubricSlug}/events/event/${eventId}/editor` },
             },
           },
         },

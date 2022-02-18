@@ -1,6 +1,7 @@
 import { COL_ATTRIBUTES } from 'db/collectionNames';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import { getProductFullSummaryWithDraft } from 'db/ssr/products/getProductFullSummary';
 import {
   AttributesGroupInterface,
   OptionInterface,
@@ -18,7 +19,6 @@ import {
   SORT_DESC,
 } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getFullProductSummaryWithDraft } from 'lib/productUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext } from 'next';
@@ -37,7 +37,7 @@ export const getCmsProductAttributesPageSsr = async (
     return null;
   }
 
-  const productPayload = await getFullProductSummaryWithDraft({
+  const productPayload = await getProductFullSummaryWithDraft({
     taskId: `${taskId}`,
     locale: props.sessionLocale,
     productId: `${productId}`,

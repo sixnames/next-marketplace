@@ -1,25 +1,28 @@
-import EventAttributes from 'components/company/EventAttributes';
+import EventEditor from 'components/company/EventEditor';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import EventLayout from 'components/layout/events/EventLayout';
 import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
-import { getEventAttributesPageSsr } from 'db/ssr/events/getEventAttributesPageSsr';
+import { getEventFullSummary } from 'db/ssr/events/getEventFullSummary';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   EventSummaryInterface,
+  SeoContentInterface,
 } from 'db/uiInterfaces';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface EventAttributesPageConsumerInterface {
-  pageCompany: CompanyInterface;
+interface EventAttributesInterface {
   event: EventSummaryInterface;
+  cardContent: SeoContentInterface;
+  pageCompany: CompanyInterface;
 }
 
-const EventAttributesPageConsumer: React.FC<EventAttributesPageConsumerInterface> = ({
+const EventAttributes: React.FC<EventAttributesInterface> = ({
   event,
+  cardContent,
   pageCompany,
 }) => {
   const links = getProjectLinks({
@@ -29,7 +32,7 @@ const EventAttributesPageConsumer: React.FC<EventAttributesPageConsumerInterface
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Атрибуты`,
+    currentPageName: `Контент карточки`,
     config: [
       {
         name: 'Компании',
@@ -56,26 +59,24 @@ const EventAttributesPageConsumer: React.FC<EventAttributesPageConsumerInterface
 
   return (
     <EventLayout event={event} breadcrumbs={breadcrumbs}>
-      <EventAttributes event={event} />
+      <EventEditor cardContent={cardContent} event={event} />
     </EventLayout>
   );
 };
 
-export interface EventAttributesPageInterface
-  extends GetAppInitialDataPropsInterface,
-    EventAttributesPageConsumerInterface {}
+interface EventPageInterface extends GetAppInitialDataPropsInterface, EventAttributesInterface {}
 
-const EventAttributesPage: NextPage<EventAttributesPageInterface> = ({ layoutProps, ...props }) => {
+const Event: NextPage<EventPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <EventAttributesPageConsumer {...props} />
+      <EventAttributes {...props} />
     </ConsoleLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<EventAttributesPageInterface>> => {
+): Promise<GetServerSidePropsResult<EventPageInterface>> => {
   const { query } = context;
   const { props } = await getAppInitialData({ context });
   if (!props) {
@@ -94,12 +95,12 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getEventAttributesPageSsr({
+  const payload = await getEventFullSummary({
     locale: props.sessionLocale,
     eventId: `${query.eventId}`,
   });
 
-  if (!payload) {
+  if (!payload || !payload.cardContent) {
     return {
       notFound: true,
     };
@@ -110,7 +111,9 @@ export const getServerSideProps = async (
       ...props,
       event: castDbData(payload.summary),
       pageCompany: castDbData(company),
+      cardContent: castDbData(payload.cardContent),
     },
   };
 };
-export default EventAttributesPage;
+
+export default Event;

@@ -627,8 +627,10 @@ export function getProjectLinks(props?: LinkPropsInterface) {
           url: `/console/${companyId}/events`,
           rubricSlug: {
             url: `/console/${companyId}/events/${rubricSlug}`,
+            attributes: { url: `/console/${companyId}/events/${rubricSlug}/attributes` },
             events: {
               url: `/console/${companyId}/events/${rubricSlug}/events`,
+              create: { url: `/console/${companyId}/events/${rubricSlug}/events/create` },
               event: {
                 url: `/console/${companyId}/events/${rubricSlug}/events/event`,
                 eventId: {
@@ -638,6 +640,9 @@ export function getProjectLinks(props?: LinkPropsInterface) {
                   },
                   attributes: {
                     url: `/console/${companyId}/events/${rubricSlug}/events/event/${eventId}/attributes`,
+                  },
+                  editor: {
+                    url: `/console/${companyId}/events/${rubricSlug}/events/event/${eventId}/editor`,
                   },
                 },
               },

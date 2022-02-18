@@ -1,7 +1,6 @@
-import ConsoleSeoContentsList, {
-  ConsoleSeoContentsListInterface,
-} from 'components/console/ConsoleSeoContentsList';
-import Inner from 'components/Inner';
+import EventRubricAttributes, {
+  EventRubricAttributesInterface,
+} from 'components/company/EventRubricAttributes';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import EventRubricLayout, {
   EventRubricLayoutInterface,
@@ -11,20 +10,21 @@ import { getDbCollections } from 'db/mongodb';
 import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
 import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
 import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'lib/config/common';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { getFieldStringLocale } from 'lib/i18n';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface EventRubricSeoContentsListConsumerInterface
+interface RubricAttributesConsumerInterface
   extends EventRubricLayoutInterface,
-    ConsoleSeoContentsListInterface {}
+    EventRubricAttributesInterface {}
 
-const EventRubricSeoContentsListConsumer: React.FC<EventRubricSeoContentsListConsumerInterface> = ({
+const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
   rubric,
+  attributeGroups,
   pageCompany,
-  seoContents,
 }) => {
   const links = getProjectLinks({
     companyId: pageCompany._id,
@@ -32,7 +32,7 @@ const EventRubricSeoContentsListConsumer: React.FC<EventRubricSeoContentsListCon
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `SEO тексты`,
+    currentPageName: `Атрибуты`,
     config: [
       {
         name: 'Компании',
@@ -55,35 +55,34 @@ const EventRubricSeoContentsListConsumer: React.FC<EventRubricSeoContentsListCon
 
   return (
     <EventRubricLayout pageCompany={pageCompany} rubric={rubric} breadcrumbs={breadcrumbs}>
-      <Inner>
-        <ConsoleSeoContentsList seoContents={seoContents} />
-      </Inner>
+      <EventRubricAttributes rubric={rubric} attributeGroups={attributeGroups} />
     </EventRubricLayout>
   );
 };
 
-interface EventRubricSeoContentsListPageInterface
+interface RubricAttributesPageInterface
   extends GetAppInitialDataPropsInterface,
-    EventRubricSeoContentsListConsumerInterface {}
+    RubricAttributesConsumerInterface {}
 
-const EventRubricSeoContentsListPage: NextPage<EventRubricSeoContentsListPageInterface> = ({
+const RubricAttributesPage: NextPage<RubricAttributesPageInterface> = ({
   layoutProps,
   ...props
 }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <EventRubricSeoContentsListConsumer {...props} />
+      <RubricAttributesConsumer {...props} />
     </ConsoleLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<EventRubricSeoContentsListPageInterface>> => {
+): Promise<GetServerSidePropsResult<RubricAttributesPageInterface>> => {
   const { query } = context;
   const collections = await getDbCollections();
   const rubricsCollection = collections.eventRubricsCollection();
-  const seoContentsCollection = collections.seoContentsCollection();
+  const attributeGroupsCollection = collections.attributesGroupsCollection();
+
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -124,23 +123,29 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
   });
 
-  const seoContents = await seoContentsCollection
+  const rawAttributeGroups = await attributeGroupsCollection
     .find({
-      rubricSlug: rubric.slug,
-      content: {
-        $ne: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      _id: {
+        $nin: rubric.attributesGroupIds,
       },
     })
     .toArray();
+  const castedAttributeGroups = rawAttributeGroups.map((attributeGroup) => {
+    return {
+      ...attributeGroup,
+      name: getFieldStringLocale(attributeGroup.nameI18n, props.sessionLocale),
+    };
+  });
+  const sortedAttributeGroups = sortObjectsByField(castedAttributeGroups);
 
   return {
     props: {
       ...props,
-      seoContents: castDbData(seoContents),
       rubric: castDbData(rubric),
       pageCompany: castDbData(company),
+      attributeGroups: castDbData(sortedAttributeGroups),
     },
   };
 };
 
-export default EventRubricSeoContentsListPage;
+export default RubricAttributesPage;

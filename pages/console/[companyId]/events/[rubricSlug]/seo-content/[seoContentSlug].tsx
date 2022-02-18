@@ -2,54 +2,63 @@ import ConsoleSeoContentDetails, {
   ConsoleSeoContentDetailsInterface,
 } from 'components/console/ConsoleSeoContentDetails';
 import Inner from 'components/Inner';
-import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
+import EventRubricLayout, {
+  EventRubricLayoutInterface,
+} from 'components/layout/events/EventRubricLayout';
+import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { getDbCollections } from 'db/mongodb';
-import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
-import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
+import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
+import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
+import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { alwaysString } from 'lib/arrayUtils';
 import { CATALOGUE_SEO_TEXT_POSITION_TOP } from 'lib/config/common';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getSeoContentBySlug } from 'lib/seoContentUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface RubricDetailsInterface extends ConsoleSeoContentDetailsInterface {
-  rubric: RubricInterface;
-  companySlug: string;
-  routeBasePath: string;
-}
+interface EventRubricSeoContentConsumerInterface
+  extends EventRubricLayoutInterface,
+    ConsoleSeoContentDetailsInterface {}
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({
+const EventRubricSeoContentConsumer: React.FC<EventRubricSeoContentConsumerInterface> = ({
   rubric,
   seoContent,
-  routeBasePath,
   companySlug,
   showSeoFields,
+  pageCompany,
 }) => {
+  const links = getProjectLinks({
+    companyId: pageCompany._id,
+    rubricSlug: rubric.slug,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: `${routeBasePath}/rubrics`,
+        name: 'Компании',
+        href: links.cms.companies.url,
+      },
+      {
+        name: `${pageCompany?.name}`,
+        href: links.cms.companies.companyId.url,
+      },
+      {
+        name: `Мероприятия`,
+        href: links.cms.companies.companyId.events.url,
       },
       {
         name: `${rubric.name}`,
-        href: `${routeBasePath}/rubrics/${rubric._id}`,
+        href: links.cms.companies.companyId.events.rubricSlug.attributes.url,
       },
     ],
   };
 
   return (
-    <CmsRubricLayout
-      hideAttributesPath
-      rubric={rubric}
-      breadcrumbs={breadcrumbs}
-      basePath={routeBasePath}
-    >
+    <EventRubricLayout pageCompany={pageCompany} rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner>
         <ConsoleSeoContentDetails
           seoContent={seoContent}
@@ -57,27 +66,32 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
           showSeoFields={showSeoFields}
         />
       </Inner>
-    </CmsRubricLayout>
+    </EventRubricLayout>
   );
 };
 
-interface RubricPageInterface extends GetAppInitialDataPropsInterface, RubricDetailsInterface {}
+interface EventRubricSeoContentPageInterface
+  extends GetAppInitialDataPropsInterface,
+    EventRubricSeoContentConsumerInterface {}
 
-const RubricPage: NextPage<RubricPageInterface> = ({ layoutProps, ...props }) => {
+const EventRubricSeoContentPage: NextPage<EventRubricSeoContentPageInterface> = ({
+  layoutProps,
+  ...props
+}) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <RubricDetails {...props} />
+      <EventRubricSeoContentConsumer {...props} />
     </ConsoleLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
+): Promise<GetServerSidePropsResult<EventRubricSeoContentPageInterface>> => {
   const { query } = context;
   const { props } = await getAppInitialData({ context });
   const collections = await getDbCollections();
-  const companiesCollection = collections.companiesCollection();
+  const rubricsCollection = collections.eventRubricsCollection();
   if (!props) {
     return {
       notFound: true,
@@ -88,40 +102,43 @@ export const getServerSideProps = async (
   const seoContentSlug = alwaysString(query.seoContentSlug);
 
   // get company
-  const companyId = new ObjectId(`${query.companyId}`);
-  const companyAggregationResult = await companiesCollection
-    .aggregate([
+  const company = await getCompanySsr({
+    companyId: `${query.companyId}`,
+  });
+  if (!company) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const initialRubrics = await rubricsCollection
+    .aggregate<EventRubricInterface>([
       {
         $match: {
-          _id: companyId,
+          slug: `${query.rubricSlug}`,
         },
       },
+      // get attributes
+      ...rubricAttributeGroupsPipeline,
     ])
     .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
+  const initialRubric = initialRubrics[0];
+  if (!initialRubric) {
     return {
       notFound: true,
     };
   }
-  const companySlug = companyResult.slug;
 
-  const payload = await getConsoleRubricDetails({
+  const rubric = castEventRubricForUI({
+    rubric: initialRubric,
     locale: props.sessionLocale,
-    rubricSlug: `${query.rubricSlug}`,
-    companySlug,
   });
-  if (!payload) {
-    return {
-      notFound: true,
-    };
-  }
 
   const seoContent = await getSeoContentBySlug({
     url,
     seoContentSlug,
-    companySlug,
-    rubricSlug: payload.rubric.slug,
+    companySlug: company.slug,
+    rubricSlug: rubric.slug,
   });
   if (!seoContent) {
     return {
@@ -129,20 +146,16 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
-      rubric: castDbData(payload.rubric),
+      rubric: castDbData(rubric),
       seoContent: castDbData(seoContent),
-      routeBasePath: links.root,
+      pageCompany: castDbData(company),
       showSeoFields: seoContentSlug.indexOf(CATALOGUE_SEO_TEXT_POSITION_TOP) > -1,
-      companySlug,
+      companySlug: company.slug,
     },
   };
 };
 
-export default RubricPage;
+export default EventRubricSeoContentPage;

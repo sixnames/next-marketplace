@@ -17,11 +17,15 @@ import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from '
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface RubricDetailsInterface
+interface EventRubricSeoContentsListConsumerInterface
   extends EventRubricLayoutInterface,
     ConsoleSeoContentsListInterface {}
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, pageCompany, seoContents }) => {
+const EventRubricSeoContentsListConsumer: React.FC<EventRubricSeoContentsListConsumerInterface> = ({
+  rubric,
+  pageCompany,
+  seoContents,
+}) => {
   const links = getProjectLinks({
     companyId: pageCompany._id,
     rubricSlug: rubric.slug,
@@ -58,19 +62,24 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, pageCompany, 
   );
 };
 
-interface RubricPageInterface extends GetAppInitialDataPropsInterface, RubricDetailsInterface {}
+interface EventRubricSeoContentsListPageInterface
+  extends GetAppInitialDataPropsInterface,
+    EventRubricSeoContentsListConsumerInterface {}
 
-const RubricPage: NextPage<RubricPageInterface> = ({ layoutProps, ...props }) => {
+const EventRubricSeoContentsListPage: NextPage<EventRubricSeoContentsListPageInterface> = ({
+  layoutProps,
+  ...props
+}) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <RubricDetails {...props} />
+      <EventRubricSeoContentsListConsumer {...props} />
     </ConsoleLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
+): Promise<GetServerSidePropsResult<EventRubricSeoContentsListPageInterface>> => {
   const { query } = context;
   const collections = await getDbCollections();
   const rubricsCollection = collections.eventRubricsCollection();
@@ -134,4 +143,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default RubricPage;
+export default EventRubricSeoContentsListPage;

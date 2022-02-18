@@ -5,7 +5,7 @@ import ModalTitle from './ModalTitle';
 
 export interface InfoModalInterface {
   title?: string;
-  message?: string;
+  message?: any;
   testId: string;
 }
 
@@ -13,11 +13,7 @@ const InfoModal: React.FC<InfoModalInterface> = ({ title, message, testId }) => 
   return (
     <ModalFrame testId={testId}>
       {title ? <ModalTitle>{title}</ModalTitle> : null}
-      {message ? (
-        <ModalText>
-          <p>{message}</p>
-        </ModalText>
-      ) : null}
+      {message ? <ModalText>{message}</ModalText> : null}
     </ModalFrame>
   );
 };

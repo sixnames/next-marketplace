@@ -245,6 +245,24 @@ export const constantTranslations = {
       [SECONDARY_LOCALE]: 'page',
     },
   },
+  validation: {
+    email: {
+      [DEFAULT_LOCALE]: 'Email обязателен к заполнению.',
+      [SECONDARY_LOCALE]: 'Email is required.',
+    },
+    name: {
+      [DEFAULT_LOCALE]: 'Имя обязательно к заполнению.',
+      [SECONDARY_LOCALE]: ' is required.',
+    },
+    phone: {
+      [DEFAULT_LOCALE]: 'Телефон обязателен к заполнению.',
+      [SECONDARY_LOCALE]: 'Phone is required.',
+    },
+    privacy: {
+      [DEFAULT_LOCALE]: 'Подтвердите согласие на обработку личных данных.',
+      [SECONDARY_LOCALE]: 'Confirm privacy agreement.',
+    },
+  },
 };
 
 interface GetBooleanTranslationInterface {

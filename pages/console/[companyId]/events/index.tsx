@@ -1,41 +1,40 @@
-import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import EventRubricsList, { EventRubricsListInterface } from 'components/layout/EventRubricsList';
+import WpTitle from 'components/WpTitle';
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { COL_EVENT_FACETS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
-import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
-import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
+import { EventRubricInterface } from 'db/uiInterfaces';
+import { useBasePath } from 'hooks/useBasePath';
+import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
 interface RubricsRouteInterface extends EventRubricsListInterface {}
-
+const pageTitle = 'Мероприятия';
 const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany }) => {
-  const links = getCmsCompanyLinks({
+  const basePath = useBasePath('companyId');
+  const links = getConsoleCompanyLinks({
+    basePath,
     companyId: pageCompany._id,
   });
 
-  const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Мероприятия',
-    config: [
-      {
-        name: 'Компании',
-        href: links.parentLink,
-      },
-      {
-        name: `${pageCompany?.name}`,
-        href: links.root,
-      },
-    ],
-  };
-
   return (
-    <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
-      <EventRubricsList rubrics={rubrics} pageCompany={pageCompany} routeBasePath={links.root} />
-    </CmsCompanyLayout>
+    <AppContentWrapper>
+      <Inner lowBottom>
+        <WpTitle>{pageTitle}</WpTitle>
+      </Inner>
+      <EventRubricsList
+        rubrics={rubrics}
+        pageCompany={pageCompany}
+        routeBasePath={links.root.url}
+      />
+    </AppContentWrapper>
   );
 };
 
@@ -43,7 +42,7 @@ interface RubricsInterface extends GetAppInitialDataPropsInterface, RubricsRoute
 
 const Rubrics: NextPage<RubricsInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout {...layoutProps}>
+    <ConsoleLayout {...layoutProps} title={pageTitle}>
       <RubricsRoute {...props} />
     </ConsoleLayout>
   );
@@ -53,21 +52,9 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricsInterface>> => {
   const collections = await getDbCollections();
-  const { query } = context;
   const rubricsCollection = collections.eventRubricsCollection();
-
-  const { props } = await getAppInitialData({ context });
+  const { props } = await getConsoleInitialData({ context });
   if (!props) {
-    return {
-      notFound: true,
-    };
-  }
-
-  // get company
-  const company = await getCompanySsr({
-    companyId: `${query.companyId}`,
-  });
-  if (!company) {
     return {
       notFound: true,
     };
@@ -78,7 +65,7 @@ export const getServerSideProps = async (
     .aggregate<EventRubricInterface>([
       {
         $match: {
-          companyId: company._id,
+          companyId: new ObjectId(props.layoutProps.pageCompany._id),
         },
       },
       {
@@ -139,14 +126,14 @@ export const getServerSideProps = async (
   });
 
   const links = getCmsCompanyLinks({
-    companyId: company._id,
+    companyId: props.layoutProps.pageCompany._id,
   });
 
   return {
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
-      pageCompany: castDbData(company),
+      pageCompany: castDbData(props.layoutProps.pageCompany),
       routeBasePath: links.root,
     },
   };

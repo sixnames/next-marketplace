@@ -1,7 +1,7 @@
 import CompanyEvents, { CompanyEventsInterface } from 'components/company/CompanyEvents';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import EventRubricLayout from 'components/layout/events/EventRubricLayout';
-import { getRubricEventsListSsr } from 'db/ssr/events/getRubricEventsListSsr';
+import { getConsoleRubricEventsListSsr } from 'db/ssr/events/getConsoleRubricEventsListSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
@@ -20,20 +20,12 @@ const RubricEventsConsumer: React.FC<RubricEventsConsumerInterface> = (props) =>
     currentPageName: `Мероприятия`,
     config: [
       {
-        name: 'Компании',
-        href: links.cms.companies.url,
-      },
-      {
-        name: `${props.pageCompany.name}`,
-        href: links.cms.companies.companyId.url,
-      },
-      {
         name: `Мероприятия`,
-        href: links.cms.companies.companyId.events.url,
+        href: links.console.companyId.events.url,
       },
       {
         name: `${props.rubric.name}`,
-        href: links.cms.companies.companyId.events.rubricSlug.url,
+        href: links.console.companyId.events.rubricSlug.url,
       },
     ],
   };
@@ -61,5 +53,5 @@ const CmsRubricEventsPage: NextPage<CmsRubricEventsPageInterface> = ({ layoutPro
   );
 };
 
-export const getServerSideProps = getRubricEventsListSsr;
+export const getServerSideProps = getConsoleRubricEventsListSsr;
 export default CmsRubricEventsPage;

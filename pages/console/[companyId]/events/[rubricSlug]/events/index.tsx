@@ -1,5 +1,5 @@
-import { getRubricEventsListSsr } from 'db/ssr/events/getRubricEventsListSsr';
+import { getConsoleRubricEventsListSsr } from 'db/ssr/events/getConsoleRubricEventsListSsr';
 import CmsRubricEventsPage from './[...filters]';
 
-export const getServerSideProps = getRubricEventsListSsr;
+export const getServerSideProps = getConsoleRubricEventsListSsr;
 export default CmsRubricEventsPage;

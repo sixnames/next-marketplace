@@ -17,6 +17,7 @@ import {
   RubricEventsListInterface,
 } from 'db/uiInterfaces';
 import { useDeleteEvent } from 'hooks/mutations/useEventMutations';
+import { useBasePath } from 'hooks/useBasePath';
 import { CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getNumWord } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
@@ -26,7 +27,6 @@ import * as React from 'react';
 
 export interface CompanyEventsInterface extends RubricEventsListInterface {
   pageCompany: CompanyInterface;
-  routeBasePath: string;
 }
 
 const CompanyEvents: React.FC<CompanyEventsInterface> = ({
@@ -38,12 +38,12 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
   totalDocs,
   page,
   totalPages,
-  routeBasePath,
   pageCompany,
 }) => {
   const router = useRouter();
   const { showModal } = useAppContext();
   const [deleteEventMutation] = useDeleteEvent();
+  const routeBasePath = useBasePath('companyId');
   function getEventLink(eventId: string) {
     const links = getConsoleCompanyLinks({
       basePath: routeBasePath,

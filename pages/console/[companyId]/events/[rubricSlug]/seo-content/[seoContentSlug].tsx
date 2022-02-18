@@ -8,14 +8,13 @@ import EventRubricLayout, {
 } from 'components/layout/events/EventRubricLayout';
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { getDbCollections } from 'db/mongodb';
-import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
 import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
 import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { alwaysString } from 'lib/arrayUtils';
 import { CATALOGUE_SEO_TEXT_POSITION_TOP } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getSeoContentBySlug } from 'lib/seoContentUtils';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
@@ -39,20 +38,12 @@ const EventRubricSeoContentConsumer: React.FC<EventRubricSeoContentConsumerInter
     currentPageName: `SEO тексты`,
     config: [
       {
-        name: 'Компании',
-        href: links.cms.companies.url,
-      },
-      {
-        name: `${pageCompany?.name}`,
-        href: links.cms.companies.companyId.url,
-      },
-      {
         name: `Мероприятия`,
-        href: links.cms.companies.companyId.events.url,
+        href: links.console.companyId.events.url,
       },
       {
         name: `${rubric.name}`,
-        href: links.cms.companies.companyId.events.rubricSlug.attributes.url,
+        href: links.console.companyId.events.rubricSlug.attributes.url,
       },
     ],
   };
@@ -88,28 +79,21 @@ const EventRubricSeoContentPage: NextPage<EventRubricSeoContentPageInterface> = 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<EventRubricSeoContentPageInterface>> => {
-  const { query } = context;
-  const { props } = await getAppInitialData({ context });
   const collections = await getDbCollections();
   const rubricsCollection = collections.eventRubricsCollection();
+  const { query } = context;
+  const { props } = await getConsoleInitialData({ context });
   if (!props) {
     return {
       notFound: true,
     };
   }
 
+  // get company
+  const company = props.layoutProps.pageCompany;
+
   const url = alwaysString(query.url);
   const seoContentSlug = alwaysString(query.seoContentSlug);
-
-  // get company
-  const company = await getCompanySsr({
-    companyId: `${query.companyId}`,
-  });
-  if (!company) {
-    return {
-      notFound: true,
-    };
-  }
 
   const initialRubrics = await rubricsCollection
     .aggregate<EventRubricInterface>([

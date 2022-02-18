@@ -23,7 +23,7 @@ export function castEventSummaryForUi({
   const productAttributes = (summary.attributes || []).reduce(
     (acc: ProductAttributeInterface[], attribute) => {
       const existingAttribute = (attributes || []).find(({ _id }) => {
-        return _id.equals(attribute.attributeId);
+        return _id && _id.equals(attribute.attributeId);
       });
       if (!existingAttribute) {
         return acc;

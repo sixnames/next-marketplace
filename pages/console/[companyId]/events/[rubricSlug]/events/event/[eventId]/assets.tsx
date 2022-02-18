@@ -1,7 +1,6 @@
 import EventAssets from 'components/company/EventAssets';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import EventLayout from 'components/layout/events/EventLayout';
-import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
 import { getEventAttributesPageSsr } from 'db/ssr/events/getEventAttributesPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
@@ -9,7 +8,7 @@ import {
   EventSummaryInterface,
 } from 'db/uiInterfaces';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
@@ -29,24 +28,16 @@ const EventAssetsConsumer: React.FC<EventAssetsConsumerInterface> = ({ event, pa
     currentPageName: `Изображения`,
     config: [
       {
-        name: 'Компании',
-        href: links.cms.companies.url,
-      },
-      {
-        name: `${pageCompany.name}`,
-        href: links.cms.companies.companyId.url,
-      },
-      {
         name: `Мероприятия`,
-        href: links.cms.companies.companyId.events.url,
+        href: links.console.companyId.events.url,
       },
       {
         name: `${event.rubric?.name}`,
-        href: links.cms.companies.companyId.events.rubricSlug.url,
+        href: links.console.companyId.events.rubricSlug.url,
       },
       {
         name: `${event.name}`,
-        href: links.cms.companies.companyId.events.rubricSlug.events.event.eventId.url,
+        href: links.console.companyId.events.rubricSlug.events.event.eventId.url,
       },
     ],
   };
@@ -74,7 +65,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<EventAssetsPageInterface>> => {
   const { query } = context;
-  const { props } = await getAppInitialData({ context });
+  const { props } = await getConsoleInitialData({ context });
   if (!props) {
     return {
       notFound: true,
@@ -82,14 +73,7 @@ export const getServerSideProps = async (
   }
 
   // get company
-  const company = await getCompanySsr({
-    companyId: `${query.companyId}`,
-  });
-  if (!company) {
-    return {
-      notFound: true,
-    };
-  }
+  const company = props.layoutProps.pageCompany;
 
   const payload = await getEventAttributesPageSsr({
     locale: props.sessionLocale,

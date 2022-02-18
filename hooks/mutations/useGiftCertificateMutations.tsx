@@ -1,16 +1,17 @@
-import { useAppContext } from '../../components/context/appContext';
-import { InfoModalInterface } from '../../components/Modal/InfoModal';
-import { CheckGiftCertificateAvailabilityInputInterface } from '../../db/dao/giftCertificate/checkGiftCertificateAvailability';
-import { CreateGiftCertificateInputInterface } from '../../db/dao/giftCertificate/createGiftCertificate';
-import { DeleteGiftCertificateInputInterface } from '../../db/dao/giftCertificate/deleteGiftCertificate';
-import { UpdateGiftCertificateInputInterface } from '../../db/dao/giftCertificate/updateGiftCertificate';
-import { GiftCertificatePayloadModel } from '../../db/dbModels';
+import { useAppContext } from 'components/context/appContext';
+import { InfoModalInterface } from 'components/Modal/InfoModal';
+import { CheckGiftCertificateAvailabilityInputInterface } from 'db/dao/giftCertificate/checkGiftCertificateAvailability';
+import { CreateGiftCertificateInputInterface } from 'db/dao/giftCertificate/createGiftCertificate';
+import { DeleteGiftCertificateInputInterface } from 'db/dao/giftCertificate/deleteGiftCertificate';
+import { UpdateGiftCertificateInputInterface } from 'db/dao/giftCertificate/updateGiftCertificate';
+import { GiftCertificatePayloadModel } from 'db/dbModels';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-} from '../../lib/config/common';
-import { INFO_MODAL } from '../../lib/config/modalVariants';
+} from 'lib/config/common';
+import { INFO_MODAL } from 'lib/config/modalVariants';
+import * as React from 'react';
 import { useMutationHandler } from './useFetch';
 
 const basePath = '/api/gift-certificates';
@@ -57,7 +58,7 @@ export const useCheckGiftCertificateMutation = () => {
           variant: INFO_MODAL,
           props: {
             testId: 'gift-certificate-check-error',
-            message: defaultMessage,
+            message: <p>{defaultMessage}</p>,
           },
         });
         return;
@@ -66,7 +67,7 @@ export const useCheckGiftCertificateMutation = () => {
         variant: INFO_MODAL,
         props: {
           testId: 'gift-certificate-check-message',
-          message: payload.message,
+          message: <p>{payload.message}</p>,
         },
       });
     },
@@ -76,7 +77,7 @@ export const useCheckGiftCertificateMutation = () => {
           variant: INFO_MODAL,
           props: {
             testId: 'gift-certificate-check-error',
-            message: defaultMessage,
+            message: <p>{defaultMessage}</p>,
           },
         });
         return;
@@ -85,7 +86,7 @@ export const useCheckGiftCertificateMutation = () => {
         variant: INFO_MODAL,
         props: {
           testId: 'gift-certificate-check-message',
-          message: payload.message,
+          message: <p>{payload.message}</p>,
         },
       });
     },

@@ -1,38 +1,19 @@
+import { useConfigContext } from 'components/context/configContext';
+import { useSiteContext } from 'components/context/siteContext';
+import { MakeAnOrderInputInterface } from 'db/dao/orders/makeAnOrder';
+import { CartInterface } from 'db/uiInterfaces';
+import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import DefaultCart from '../components/cart/DefaultCart';
 import EmptyCart from '../components/cart/EmptyCart';
 import OneShopCompanyCart from '../components/cart/OneShopCompanyCart';
-import { useConfigContext } from '../components/context/configContext';
-import { useSiteContext } from '../components/context/siteContext';
 import Inner from '../components/Inner';
 import SiteLayout, { SiteLayoutProviderInterface } from '../components/layout/SiteLayout';
 import RequestError from '../components/RequestError';
 import Spinner from '../components/Spinner';
 import WpBreadcrumbs from '../components/WpBreadcrumbs';
 import WpTitle from '../components/WpTitle';
-import { MakeAnOrderInputInterface } from '../db/dao/orders/makeAnOrder';
-import { CartInterface } from '../db/uiInterfaces';
-import { noNaN } from '../lib/numbers';
-import { getSiteInitialData } from '../lib/ssrUtils';
-
-export function scrollToCartErrors(input: MakeAnOrderInputInterface): boolean {
-  const distElement = document.getElementById('cart-inputs');
-  const noName = !input.name;
-  const noEmail = !input.email;
-  const noPhone = !input.phone;
-  const noPrivacy = !input.privacy;
-
-  if (distElement && (noName || noEmail || noPhone || noPrivacy)) {
-    window.scrollTo({
-      top: noNaN(distElement.getBoundingClientRect().top),
-      left: 0,
-      behavior: 'smooth',
-    });
-    return true;
-  }
-  return false;
-}
 
 export type CartTabIndexType = 0 | 1;
 

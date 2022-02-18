@@ -1,35 +1,28 @@
+import WpButton from 'components/button/WpButton';
 import EventMainFields from 'components/FormTemplates/EventMainFields';
+import Inner from 'components/Inner';
 import { CreateEventInputInterface } from 'db/dao/events/createEvent';
 import { EventRubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { useCreateEvent } from 'hooks/mutations/useEventMutations';
 import useValidationSchema from 'hooks/useValidationSchema';
-import { DEFAULT_CITY } from 'lib/config/common';
 import * as React from 'react';
 import { createEventSchema } from 'validation/eventSchema';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import WpButton from '../button/WpButton';
-import ModalButtons from './ModalButtons';
-import ModalFrame from './ModalFrame';
-import ModalTitle from './ModalTitle';
 
-export interface CreateEventModalInterface {
+export interface CreateEventInterface {
   rubric: EventRubricInterface;
+  routeBasePath: string;
 }
 
-const CreateEventModal: React.FC<CreateEventModalInterface> = ({ rubric }) => {
-  const { hideModal } = useMutationCallbacks({
-    withModal: true,
-  });
+const CreateEvent: React.FC<CreateEventInterface> = ({ rubric, routeBasePath }) => {
   const validationSchema = useValidationSchema({
     schema: createEventSchema,
   });
 
-  const [createEventMutation] = useCreateEvent();
+  const [createEventMutation] = useCreateEvent(routeBasePath);
 
   return (
-    <ModalFrame testId={'create-new-event-modal'}>
-      <ModalTitle>Создание мероприятия</ModalTitle>
+    <Inner testId={'create-new-event'}>
       <Formik<CreateEventInputInterface>
         validationSchema={validationSchema}
         initialValues={{
@@ -38,7 +31,7 @@ const CreateEventModal: React.FC<CreateEventModalInterface> = ({ rubric }) => {
           nameI18n: {},
           endAt: null,
           startAt: null,
-          citySlug: DEFAULT_CITY,
+          citySlug: '',
           price: null,
           seatsCount: null,
           rubricId: `${rubric._id}`,
@@ -52,20 +45,15 @@ const CreateEventModal: React.FC<CreateEventModalInterface> = ({ rubric }) => {
             <Form>
               <EventMainFields />
 
-              <ModalButtons>
-                <WpButton type={'submit'} testId={'submit-new-event'}>
-                  Создать
-                </WpButton>
-                <WpButton theme={'secondary'} onClick={hideModal} testId={'event-decline'}>
-                  Отмена
-                </WpButton>
-              </ModalButtons>
+              <WpButton type={'submit'} testId={'submit-new-event'}>
+                Создать
+              </WpButton>
             </Form>
           );
         }}
       </Formik>
-    </ModalFrame>
+    </Inner>
   );
 };
 
-export default CreateEventModal;
+export default CreateEvent;

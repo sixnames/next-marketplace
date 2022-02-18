@@ -18,7 +18,6 @@ import {
   CREATE_BRAND_MODAL,
   CREATE_CATEGORY_MODAL,
   CREATE_CONNECTION_MODAL,
-  CREATE_EVENT_MODAL,
   CREATE_EVENT_RUBRIC_MODAL,
   CREATE_NEW_PRODUCT_MODAL,
   CREATE_PAGE_MODAL,
@@ -103,7 +102,6 @@ const MoveOptionModal = dynamic(() => import('./MoveOptionModal'));
 const AddAttributesGroupToRubricModal = dynamic(() => import('./AddAttributesGroupToRubricModal'));
 const AttributeInGroupModal = dynamic(() => import('./AttributeInGroupModal'));
 const CreateNewProductModal = dynamic(() => import('./CreateNewProductModal'));
-const CreateEventModal = dynamic(() => import('./CreateEventModal'));
 const CreateProductWithSyncErrorModal = dynamic(() => import('./CreateProductWithSyncErrorModal'));
 
 const UsersSearchModal = dynamic(() => import('./UsersSearchModal'));
@@ -167,8 +165,6 @@ const WpModal: React.FC<WpModalInterface> = ({ modalType, modalProps = {} }) => 
           {modalType === USERS_SEARCH_MODAL && <UsersSearchModal {...modalProps} />}
 
           {modalType === CREATE_NEW_PRODUCT_MODAL && <CreateNewProductModal {...modalProps} />}
-
-          {modalType === CREATE_EVENT_MODAL && <CreateEventModal {...modalProps} />}
 
           {modalType === CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL && (
             <CreateProductWithSyncErrorModal {...modalProps} />

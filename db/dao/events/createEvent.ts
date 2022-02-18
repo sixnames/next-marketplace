@@ -170,6 +170,7 @@ export async function createEvent({
       mutationPayload = {
         success: true,
         message: await getApiMessage('events.create.success'),
+        payload: createdSummary,
       };
     });
 

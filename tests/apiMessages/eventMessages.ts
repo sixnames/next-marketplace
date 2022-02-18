@@ -93,4 +93,11 @@ export const eventMessages: MessageBaseInterface[] = [
       [SECONDARY_LOCALE]: `Event seats count is required.`,
     },
   },
+  {
+    slug: 'validation.events.city',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Город обязателен.`,
+      [SECONDARY_LOCALE]: `Event city is required.`,
+    },
+  },
 ];

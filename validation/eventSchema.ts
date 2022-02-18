@@ -2,6 +2,7 @@ import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import {
   objectIdSchema,
   requiredNumberSchema,
+  requiredStringSchema,
   requiredStringTranslationSchema,
 } from 'validation/utils/schemaTemplates';
 import * as Yup from 'yup';
@@ -23,6 +24,10 @@ export const eventCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => 
     seatsCount: requiredNumberSchema({
       ...args,
       slug: 'validation.events.seatsCount',
+    }),
+    citySlug: requiredStringSchema({
+      ...args,
+      slug: 'validation.events.city',
     }),
     address: Yup.mixed().nullable().required('address'),
     startAt: Yup.mixed().nullable().required('startAt'),

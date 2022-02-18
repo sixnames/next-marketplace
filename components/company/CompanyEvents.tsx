@@ -7,7 +7,7 @@ import FormattedDateTime from 'components/FormattedDateTime';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
 import WpLink from 'components/Link/WpLink';
-import { CreateEventModalInterface } from 'components/Modal/CreateEventModal';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager from 'components/Pager';
 import RequestError from 'components/RequestError';
 import WpTable, { WpTableColumn } from 'components/WpTable';
@@ -17,10 +17,11 @@ import {
   RubricEventsListInterface,
 } from 'db/uiInterfaces';
 import { useDeleteEvent } from 'hooks/mutations/useEventMutations';
-import { CREATE_EVENT_MODAL } from 'lib/config/modalVariants';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getNumWord } from 'lib/i18n';
 import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
 import { noNaN } from 'lib/numbers';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 export interface CompanyEventsInterface extends RubricEventsListInterface {
@@ -40,6 +41,7 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
   routeBasePath,
   pageCompany,
 }) => {
+  const router = useRouter();
   const { showModal } = useAppContext();
   const [deleteEventMutation] = useDeleteEvent();
   function getEventLink(eventId: string) {
@@ -88,9 +90,18 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
                 window.open(link, '_blank');
               }}
               deleteHandler={() => {
-                deleteEventMutation({
-                  _id: `${dataItem._id}`,
-                }).catch(console.log);
+                showModal<ConfirmModalInterface>({
+                  variant: CONFIRM_MODAL,
+                  props: {
+                    testId: 'delete-event-modal',
+                    message: `Вы уверенны, что хотите удалить мероприятие ${dataItem.name}?`,
+                    confirm: () => {
+                      deleteEventMutation({
+                        _id: `${dataItem._id}`,
+                      }).catch(console.log);
+                    },
+                  },
+                });
               }}
             />
           </div>
@@ -156,12 +167,12 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
             testId={'create-rubric-event'}
             size={'small'}
             onClick={() => {
-              showModal<CreateEventModalInterface>({
-                variant: CREATE_EVENT_MODAL,
-                props: {
-                  rubric,
-                },
+              const links = getConsoleCompanyLinks({
+                basePath: routeBasePath,
+                companyId: pageCompany._id,
+                rubricSlug: rubric.slug,
               });
+              router.push(links.events.rubricSlug.events.create.url).catch(console.log);
             }}
           >
             Создать мероприятие

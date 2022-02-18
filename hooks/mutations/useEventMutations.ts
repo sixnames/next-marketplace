@@ -14,15 +14,31 @@ import {
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
 } from 'lib/config/common';
+import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
+import { useRouter } from 'next/router';
 
 const basePath = '/api/events';
 
 // event
 // create
-export const useCreateEvent = () => {
+export const useCreateEvent = (routeBasePath: string) => {
+  const router = useRouter();
+
   return useMutationHandler<EventPayloadModel, CreateEventInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_POST,
+    reload: false,
+    onSuccess: (payload) => {
+      if (payload.success && payload.payload) {
+        const links = getConsoleCompanyLinks({
+          basePath: routeBasePath,
+          companyId: payload.payload.companyId,
+          rubricSlug: payload.payload.rubricSlug,
+          eventId: payload.payload._id,
+        });
+        router.push(links.events.rubricSlug.events.event.eventId.url).catch(console.log);
+      }
+    },
   });
 };
 

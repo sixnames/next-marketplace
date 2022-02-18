@@ -1,77 +1,83 @@
-import ConsoleRubricProductEditor, {
-  ConsoleRubricProductEditorInterface,
-} from 'components/console/ConsoleRubricProductEditor';
-import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
+import EventEditor from 'components/company/EventEditor';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProductFullSummary } from 'db/ssr/products/getProductFullSummary';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+import EventLayout from 'components/layout/events/EventLayout';
+import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
+import { getEventFullSummary } from 'db/ssr/events/getEventFullSummary';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  EventSummaryInterface,
+  SeoContentInterface,
+} from 'db/uiInterfaces';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface ProductAttributesInterface extends ConsoleRubricProductEditorInterface {}
+interface EventAttributesInterface {
+  event: EventSummaryInterface;
+  cardContent: SeoContentInterface;
+  pageCompany: CompanyInterface;
+}
 
-const ProductAttributes: React.FC<ProductAttributesInterface> = ({
-  product,
-  seoContentsList,
-  companySlug,
+const EventAttributes: React.FC<EventAttributesInterface> = ({
+  event,
+  cardContent,
+  pageCompany,
 }) => {
-  const links = getConsoleRubricLinks({
-    productId: product._id,
-    rubricSlug: product.rubricSlug,
+  const links = getProjectLinks({
+    companyId: pageCompany._id,
+    rubricSlug: event.rubricSlug,
+    eventId: event._id,
   });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Контент карточки',
+    currentPageName: `Контент карточки`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: links.parentLink,
+        name: 'Компании',
+        href: links.cms.companies.url,
       },
       {
-        name: `${product.rubric?.name}`,
-        href: links.parentLink,
+        name: `${pageCompany.name}`,
+        href: links.cms.companies.companyId.url,
       },
       {
-        name: `Товары`,
-        href: links.product.parentLink,
+        name: `Мероприятия`,
+        href: links.cms.companies.companyId.events.url,
       },
       {
-        name: `${product.cardTitle}`,
-        href: links.product.root,
+        name: `${event.rubric?.name}`,
+        href: links.cms.companies.companyId.events.rubricSlug.url,
+      },
+      {
+        name: `${event.name}`,
+        href: links.cms.companies.companyId.events.rubricSlug.events.event.eventId.url,
       },
     ],
   };
 
   return (
-    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <ConsoleRubricProductEditor
-        product={product}
-        seoContentsList={seoContentsList}
-        companySlug={companySlug}
-      />
-    </CmsProductLayout>
+    <EventLayout event={event} breadcrumbs={breadcrumbs}>
+      <EventEditor cardContent={cardContent} event={event} />
+    </EventLayout>
   );
 };
 
-interface ProductPageInterface
-  extends GetAppInitialDataPropsInterface,
-    ProductAttributesInterface {}
+interface EventPageInterface extends GetAppInitialDataPropsInterface, EventAttributesInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
+const Event: NextPage<EventPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <ProductAttributes {...props} />
+      <EventAttributes {...props} />
     </ConsoleLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
+): Promise<GetServerSidePropsResult<EventPageInterface>> => {
   const { query } = context;
-  const { productId } = query;
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -79,30 +85,35 @@ export const getServerSideProps = async (
     };
   }
 
-  const companySlug = DEFAULT_COMPANY_SLUG;
-
-  const payload = await getProductFullSummary({
-    locale: props.sessionLocale,
-    productId: `${productId}`,
-    companySlug,
+  // get company
+  const company = await getCompanySsr({
+    companyId: `${query.companyId}`,
   });
-
-  if (!payload) {
+  if (!company) {
     return {
       notFound: true,
     };
   }
 
-  const { summary, seoContentsList } = payload;
+  const payload = await getEventFullSummary({
+    locale: props.sessionLocale,
+    eventId: `${query.eventId}`,
+  });
+
+  if (!payload || !payload.cardContent) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
       ...props,
-      product: castDbData(summary),
-      seoContentsList: castDbData(seoContentsList),
-      companySlug,
+      event: castDbData(payload.summary),
+      pageCompany: castDbData(company),
+      cardContent: castDbData(payload.cardContent),
     },
   };
 };
 
-export default Product;
+export default Event;

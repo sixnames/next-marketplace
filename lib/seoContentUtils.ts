@@ -446,6 +446,44 @@ export async function getProductSeoContentSlug({
   }
 }
 
+// event
+interface GetEventSeoContentSlugInterface {
+  eventId: ObjectIdModel;
+  eventSlug: string;
+  companySlug: string;
+}
+
+export async function getEventSeoContentSlug({
+  companySlug,
+  eventId,
+  eventSlug,
+}: GetEventSeoContentSlugInterface): Promise<GetDocumentSeoContentSlugPayloadInterface | null> {
+  try {
+    const collections = await getDbCollections();
+    const companiesCollection = collections.companiesCollection();
+
+    // get company
+    let companyId = DEFAULT_COMPANY_SLUG;
+    if (companySlug !== DEFAULT_COMPANY_SLUG) {
+      const company = await companiesCollection.findOne({ slug: companySlug });
+      if (!company) {
+        console.log('getEventSeoContentSlug Company not found');
+        return null;
+      }
+
+      companyId = company._id.toHexString();
+    }
+
+    return {
+      seoContentSlug: `event_${companyId}${eventId.toHexString()}`,
+      url: `/event/${eventSlug}`,
+    };
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
 // rubric
 interface GetRubricSeoContentSlugInterface {
   rubricId: ObjectIdModel;
@@ -732,6 +770,53 @@ export async function getCategoryAllSeoContents({
     }
   }
   return payload;
+}
+
+// event
+interface GetEventSeoContentInterface {
+  companySlug: string;
+  eventId: ObjectIdModel;
+  eventSlug: string;
+  rubricSlug: string;
+  locale: string;
+}
+
+export async function getEventSeoContent({
+  companySlug,
+  eventId,
+  eventSlug,
+  rubricSlug,
+  locale,
+}: GetEventSeoContentInterface): Promise<SeoContentInterface | null> {
+  const collections = await getDbCollections();
+  const seoContentsCollection = collections.seoContentsCollection();
+
+  const seoContentSlugPayload = await getEventSeoContentSlug({
+    companySlug,
+    eventId,
+    eventSlug,
+  });
+  if (!seoContentSlugPayload) {
+    return null;
+  }
+
+  const seoContent = await seoContentsCollection.findOne({
+    slug: seoContentSlugPayload.seoContentSlug,
+  });
+
+  if (!seoContent) {
+    const newSeoContent = {
+      _id: new ObjectId(),
+      url: seoContentSlugPayload.url,
+      slug: seoContentSlugPayload.seoContentSlug,
+      content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      companySlug,
+      rubricSlug,
+    };
+    return newSeoContent;
+  }
+
+  return castSeoContent(seoContent, locale);
 }
 
 // product

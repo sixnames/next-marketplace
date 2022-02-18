@@ -1,8 +1,9 @@
 import { castEventSummaryForUi } from 'db/cast/castEventSummaryForUi';
 import { AttributeModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
-import { EventSummaryInterface } from 'db/uiInterfaces';
+import { EventSummaryInterface, SeoContentInterface } from 'db/uiInterfaces';
 import { eventSummaryRubricPipeline, summaryAttributesPipeline } from 'db/utils/constantPipelines';
+import { getEventSeoContent } from 'lib/seoContentUtils';
 import { ObjectId } from 'mongodb';
 
 interface GetFullEventSummaryInterface {
@@ -12,6 +13,7 @@ interface GetFullEventSummaryInterface {
 
 export interface GetFullEventSummaryPayloadInterface {
   summary: EventSummaryInterface;
+  cardContent: SeoContentInterface | null;
 }
 
 export async function getEventFullSummary({
@@ -49,6 +51,18 @@ export async function getEventFullSummary({
     return acc;
   }, []);
 
+  // card content
+  const cardContent = await getEventSeoContent({
+    eventSlug: summary.slug,
+    eventId: summary._id,
+    rubricSlug: summary.rubricSlug,
+    companySlug: summary.companySlug,
+    locale,
+  });
+  if (!cardContent) {
+    return null;
+  }
+
   const castedSummary = castEventSummaryForUi({
     summary,
     attributes,
@@ -57,5 +71,6 @@ export async function getEventFullSummary({
 
   return {
     summary: castedSummary,
+    cardContent,
   };
 }

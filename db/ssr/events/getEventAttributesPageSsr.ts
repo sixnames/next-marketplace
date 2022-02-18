@@ -47,6 +47,7 @@ export const getEventAttributesPageSsr = async ({
   }
 
   const summary = summaryPayload.summary;
+  const cardContent = summaryPayload.cardContent;
 
   const attributesGroupIds: ObjectIdModel[] = summary.rubric?.attributesGroupIds || [];
   let cmsCardAttributeIds: ObjectIdModel[] = summary.rubric?.cmsCardAttributeIds || [];
@@ -184,5 +185,6 @@ export const getEventAttributesPageSsr = async ({
 
   return {
     summary: finalProduct,
+    cardContent,
   };
 };

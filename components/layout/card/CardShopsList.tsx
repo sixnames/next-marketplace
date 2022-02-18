@@ -5,7 +5,6 @@ import { useConfigContext } from 'components/context/configContext';
 import { useSiteContext } from 'components/context/siteContext';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import LayoutCard from 'components/layout/LayoutCard';
-import LinkPhone from 'components/Link/LinkPhone';
 import { MapModalInterface } from 'components/Modal/MapModal';
 import ProductShopPrices from 'components/ProductShopPrices';
 import RatingStars from 'components/RatingStars';
@@ -95,7 +94,19 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
             </div>
 
             {(formattedPhones || []).map((phone, index) => {
-              return <LinkPhone key={index} value={phone} />;
+              // return <LinkPhone key={index} value={phone} />;
+              return (
+                <div key={index}>
+                  <span
+                    className={'cursor-pointer'}
+                    onClick={() => {
+                      window.open(`tel:${phone.raw}`);
+                    }}
+                  >
+                    {phone.readable}
+                  </span>
+                </div>
+              );
             })}
 
             {license ? (

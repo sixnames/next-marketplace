@@ -19,13 +19,15 @@ const FormikCheckboxLine: React.FC<FormikCheckboxLineInterface> = ({
 }) => {
   return (
     <label
-      className={`flex w-full cursor-pointer items-center gap-3 transition-all hover:text-theme ${
+      className={`flex w-full cursor-pointer items-baseline gap-3 transition-all hover:text-theme ${
         disabled ? 'cursor-default opacity-80' : 'cursor-pointer'
       } ${inList ? 'mb-4' : 'mb-8 h-[var(--formInputHeight)]'} ${low ? 'mb-0' : ''} ${
         lineClassName ? lineClassName : ''
       }`}
     >
-      <FormikCheckbox name={name} disabled={disabled} {...props} />
+      <span className='relative top-[3px] block'>
+        <FormikCheckbox name={name} disabled={disabled} {...props} />
+      </span>
       <span className='block'>{label}</span>
     </label>
   );

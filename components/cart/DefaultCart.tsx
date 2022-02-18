@@ -1,32 +1,28 @@
+import { MakeAnOrderShopConfigInterface } from 'db/dao/orders/makeAnOrder';
+import { OrderDeliveryInfoModel } from 'db/dbModels';
+import { CartInterface, CartProductInterface, ShopInterface } from 'db/uiInterfaces';
 import { Form, Formik, useFormikContext } from 'formik';
-import { get } from 'lodash';
-import * as React from 'react';
-import { MakeAnOrderShopConfigInterface } from '../../db/dao/orders/makeAnOrder';
-import { OrderDeliveryInfoModel } from '../../db/dbModels';
-import { CartInterface, CartProductInterface, ShopInterface } from '../../db/uiInterfaces';
-import { useShopMarker } from '../../hooks/useShopMarker';
-import useValidationSchema from '../../hooks/useValidationSchema';
+import { useShopMarker } from 'hooks/useShopMarker';
 import {
   DEFAULT_COMPANY_SLUG,
   ORDER_DELIVERY_VARIANT_COURIER,
   ORDER_PAYMENT_VARIANT_RECEIPT,
-} from '../../lib/config/common';
-import {
-  DELIVERY_VARIANT_OPTIONS,
-  PAYMENT_VARIANT_OPTIONS,
-} from '../../lib/config/constantSelects';
-import { MAP_MODAL, ORDER_DELIVERY_ADDRESS_MODAL } from '../../lib/config/modalVariants';
-import { noNaN } from '../../lib/numbers';
-import { phoneToRaw } from '../../lib/phoneUtils';
-import { CartTabIndexType, MakeOrderFormInterface } from '../../pages/cart';
-import { makeAnOrderSchema } from '../../validation/orderSchema';
+} from 'lib/config/common';
+import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'lib/config/constantSelects';
+import { MAP_MODAL, ORDER_DELIVERY_ADDRESS_MODAL } from 'lib/config/modalVariants';
+import { noNaN } from 'lib/numbers';
+import { phoneToRaw } from 'lib/phoneUtils';
+import { get } from 'lodash';
+import { CartTabIndexType, MakeOrderFormInterface } from 'pages/cart';
+import * as React from 'react';
+import { makeAnOrderSchema } from 'validation/orderSchema';
+import useValidationSchema from '../../hooks/useValidationSchema';
 import WpButton from '../button/WpButton';
 import CartAside, { UseCartAsideDiscountsValuesInterface } from '../CartAside';
 import { useAppContext } from '../context/appContext';
 import { useConfigContext } from '../context/configContext';
 import { useSiteContext } from '../context/siteContext';
 import { useSiteUserContext } from '../context/siteUserContext';
-import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikInput from '../FormElements/Input/FormikInput';
 import InputLine from '../FormElements/Input/InputLine';
 import FormikSelect from '../FormElements/Select/FormikSelect';
@@ -529,13 +525,6 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           showInlineError
                         />
 
-                        <FormikCheckboxLine
-                          lineClassName='self-end'
-                          testId={'order-form-privacy'}
-                          label={'Даю согласие на обработку личных данных'}
-                          name={'privacy'}
-                        />
-
                         <FormikTextarea
                           testId={'order-form-comment'}
                           name={'comment'}
@@ -685,13 +674,6 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           disabled={disabled}
                           isRequired
                           showInlineError
-                        />
-
-                        <FormikCheckboxLine
-                          lineClassName='self-end'
-                          testId={'order-form-privacy'}
-                          label={'Даю согласие на обработку личных данных'}
-                          name={'privacy'}
                         />
 
                         <FormikTextarea

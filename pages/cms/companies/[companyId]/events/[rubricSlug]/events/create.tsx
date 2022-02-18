@@ -20,11 +20,7 @@ interface CreateEventConsumerInterface extends CreateEventInterface {
   pageCompany: CompanyInterface;
 }
 
-const CreateEventConsumer: React.FC<CreateEventConsumerInterface> = ({
-  rubric,
-  routeBasePath,
-  pageCompany,
-}) => {
+const CreateEventConsumer: React.FC<CreateEventConsumerInterface> = ({ rubric, pageCompany }) => {
   const links = getProjectLinks({
     companyId: pageCompany._id,
     rubricSlug: rubric.slug,
@@ -53,13 +49,8 @@ const CreateEventConsumer: React.FC<CreateEventConsumerInterface> = ({
   };
 
   return (
-    <EventRubricLayout
-      rubric={rubric}
-      breadcrumbs={breadcrumbs}
-      routeBasePath={routeBasePath}
-      pageCompany={pageCompany}
-    >
-      <CreateEvent rubric={rubric} routeBasePath={routeBasePath} />
+    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} pageCompany={pageCompany}>
+      <CreateEvent rubric={rubric} />
     </EventRubricLayout>
   );
 };
@@ -80,7 +71,6 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CreateEventPageInterface>> => {
   const { query } = context;
-  const rubricSlug = alwaysString(query.rubricSlug);
   const companyId = alwaysString(query.companyId);
   const collections = await getDbCollections();
   const rubricsCollection = collections.eventRubricsCollection();
@@ -125,15 +115,9 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
   });
 
-  const links = getProjectLinks({
-    rubricSlug,
-    companyId,
-  });
-
   return {
     props: {
       ...props,
-      routeBasePath: links.cms.companies.companyId.url,
       pageCompany: castDbData(company),
       rubric: castDbData(rubric),
     },

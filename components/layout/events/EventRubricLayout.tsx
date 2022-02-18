@@ -7,6 +7,7 @@ import {
   CompanyInterface,
   EventRubricInterface,
 } from 'db/uiInterfaces';
+import { useBasePath } from 'hooks/useBasePath';
 import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -15,18 +16,17 @@ import { ClientNavItemInterface } from 'types/clientTypes';
 
 export interface EventRubricLayoutInterface {
   rubric: EventRubricInterface;
-  routeBasePath: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
   pageCompany: CompanyInterface;
 }
 
 const EventRubricLayout: React.FC<EventRubricLayoutInterface> = ({
   rubric,
-  routeBasePath,
   breadcrumbs,
   children,
 }) => {
   const { query } = useRouter();
+  const routeBasePath = useBasePath('companyId');
 
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     const links = getConsoleCompanyLinks({

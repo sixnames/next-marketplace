@@ -24,7 +24,6 @@ interface RubricAttributesConsumerInterface
 const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
   rubric,
   attributeGroups,
-  routeBasePath,
   pageCompany,
 }) => {
   const links = getProjectLinks({
@@ -55,12 +54,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
   };
 
   return (
-    <EventRubricLayout
-      pageCompany={pageCompany}
-      routeBasePath={routeBasePath}
-      rubric={rubric}
-      breadcrumbs={breadcrumbs}
-    >
+    <EventRubricLayout pageCompany={pageCompany} rubric={rubric} breadcrumbs={breadcrumbs}>
       <EventRubricAttributes rubric={rubric} attributeGroups={attributeGroups} />
     </EventRubricLayout>
   );
@@ -144,17 +138,12 @@ export const getServerSideProps = async (
   });
   const sortedAttributeGroups = sortObjectsByField(castedAttributeGroups);
 
-  const links = getProjectLinks({
-    companyId: company._id,
-  });
-
   return {
     props: {
       ...props,
       rubric: castDbData(rubric),
-      attributeGroups: castDbData(sortedAttributeGroups),
       pageCompany: castDbData(company),
-      routeBasePath: links.cms.companies.companyId.url,
+      attributeGroups: castDbData(sortedAttributeGroups),
     },
   };
 };

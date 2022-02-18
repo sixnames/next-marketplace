@@ -9,7 +9,6 @@ import { getDbCollections } from 'db/mongodb';
 import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG, PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'lib/config/common';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getConsoleRubricLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -17,18 +16,12 @@ import * as React from 'react';
 
 interface RubricDetailsInterface extends ConsoleSeoContentsListInterface {
   rubric: RubricInterface;
-  companySlug: string;
   seoContents: SeoContentModel[];
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({
-  rubric,
-  seoContents,
-  routeBasePath,
-  rubricSlug,
-}) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents }) => {
   const { parentLink, root } = getConsoleRubricLinks({
-    rubricSlug,
+    rubricSlug: rubric.slug,
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -48,11 +41,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   return (
     <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner>
-        <ConsoleSeoContentsList
-          seoContents={seoContents}
-          routeBasePath={routeBasePath}
-          rubricSlug={rubricSlug}
-        />
+        <ConsoleSeoContentsList seoContents={seoContents} />
       </Inner>
     </CmsRubricLayout>
   );
@@ -103,14 +92,11 @@ export const getServerSideProps = async (
     })
     .toArray();
 
-  const links = getProjectLinks();
   return {
     props: {
       ...props,
       rubric: castDbData(payload.rubric),
       seoContents: castDbData(seoContents),
-      routeBasePath: links.cms.url,
-      rubricSlug: payload.rubric.slug,
       companySlug,
     },
   };

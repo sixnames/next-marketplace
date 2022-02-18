@@ -11,15 +11,14 @@ import { createEventSchema } from 'validation/eventSchema';
 
 export interface CreateEventInterface {
   rubric: EventRubricInterface;
-  routeBasePath: string;
 }
 
-const CreateEvent: React.FC<CreateEventInterface> = ({ rubric, routeBasePath }) => {
+const CreateEvent: React.FC<CreateEventInterface> = ({ rubric }) => {
   const validationSchema = useValidationSchema({
     schema: createEventSchema,
   });
 
-  const [createEventMutation] = useCreateEvent(routeBasePath);
+  const [createEventMutation] = useCreateEvent();
 
   return (
     <Inner testId={'create-new-event'}>

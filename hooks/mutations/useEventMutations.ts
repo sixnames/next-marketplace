@@ -9,6 +9,7 @@ import { UpdateEventSelectAttributeInputInterface } from 'db/dao/events/updateEv
 import { UpdateEventTextAttributeInputInterface } from 'db/dao/events/updateEventTextAttribute';
 import { EventPayloadModel } from 'db/dbModels';
 import { useMutationHandler } from 'hooks/mutations/useFetch';
+import { useBasePath } from 'hooks/useBasePath';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
@@ -21,7 +22,8 @@ const basePath = '/api/events';
 
 // event
 // create
-export const useCreateEvent = (routeBasePath: string) => {
+export const useCreateEvent = () => {
+  const routeBasePath = useBasePath('companyId');
   const router = useRouter();
 
   return useMutationHandler<EventPayloadModel, CreateEventInputInterface>({

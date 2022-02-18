@@ -26,7 +26,6 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   textBottom,
   textTop,
   pageCompany,
-  routeBasePath,
 }) => {
   const links = getProjectLinks({
     companyId: pageCompany._id,
@@ -50,12 +49,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   };
 
   return (
-    <EventRubricLayout
-      rubric={rubric}
-      breadcrumbs={breadcrumbs}
-      pageCompany={pageCompany}
-      routeBasePath={routeBasePath}
-    >
+    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} pageCompany={pageCompany}>
       <EventRubricDetails rubric={rubric} textBottom={textBottom} textTop={textTop} />
     </EventRubricLayout>
   );
@@ -139,10 +133,6 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getProjectLinks({
-    companyId: company._id,
-  });
-
   return {
     props: {
       ...props,
@@ -150,7 +140,6 @@ export const getServerSideProps = async (
       textTop: castDbData(seoDescriptionTop),
       rubric: castDbData(rubric),
       pageCompany: castDbData(company),
-      routeBasePath: links.cms.companies.companyId.url,
     },
   };
 };

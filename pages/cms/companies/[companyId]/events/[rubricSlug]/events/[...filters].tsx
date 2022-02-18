@@ -42,7 +42,6 @@ const RubricEventsConsumer: React.FC<RubricEventsConsumerInterface> = (props) =>
     <EventRubricLayout
       rubric={props.rubric}
       breadcrumbs={breadcrumbs}
-      routeBasePath={props.routeBasePath}
       pageCompany={props.pageCompany}
     >
       <CompanyEvents {...props} />

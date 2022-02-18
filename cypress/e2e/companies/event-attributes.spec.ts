@@ -1,20 +1,27 @@
+import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 
-describe('Product attributes', () => {
-  const links = getProjectLinks();
+describe('Event attributes', () => {
+  const links = getProjectLinks({
+    companyId: fixtureIds.companyA,
+  });
   beforeEach(() => {
-    cy.testAuth(links.cms.rubrics.url);
+    cy.testAuth(links.cms.companies.companyId.events.url);
   });
 
-  it('Should CRUD product attributes', () => {
-    cy.getByCy(`Вино-update`).click();
-    cy.getByCy('rubric-products-list').should('exist');
-    cy.visitLinkHref('product-link-0');
+  it('Should CRUD event attributes', () => {
+    const mainRubricName = 'Лекции';
+    cy.getByCy(`${mainRubricName}-update`).click();
     cy.wait(1500);
-    cy.getByCy('product-details').should('exist');
+    cy.getByCy(`events`).click();
+    cy.wait(1500);
+    cy.getByCy('rubric-events-list').should('exist');
+    cy.visitLinkHref('event-link-0');
+    cy.wait(1500);
+    cy.getByCy('event-details').should('exist');
     cy.getByCy('attributes').click();
     cy.wait(1500);
-    cy.getByCy('product-attributes-list').should('exist');
+    cy.getByCy('event-attributes-list').should('exist');
 
     // clear select attribute
     cy.getByCy('Объем-attribute-clear').click();

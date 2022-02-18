@@ -1,67 +1,79 @@
-import ConsoleRubricProductAssets from 'components/console/ConsoleRubricProductAssets';
-import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
+import EventAssets from 'components/company/EventAssets';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import { getProductFullSummaryWithDraft } from 'db/ssr/products/getProductFullSummary';
-import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
-import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+import EventLayout from 'components/layout/events/EventLayout';
+import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
+import { getEventAttributesPageSsr } from 'db/ssr/events/getEventAttributesPageSsr';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  EventSummaryInterface,
+} from 'db/uiInterfaces';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface ProductAssetsInterface {
-  product: ProductSummaryInterface;
+interface EventAssetsConsumerInterface {
+  pageCompany: CompanyInterface;
+  event: EventSummaryInterface;
 }
 
-const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
-  const links = getConsoleRubricLinks({
-    productId: product._id,
-    rubricSlug: product.rubricSlug,
+const EventAssetsConsumer: React.FC<EventAssetsConsumerInterface> = ({ event, pageCompany }) => {
+  const links = getProjectLinks({
+    companyId: pageCompany._id,
+    rubricSlug: event.rubricSlug,
+    eventId: event._id,
   });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Изображения',
+    currentPageName: `Изображения`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: links.parentLink,
+        name: 'Компании',
+        href: links.cms.companies.url,
       },
       {
-        name: `${product.rubric?.name}`,
-        href: links.parentLink,
+        name: `${pageCompany.name}`,
+        href: links.cms.companies.companyId.url,
       },
       {
-        name: `Товары`,
-        href: links.product.parentLink,
+        name: `Мероприятия`,
+        href: links.cms.companies.companyId.events.url,
       },
       {
-        name: `${product.cardTitle}`,
-        href: links.product.root,
+        name: `${event.rubric?.name}`,
+        href: links.cms.companies.companyId.events.rubricSlug.url,
+      },
+      {
+        name: `${event.name}`,
+        href: links.cms.companies.companyId.events.rubricSlug.events.event.eventId.url,
       },
     ],
   };
 
   return (
-    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <ConsoleRubricProductAssets summary={product} />
-    </CmsProductLayout>
+    <EventLayout event={event} breadcrumbs={breadcrumbs}>
+      <EventAssets summary={event} />
+    </EventLayout>
   );
 };
 
-interface ProductPageInterface extends GetAppInitialDataPropsInterface, ProductAssetsInterface {}
+interface EventAssetsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    EventAssetsConsumerInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
+const EventAssetsPage: NextPage<EventAssetsPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <ProductAssets {...props} />
+      <EventAssetsConsumer {...props} />
     </ConsoleLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
+): Promise<GetServerSidePropsResult<EventAssetsPageInterface>> => {
   const { query } = context;
-  const { productId } = query;
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -69,11 +81,19 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getProductFullSummaryWithDraft({
+  // get company
+  const company = await getCompanySsr({
+    companyId: `${query.companyId}`,
+  });
+  if (!company) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const payload = await getEventAttributesPageSsr({
     locale: props.sessionLocale,
-    productId: `${productId}`,
-    companySlug: DEFAULT_COMPANY_SLUG,
-    isContentManager: Boolean(props.layoutProps.sessionUser.me.role?.isContentManager),
+    eventId: `${query.eventId}`,
   });
 
   if (!payload) {
@@ -85,9 +105,10 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      product: castDbData(payload.summary),
+      event: castDbData(payload.summary),
+      pageCompany: castDbData(company),
     },
   };
 };
 
-export default Product;
+export default EventAssetsPage;

@@ -1,4 +1,5 @@
 import { castEventSummaryForUi } from 'db/cast/castEventSummaryForUi';
+import { AttributeModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
 import { EventSummaryInterface } from 'db/uiInterfaces';
 import { eventSummaryRubricPipeline, summaryAttributesPipeline } from 'db/utils/constantPipelines';
@@ -9,7 +10,7 @@ interface GetFullEventSummaryInterface {
   locale: string;
 }
 
-interface GetFullEventSummaryPayloadInterface {
+export interface GetFullEventSummaryPayloadInterface {
   summary: EventSummaryInterface;
 }
 
@@ -40,8 +41,17 @@ export async function getEventFullSummary({
     return null;
   }
 
+  const attributes = summary.attributes.reduce((acc: AttributeModel[], productAttribute) => {
+    const { attribute } = productAttribute;
+    if (attribute) {
+      return [...acc, attribute];
+    }
+    return acc;
+  }, []);
+
   const castedSummary = castEventSummaryForUi({
     summary,
+    attributes,
     locale,
   });
 

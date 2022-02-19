@@ -37,8 +37,8 @@ const EventDetails: React.FC<EventDetailsInterface> = ({ event }) => {
           descriptionI18n: event.descriptionI18n,
           rubricId: `${event.rubricId}`,
           videos: event.videos,
-          startAt: event.startAt,
-          endAt: event.endAt,
+          startAt: new Date(event.startAt),
+          endAt: event.endAt ? new Date(event.endAt) : null,
         }}
         onSubmit={(values) => {
           updateEventMutation({

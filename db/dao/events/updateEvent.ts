@@ -95,6 +95,7 @@ export async function updateEvent({
             seatsAvailable: values.seatsCount,
             price: values.price,
             seatsCount: values.seatsCount,
+            videos: (values.videos || []).filter((url) => url),
             startAt: new Date(values.startAt),
             endAt: values.endAt ? new Date(values.endAt) : null,
             updatedAt: new Date(),

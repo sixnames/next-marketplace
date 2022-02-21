@@ -135,6 +135,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
         cardContent: { url: `/api/events/card-content` },
         counter: { url: `/api/events/counter` },
       },
+      eventsCatalogue: { url: `/api/events-catalogue` },
       giftCertificates: {
         url: `/api/gift-certificates`,
         check: { url: `/api/gift-certificates/check` },
@@ -465,6 +466,30 @@ export function getProjectLinks(props?: LinkPropsInterface) {
         project: { url: `/cms/config/project` },
         seo: { url: `/cms/config/seo` },
         ui: { url: `/cms/config/ui` },
+      },
+      events: {
+        url: `/cms/events`,
+        rubricSlug: {
+          url: `/cms/events/${rubricSlug}`,
+          attributes: { url: `/cms/events/${rubricSlug}/attributes` },
+          events: {
+            url: `/cms/events/${rubricSlug}/events`,
+            create: { url: `/cms/events/${rubricSlug}/events/create` },
+            event: {
+              url: `/cms/events/${rubricSlug}/events/event`,
+              eventId: {
+                url: `/cms/events/${rubricSlug}/events/event/${eventId}`,
+                assets: { url: `/cms/events/${rubricSlug}/events/event/${eventId}/assets` },
+                attributes: { url: `/cms/events/${rubricSlug}/events/event/${eventId}/attributes` },
+                editor: { url: `/cms/events/${rubricSlug}/events/event/${eventId}/editor` },
+              },
+            },
+          },
+          seoContent: {
+            url: `/cms/events/${rubricSlug}/seo-content`,
+            seoContentSlug: { url: `/cms/events/${rubricSlug}/seo-content/${seoContentSlug}` },
+          },
+        },
       },
       languages: { url: `/cms/languages` },
       manufacturers: { url: `/cms/manufacturers` },

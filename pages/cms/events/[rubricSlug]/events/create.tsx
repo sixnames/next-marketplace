@@ -3,14 +3,16 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import EventRubricLayout from 'components/layout/events/EventRubricLayout';
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { getDbCollections } from 'db/mongodb';
+import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   EventRubricInterface,
 } from 'db/uiInterfaces';
 import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
+import { alwaysString } from 'lib/arrayUtils';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
-import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
@@ -28,12 +30,20 @@ const CreateEventConsumer: React.FC<CreateEventConsumerInterface> = ({ rubric, p
     currentPageName: `Создание мероприятия`,
     config: [
       {
+        name: 'Компании',
+        href: links.cms.companies.url,
+      },
+      {
+        name: `${pageCompany.name}`,
+        href: links.cms.companies.companyId.url,
+      },
+      {
         name: `Мероприятия`,
-        href: links.console.companyId.events.url,
+        href: links.cms.companies.companyId.events.url,
       },
       {
         name: `${rubric.name}`,
-        href: links.console.companyId.events.rubricSlug.url,
+        href: links.cms.companies.companyId.events.rubricSlug.url,
       },
     ],
   };
@@ -61,9 +71,10 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CreateEventPageInterface>> => {
   const { query } = context;
+  const companyId = alwaysString(query.companyId);
   const collections = await getDbCollections();
   const rubricsCollection = collections.eventRubricsCollection();
-  const { props } = await getConsoleInitialData({ context });
+  const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
       notFound: true,
@@ -71,7 +82,14 @@ export const getServerSideProps = async (
   }
 
   // get company
-  const company = props.layoutProps.pageCompany;
+  const company = await getCompanySsr({
+    companyId,
+  });
+  if (!company) {
+    return {
+      notFound: true,
+    };
+  }
 
   // get rubric
   const initialRubrics = await rubricsCollection

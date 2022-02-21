@@ -1,40 +1,45 @@
-import CreateEvent, { CreateEventInterface } from 'components/company/CreateEvent';
+import EventRubricAttributes, {
+  EventRubricAttributesInterface,
+} from 'components/company/EventRubricAttributes';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import EventRubricLayout from 'components/layout/events/EventRubricLayout';
+import EventRubricLayout, {
+  EventRubricLayoutInterface,
+} from 'components/layout/events/EventRubricLayout';
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { getDbCollections } from 'db/mongodb';
 import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-  EventRubricInterface,
-} from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
 import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
-import { alwaysString } from 'lib/arrayUtils';
+import { sortObjectsByField } from 'lib/arrayUtils';
+import { getFieldStringLocale } from 'lib/i18n';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface CreateEventConsumerInterface extends CreateEventInterface {
-  pageCompany: CompanyInterface;
-}
+interface RubricAttributesConsumerInterface
+  extends EventRubricLayoutInterface,
+    EventRubricAttributesInterface {}
 
-const CreateEventConsumer: React.FC<CreateEventConsumerInterface> = ({ rubric, pageCompany }) => {
+const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
+  rubric,
+  attributeGroups,
+  pageCompany,
+}) => {
   const links = getProjectLinks({
     companyId: pageCompany._id,
     rubricSlug: rubric.slug,
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Создание мероприятия`,
+    currentPageName: `Атрибуты`,
     config: [
       {
         name: 'Компании',
         href: links.cms.companies.url,
       },
       {
-        name: `${pageCompany.name}`,
+        name: `${pageCompany?.name}`,
         href: links.cms.companies.companyId.url,
       },
       {
@@ -43,37 +48,41 @@ const CreateEventConsumer: React.FC<CreateEventConsumerInterface> = ({ rubric, p
       },
       {
         name: `${rubric.name}`,
-        href: links.cms.companies.companyId.events.rubricSlug.url,
+        href: links.cms.companies.companyId.events.rubricSlug.attributes.url,
       },
     ],
   };
 
   return (
-    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} pageCompany={pageCompany}>
-      <CreateEvent rubric={rubric} pageCompany={pageCompany} />
+    <EventRubricLayout pageCompany={pageCompany} rubric={rubric} breadcrumbs={breadcrumbs}>
+      <EventRubricAttributes rubric={rubric} attributeGroups={attributeGroups} />
     </EventRubricLayout>
   );
 };
 
-interface CreateEventPageInterface
+interface RubricAttributesPageInterface
   extends GetAppInitialDataPropsInterface,
-    CreateEventConsumerInterface {}
+    RubricAttributesConsumerInterface {}
 
-const CreateEventPage: NextPage<CreateEventPageInterface> = ({ layoutProps, ...props }) => {
+const RubricAttributesPage: NextPage<RubricAttributesPageInterface> = ({
+  layoutProps,
+  ...props
+}) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <CreateEventConsumer {...props} />
+      <RubricAttributesConsumer {...props} />
     </ConsoleLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CreateEventPageInterface>> => {
+): Promise<GetServerSidePropsResult<RubricAttributesPageInterface>> => {
   const { query } = context;
-  const companyId = alwaysString(query.companyId);
   const collections = await getDbCollections();
   const rubricsCollection = collections.eventRubricsCollection();
+  const attributeGroupsCollection = collections.attributesGroupsCollection();
+
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -83,7 +92,7 @@ export const getServerSideProps = async (
 
   // get company
   const company = await getCompanySsr({
-    companyId,
+    companyId: `${query.companyId}`,
   });
   if (!company) {
     return {
@@ -91,7 +100,6 @@ export const getServerSideProps = async (
     };
   }
 
-  // get rubric
   const initialRubrics = await rubricsCollection
     .aggregate<EventRubricInterface>([
       {
@@ -115,13 +123,29 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
   });
 
+  const rawAttributeGroups = await attributeGroupsCollection
+    .find({
+      _id: {
+        $nin: rubric.attributesGroupIds,
+      },
+    })
+    .toArray();
+  const castedAttributeGroups = rawAttributeGroups.map((attributeGroup) => {
+    return {
+      ...attributeGroup,
+      name: getFieldStringLocale(attributeGroup.nameI18n, props.sessionLocale),
+    };
+  });
+  const sortedAttributeGroups = sortObjectsByField(castedAttributeGroups);
+
   return {
     props: {
       ...props,
-      pageCompany: castDbData(company),
       rubric: castDbData(rubric),
+      pageCompany: castDbData(company),
+      attributeGroups: castDbData(sortedAttributeGroups),
     },
   };
 };
 
-export default CreateEventPage;
+export default RubricAttributesPage;

@@ -1,40 +1,45 @@
-import CreateEvent, { CreateEventInterface } from 'components/company/CreateEvent';
+import ConsoleSeoContentsList, {
+  ConsoleSeoContentsListInterface,
+} from 'components/console/ConsoleSeoContentsList';
+import Inner from 'components/Inner';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
-import EventRubricLayout from 'components/layout/events/EventRubricLayout';
+import EventRubricLayout, {
+  EventRubricLayoutInterface,
+} from 'components/layout/events/EventRubricLayout';
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { getDbCollections } from 'db/mongodb';
 import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-  EventRubricInterface,
-} from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
 import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
-import { alwaysString } from 'lib/arrayUtils';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface CreateEventConsumerInterface extends CreateEventInterface {
-  pageCompany: CompanyInterface;
-}
+interface EventRubricSeoContentsListConsumerInterface
+  extends EventRubricLayoutInterface,
+    ConsoleSeoContentsListInterface {}
 
-const CreateEventConsumer: React.FC<CreateEventConsumerInterface> = ({ rubric, pageCompany }) => {
+const EventRubricSeoContentsListConsumer: React.FC<EventRubricSeoContentsListConsumerInterface> = ({
+  rubric,
+  pageCompany,
+  seoContents,
+}) => {
   const links = getProjectLinks({
     companyId: pageCompany._id,
     rubricSlug: rubric.slug,
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Создание мероприятия`,
+    currentPageName: `SEO тексты`,
     config: [
       {
         name: 'Компании',
         href: links.cms.companies.url,
       },
       {
-        name: `${pageCompany.name}`,
+        name: `${pageCompany?.name}`,
         href: links.cms.companies.companyId.url,
       },
       {
@@ -43,37 +48,42 @@ const CreateEventConsumer: React.FC<CreateEventConsumerInterface> = ({ rubric, p
       },
       {
         name: `${rubric.name}`,
-        href: links.cms.companies.companyId.events.rubricSlug.url,
+        href: links.cms.companies.companyId.events.rubricSlug.attributes.url,
       },
     ],
   };
 
   return (
-    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} pageCompany={pageCompany}>
-      <CreateEvent rubric={rubric} pageCompany={pageCompany} />
+    <EventRubricLayout pageCompany={pageCompany} rubric={rubric} breadcrumbs={breadcrumbs}>
+      <Inner>
+        <ConsoleSeoContentsList seoContents={seoContents} />
+      </Inner>
     </EventRubricLayout>
   );
 };
 
-interface CreateEventPageInterface
+interface EventRubricSeoContentsListPageInterface
   extends GetAppInitialDataPropsInterface,
-    CreateEventConsumerInterface {}
+    EventRubricSeoContentsListConsumerInterface {}
 
-const CreateEventPage: NextPage<CreateEventPageInterface> = ({ layoutProps, ...props }) => {
+const EventRubricSeoContentsListPage: NextPage<EventRubricSeoContentsListPageInterface> = ({
+  layoutProps,
+  ...props
+}) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <CreateEventConsumer {...props} />
+      <EventRubricSeoContentsListConsumer {...props} />
     </ConsoleLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CreateEventPageInterface>> => {
+): Promise<GetServerSidePropsResult<EventRubricSeoContentsListPageInterface>> => {
   const { query } = context;
-  const companyId = alwaysString(query.companyId);
   const collections = await getDbCollections();
   const rubricsCollection = collections.eventRubricsCollection();
+  const seoContentsCollection = collections.seoContentsCollection();
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -83,7 +93,7 @@ export const getServerSideProps = async (
 
   // get company
   const company = await getCompanySsr({
-    companyId,
+    companyId: `${query.companyId}`,
   });
   if (!company) {
     return {
@@ -91,7 +101,6 @@ export const getServerSideProps = async (
     };
   }
 
-  // get rubric
   const initialRubrics = await rubricsCollection
     .aggregate<EventRubricInterface>([
       {
@@ -115,13 +124,23 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
   });
 
+  const seoContents = await seoContentsCollection
+    .find({
+      rubricSlug: rubric.slug,
+      content: {
+        $ne: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      },
+    })
+    .toArray();
+
   return {
     props: {
       ...props,
-      pageCompany: castDbData(company),
+      seoContents: castDbData(seoContents),
       rubric: castDbData(rubric),
+      pageCompany: castDbData(company),
     },
   };
 };
 
-export default CreateEventPage;
+export default EventRubricSeoContentsListPage;

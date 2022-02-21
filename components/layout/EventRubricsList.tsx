@@ -4,7 +4,6 @@ import WpButton from 'components/button/WpButton';
 import { useAppContext } from 'components/context/appContext';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { CreateEventRubricModalInterface } from 'components/Modal/CreateEventRubricModal';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import { CompanyInterface, EventRubricInterface } from 'db/uiInterfaces';
 import { useDeleteEventRubric } from 'hooks/mutations/useEventRubricMutations';
@@ -102,12 +101,8 @@ const EventRubricsList: React.FC<EventRubricsListInterface> = ({
           size={'small'}
           className={'mt-6 sm:mt-0'}
           onClick={() => {
-            showModal<CreateEventRubricModalInterface>({
+            showModal({
               variant: CREATE_EVENT_RUBRIC_MODAL,
-              props: {
-                companyId: `${pageCompany._id}`,
-                companySlug: pageCompany.slug,
-              },
             });
           }}
         >

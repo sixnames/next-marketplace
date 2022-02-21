@@ -286,6 +286,7 @@ enum ConfigVariant {
   rubrics
   string
   tel
+  visibleEventRubrics
   visibleRubrics
 }
 

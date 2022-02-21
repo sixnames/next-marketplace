@@ -91,23 +91,6 @@ function getSelectedCategoryLeaf({
   }, acc);
 }
 
-export interface CastCatalogueParamToObjectPayloadInterface {
-  slug: string;
-  value: string;
-}
-
-export function castCatalogueParamToObject(
-  param: string,
-): CastCatalogueParamToObjectPayloadInterface {
-  const paramArray = param.split('-');
-  const slug = `${paramArray[0]}`;
-  const value = `${paramArray[1]}`;
-  return {
-    slug,
-    value,
-  };
-}
-
 export interface GetRubricCatalogueOptionsInterface {
   options: OptionInterface[];
   // maxVisibleOptions: number;
@@ -438,10 +421,9 @@ export async function getCatalogueAttributes({
 
     // attribute
     const otherSelectedValues = realFilter.filter((param) => {
-      const castedParam = castCatalogueParamToObject(param);
-      return (
-        castedParam.slug !== attribute.slug && castedParam.slug !== FILTER_BRAND_COLLECTION_KEY
-      );
+      const paramArray = param.split('-');
+      const slug = `${paramArray[0]}`;
+      return slug !== attribute.slug && slug !== FILTER_BRAND_COLLECTION_KEY;
     });
     const clearSlug = `${basePath}/${otherSelectedValues.join('/')}`;
 
@@ -507,7 +489,7 @@ interface CastOptionsForBreadcrumbsInterface {
   hrefAcc: string;
 }
 
-function castOptionsForBreadcrumbs({
+export function castOptionsForBreadcrumbs({
   option,
   attribute,
   currentBrand,
@@ -1272,7 +1254,7 @@ export const getCatalogueData = async ({
       maxPrice,
     };
   } catch (e) {
-    console.log(e);
+    console.log('getCatalogueData error', e);
     return null;
   }
 };

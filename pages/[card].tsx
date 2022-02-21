@@ -1,4 +1,4 @@
-import { getCardData } from 'db/utils/cardUtils';
+import { getCardData } from 'db/ssr/catalogue/cardUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import * as React from 'react';

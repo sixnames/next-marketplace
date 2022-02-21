@@ -575,6 +575,30 @@ export interface CatalogueDataInterface {
   maxPrice: number;
 }
 
+export interface EventsCatalogueDataInterface {
+  isSearch: boolean;
+  basePath: string;
+  clearSlug: string;
+  filters: string[];
+  rubricName: string;
+  rubricSlug: string;
+  editUrl: string;
+  events: EventSummaryInterface[];
+  totalPages: number;
+  totalDocs: number;
+  page: number;
+  catalogueTitle: string;
+  breadcrumbs: CatalogueBreadcrumbModel[];
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
+  textTop?: SeoContentInterface | null;
+  textTopEditUrl: string;
+  textBottom?: SeoContentInterface | null;
+  textBottomEditUrl: string;
+  minPrice: number;
+  maxPrice: number;
+}
+
 export interface CatalogueProductOptionInterface {
   _id: string;
   optionsSlugs: string[];

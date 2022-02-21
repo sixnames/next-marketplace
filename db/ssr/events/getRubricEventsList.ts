@@ -1,11 +1,11 @@
 import { castEventSummaryForUi } from 'db/cast/castEventSummaryForUi';
 import { getDbCollections } from 'db/mongodb';
+import { getCatalogueAttributes } from 'db/ssr/catalogue/catalogueUtils';
 import {
   EventsAggregationInterface,
   EventSummaryInterface,
   RubricEventsListInterface,
 } from 'db/uiInterfaces';
-import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import {
   eventDocsFacetPipeline,
   eventsPaginatedAggregationFacetsPipeline,
@@ -24,7 +24,6 @@ export interface GetRubricEventsListInputInterface {
   basePath: string;
   currency: string;
   query: ParsedUrlQuery;
-  page?: number;
   companySlug: string;
 }
 
@@ -100,7 +99,7 @@ export const getRubricEventsList = async ({
     }
 
     // initial match
-    const productsInitialMatch = {
+    const eventsInitialMatch = {
       ...rubricStage,
       ...optionsStage,
       ...pricesStage,
@@ -111,7 +110,7 @@ export const getRubricEventsList = async ({
       .aggregate<EventsAggregationInterface>([
         // match facets
         {
-          $match: productsInitialMatch,
+          $match: eventsInitialMatch,
         },
 
         // facets
@@ -180,7 +179,7 @@ export const getRubricEventsList = async ({
       rubricGender: search ? GENDER_HE : rubric.gender,
     });
 
-    // rubric attributes
+    // cast events
     const docs: EventSummaryInterface[] = [];
     for await (const summary of eventsAggregation.docs) {
       const castedSummary = castEventSummaryForUi({

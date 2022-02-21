@@ -50,6 +50,7 @@ export async function getPageCompanySsr({
   // Domain company
   // const domainCompany = await getSsrDomainCompany({ domain });
   /// domain company for development
+  // TODO remove
   const domainCompany = await getSsrDomainCompany({ slug: `company_a` });
   // const domainCompany = await getSsrDomainCompany({ slug: `5` });
   let companyNotFound = false;

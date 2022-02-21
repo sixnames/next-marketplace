@@ -1,11 +1,11 @@
-import Catalogue, { CatalogueInterface } from 'components/Catalogue';
-import { getCatalogueProps } from 'db/utils/catalogueUtils';
+import EventsCatalogue, { EventsCatalogueInterface } from 'components/EventsCatalogue';
+import { getEventCatalogueProps } from 'db/ssr/catalogue/eventCatalogueUtils';
 import { NextPage } from 'next';
 import * as React from 'react';
 
-const CataloguePage: NextPage<CatalogueInterface> = (props) => {
-  return <Catalogue {...props} />;
+const EventsCataloguePage: NextPage<EventsCatalogueInterface> = (props) => {
+  return <EventsCatalogue {...props} />;
 };
 
-export const getServerSideProps = getCatalogueProps;
-export default CataloguePage;
+export const getServerSideProps = getEventCatalogueProps;
+export default EventsCataloguePage;

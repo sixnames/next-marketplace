@@ -1,13 +1,13 @@
 import { castSummaryForUI } from 'db/cast/castSummaryForUI';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import { getCatalogueAttributes } from 'db/ssr/catalogue/catalogueUtils';
 import {
   AttributeInterface,
   ConsoleRubricProductsInterface,
   ProductsAggregationInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
-import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import {
   PaginatedAggregationFacetsInputInterface,
   paginatedAggregationFinalPipeline,

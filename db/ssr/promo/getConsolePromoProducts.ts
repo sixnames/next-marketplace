@@ -3,13 +3,13 @@ import { castSupplierProductsList } from 'db/cast/castSupplierProductsList';
 import { COL_PROMO_PRODUCTS } from 'db/collectionNames';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import { getCatalogueAttributes } from 'db/ssr/catalogue/catalogueUtils';
 import {
   AttributeInterface,
   GetConsoleRubricPromoProductsPayloadInterface,
   ShopProductInterface,
   ShopProductsAggregationInterface,
 } from 'db/uiInterfaces';
-import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import {
   PaginatedAggregationFacetsInputInterface,
   paginatedAggregationFinalPipeline,

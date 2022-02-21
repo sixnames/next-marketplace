@@ -2,6 +2,7 @@ import { castSummaryForUI } from 'db/cast/castSummaryForUI';
 import { castSupplierProductsList } from 'db/cast/castSupplierProductsList';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import { getCatalogueAttributes } from 'db/ssr/catalogue/catalogueUtils';
 import { getConsoleShopSsr } from 'db/ssr/shops/getConsoleShopSsr';
 import {
   AttributeInterface,
@@ -10,7 +11,6 @@ import {
   ShopProductPricesInterface,
   ShopProductsAggregationInterface,
 } from 'db/uiInterfaces';
-import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import {
   PaginatedAggregationFacetsInputInterface,
   paginatedAggregationFinalPipeline,

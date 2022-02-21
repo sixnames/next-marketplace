@@ -8,7 +8,6 @@ import {
   CatalogueFilterAttributeOptionInterface,
   OptionInterface,
 } from 'db/uiInterfaces';
-import { castCatalogueParamToObject } from 'db/utils/catalogueUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
 import {
@@ -353,8 +352,9 @@ export const getCatalogueBlogSsr = async (
     });
 
     const otherSelectedValues = realFilters.filter((param) => {
-      const castedParam = castCatalogueParamToObject(param);
-      return castedParam.slug !== attribute.slug;
+      const paramArray = param.split('-');
+      const slug = `${paramArray[0]}`;
+      return slug !== attribute.slug;
     });
     const clearSlug = `${basePath}/${otherSelectedValues.join('/')}`;
 

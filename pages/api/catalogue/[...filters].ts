@@ -1,4 +1,4 @@
-import { getCatalogueData } from 'db/utils/catalogueUtils';
+import { getCatalogueData } from 'db/ssr/catalogue/catalogueUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { CATALOGUE_PRODUCTS_LIMIT, CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';

@@ -1,14 +1,8 @@
-import { getProjectLinks } from 'lib/links/getProjectLinks';
-import { debounce } from 'lodash';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { CatalogueBreadcrumbModel, SeoContentModel } from '../db/dbModels';
-import { CatalogueDataInterface, CategoryInterface } from '../db/uiInterfaces';
-import { useUpdateCatalogueCountersMutation } from '../generated/apolloComponents';
-import usePageLoadingState from '../hooks/usePageLoadingState';
-import { alwaysArray } from '../lib/arrayUtils';
-import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from '../lib/catalogueHelpers';
+import { CatalogueBreadcrumbModel, SeoContentModel } from 'db/dbModels';
+import { CatalogueDataInterface, CategoryInterface } from 'db/uiInterfaces';
+import { useUpdateCatalogueCountersMutation } from 'generated/apolloComponents';
+import { alwaysArray } from 'lib/arrayUtils';
+import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
 import {
   CATALOGUE_VIEW_GRID,
   CATALOGUE_VIEW_ROW,
@@ -21,10 +15,16 @@ import {
   SORT_BY_KEY,
   SORT_DESC_STR,
   SORT_DIR_KEY,
-} from '../lib/config/common';
-import { CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES } from '../lib/config/constantSelects';
-import { getNumWord } from '../lib/i18n';
-import { CatalogueApiInputInterface } from '../pages/api/catalogue/[...filters]';
+} from 'lib/config/common';
+import { CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES } from 'lib/config/constantSelects';
+import { getNumWord } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { debounce } from 'lodash';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import { CatalogueApiInputInterface } from 'pages/api/catalogue/[...filters]';
+import * as React from 'react';
+import usePageLoadingState from '../hooks/usePageLoadingState';
 import WpButton from './button/WpButton';
 import { useConfigContext } from './context/configContext';
 import { useLocaleContext } from './context/localeContext';

@@ -29,6 +29,7 @@ export interface LinkPropsInterface {
   rubricVariantId?: DynamicPagePropType;
   userId?: DynamicPagePropType;
   pageSlug?: DynamicPagePropType;
+  eventSlug?: DynamicPagePropType;
   promoSlug?: DynamicPagePropType;
 }
 
@@ -61,6 +62,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
     rubricVariantId,
     userId,
     pageSlug,
+    eventSlug,
     promoSlug,
   } = props || {};
   return {
@@ -799,6 +801,8 @@ export function getProjectLinks(props?: LinkPropsInterface) {
     },
     contacts: { url: `/contacts` },
     docs: { url: `/docs`, pageSlug: { url: `/docs/${pageSlug}` } },
+    event: { url: `/event`, eventSlug: { url: `/event/${eventSlug}` } },
+    events: { url: `/events`, rubricSlug: { url: `/events/${rubricSlug}` } },
     root: { url: `/` },
     profile: {
       url: `/profile`,
@@ -841,6 +845,7 @@ export interface ConsoleCompanyLinkPropsInterface {
   rubricVariantId?: DynamicPagePropType;
   userId?: DynamicPagePropType;
   pageSlug?: DynamicPagePropType;
+  eventSlug?: DynamicPagePropType;
   promoSlug?: DynamicPagePropType;
 }
 

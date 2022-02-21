@@ -13,6 +13,7 @@ import { CartProductsFieldNameType, GiftCertificateModel } from 'db/dbModels';
 import {
   CartInterface,
   CompanyInterface,
+  EventRubricInterface,
   PromoCodeInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
@@ -54,6 +55,7 @@ interface CheckPromoCodeInputInterface
 
 export interface SiteContextInterface extends SiteContextStateInterface {
   navRubrics: RubricInterface[];
+  navEventRubrics: EventRubricInterface[];
   addCartProduct: (input: AddCartProductInputInterface) => void;
   updateCartProduct: (input: UpdateCartProductInputInterface) => void;
   deleteCartProduct: (input: DeleteCartProductInputInterface) => void;
@@ -68,6 +70,7 @@ export interface SiteContextInterface extends SiteContextStateInterface {
 
 const SiteContext = React.createContext<SiteContextInterface>({
   navRubrics: [],
+  navEventRubrics: [],
   loadingCart: true,
   cart: null,
   addCartProduct: () => undefined,
@@ -83,6 +86,7 @@ const SiteContext = React.createContext<SiteContextInterface>({
 
 interface SiteContextProviderInterface {
   navRubrics: RubricInterface[];
+  navEventRubrics: EventRubricInterface[];
   sessionCity: string;
   domainCompany?: CompanyInterface | null;
 }
@@ -90,6 +94,7 @@ interface SiteContextProviderInterface {
 const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   children,
   navRubrics,
+  navEventRubrics,
   domainCompany,
 }) => {
   const sessionUser = useSiteUserContext();
@@ -316,6 +321,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   const initialValue = React.useMemo(() => {
     return {
       navRubrics,
+      navEventRubrics,
       addCartProduct,
       updateCartProduct,
       deleteCartProduct,

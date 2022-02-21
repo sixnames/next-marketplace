@@ -9,7 +9,7 @@ import { StickNavInterface } from 'components/layout/header/StickyNav';
 import Meta, { MetaInterface } from 'components/layout/Meta';
 import WpModal from 'components/Modal/WpModal';
 import Spinner from 'components/Spinner';
-import { PagesGroupInterface, RubricInterface } from 'db/uiInterfaces';
+import { EventRubricInterface, PagesGroupInterface, RubricInterface } from 'db/uiInterfaces';
 import { useSetSessionNavLog } from 'hooks/mutations/useSessionLogMutations';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -87,6 +87,7 @@ export interface SiteLayoutProviderInterface
   title?: string;
   description?: string;
   navRubrics: RubricInterface[];
+  navEventRubrics: EventRubricInterface[];
   previewImage?: string;
   showForIndex: boolean;
   noIndexFollow?: boolean;
@@ -95,10 +96,11 @@ export interface SiteLayoutProviderInterface
 
 const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
   children,
-  navRubrics,
   citySlug,
   domainCompany,
   noIndexFollow,
+  navRubrics,
+  navEventRubrics,
   ...props
 }) => {
   useSetSessionNavLog();
@@ -106,6 +108,7 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
   return (
     <SiteUserContextProvider>
       <SiteContextProvider
+        navEventRubrics={navEventRubrics}
         navRubrics={navRubrics}
         sessionCity={citySlug}
         domainCompany={domainCompany}

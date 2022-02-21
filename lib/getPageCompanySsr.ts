@@ -1,9 +1,9 @@
+import { CityModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { getSsrDomainCompany } from 'db/ssr/company/getSsrDomainCompany';
 import { GetServerSidePropsContext } from 'next';
+import { PagePropsInterface } from 'pages/_app';
 import { getDomain } from 'tldts';
-import { CityModel } from '../db/dbModels';
-import { getDbCollections } from '../db/mongodb';
-import { PagePropsInterface } from '../pages/_app';
 import { alwaysString } from './arrayUtils';
 import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from './config/common';
 import { getPageDataSsr } from './getPageDataSsr';
@@ -48,9 +48,9 @@ export async function getPageCompanySsr({
   const citySlug = currentCity?.slug || DEFAULT_CITY;
 
   // Domain company
-  const domainCompany = await getSsrDomainCompany({ domain });
+  // const domainCompany = await getSsrDomainCompany({ domain });
   /// domain company for development
-  // const domainCompany = await getSsrDomainCompany({ slug: `company_a` });
+  const domainCompany = await getSsrDomainCompany({ slug: `company_a` });
   // const domainCompany = await getSsrDomainCompany({ slug: `5` });
   let companyNotFound = false;
   if (!domainCompany) {

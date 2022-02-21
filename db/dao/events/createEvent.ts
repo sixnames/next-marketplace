@@ -17,6 +17,7 @@ import { createEventSchema } from 'validation/eventSchema';
 export interface CreateEventInputInterface {
   citySlug: string;
   rubricId: string;
+  companyId: string;
   startAt?: DateModel | null;
   endAt?: DateModel | null;
   nameI18n?: TranslationModel | null;
@@ -35,6 +36,7 @@ export async function createEvent({
   const eventRubricsCollection = collections.eventRubricsCollection();
   const eventFacetsCollection = collections.eventFacetsCollection();
   const eventSummariesCollection = collections.eventSummariesCollection();
+  const companiesCollection = collections.companiesCollection();
 
   const session = collections.client.startSession();
 
@@ -100,6 +102,19 @@ export async function createEvent({
         return;
       }
 
+      // get company
+      const company = await companiesCollection.findOne({
+        _id: new ObjectId(input.companyId),
+      });
+      if (!company) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('events.create.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
       // create summary
       const itemId = await getNextItemId(COL_EVENT_SUMMARIES);
       const nameI18n = trimTranslationField(input.nameI18n);
@@ -110,8 +125,8 @@ export async function createEvent({
         descriptionI18n,
         nameI18n,
         citySlug: input.citySlug,
-        companyId: rubric.companyId,
-        companySlug: rubric.companySlug,
+        companyId: company._id,
+        companySlug: company.slug,
         mainImage: IMAGE_FALLBACK,
         address: input.address,
         seatsAvailable: input.seatsCount,

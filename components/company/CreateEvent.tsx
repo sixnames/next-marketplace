@@ -2,7 +2,7 @@ import WpButton from 'components/button/WpButton';
 import EventMainFields from 'components/FormTemplates/EventMainFields';
 import Inner from 'components/Inner';
 import { CreateEventInputInterface } from 'db/dao/events/createEvent';
-import { EventRubricInterface } from 'db/uiInterfaces';
+import { CompanyInterface, EventRubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { useCreateEvent } from 'hooks/mutations/useEventMutations';
 import useValidationSchema from 'hooks/useValidationSchema';
@@ -11,9 +11,10 @@ import { createEventSchema } from 'validation/eventSchema';
 
 export interface CreateEventInterface {
   rubric: EventRubricInterface;
+  pageCompany: CompanyInterface;
 }
 
-const CreateEvent: React.FC<CreateEventInterface> = ({ rubric }) => {
+const CreateEvent: React.FC<CreateEventInterface> = ({ rubric, pageCompany }) => {
   const validationSchema = useValidationSchema({
     schema: createEventSchema,
   });
@@ -25,6 +26,7 @@ const CreateEvent: React.FC<CreateEventInterface> = ({ rubric }) => {
       <Formik<CreateEventInputInterface>
         validationSchema={validationSchema}
         initialValues={{
+          companyId: `${pageCompany._id}`,
           address: null,
           descriptionI18n: {},
           nameI18n: {},

@@ -38,6 +38,7 @@ const EventDetails: React.FC<EventDetailsInterface> = ({ event }) => {
           rubricId: `${event.rubricId}`,
           videos: event.videos,
           startAt: new Date(event.startAt),
+          companyId: `${event.companyId}`,
           endAt: event.endAt ? new Date(event.endAt) : null,
         }}
         onSubmit={(values) => {

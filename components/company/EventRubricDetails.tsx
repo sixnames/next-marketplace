@@ -33,8 +33,6 @@ const EventRubricDetails: React.FC<EventRubricDetailsInterface> = ({
         validationSchema={validationSchema}
         initialValues={{
           _id: `${rubric._id}`,
-          companyId: `${rubric.companyId}`,
-          companySlug: rubric.companySlug,
           active: rubric.active,
           capitalise: rubric.capitalise,
           defaultTitleI18n: rubric.defaultTitleI18n,

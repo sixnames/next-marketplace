@@ -12,15 +12,7 @@ import ModalButtons from './ModalButtons';
 import ModalFrame from './ModalFrame';
 import ModalTitle from './ModalTitle';
 
-export interface CreateEventRubricModalInterface {
-  companyId: string;
-  companySlug: string;
-}
-
-const CreateEventRubricModal: React.FC<CreateEventRubricModalInterface> = ({
-  companyId,
-  companySlug,
-}) => {
+const CreateEventRubricModal: React.FC = () => {
   const { hideModal } = useAppContext();
   const validationSchema = useValidationSchema({
     schema: createEventRubricSchema,
@@ -34,8 +26,6 @@ const CreateEventRubricModal: React.FC<CreateEventRubricModalInterface> = ({
       <Formik<CreateEventRubricInputInterface>
         validationSchema={validationSchema}
         initialValues={{
-          companyId,
-          companySlug,
           nameI18n: {},
           descriptionI18n: {},
           shortDescriptionI18n: {},

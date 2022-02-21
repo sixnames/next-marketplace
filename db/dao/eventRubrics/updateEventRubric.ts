@@ -4,6 +4,7 @@ import { EventRubricModel, EventRubricPayloadModel, JSONObjectModel } from 'db/d
 import { getDbCollections } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import { findDocumentByI18nField } from 'db/utils/findDocumentByI18nField';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { updateCitiesSeoContent } from 'lib/seoContentUniquenessUtils';
 import {
@@ -18,7 +19,6 @@ export interface UpdateEventRubricInputInterface extends CreateEventRubricInputI
   _id: string;
   textTop?: JSONObjectModel | null;
   textBottom?: JSONObjectModel | null;
-  companySlug: string;
   active: boolean;
 }
 
@@ -58,7 +58,7 @@ export async function updateEventRubric({
     });
     await validationSchema.validate(input);
 
-    const { _id, textTop, textBottom, companySlug, companyId, ...values } = input;
+    const { _id, textTop, textBottom, ...values } = input;
 
     // get rubric
     const rubricId = new ObjectId(_id);
@@ -71,14 +71,12 @@ export async function updateEventRubric({
     }
 
     // check if exist
-    const companyObjectId = new ObjectId(companyId);
     const exist = await findDocumentByI18nField<EventRubricModel>({
       collectionName: COL_EVENT_RUBRICS,
       fieldArg: input.nameI18n,
       fieldName: 'nameI18n',
       additionalQuery: {
         _id: { $ne: rubricId },
-        companyId: companyObjectId,
       },
     });
     if (exist) {
@@ -109,13 +107,13 @@ export async function updateEventRubric({
     if (textTop) {
       await updateCitiesSeoContent({
         seoContentsList: textTop,
-        companySlug,
+        companySlug: DEFAULT_COMPANY_SLUG,
       });
     }
     if (textBottom) {
       await updateCitiesSeoContent({
         seoContentsList: textBottom,
-        companySlug,
+        companySlug: DEFAULT_COMPANY_SLUG,
       });
     }
 

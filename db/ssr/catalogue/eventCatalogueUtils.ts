@@ -346,6 +346,8 @@ export const getEventsCatalogueData = async ({
       return aCounter - bCounter;
     });
 
+    console.log(prices);
+
     // get min and max prices
     const sortedPrices = [...prices].sort((a, b) => {
       return noNaN(a?._id) - noNaN(b?._id);

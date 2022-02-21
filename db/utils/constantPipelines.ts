@@ -1067,7 +1067,7 @@ export function eventsPaginatedAggregationFacetsPipeline({
     prices: [
       {
         $group: {
-          _id: '$minPrice',
+          _id: '$price',
         },
       },
     ],

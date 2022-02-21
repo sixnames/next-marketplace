@@ -32,6 +32,10 @@ export async function getCatalogueNavEventRubrics({
   const eventRubricsCollection = collections.eventRubricsCollection();
   const attributesCollection = collections.attributesCollection();
 
+  if (visibleEventRubricSlugs.length < 1) {
+    return [];
+  }
+
   const companyMatch = companySlug ? { companySlug } : {};
   const sortStage = {
     [`views.${companySlug}.${citySlug}`]: SORT_DESC,

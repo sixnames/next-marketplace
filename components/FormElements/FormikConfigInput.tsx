@@ -2,12 +2,13 @@ import { useAppContext } from 'components/context/appContext';
 import { useConfigContext } from 'components/context/configContext';
 import { useLocaleContext } from 'components/context/localeContext';
 import { AddressModel, ConfigModel, JSONObjectModel, TranslationModel } from 'db/dbModels';
-import { CategoryInterface, RubricInterface } from 'db/uiInterfaces';
+import { CategoryInterface, EventRubricInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik, useField, useFormikContext } from 'formik';
 import {
   useUpdateConfigMutation,
   useUpdateRubricNavItemConfigMutation,
   useUpdateVisibleCategoriesInNavDropdownMutation,
+  useUpdateVisibleNavEventRubricConfigMutation,
   useUpdateVisibleNavRubricConfigMutation,
 } from 'generated/apolloComponents';
 import { GeocodeResultInterface, getReadableAddress } from 'lib/addressUtils';
@@ -20,6 +21,7 @@ import {
   CONFIG_VARIANT_NUMBER,
   CONFIG_VARIANT_RUBRICS,
   CONFIG_VARIANT_STRING,
+  CONFIG_VARIANT_VISIBLE_EVENT_RUBRICS,
   CONFIG_VARIANT_VISIBLE_RUBRICS,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
@@ -223,9 +225,14 @@ interface InitialValues {
 interface FormikConfigInputInterface {
   config: ConfigModel;
   rubrics?: RubricInterface[];
+  eventRubrics?: EventRubricInterface[];
 }
 
-const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubrics }) => {
+const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({
+  config,
+  rubrics,
+  eventRubrics,
+}) => {
   const { cities } = useConfigContext();
   const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
     reload: true,
@@ -247,6 +254,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
   const isCategoriesTree = variant === CONFIG_VARIANT_CATEGORIES_TREE;
   const isRubrics = variant === CONFIG_VARIANT_RUBRICS;
   const isVisibleRubrics = variant === CONFIG_VARIANT_VISIBLE_RUBRICS;
+  const isVisibleEventRubrics = variant === CONFIG_VARIANT_VISIBLE_EVENT_RUBRICS;
 
   const initialCities = Object.keys(configCities).reduce((acc: JSONObjectModel, cityKey) => {
     const cityLocales = configCities[cityKey] as JSONObjectModel | undefined;
@@ -415,6 +423,11 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
 
   const [updateVisibleNavRubricConfigMutation] = useUpdateVisibleNavRubricConfigMutation({
     onCompleted: (data) => onCompleteCallback(data.updateVisibleNavRubricConfig),
+    onError: onErrorCallback,
+  });
+
+  const [updateVisibleNavEventRubricConfigMutation] = useUpdateVisibleNavEventRubricConfigMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateVisibleNavEventRubricConfig),
     onError: onErrorCallback,
   });
 
@@ -619,6 +632,84 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                           onChange={() => {
                             showLoading();
                             updateVisibleNavRubricConfigMutation({
+                              variables: {
+                                input: {
+                                  _id: config._id,
+                                  slug: config.slug,
+                                  companySlug: config.companySlug,
+                                  description: config.description,
+                                  variant: config.variant as any,
+                                  acceptedFormats: config.acceptedFormats,
+                                  group: config.group,
+                                  multi: config.multi,
+                                  name: config.name,
+                                  cities: config.cities,
+                                  citySlug: slug,
+                                  rubricSlug: rubric.slug,
+                                },
+                              },
+                            }).catch(console.log);
+                          }}
+                        />
+                      </div>
+                      <div className='font-medium' data-cy={`rubric-${rubric.name}`}>
+                        {rubric.name}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </WpAccordion>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (isVisibleEventRubrics) {
+    return (
+      <div className='mb-24' data-cy={`${configSlug}-config`} key={configSlug}>
+        <div
+          className='mb-3 flex min-h-[1.3rem] items-start overflow-ellipsis whitespace-nowrap font-medium text-secondary-text'
+          data-cy={`${configSlug}-config-name`}
+        >
+          <span>{name}</span>
+          {description ? (
+            <React.Fragment>
+              {' '}
+              <WpTooltip title={description}>
+                <div className='ml-3 inline-block cursor-pointer'>
+                  <WpIcon className='h-5 w-5' name={'question-circle'} />
+                </div>
+              </WpTooltip>
+            </React.Fragment>
+          ) : null}
+        </div>
+        {cities.map(({ name, slug }) => {
+          const cityTestId = `${configSlug}-${slug}`;
+          return (
+            <WpAccordion
+              isOpen={slug === DEFAULT_CITY}
+              testId={cityTestId}
+              title={`${name}`}
+              key={slug}
+            >
+              <div className='ml-8 grid gap-4 py-[var(--lineGap-200)]'>
+                {(eventRubrics || []).map((rubric) => {
+                  const configValue = alwaysArray(get(config.cities, `${slug}.${DEFAULT_LOCALE}`));
+                  const isSelected = configValue.includes(rubric.slug);
+
+                  return (
+                    <div className='cms-option flex items-center gap-4' key={`${rubric._id}`}>
+                      <div>
+                        <WpCheckbox
+                          testId={`${rubric.name}`}
+                          checked={isSelected}
+                          value={rubric._id}
+                          name={`${rubric._id}`}
+                          onChange={() => {
+                            showLoading();
+                            updateVisibleNavEventRubricConfigMutation({
                               variables: {
                                 input: {
                                   _id: config._id,

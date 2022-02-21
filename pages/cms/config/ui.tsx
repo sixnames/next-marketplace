@@ -5,6 +5,7 @@ import ConsoleConfigsLayout, {
   ConfigPageInterface,
 } from 'components/layout/console/ConsoleConfigsLayout';
 import { getConfigPageData } from 'db/ssr/configs/getConfigPageData';
+import { getConfigEventRubrics } from 'db/ssr/events/getConfigEventRubrics';
 import { getConfigRubrics } from 'db/ssr/rubrics/getConfigRubrics';
 import { CONFIG_GROUP_UI, DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
@@ -15,6 +16,7 @@ const ConfigConsumer: React.FC<ConfigPageInterface> = ({
   assetConfigs,
   normalConfigs,
   rubrics,
+  eventRubrics,
 }) => {
   return (
     <ConsoleConfigsLayout>
@@ -23,6 +25,7 @@ const ConfigConsumer: React.FC<ConfigPageInterface> = ({
           assetConfigs={assetConfigs}
           normalConfigs={normalConfigs}
           rubrics={rubrics}
+          eventRubrics={eventRubrics}
         />
       </Inner>
     </ConsoleConfigsLayout>
@@ -61,6 +64,9 @@ export const getServerSideProps = async (
   }
 
   const rubrics = await getConfigRubrics(props.sessionLocale);
+  const eventRubrics = await getConfigEventRubrics({
+    locale: props.sessionLocale,
+  });
 
   return {
     props: {
@@ -68,6 +74,7 @@ export const getServerSideProps = async (
       assetConfigs: castDbData(configsPayload.assetConfigs),
       normalConfigs: castDbData(configsPayload.normalConfigs),
       rubrics: castDbData(rubrics),
+      eventRubrics: castDbData(eventRubrics),
     },
   };
 };

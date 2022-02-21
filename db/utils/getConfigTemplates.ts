@@ -13,6 +13,7 @@ import {
   CONFIG_VARIANT_PHONE,
   CONFIG_VARIANT_RUBRICS,
   CONFIG_VARIANT_STRING,
+  CONFIG_VARIANT_VISIBLE_EVENT_RUBRICS,
   CONFIG_VARIANT_VISIBLE_RUBRICS,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
@@ -28,6 +29,7 @@ export interface GetConfigTemplatesInterface {
   email?: string[];
   visibleCategoriesInNavDropdown?: string[];
   visibleRubrics?: string[];
+  visibleEventRubrics?: string[];
   companySlug: string;
   foundationYear?: string;
   address?: string;
@@ -43,6 +45,7 @@ export function getConfigTemplates({
   address,
   visibleCategoriesInNavDropdown,
   visibleRubrics,
+  visibleEventRubrics,
 }: GetConfigTemplatesInterface): ConfigModel[] {
   return [
     // Site globals
@@ -629,9 +632,24 @@ export function getConfigTemplates({
       _id: new ObjectId(),
       companySlug,
       group: 'ui',
+      variant: CONFIG_VARIANT_VISIBLE_EVENT_RUBRICS,
+      slug: 'visibleEventRubrics',
+      name: 'Рубрики мероприятий, которые нужно показывать в меню шапки каталога',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: visibleEventRubrics || [],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
       variant: CONFIG_VARIANT_VISIBLE_RUBRICS,
       slug: 'visibleRubrics',
-      name: 'Рубрики которые нужно показывать в меню шапки каталога',
+      name: 'Рубрики, которые нужно показывать в меню шапки каталога',
       multi: false,
       acceptedFormats: [],
       cities: {
@@ -646,7 +664,7 @@ export function getConfigTemplates({
       group: 'ui',
       variant: CONFIG_VARIANT_RUBRICS,
       slug: 'categoriesAsNavItems',
-      name: 'Рубрики категории которых нужно показывать в меню шапки каталога',
+      name: 'Рубрики, категории которых нужно показывать в меню шапки каталога',
       multi: false,
       acceptedFormats: [],
       cities: {

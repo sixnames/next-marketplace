@@ -4,7 +4,7 @@ import AppContentWrapper from 'components/layout/AppContentWrapper';
 import AppSubNav from 'components/layout/AppSubNav';
 import WpTitle from 'components/WpTitle';
 import { ConfigModel } from 'db/dbModels';
-import { RubricInterface } from 'db/uiInterfaces';
+import { EventRubricInterface, RubricInterface } from 'db/uiInterfaces';
 import { getConsoleConfigsLinks } from 'lib/linkUtils';
 import Head from 'next/head';
 import * as React from 'react';
@@ -14,6 +14,7 @@ export interface ConfigPageInterface {
   assetConfigs: ConfigModel[];
   normalConfigs: ConfigModel[];
   rubrics?: RubricInterface[];
+  eventRubrics?: EventRubricInterface[];
 }
 
 export interface AppConfigsLayoutInterface {

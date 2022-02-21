@@ -37,3 +37,12 @@ export const UPDATE_VISIBLE_NAV_RUBRIC_CONFIG_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_VISIBLE_NAV_EVENT_RUBRIC_CONFIG_MUTATION = gql`
+  mutation UpdateVisibleNavEventRubricConfig($input: UpdateVisibleNavEventRubricConfigInput!) {
+    updateVisibleNavEventRubricConfig(input: $input) {
+      success
+      message
+    }
+  }
+`;

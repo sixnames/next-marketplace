@@ -440,8 +440,13 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'visibleRubrics',
   });
+  const visibleEventRubrics = getConfigListValue({
+    configs,
+    slug: 'visibleEventRubrics',
+  });
 
   return {
+    visibleEventRubrics,
     visibleRubrics,
     ipRegistryApiKey,
     contactsTitle,

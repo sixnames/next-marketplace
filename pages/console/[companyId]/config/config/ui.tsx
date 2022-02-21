@@ -5,6 +5,7 @@ import Inner from 'components/Inner';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsoleCompanyLayout from 'components/layout/console/ConsoleCompanyLayout';
 import { getConfigPageData } from 'db/ssr/configs/getConfigPageData';
+import { getConfigEventRubrics } from 'db/ssr/events/getConfigEventRubrics';
 import { getConfigRubrics } from 'db/ssr/rubrics/getConfigRubrics';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { CONFIG_GROUP_UI } from 'lib/config/common';
@@ -25,6 +26,7 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   assetConfigs,
   normalConfigs,
   rubrics,
+  eventRubrics,
 }) => {
   return (
     <ConsoleCompanyLayout pageCompany={pageCompany}>
@@ -33,6 +35,7 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
           assetConfigs={assetConfigs}
           normalConfigs={normalConfigs}
           rubrics={rubrics}
+          eventRubrics={eventRubrics}
         />
       </Inner>
     </ConsoleCompanyLayout>
@@ -56,7 +59,7 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ConfigPageInterface>> => {
   const { query } = context;
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !query.companyId) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -74,6 +77,10 @@ export const getServerSideProps = async (
   }
 
   const rubrics = await getConfigRubrics(props.sessionLocale);
+  const eventRubrics = await getConfigEventRubrics({
+    locale: props.sessionLocale,
+    companyId: `${query.companyId}`,
+  });
 
   return {
     props: {
@@ -82,6 +89,7 @@ export const getServerSideProps = async (
       normalConfigs: castDbData(configsPayload.normalConfigs),
       pageCompany: props.layoutProps.pageCompany,
       rubrics: castDbData(rubrics),
+      eventRubrics: castDbData(eventRubrics),
     },
   };
 };

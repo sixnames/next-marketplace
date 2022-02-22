@@ -44,11 +44,11 @@ const EventRubricSeoContentsListConsumer: React.FC<EventRubricSeoContentsListCon
       },
       {
         name: `Мероприятия`,
-        href: links.cms.companies.companyId.events.url,
+        href: links.cms.companies.companyId.eventRubrics.url,
       },
       {
         name: `${rubric.name}`,
-        href: links.cms.companies.companyId.events.rubricSlug.attributes.url,
+        href: links.cms.companies.companyId.eventRubrics.rubricSlug.attributes.url,
       },
     ],
   };

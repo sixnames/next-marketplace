@@ -29,15 +29,15 @@ const EventAssetsConsumer: React.FC<EventAssetsConsumerInterface> = ({ event, pa
     config: [
       {
         name: `Мероприятия`,
-        href: links.console.companyId.events.url,
+        href: links.console.companyId.eventRubrics.url,
       },
       {
         name: `${event.rubric?.name}`,
-        href: links.console.companyId.events.rubricSlug.url,
+        href: links.console.companyId.eventRubrics.rubricSlug.url,
       },
       {
         name: `${event.name}`,
-        href: links.console.companyId.events.rubricSlug.events.event.eventId.url,
+        href: links.console.companyId.eventRubrics.rubricSlug.events.event.eventId.url,
       },
     ],
   };

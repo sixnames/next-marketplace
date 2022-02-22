@@ -38,7 +38,7 @@ export const useCreateEvent = () => {
           rubricSlug: payload.payload.rubricSlug,
           eventId: payload.payload._id,
         });
-        router.push(links.events.rubricSlug.events.event.eventId.url).catch(console.log);
+        router.push(links.eventRubrics.rubricSlug.events.event.eventId.url).catch(console.log);
       }
     },
   });

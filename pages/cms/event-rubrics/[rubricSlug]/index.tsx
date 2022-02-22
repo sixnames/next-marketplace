@@ -43,7 +43,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
       },
       {
         name: `Мероприятия`,
-        href: links.cms.companies.companyId.events.url,
+        href: links.cms.companies.companyId.eventRubrics.url,
       },
     ],
   };

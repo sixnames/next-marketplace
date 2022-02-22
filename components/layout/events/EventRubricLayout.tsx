@@ -39,24 +39,24 @@ const EventRubricLayout: React.FC<EventRubricLayoutInterface> = ({
       {
         name: 'Мероприятия',
         testId: 'events',
-        path: links.events.rubricSlug.events.url,
+        path: links.eventRubrics.rubricSlug.events.url,
       },
       {
         name: 'Атрибуты',
         testId: 'attributes',
-        path: links.events.rubricSlug.attributes.url,
+        path: links.eventRubrics.rubricSlug.attributes.url,
         exact: true,
       },
       {
         name: 'Детали',
         testId: 'details',
-        path: links.events.rubricSlug.url,
+        path: links.eventRubrics.rubricSlug.url,
         exact: true,
       },
       {
         name: 'SEO тексты',
         testId: 'seo-content',
-        path: links.events.rubricSlug.seoContent.url,
+        path: links.eventRubrics.rubricSlug.seoContent.url,
       },
     ];
   }, [routeBasePath, query.companyId, rubric.slug]);

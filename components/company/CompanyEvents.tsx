@@ -51,7 +51,7 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
       rubricSlug: rubric.slug,
       eventId,
     });
-    return links.events.rubricSlug.events.event.eventId.url;
+    return links.eventRubrics.rubricSlug.events.event.eventId.url;
   }
 
   const columns: WpTableColumn<EventSummaryInterface>[] = [
@@ -172,7 +172,7 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
                 companyId: pageCompany._id,
                 rubricSlug: rubric.slug,
               });
-              router.push(links.events.rubricSlug.events.create.url).catch(console.log);
+              router.push(links.eventRubrics.rubricSlug.events.create.url).catch(console.log);
             }}
           >
             Создать мероприятие

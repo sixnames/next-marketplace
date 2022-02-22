@@ -21,11 +21,11 @@ const RubricEventsConsumer: React.FC<RubricEventsConsumerInterface> = (props) =>
     config: [
       {
         name: `Мероприятия`,
-        href: links.console.companyId.events.url,
+        href: links.console.companyId.eventRubrics.url,
       },
       {
         name: `${props.rubric.name}`,
-        href: links.console.companyId.events.rubricSlug.url,
+        href: links.console.companyId.eventRubrics.rubricSlug.url,
       },
     ],
   };

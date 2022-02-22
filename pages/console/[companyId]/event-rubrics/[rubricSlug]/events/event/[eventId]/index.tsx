@@ -29,11 +29,11 @@ const EventDetailsConsumer: React.FC<EventDetailsConsumerInterface> = ({ event, 
     config: [
       {
         name: `Мероприятия`,
-        href: links.console.companyId.events.url,
+        href: links.console.companyId.eventRubrics.url,
       },
       {
         name: `${event.rubric?.name}`,
-        href: links.console.companyId.events.rubricSlug.url,
+        href: links.console.companyId.eventRubrics.rubricSlug.url,
       },
     ],
   };

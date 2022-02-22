@@ -34,7 +34,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     config: [
       {
         name: `Мероприятия`,
-        href: links.console.companyId.events.url,
+        href: links.console.companyId.eventRubrics.url,
       },
     ],
   };

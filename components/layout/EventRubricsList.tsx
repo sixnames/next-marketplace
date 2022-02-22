@@ -5,36 +5,24 @@ import { useAppContext } from 'components/context/appContext';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import { CompanyInterface, EventRubricInterface } from 'db/uiInterfaces';
+import { EventRubricInterface } from 'db/uiInterfaces';
 import { useDeleteEventRubric } from 'hooks/mutations/useEventRubricMutations';
 import { CONFIRM_MODAL, CREATE_EVENT_RUBRIC_MODAL } from 'lib/config/modalVariants';
-import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
 export interface EventRubricsListInterface {
   rubrics: EventRubricInterface[];
-  pageCompany: CompanyInterface;
-  routeBasePath: string;
 }
 
-const EventRubricsList: React.FC<EventRubricsListInterface> = ({
-  rubrics,
-  pageCompany,
-  routeBasePath,
-}) => {
+const EventRubricsList: React.FC<EventRubricsListInterface> = ({ rubrics }) => {
   const { showModal } = useAppContext();
   const router = useRouter();
 
   const [deleteEventRubricMutation] = useDeleteEventRubric();
 
   function navigateToTheRubricDetails(dataItem: EventRubricInterface) {
-    const links = getConsoleCompanyLinks({
-      companyId: pageCompany._id,
-      rubricSlug: dataItem.slug,
-      basePath: routeBasePath,
-    });
-    router.push(links.eventRubrics.rubricSlug.url).catch(console.log);
+    router.push(`${router.asPath}/${dataItem.slug}`).catch(console.log);
   }
 
   const columns: WpTableColumn<EventRubricInterface>[] = [

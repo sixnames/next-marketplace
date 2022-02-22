@@ -5,13 +5,19 @@ import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { COL_EVENT_FACETS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
-import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  EventRubricInterface,
+} from 'db/uiInterfaces';
 import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface RubricsRouteInterface extends EventRubricsListInterface {}
+interface RubricsRouteInterface extends EventRubricsListInterface {
+  pageCompany: CompanyInterface;
+}
 
 const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany }) => {
   const links = getCmsCompanyLinks({
@@ -34,7 +40,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany })
 
   return (
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
-      <EventRubricsList rubrics={rubrics} pageCompany={pageCompany} routeBasePath={links.root} />
+      <EventRubricsList rubrics={rubrics} />
     </CmsCompanyLayout>
   );
 };
@@ -138,16 +144,11 @@ export const getServerSideProps = async (
     return castEventRubricForUI({ rubric, locale: props.sessionLocale });
   });
 
-  const links = getCmsCompanyLinks({
-    companyId: company._id,
-  });
-
   return {
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
       pageCompany: castDbData(company),
-      routeBasePath: links.root,
     },
   };
 };

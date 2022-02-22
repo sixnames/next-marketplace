@@ -7,33 +7,22 @@ import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { COL_EVENT_FACETS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { EventRubricInterface } from 'db/uiInterfaces';
-import { useBasePath } from 'hooks/useBasePath';
-import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
 interface RubricsRouteInterface extends EventRubricsListInterface {}
-const pageTitle = 'Мероприятия';
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany }) => {
-  const basePath = useBasePath('companyId');
-  const links = getConsoleCompanyLinks({
-    basePath,
-    companyId: pageCompany._id,
-  });
 
+const pageTitle = 'Мероприятия';
+
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
   return (
     <AppContentWrapper>
       <Inner lowBottom>
         <WpTitle>{pageTitle}</WpTitle>
       </Inner>
-      <EventRubricsList
-        rubrics={rubrics}
-        pageCompany={pageCompany}
-        routeBasePath={links.root.url}
-      />
+      <EventRubricsList rubrics={rubrics} />
     </AppContentWrapper>
   );
 };
@@ -125,16 +114,10 @@ export const getServerSideProps = async (
     return castEventRubricForUI({ rubric, locale: props.sessionLocale });
   });
 
-  const links = getCmsCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-  });
-
   return {
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
-      pageCompany: castDbData(props.layoutProps.pageCompany),
-      routeBasePath: links.root,
     },
   };
 };

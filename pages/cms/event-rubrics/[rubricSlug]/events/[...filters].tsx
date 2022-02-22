@@ -12,7 +12,6 @@ interface RubricEventsConsumerInterface extends CompanyEventsInterface {}
 
 const RubricEventsConsumer: React.FC<RubricEventsConsumerInterface> = (props) => {
   const links = getProjectLinks({
-    companyId: props.pageCompany._id,
     rubricSlug: props.rubric.slug,
   });
 
@@ -20,16 +19,8 @@ const RubricEventsConsumer: React.FC<RubricEventsConsumerInterface> = (props) =>
     currentPageName: `Мероприятия`,
     config: [
       {
-        name: 'Компании',
-        href: links.cms.companies.url,
-      },
-      {
-        name: `${props.pageCompany.name}`,
-        href: links.cms.companies.companyId.url,
-      },
-      {
-        name: `Мероприятия`,
-        href: links.cms.companies.companyId.eventRubrics.url,
+        name: `Рубрикатор мероприятий`,
+        href: links.cms.eventRubrics.url,
       },
       {
         name: `${props.rubric.name}`,
@@ -39,11 +30,7 @@ const RubricEventsConsumer: React.FC<RubricEventsConsumerInterface> = (props) =>
   };
 
   return (
-    <EventRubricLayout
-      rubric={props.rubric}
-      breadcrumbs={breadcrumbs}
-      pageCompany={props.pageCompany}
-    >
+    <EventRubricLayout rubric={props.rubric} breadcrumbs={breadcrumbs}>
       <CompanyEvents {...props} />
     </EventRubricLayout>
   );

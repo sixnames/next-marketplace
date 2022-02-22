@@ -1,47 +1,35 @@
-import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
+import Inner from 'components/Inner';
+import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import EventRubricsList, { EventRubricsListInterface } from 'components/layout/EventRubricsList';
+import WpTitle from 'components/WpTitle';
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { COL_EVENT_FACETS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
-import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-  EventRubricInterface,
-} from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { EventRubricInterface } from 'db/uiInterfaces';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface RubricsRouteInterface extends EventRubricsListInterface {
-  pageCompany: CompanyInterface;
-}
+const pageTitle = 'Рубрикатор мероприятий';
+interface RubricsRouteInterface extends EventRubricsListInterface {}
 
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany }) => {
-  const links = getCmsCompanyLinks({
-    companyId: pageCompany._id,
-  });
-
-  const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Мероприятия',
-    config: [
-      {
-        name: 'Компании',
-        href: links.parentLink,
-      },
-      {
-        name: `${pageCompany?.name}`,
-        href: links.root,
-      },
-    ],
-  };
-
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({
+  rubrics,
+  showCreateButton,
+  showDeleteButton,
+}) => {
   return (
-    <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
-      <EventRubricsList rubrics={rubrics} />
-    </CmsCompanyLayout>
+    <AppContentWrapper>
+      <Inner>
+        <WpTitle>{pageTitle}</WpTitle>
+        <EventRubricsList
+          rubrics={rubrics}
+          showCreateButton={showCreateButton}
+          showDeleteButton={showDeleteButton}
+        />
+      </Inner>
+    </AppContentWrapper>
   );
 };
 
@@ -49,7 +37,7 @@ interface RubricsInterface extends GetAppInitialDataPropsInterface, RubricsRoute
 
 const Rubrics: NextPage<RubricsInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout {...layoutProps}>
+    <ConsoleLayout {...layoutProps} title={pageTitle}>
       <RubricsRoute {...props} />
     </ConsoleLayout>
   );
@@ -59,7 +47,6 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricsInterface>> => {
   const collections = await getDbCollections();
-  const { query } = context;
   const rubricsCollection = collections.eventRubricsCollection();
 
   const { props } = await getAppInitialData({ context });
@@ -69,24 +56,9 @@ export const getServerSideProps = async (
     };
   }
 
-  // get company
-  const company = await getCompanySsr({
-    companyId: `${query.companyId}`,
-  });
-  if (!company) {
-    return {
-      notFound: true,
-    };
-  }
-
   // get rubrics
   const initialRubrics = await rubricsCollection
     .aggregate<EventRubricInterface>([
-      {
-        $match: {
-          companyId: company._id,
-        },
-      },
       {
         $project: {
           attributes: false,
@@ -148,7 +120,8 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
-      pageCompany: castDbData(company),
+      showCreateButton: true,
+      showDeleteButton: true,
     },
   };
 };

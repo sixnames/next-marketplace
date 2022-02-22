@@ -7,7 +7,7 @@ describe('Event rubrics', () => {
     companyId: fixtureIds.companyA,
   });
   beforeEach(() => {
-    cy.testAuth(links.cms.companies.companyId.events.url);
+    cy.testAuth(links.cms.eventRubrics.url);
   });
 
   it('Should CRUD rubrics', () => {
@@ -53,7 +53,7 @@ describe('Event rubrics', () => {
     cy.getByCy(`gender`).select(GENDER_HE);
     cy.getByCy('event-rubric-submit').click();
     cy.wait(1500);
-    cy.visit(links.cms.companies.companyId.events.url);
+    cy.visit(links.cms.eventRubrics.url);
     cy.getByCy(`${updatedRubricName}-row`).should('exist');
   });
 });

@@ -591,7 +591,7 @@ export function eventDocsFacetPipeline({
 }
 
 export interface PaginatedAggregationFacetsInputInterface {
-  companySlug: string;
+  companySlug?: string;
   citySlug: string;
 }
 

@@ -981,7 +981,7 @@ export interface ConsoleRubricProductsInterface
 export interface RubricEventsListInterface
   extends AppPaginationWithFiltersInterface<EventSummaryInterface> {
   rubric: EventRubricInterface;
-  companySlug: string;
+  companySlug?: string;
 }
 
 export interface GetConsoleRubricPromoProductsPayloadInterface

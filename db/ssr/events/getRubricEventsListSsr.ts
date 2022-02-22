@@ -20,14 +20,11 @@ export const getRubricEventsListSsr = async (
   }
 
   // get company
-  const company = await getCompanySsr({
-    companyId: `${query.companyId}`,
-  });
-  if (!company) {
-    return {
-      notFound: true,
-    };
-  }
+  const company = query.companyId
+    ? await getCompanySsr({
+        companyId: `${query.companyId}`,
+      })
+    : null;
 
   const locale = props.sessionLocale;
   const currency = props.initialData.currency;
@@ -42,7 +39,7 @@ export const getRubricEventsListSsr = async (
     locale,
     basePath: links.cms.companies.companyId.eventRubrics.rubricSlug.events.url,
     currency,
-    companySlug: company.slug,
+    companySlug: company?.slug,
   });
 
   const castedPayload = castDbData(payload);
@@ -51,7 +48,6 @@ export const getRubricEventsListSsr = async (
     ...props,
     ...castedPayload,
     routeBasePath: links.cms.companies.companyId.url,
-    pageCompany: castDbData(company),
   };
 
   return {

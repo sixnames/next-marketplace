@@ -22,7 +22,7 @@ export interface PagePropsInterface {
   initialApolloState?: any;
   currentCity?: CityInterface | null;
   themeStyle: Record<string, any>;
-  companySlug: string;
+  companySlug?: string;
   domainCompany?: CompanyInterface | null;
 }
 

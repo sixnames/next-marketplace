@@ -16,13 +16,21 @@ interface RubricsRouteInterface extends EventRubricsListInterface {}
 
 const pageTitle = 'Мероприятия';
 
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({
+  rubrics,
+  showCreateButton,
+  showDeleteButton,
+}) => {
   return (
     <AppContentWrapper>
       <Inner lowBottom>
         <WpTitle>{pageTitle}</WpTitle>
       </Inner>
-      <EventRubricsList rubrics={rubrics} />
+      <EventRubricsList
+        rubrics={rubrics}
+        showCreateButton={showCreateButton}
+        showDeleteButton={showDeleteButton}
+      />
     </AppContentWrapper>
   );
 };
@@ -118,6 +126,8 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
+      showDeleteButton: false,
+      showCreateButton: false,
     },
   };
 };

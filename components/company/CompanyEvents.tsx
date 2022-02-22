@@ -11,23 +11,16 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager from 'components/Pager';
 import RequestError from 'components/RequestError';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import {
-  CompanyInterface,
-  EventSummaryInterface,
-  RubricEventsListInterface,
-} from 'db/uiInterfaces';
+import { EventSummaryInterface, RubricEventsListInterface } from 'db/uiInterfaces';
 import { useDeleteEvent } from 'hooks/mutations/useEventMutations';
 import { useBasePath } from 'hooks/useBasePath';
 import { CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getNumWord } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
-export interface CompanyEventsInterface extends RubricEventsListInterface {
-  pageCompany: CompanyInterface;
-}
+export interface CompanyEventsInterface extends RubricEventsListInterface {}
 
 const CompanyEvents: React.FC<CompanyEventsInterface> = ({
   rubric,
@@ -38,20 +31,13 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
   totalDocs,
   page,
   totalPages,
-  pageCompany,
 }) => {
   const router = useRouter();
   const { showModal } = useAppContext();
   const [deleteEventMutation] = useDeleteEvent();
-  const routeBasePath = useBasePath('companyId');
+  const routeBasePath = useBasePath('rubricSlug');
   function getEventLink(eventId: string) {
-    const links = getConsoleCompanyLinks({
-      basePath: routeBasePath,
-      companyId: pageCompany._id,
-      rubricSlug: rubric.slug,
-      eventId,
-    });
-    return links.eventRubrics.rubricSlug.events.event.eventId.url;
+    return `${routeBasePath}/events/event/${eventId}`;
   }
 
   const columns: WpTableColumn<EventSummaryInterface>[] = [
@@ -167,12 +153,7 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
             testId={'create-rubric-event'}
             size={'small'}
             onClick={() => {
-              const links = getConsoleCompanyLinks({
-                basePath: routeBasePath,
-                companyId: pageCompany._id,
-                rubricSlug: rubric.slug,
-              });
-              router.push(links.eventRubrics.rubricSlug.events.create.url).catch(console.log);
+              router.push(`${routeBasePath}/events/create`).catch(console.log);
             }}
           >
             Создать мероприятие

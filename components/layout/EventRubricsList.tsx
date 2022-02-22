@@ -2,7 +2,6 @@ import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import WpButton from 'components/button/WpButton';
 import { useAppContext } from 'components/context/appContext';
-import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import { EventRubricInterface } from 'db/uiInterfaces';
@@ -13,16 +12,22 @@ import * as React from 'react';
 
 export interface EventRubricsListInterface {
   rubrics: EventRubricInterface[];
+  showDeleteButton: boolean;
+  showCreateButton: boolean;
 }
 
-const EventRubricsList: React.FC<EventRubricsListInterface> = ({ rubrics }) => {
+const EventRubricsList: React.FC<EventRubricsListInterface> = ({
+  rubrics,
+  showCreateButton,
+  showDeleteButton,
+}) => {
   const { showModal } = useAppContext();
   const router = useRouter();
 
   const [deleteEventRubricMutation] = useDeleteEventRubric();
 
   function navigateToTheRubricDetails(dataItem: EventRubricInterface) {
-    router.push(`${router.asPath}/${dataItem.slug}`).catch(console.log);
+    router.push(`${router.asPath}/${dataItem.slug}/events`).catch(console.log);
   }
 
   const columns: WpTableColumn<EventRubricInterface>[] = [
@@ -49,20 +54,24 @@ const EventRubricsList: React.FC<EventRubricsListInterface> = ({ rubrics }) => {
               navigateToTheRubricDetails(dataItem);
             }}
             deleteTitle={'Удалить рубрику'}
-            deleteHandler={() => {
-              showModal<ConfirmModalInterface>({
-                variant: CONFIRM_MODAL,
-                props: {
-                  testId: 'delete-event-rubric-modal',
-                  message: `Вы уверенны, что хотите удалть рубрику ${dataItem.name}?`,
-                  confirm: () => {
-                    deleteEventRubricMutation({
-                      _id: `${dataItem._id}`,
-                    }).catch(console.log);
-                  },
-                },
-              });
-            }}
+            deleteHandler={
+              showDeleteButton
+                ? () => {
+                    showModal<ConfirmModalInterface>({
+                      variant: CONFIRM_MODAL,
+                      props: {
+                        testId: 'delete-event-rubric-modal',
+                        message: `Вы уверенны, что хотите удалть рубрику ${dataItem.name}?`,
+                        confirm: () => {
+                          deleteEventRubricMutation({
+                            _id: `${dataItem._id}`,
+                          }).catch(console.log);
+                        },
+                      },
+                    });
+                  }
+                : undefined
+            }
           />
         );
       },
@@ -70,7 +79,7 @@ const EventRubricsList: React.FC<EventRubricsListInterface> = ({ rubrics }) => {
   ];
 
   return (
-    <Inner testId={'event-rubrics-list'}>
+    <div data-cy={'event-rubrics-list'}>
       <div className='overflow-x-auto'>
         <WpTable<EventRubricInterface>
           columns={columns}
@@ -83,21 +92,23 @@ const EventRubricsList: React.FC<EventRubricsListInterface> = ({ rubrics }) => {
         />
       </div>
 
-      <FixedButtons>
-        <WpButton
-          testId={'create-event-rubric'}
-          size={'small'}
-          className={'mt-6 sm:mt-0'}
-          onClick={() => {
-            showModal({
-              variant: CREATE_EVENT_RUBRIC_MODAL,
-            });
-          }}
-        >
-          Создать рубрику
-        </WpButton>
-      </FixedButtons>
-    </Inner>
+      {showCreateButton ? (
+        <FixedButtons>
+          <WpButton
+            testId={'create-event-rubric'}
+            size={'small'}
+            className={'mt-6 sm:mt-0'}
+            onClick={() => {
+              showModal({
+                variant: CREATE_EVENT_RUBRIC_MODAL,
+              });
+            }}
+          >
+            Создать рубрику
+          </WpButton>
+        </FixedButtons>
+      ) : null}
+    </div>
   );
 };
 

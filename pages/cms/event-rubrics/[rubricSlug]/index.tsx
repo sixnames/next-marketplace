@@ -7,11 +7,11 @@ import EventRubricLayout, {
 } from 'components/layout/events/EventRubricLayout';
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { getDbCollections } from 'db/mongodb';
-import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
 import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
+  DEFAULT_COMPANY_SLUG,
 } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getRubricAllSeoContents } from 'lib/seoContentUtils';
@@ -21,35 +21,20 @@ import * as React from 'react';
 
 interface RubricDetailsInterface extends EventRubricDetailsInterface, EventRubricLayoutInterface {}
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({
-  rubric,
-  textBottom,
-  textTop,
-  pageCompany,
-}) => {
-  const links = getProjectLinks({
-    companyId: pageCompany._id,
-  });
+const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, textBottom, textTop }) => {
+  const links = getProjectLinks();
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${rubric.name}`,
     config: [
       {
-        name: 'Компании',
-        href: links.cms.companies.url,
-      },
-      {
-        name: `${pageCompany?.name}`,
-        href: links.cms.companies.companyId.url,
-      },
-      {
-        name: `Мероприятия`,
-        href: links.cms.companies.companyId.eventRubrics.url,
+        name: `Рубрикатор мероприятий`,
+        href: links.cms.eventRubrics.url,
       },
     ],
   };
 
   return (
-    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} pageCompany={pageCompany}>
+    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <EventRubricDetails rubric={rubric} textBottom={textBottom} textTop={textTop} />
     </EventRubricLayout>
   );
@@ -79,17 +64,6 @@ export const getServerSideProps = async (
     };
   }
 
-  // get company
-  const company = await getCompanySsr({
-    companyId: `${query.companyId}`,
-  });
-  if (!company) {
-    return {
-      notFound: true,
-    };
-  }
-  const companySlug = company.slug;
-
   const initialRubrics = await rubricsCollection
     .aggregate<EventRubricInterface>([
       {
@@ -114,7 +88,7 @@ export const getServerSideProps = async (
   const seoDescriptionTop = await getRubricAllSeoContents({
     rubricSlug: rubric.slug,
     rubricId: rubric._id,
-    companySlug,
+    companySlug: DEFAULT_COMPANY_SLUG,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
     locale: props.sessionLocale,
   });
@@ -122,7 +96,7 @@ export const getServerSideProps = async (
   const seoDescriptionBottom = await getRubricAllSeoContents({
     rubricSlug: rubric.slug,
     rubricId: rubric._id,
-    companySlug,
+    companySlug: DEFAULT_COMPANY_SLUG,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
     locale: props.sessionLocale,
   });
@@ -139,7 +113,6 @@ export const getServerSideProps = async (
       textBottom: castDbData(seoDescriptionBottom),
       textTop: castDbData(seoDescriptionTop),
       rubric: castDbData(rubric),
-      pageCompany: castDbData(company),
     },
   };
 };

@@ -19,7 +19,12 @@ interface RubricsRouteInterface extends EventRubricsListInterface {
   pageCompany: CompanyInterface;
 }
 
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany }) => {
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({
+  rubrics,
+  showDeleteButton,
+  showCreateButton,
+  pageCompany,
+}) => {
   const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
   });
@@ -40,7 +45,11 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany })
 
   return (
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
-      <EventRubricsList rubrics={rubrics} />
+      <EventRubricsList
+        rubrics={rubrics}
+        showCreateButton={showCreateButton}
+        showDeleteButton={showDeleteButton}
+      />
     </CmsCompanyLayout>
   );
 };
@@ -149,6 +158,8 @@ export const getServerSideProps = async (
       ...props,
       rubrics: castDbData(rawRubrics),
       pageCompany: castDbData(company),
+      showDeleteButton: false,
+      showCreateButton: false,
     },
   };
 };

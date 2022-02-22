@@ -24,7 +24,7 @@ export interface GetRubricEventsListInputInterface {
   basePath: string;
   currency: string;
   query: ParsedUrlQuery;
-  companySlug: string;
+  companySlug?: string;
 }
 
 export const getRubricEventsList = async ({

@@ -29,7 +29,7 @@ interface CategoryDetailsInterface {
   category: CategoryInterface;
   seoDescriptionTop: SeoContentCitiesInterface;
   seoDescriptionBottom: SeoContentCitiesInterface;
-  companySlug: string;
+  companySlug?: string;
 }
 
 const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
@@ -76,7 +76,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     textTop: seoDescriptionTop,
     gender: gender ? (`${gender}` as Gender) : null,
     replaceParentNameInCatalogueTitle,
-    companySlug,
+    companySlug: companySlug || DEFAULT_COMPANY_SLUG,
     variants:
       variantKeys.length > 0
         ? variants

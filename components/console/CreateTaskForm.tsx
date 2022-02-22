@@ -1,7 +1,8 @@
+import { CreateTaskInputInterface } from 'db/dao/tasks/createTask';
 import { Form, Formik } from 'formik';
+import { useCreateTask } from 'hooks/mutations/useTaskMutations';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import * as React from 'react';
-import { CreateTaskInputInterface } from '../../db/dao/tasks/createTask';
-import { useCreateTask } from '../../hooks/mutations/useTaskMutations';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import TaskMainFields, { TaskMainFieldsInterface } from '../FormTemplates/TaskMainFields';
@@ -9,7 +10,7 @@ import Inner from '../Inner';
 import WpTitle from '../WpTitle';
 
 export interface CreateTaskFormInterface extends TaskMainFieldsInterface {
-  companySlug: string;
+  companySlug?: string;
   basePath: string;
 }
 
@@ -22,7 +23,7 @@ const CreateTaskForm: React.FC<CreateTaskFormInterface> = ({
   const initialValues: CreateTaskInputInterface = {
     nameI18n: {},
     variantId: taskVariants[0] ? `${taskVariants[0]._id}` : '',
-    companySlug,
+    companySlug: companySlug || DEFAULT_COMPANY_SLUG,
   };
   const [createTaskMutation] = useCreateTask(basePath);
 

@@ -8,7 +8,11 @@ import EventRubricLayout, {
 } from 'components/layout/events/EventRubricLayout';
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { getDbCollections } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  EventRubricInterface,
+} from 'db/uiInterfaces';
 import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
@@ -18,7 +22,9 @@ import * as React from 'react';
 
 interface EventRubricSeoContentsListConsumerInterface
   extends EventRubricLayoutInterface,
-    ConsoleSeoContentsListInterface {}
+    ConsoleSeoContentsListInterface {
+  pageCompany: CompanyInterface;
+}
 
 const EventRubricSeoContentsListConsumer: React.FC<EventRubricSeoContentsListConsumerInterface> = ({
   rubric,
@@ -45,7 +51,7 @@ const EventRubricSeoContentsListConsumer: React.FC<EventRubricSeoContentsListCon
   };
 
   return (
-    <EventRubricLayout pageCompany={pageCompany} rubric={rubric} breadcrumbs={breadcrumbs}>
+    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner>
         <ConsoleSeoContentsList seoContents={seoContents} />
       </Inner>

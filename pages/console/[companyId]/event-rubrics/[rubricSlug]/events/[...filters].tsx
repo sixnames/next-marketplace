@@ -2,13 +2,15 @@ import CompanyEvents, { CompanyEventsInterface } from 'components/company/Compan
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import EventRubricLayout from 'components/layout/events/EventRubricLayout';
 import { getConsoleRubricEventsListSsr } from 'db/ssr/events/getConsoleRubricEventsListSsr';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { NextPage } from 'next';
 import * as React from 'react';
 
-interface RubricEventsConsumerInterface extends CompanyEventsInterface {}
+interface RubricEventsConsumerInterface extends CompanyEventsInterface {
+  pageCompany: CompanyInterface;
+}
 
 const RubricEventsConsumer: React.FC<RubricEventsConsumerInterface> = (props) => {
   const links = getProjectLinks({
@@ -31,11 +33,7 @@ const RubricEventsConsumer: React.FC<RubricEventsConsumerInterface> = (props) =>
   };
 
   return (
-    <EventRubricLayout
-      rubric={props.rubric}
-      breadcrumbs={breadcrumbs}
-      pageCompany={props.pageCompany}
-    >
+    <EventRubricLayout rubric={props.rubric} breadcrumbs={breadcrumbs}>
       <CompanyEvents {...props} />
     </EventRubricLayout>
   );

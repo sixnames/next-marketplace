@@ -975,7 +975,7 @@ export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationI
 export interface ConsoleRubricProductsInterface
   extends AppPaginationWithFiltersInterface<ProductSummaryInterface> {
   rubric?: RubricInterface | null;
-  companySlug: string;
+  companySlug?: string;
 }
 
 export interface RubricEventsListInterface

@@ -479,7 +479,7 @@ export async function getSiteInitialData({
   const catalogueCreatedPages = await getCatalogueCreatedPages({
     citySlug: citySlug,
     sessionLocale,
-    companySlug,
+    companySlug: companySlug || DEFAULT_COMPANY_SLUG,
   });
 
   const rawNavEventRubrics = await getCatalogueNavEventRubrics({

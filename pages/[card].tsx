@@ -1,26 +1,27 @@
+import { useConfigContext } from 'components/context/configContext';
+import { useLocaleContext } from 'components/context/localeContext';
+import { useSiteUserContext } from 'components/context/siteUserContext';
 import { getCardData } from 'db/ssr/catalogue/cardUtils';
+import { CardLayoutInterface, InitialCardDataInterface } from 'db/uiInterfaces';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from 'lib/config/constantSelects';
+import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { noNaN } from 'lib/numbers';
+import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
-import FixedButtons from '../components/button/FixedButtons';
-import WpButton from '../components/button/WpButton';
-import { useConfigContext } from '../components/context/configContext';
-import { useLocaleContext } from '../components/context/localeContext';
-import { useSiteUserContext } from '../components/context/siteUserContext';
-import ErrorBoundaryFallback from '../components/ErrorBoundaryFallback';
-import Inner from '../components/Inner';
-import SiteLayout, { SiteLayoutProviderInterface } from '../components/layout/SiteLayout';
-import { CardLayoutInterface, InitialCardDataInterface } from '../db/uiInterfaces';
-import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from '../lib/config/constantSelects';
-import { getConsoleRubricLinks } from '../lib/linkUtils';
-import { noNaN } from '../lib/numbers';
-import { castDbData, getSiteInitialData } from '../lib/ssrUtils';
 import {
   SeoSchemaAvailabilityType,
   SeoSchemaBreadcrumbItemInterface,
   SeoSchemaCardBrandInterface,
   SeoSchemaCardInterface,
-} from '../types/seoSchemaTypes';
+} from 'types/seoSchemaTypes';
+import FixedButtons from '../components/button/FixedButtons';
+import WpButton from '../components/button/WpButton';
+import ErrorBoundaryFallback from '../components/ErrorBoundaryFallback';
+import Inner from '../components/Inner';
+import SiteLayout, { SiteLayoutProviderInterface } from '../components/layout/SiteLayout';
 
 const CardDefaultLayout = dynamic(() => import('../components/layout/card/CardDefaultLayout'));
 const CardHalfColumnsLayout = dynamic(
@@ -134,7 +135,7 @@ export async function getServerSideProps(
     city: props.citySlug,
     slug: `${params?.card}`,
     companyId: props.domainCompany?._id,
-    companySlug: props.companySlug,
+    companySlug: props.companySlug || DEFAULT_COMPANY_SLUG,
   });
 
   if (!rawCardData) {

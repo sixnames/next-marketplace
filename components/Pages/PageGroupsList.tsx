@@ -1,15 +1,16 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import {
   CompanyInterface,
   PagesGroupInterface,
   PagesGroupTemplateInterface,
-} from '../../db/uiInterfaces';
-import { useDeletePagesGroup } from '../../hooks/mutations/usePageMutations';
+} from 'db/uiInterfaces';
+import { useDeletePagesGroup } from 'hooks/mutations/usePageMutations';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from 'lib/config/modalVariants';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { createPagesGroupSchema, updatePagesGroupSchema } from 'validation/pagesSchema';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from '../../lib/config/modalVariants';
-import { createPagesGroupSchema, updatePagesGroupSchema } from '../../validation/pagesSchema';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -22,7 +23,7 @@ export interface PageGroupsListInterface {
   pagesGroups: PagesGroupInterface[] | PagesGroupTemplateInterface[];
   isTemplate?: boolean;
   basePath: string;
-  companySlug: string;
+  companySlug?: string;
   currentCompany?: CompanyInterface | null;
 }
 
@@ -79,7 +80,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
                 showModal<PagesGroupModalInterface>({
                   variant: PAGES_GROUP_MODAL,
                   props: {
-                    companySlug,
+                    companySlug: companySlug || DEFAULT_COMPANY_SLUG,
                     validationSchema: updatePagesGroupValidationSchema,
                     pagesGroup: dataItem,
                     isTemplate,
@@ -131,7 +132,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
             showModal<PagesGroupModalInterface>({
               variant: PAGES_GROUP_MODAL,
               props: {
-                companySlug,
+                companySlug: companySlug || DEFAULT_COMPANY_SLUG,
                 validationSchema: createPagesGroupValidationSchema,
                 isTemplate,
               },

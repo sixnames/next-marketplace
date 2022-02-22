@@ -30,7 +30,7 @@ interface RubricDetailsInterface {
   rubric: RubricInterface;
   seoDescriptionTop: SeoContentCitiesInterface;
   seoDescriptionBottom: SeoContentCitiesInterface;
-  companySlug: string;
+  companySlug?: string;
   rubricVariants: RubricVariantInterface[];
 }
 
@@ -73,7 +73,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     shortDescriptionI18n,
     textBottom: seoDescriptionBottom,
     textTop: seoDescriptionTop,
-    companySlug,
+    companySlug: companySlug || DEFAULT_COMPANY_SLUG,
     capitalise: capitalise || false,
     showRubricNameInProductTitle: showRubricNameInProductTitle || false,
     showCategoryInProductTitle: showCategoryInProductTitle || false,

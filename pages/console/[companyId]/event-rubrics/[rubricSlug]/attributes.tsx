@@ -7,7 +7,11 @@ import EventRubricLayout, {
 } from 'components/layout/events/EventRubricLayout';
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { getDbCollections } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  EventRubricInterface,
+} from 'db/uiInterfaces';
 import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -18,7 +22,9 @@ import * as React from 'react';
 
 interface RubricAttributesConsumerInterface
   extends EventRubricLayoutInterface,
-    EventRubricAttributesInterface {}
+    EventRubricAttributesInterface {
+  pageCompany: CompanyInterface;
+}
 
 const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
   rubric,
@@ -45,7 +51,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
   };
 
   return (
-    <EventRubricLayout pageCompany={pageCompany} rubric={rubric} breadcrumbs={breadcrumbs}>
+    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <EventRubricAttributes rubric={rubric} attributeGroups={attributeGroups} />
     </EventRubricLayout>
   );

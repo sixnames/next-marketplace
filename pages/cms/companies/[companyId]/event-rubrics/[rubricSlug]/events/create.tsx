@@ -49,7 +49,7 @@ const CreateEventConsumer: React.FC<CreateEventConsumerInterface> = ({ rubric, p
   };
 
   return (
-    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} pageCompany={pageCompany}>
+    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <CreateEvent rubric={rubric} pageCompany={pageCompany} />
     </EventRubricLayout>
   );

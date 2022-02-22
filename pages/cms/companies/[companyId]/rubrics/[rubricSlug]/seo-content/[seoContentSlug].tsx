@@ -18,7 +18,7 @@ import * as React from 'react';
 
 interface RubricDetailsInterface extends ConsoleSeoContentDetailsInterface {
   rubric: RubricInterface;
-  companySlug: string;
+  companySlug?: string;
   routeBasePath: string;
 }
 

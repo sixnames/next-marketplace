@@ -8,7 +8,11 @@ import EventRubricLayout, {
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { getDbCollections } from 'db/mongodb';
 import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
-import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  EventRubricInterface,
+} from 'db/uiInterfaces';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
@@ -19,7 +23,9 @@ import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from '
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-interface RubricDetailsInterface extends EventRubricDetailsInterface, EventRubricLayoutInterface {}
+interface RubricDetailsInterface extends EventRubricDetailsInterface, EventRubricLayoutInterface {
+  pageCompany: CompanyInterface;
+}
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({
   rubric,
@@ -49,7 +55,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   };
 
   return (
-    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} pageCompany={pageCompany}>
+    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <EventRubricDetails rubric={rubric} textBottom={textBottom} textTop={textTop} />
     </EventRubricLayout>
   );

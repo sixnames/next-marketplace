@@ -1,11 +1,12 @@
-import * as React from 'react';
-import { AppPaginationInterface, NotSyncedProductInterface } from '../db/uiInterfaces';
-import { useUpdateProductWithSyncError } from '../hooks/mutations/useProductMutations';
+import { AppPaginationInterface, NotSyncedProductInterface } from 'db/uiInterfaces';
+import { useUpdateProductWithSyncError } from 'hooks/mutations/useProductMutations';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import {
   CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
   PRODUCT_SEARCH_MODAL,
-} from '../lib/config/modalVariants';
-import { getNumWord } from '../lib/i18n';
+} from 'lib/config/modalVariants';
+import { getNumWord } from 'lib/i18n';
+import * as React from 'react';
 import ContentItemControls from './button/ContentItemControls';
 import WpButton from './button/WpButton';
 import { useAppContext } from './context/appContext';
@@ -20,7 +21,7 @@ export interface SyncErrorsListInterface {
   notSyncedProducts: AppPaginationInterface<NotSyncedProductInterface>;
   showShopName?: boolean;
   showControls?: boolean;
-  companySlug: string;
+  companySlug?: string;
 }
 
 const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
@@ -100,7 +101,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
                               showModal<CreateProductWithSyncErrorModalInterface>({
                                 variant: CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
                                 props: {
-                                  companySlug,
+                                  companySlug: companySlug || DEFAULT_COMPANY_SLUG,
                                   notSyncedProduct: dataItem,
                                 },
                               });

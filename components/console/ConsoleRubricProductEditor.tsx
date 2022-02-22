@@ -3,6 +3,7 @@ import { ProductSummaryInterface, SeoContentCitiesInterface } from 'db/uiInterfa
 import { Form, Formik } from 'formik';
 import { useUpdateProductCardContent } from 'hooks/mutations/useProductMutations';
 import { alwaysString } from 'lib/arrayUtils';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import WpButton from '../button/WpButton';
@@ -12,7 +13,7 @@ import SeoContentEditor from '../SeoContentEditor';
 export interface ConsoleRubricProductEditorInterface {
   product: ProductSummaryInterface;
   seoContentsList: SeoContentCitiesInterface;
-  companySlug: string;
+  companySlug?: string;
 }
 
 const ConsoleRubricProductEditor: React.FC<ConsoleRubricProductEditorInterface> = ({
@@ -28,7 +29,7 @@ const ConsoleRubricProductEditor: React.FC<ConsoleRubricProductEditorInterface> 
       <Formik<UpdateProductCardContentInputInterface>
         initialValues={{
           seoContentsList,
-          companySlug,
+          companySlug: companySlug || DEFAULT_COMPANY_SLUG,
           productId: `${product._id}`,
         }}
         onSubmit={(values) => {

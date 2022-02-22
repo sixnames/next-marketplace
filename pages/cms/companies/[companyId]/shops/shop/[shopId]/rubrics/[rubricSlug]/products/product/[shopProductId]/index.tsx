@@ -17,7 +17,7 @@ import * as React from 'react';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
-  companySlug: string;
+  companySlug?: string;
   pageCompany: CompanyInterface;
 }
 

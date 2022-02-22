@@ -8,7 +8,7 @@ describe('Event rubric events', () => {
     companyId: fixtureIds.companyA,
   });
   beforeEach(() => {
-    cy.testAuth(links.cms.companies.companyId.events.url);
+    cy.testAuth(links.cms.companies.companyId.eventRubrics.url);
   });
 
   it('Should CRUD rubric events', () => {
@@ -62,7 +62,7 @@ describe('Event rubric events', () => {
     cy.getByCy(`${updatedEventName}-event-title`).should('exist');
 
     // Should delete event from rubric
-    cy.visit(links.cms.companies.companyId.events.url);
+    cy.visit(links.cms.companies.companyId.eventRubrics.url);
     cy.getByCy(`${mainRubricName}-update`).click();
     cy.wait(1500);
     cy.getByCy(`events`).click();

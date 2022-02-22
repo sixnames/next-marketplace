@@ -6,7 +6,7 @@ describe('Event attributes', () => {
     companyId: fixtureIds.companyA,
   });
   beforeEach(() => {
-    cy.testAuth(links.cms.companies.companyId.events.url);
+    cy.testAuth(links.cms.companies.companyId.eventRubrics.url);
   });
 
   it('Should CRUD event attributes', () => {

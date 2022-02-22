@@ -336,6 +336,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     };
   }, [
     navRubrics,
+    navEventRubrics,
     addCartProduct,
     updateCartProduct,
     deleteCartProduct,

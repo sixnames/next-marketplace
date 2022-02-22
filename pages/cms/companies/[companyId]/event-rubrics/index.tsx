@@ -1,3 +1,4 @@
+import Inner from 'components/Inner';
 import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import EventRubricsList, { EventRubricsListInterface } from 'components/layout/EventRubricsList';
@@ -30,7 +31,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Мероприятия',
+    currentPageName: 'Рубрикатор мероприятий',
     config: [
       {
         name: 'Компании',
@@ -45,11 +46,13 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({
 
   return (
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
-      <EventRubricsList
-        rubrics={rubrics}
-        showCreateButton={showCreateButton}
-        showDeleteButton={showDeleteButton}
-      />
+      <Inner>
+        <EventRubricsList
+          rubrics={rubrics}
+          showCreateButton={showCreateButton}
+          showDeleteButton={showDeleteButton}
+        />
+      </Inner>
     </CmsCompanyLayout>
   );
 };
@@ -92,11 +95,6 @@ export const getServerSideProps = async (
   const initialRubrics = await rubricsCollection
     .aggregate<EventRubricInterface>([
       {
-        $match: {
-          companyId: company._id,
-        },
-      },
-      {
         $project: {
           attributes: false,
           catalogueTitle: false,
@@ -113,6 +111,7 @@ export const getServerSideProps = async (
           pipeline: [
             {
               $match: {
+                companyId: company._id,
                 $expr: {
                   $eq: ['$$rubricSlug', '$rubricSlug'],
                 },

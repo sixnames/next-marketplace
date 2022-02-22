@@ -48,6 +48,7 @@ export const getRubricEventsListSsr = async (
     ...props,
     ...castedPayload,
     routeBasePath: links.cms.companies.companyId.url,
+    pageCompany: company ? castDbData(company) : null,
   };
 
   return {

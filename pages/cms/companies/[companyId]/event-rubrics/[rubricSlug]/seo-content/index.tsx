@@ -49,7 +49,7 @@ const EventRubricSeoContentsListConsumer: React.FC<EventRubricSeoContentsListCon
         href: links.cms.companies.companyId.url,
       },
       {
-        name: `Мероприятия`,
+        name: `Рубрикатор мероприятий`,
         href: links.cms.companies.companyId.eventRubrics.url,
       },
       {
@@ -133,6 +133,7 @@ export const getServerSideProps = async (
   const seoContents = await seoContentsCollection
     .find({
       rubricSlug: rubric.slug,
+      companySlug: company.slug,
       content: {
         $ne: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       },

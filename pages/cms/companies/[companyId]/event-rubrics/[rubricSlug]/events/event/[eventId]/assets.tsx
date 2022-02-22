@@ -37,7 +37,7 @@ const EventAssetsConsumer: React.FC<EventAssetsConsumerInterface> = ({ event, pa
         href: links.cms.companies.companyId.url,
       },
       {
-        name: `Мероприятия`,
+        name: `Рубрикатор мероприятий`,
         href: links.cms.companies.companyId.eventRubrics.url,
       },
       {

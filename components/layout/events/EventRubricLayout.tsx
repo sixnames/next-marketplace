@@ -12,42 +12,46 @@ import { ClientNavItemInterface } from 'types/clientTypes';
 export interface EventRubricLayoutInterface {
   rubric: EventRubricInterface;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
+  hideAttributesLink?: boolean;
+  hideDetailsLink?: boolean;
 }
 
 const EventRubricLayout: React.FC<EventRubricLayoutInterface> = ({
   rubric,
   breadcrumbs,
   children,
+  hideDetailsLink,
+  hideAttributesLink,
 }) => {
   const { query } = useRouter();
   const routeBasePath = useBasePath('rubricSlug');
 
-  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
-    return [
-      {
-        name: 'Мероприятия',
-        testId: 'events',
-        path: `${routeBasePath}/events`,
-      },
-      {
-        name: 'Атрибуты',
-        testId: 'attributes',
-        path: `${routeBasePath}/attributes`,
-        exact: true,
-      },
-      {
-        name: 'Детали',
-        testId: 'details',
-        path: routeBasePath,
-        exact: true,
-      },
-      {
-        name: 'SEO тексты',
-        testId: 'seo-content',
-        path: `${routeBasePath}/seo-content`,
-      },
-    ];
-  }, [routeBasePath]);
+  const navConfig: ClientNavItemInterface[] = [
+    {
+      name: 'Мероприятия',
+      testId: 'events',
+      path: `${routeBasePath}/events`,
+    },
+    {
+      name: 'Атрибуты',
+      testId: 'attributes',
+      path: `${routeBasePath}/attributes`,
+      exact: true,
+      hidden: hideAttributesLink,
+    },
+    {
+      name: 'Детали',
+      testId: 'details',
+      path: routeBasePath,
+      exact: true,
+      hidden: hideDetailsLink,
+    },
+    {
+      name: 'SEO тексты',
+      testId: 'seo-content',
+      path: `${routeBasePath}/seo-content`,
+    },
+  ];
 
   const title = query.title || rubric.name;
 

@@ -40,7 +40,7 @@ const EventAttributesPageConsumer: React.FC<EventAttributesPageConsumerInterface
         href: links.cms.companies.companyId.url,
       },
       {
-        name: `Мероприятия`,
+        name: `Рубрикатор мероприятий`,
         href: links.cms.companies.companyId.eventRubrics.url,
       },
       {

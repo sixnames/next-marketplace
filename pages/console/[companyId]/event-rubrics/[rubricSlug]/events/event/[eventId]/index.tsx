@@ -28,7 +28,7 @@ const EventDetailsConsumer: React.FC<EventDetailsConsumerInterface> = ({ event, 
     currentPageName: `${event.name}`,
     config: [
       {
-        name: `Мероприятия`,
+        name: `Рубрикатор мероприятий`,
         href: links.console.companyId.eventRubrics.url,
       },
       {

@@ -28,7 +28,7 @@ const EventAssetsConsumer: React.FC<EventAssetsConsumerInterface> = ({ event, pa
     currentPageName: `Изображения`,
     config: [
       {
-        name: `Мероприятия`,
+        name: `Рубрикатор мероприятий`,
         href: links.console.companyId.eventRubrics.url,
       },
       {

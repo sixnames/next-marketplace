@@ -14,7 +14,7 @@ import * as React from 'react';
 
 interface RubricsRouteInterface extends EventRubricsListInterface {}
 
-const pageTitle = 'Мероприятия';
+const pageTitle = 'Рубрикатор мероприятий';
 
 const RubricsRoute: React.FC<RubricsRouteInterface> = ({
   rubrics,
@@ -25,12 +25,12 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({
     <AppContentWrapper>
       <Inner lowBottom>
         <WpTitle>{pageTitle}</WpTitle>
+        <EventRubricsList
+          rubrics={rubrics}
+          showCreateButton={showCreateButton}
+          showDeleteButton={showDeleteButton}
+        />
       </Inner>
-      <EventRubricsList
-        rubrics={rubrics}
-        showCreateButton={showCreateButton}
-        showDeleteButton={showDeleteButton}
-      />
     </AppContentWrapper>
   );
 };
@@ -61,11 +61,6 @@ export const getServerSideProps = async (
   const initialRubrics = await rubricsCollection
     .aggregate<EventRubricInterface>([
       {
-        $match: {
-          companyId: new ObjectId(props.layoutProps.pageCompany._id),
-        },
-      },
-      {
         $project: {
           attributes: false,
           catalogueTitle: false,
@@ -82,6 +77,7 @@ export const getServerSideProps = async (
           pipeline: [
             {
               $match: {
+                companyId: new ObjectId(props.layoutProps.pageCompany._id),
                 $expr: {
                   $eq: ['$$rubricSlug', '$rubricSlug'],
                 },

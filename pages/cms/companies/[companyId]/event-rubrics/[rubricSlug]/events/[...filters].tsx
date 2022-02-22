@@ -30,7 +30,7 @@ const RubricEventsConsumer: React.FC<RubricEventsConsumerInterface> = (props) =>
         href: links.cms.companies.companyId.url,
       },
       {
-        name: `Мероприятия`,
+        name: `Рубрикатор мероприятий`,
         href: links.cms.companies.companyId.eventRubrics.url,
       },
       {
@@ -41,8 +41,13 @@ const RubricEventsConsumer: React.FC<RubricEventsConsumerInterface> = (props) =>
   };
 
   return (
-    <EventRubricLayout rubric={props.rubric} breadcrumbs={breadcrumbs}>
-      <CompanyEvents {...props} />
+    <EventRubricLayout
+      hideAttributesLink
+      hideDetailsLink
+      rubric={props.rubric}
+      breadcrumbs={breadcrumbs}
+    >
+      <CompanyEvents {...props} showControls={true} />
     </EventRubricLayout>
   );
 };

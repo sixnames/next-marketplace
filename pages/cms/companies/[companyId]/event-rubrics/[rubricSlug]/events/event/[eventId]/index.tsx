@@ -37,7 +37,7 @@ const EventDetailsConsumer: React.FC<EventDetailsConsumerInterface> = ({ event, 
         href: links.cms.companies.companyId.url,
       },
       {
-        name: `Мероприятия`,
+        name: `Рубрикатор мероприятий`,
         href: links.cms.companies.companyId.eventRubrics.url,
       },
       {

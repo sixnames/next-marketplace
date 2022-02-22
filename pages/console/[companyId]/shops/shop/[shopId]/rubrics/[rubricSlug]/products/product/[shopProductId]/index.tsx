@@ -15,7 +15,7 @@ import * as React from 'react';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
-  companySlug: string;
+  companySlug?: string;
 }
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, companySlug }) => {

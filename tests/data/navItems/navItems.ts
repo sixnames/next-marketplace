@@ -115,7 +115,7 @@ const consoleNavItemBases: NavItemBaseMode[] = [
       en: 'Events',
     },
     slug: 'console-events',
-    path: getConsoleLink(links.console.companyId.events.url),
+    path: getConsoleLink(links.console.companyId.eventRubrics.url),
   },
   {
     nameI18n: {
@@ -191,7 +191,7 @@ const cmsNavItemBases: NavItemBaseMode[] = [
       en: 'Events',
     },
     slug: 'cms-events',
-    path: links.cms.events.url,
+    path: links.cms.eventRubrics.url,
   },
   {
     nameI18n: {

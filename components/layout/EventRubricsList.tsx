@@ -34,7 +34,7 @@ const EventRubricsList: React.FC<EventRubricsListInterface> = ({
       rubricSlug: dataItem.slug,
       basePath: routeBasePath,
     });
-    router.push(links.events.rubricSlug.url).catch(console.log);
+    router.push(links.eventRubrics.rubricSlug.url).catch(console.log);
   }
 
   const columns: WpTableColumn<EventRubricInterface>[] = [

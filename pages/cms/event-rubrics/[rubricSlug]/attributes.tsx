@@ -7,7 +7,6 @@ import EventRubricLayout, {
 } from 'components/layout/events/EventRubricLayout';
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { getDbCollections } from 'db/mongodb';
-import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
 import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
 import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { sortObjectsByField } from 'lib/arrayUtils';
@@ -24,10 +23,8 @@ interface RubricAttributesConsumerInterface
 const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
   rubric,
   attributeGroups,
-  pageCompany,
 }) => {
   const links = getProjectLinks({
-    companyId: pageCompany._id,
     rubricSlug: rubric.slug,
   });
 
@@ -35,26 +32,18 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     currentPageName: `Атрибуты`,
     config: [
       {
-        name: 'Компании',
-        href: links.cms.companies.url,
-      },
-      {
-        name: `${pageCompany?.name}`,
-        href: links.cms.companies.companyId.url,
-      },
-      {
-        name: `Мероприятия`,
-        href: links.cms.companies.companyId.eventRubrics.url,
+        name: `Рубрикатор мероприятий`,
+        href: links.cms.eventRubrics.url,
       },
       {
         name: `${rubric.name}`,
-        href: links.cms.companies.companyId.eventRubrics.rubricSlug.attributes.url,
+        href: links.cms.companies.companyId.eventRubrics.rubricSlug.url,
       },
     ],
   };
 
   return (
-    <EventRubricLayout pageCompany={pageCompany} rubric={rubric} breadcrumbs={breadcrumbs}>
+    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <EventRubricAttributes rubric={rubric} attributeGroups={attributeGroups} />
     </EventRubricLayout>
   );
@@ -85,16 +74,6 @@ export const getServerSideProps = async (
 
   const { props } = await getAppInitialData({ context });
   if (!props) {
-    return {
-      notFound: true,
-    };
-  }
-
-  // get company
-  const company = await getCompanySsr({
-    companyId: `${query.companyId}`,
-  });
-  if (!company) {
     return {
       notFound: true,
     };
@@ -142,7 +121,6 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubric: castDbData(rubric),
-      pageCompany: castDbData(company),
       attributeGroups: castDbData(sortedAttributeGroups),
     },
   };

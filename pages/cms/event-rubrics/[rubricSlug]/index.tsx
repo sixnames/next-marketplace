@@ -14,7 +14,7 @@ import {
   DEFAULT_COMPANY_SLUG,
 } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
-import { getRubricAllSeoContents } from 'lib/seoContentUtils';
+import { getEventRubricAllSeoContents } from 'lib/seoContentUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -85,7 +85,7 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
   });
 
-  const seoDescriptionTop = await getRubricAllSeoContents({
+  const seoDescriptionTop = await getEventRubricAllSeoContents({
     rubricSlug: rubric.slug,
     rubricId: rubric._id,
     companySlug: DEFAULT_COMPANY_SLUG,
@@ -93,7 +93,7 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
   });
 
-  const seoDescriptionBottom = await getRubricAllSeoContents({
+  const seoDescriptionBottom = await getEventRubricAllSeoContents({
     rubricSlug: rubric.slug,
     rubricId: rubric._id,
     companySlug: DEFAULT_COMPANY_SLUG,

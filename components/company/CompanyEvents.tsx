@@ -20,7 +20,9 @@ import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
-export interface CompanyEventsInterface extends RubricEventsListInterface {}
+export interface CompanyEventsInterface extends RubricEventsListInterface {
+  showControls: boolean;
+}
 
 const CompanyEvents: React.FC<CompanyEventsInterface> = ({
   rubric,
@@ -31,6 +33,7 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
   totalDocs,
   page,
   totalPages,
+  showControls,
 }) => {
   const router = useRouter();
   const { showModal } = useAppContext();
@@ -45,6 +48,9 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
         const link = getEventLink(`${dataItem._id}`);
+        if (!showControls) {
+          return <div>{dataItem.itemId}</div>;
+        }
         return (
           <WpLink testId={`event-link-${rowIndex}`} href={link} target={'_blank'}>
             {dataItem.itemId}
@@ -65,6 +71,7 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
       },
     },
     {
+      isHidden: !showControls,
       render: ({ dataItem }) => {
         return (
           <div className='flex justify-end'>
@@ -148,17 +155,23 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
           <Pager page={page} totalPages={totalPages} />
         </div>
 
-        <FixedButtons>
-          <WpButton
-            testId={'create-rubric-event'}
-            size={'small'}
-            onClick={() => {
-              router.push(`${routeBasePath}/events/create`).catch(console.log);
-            }}
-          >
-            Создать мероприятие
-          </WpButton>
-        </FixedButtons>
+        {showControls ? (
+          <FixedButtons>
+            <WpButton
+              testId={'create-rubric-event'}
+              size={'small'}
+              onClick={
+                showControls
+                  ? () => {
+                      router.push(`${routeBasePath}/events/create`).catch(console.log);
+                    }
+                  : undefined
+              }
+            >
+              Создать мероприятие
+            </WpButton>
+          </FixedButtons>
+        ) : null}
       </div>
     </Inner>
   );

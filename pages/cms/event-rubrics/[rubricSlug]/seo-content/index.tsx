@@ -8,7 +8,6 @@ import EventRubricLayout, {
 } from 'components/layout/events/EventRubricLayout';
 import { castEventRubricForUI } from 'db/cast/castRubricForUI';
 import { getDbCollections } from 'db/mongodb';
-import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
 import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
 import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'lib/config/common';
@@ -23,11 +22,9 @@ interface EventRubricSeoContentsListConsumerInterface
 
 const EventRubricSeoContentsListConsumer: React.FC<EventRubricSeoContentsListConsumerInterface> = ({
   rubric,
-  pageCompany,
   seoContents,
 }) => {
   const links = getProjectLinks({
-    companyId: pageCompany._id,
     rubricSlug: rubric.slug,
   });
 
@@ -35,26 +32,18 @@ const EventRubricSeoContentsListConsumer: React.FC<EventRubricSeoContentsListCon
     currentPageName: `SEO тексты`,
     config: [
       {
-        name: 'Компании',
-        href: links.cms.companies.url,
-      },
-      {
-        name: `${pageCompany?.name}`,
-        href: links.cms.companies.companyId.url,
-      },
-      {
-        name: `Мероприятия`,
-        href: links.cms.companies.companyId.eventRubrics.url,
+        name: `Рубрикатор мероприятий`,
+        href: links.cms.eventRubrics.url,
       },
       {
         name: `${rubric.name}`,
-        href: links.cms.companies.companyId.eventRubrics.rubricSlug.attributes.url,
+        href: links.cms.companies.companyId.eventRubrics.rubricSlug.url,
       },
     ],
   };
 
   return (
-    <EventRubricLayout pageCompany={pageCompany} rubric={rubric} breadcrumbs={breadcrumbs}>
+    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner>
         <ConsoleSeoContentsList seoContents={seoContents} />
       </Inner>
@@ -86,16 +75,6 @@ export const getServerSideProps = async (
   const seoContentsCollection = collections.seoContentsCollection();
   const { props } = await getAppInitialData({ context });
   if (!props) {
-    return {
-      notFound: true,
-    };
-  }
-
-  // get company
-  const company = await getCompanySsr({
-    companyId: `${query.companyId}`,
-  });
-  if (!company) {
     return {
       notFound: true,
     };
@@ -138,7 +117,6 @@ export const getServerSideProps = async (
       ...props,
       seoContents: castDbData(seoContents),
       rubric: castDbData(rubric),
-      pageCompany: castDbData(company),
     },
   };
 };

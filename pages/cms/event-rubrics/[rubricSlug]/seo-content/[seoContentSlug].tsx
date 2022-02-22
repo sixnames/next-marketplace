@@ -12,7 +12,7 @@ import { getCompanySsr } from 'db/ssr/company/getCompanySsr';
 import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
 import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { alwaysString } from 'lib/arrayUtils';
-import { CATALOGUE_SEO_TEXT_POSITION_TOP } from 'lib/config/common';
+import { CATALOGUE_SEO_TEXT_POSITION_TOP, DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getSeoContentBySlug } from 'lib/seoContentUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
@@ -28,10 +28,8 @@ const EventRubricSeoContentConsumer: React.FC<EventRubricSeoContentConsumerInter
   seoContent,
   companySlug,
   showSeoFields,
-  pageCompany,
 }) => {
   const links = getProjectLinks({
-    companyId: pageCompany._id,
     rubricSlug: rubric.slug,
   });
 
@@ -39,26 +37,18 @@ const EventRubricSeoContentConsumer: React.FC<EventRubricSeoContentConsumerInter
     currentPageName: `SEO тексты`,
     config: [
       {
-        name: 'Компании',
-        href: links.cms.companies.url,
-      },
-      {
-        name: `${pageCompany?.name}`,
-        href: links.cms.companies.companyId.url,
-      },
-      {
-        name: `Мероприятия`,
-        href: links.cms.companies.companyId.eventRubrics.url,
+        name: `Рубрикатор мероприятий`,
+        href: links.cms.eventRubrics.url,
       },
       {
         name: `${rubric.name}`,
-        href: links.cms.companies.companyId.eventRubrics.rubricSlug.attributes.url,
+        href: links.cms.companies.companyId.eventRubrics.rubricSlug.url,
       },
     ],
   };
 
   return (
-    <EventRubricLayout pageCompany={pageCompany} rubric={rubric} breadcrumbs={breadcrumbs}>
+    <EventRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner>
         <ConsoleSeoContentDetails
           seoContent={seoContent}
@@ -134,10 +124,11 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
   });
 
+  const companySlug = DEFAULT_COMPANY_SLUG;
   const seoContent = await getSeoContentBySlug({
     url,
     seoContentSlug,
-    companySlug: company.slug,
+    companySlug,
     rubricSlug: rubric.slug,
   });
   if (!seoContent) {
@@ -151,9 +142,8 @@ export const getServerSideProps = async (
       ...props,
       rubric: castDbData(rubric),
       seoContent: castDbData(seoContent),
-      pageCompany: castDbData(company),
       showSeoFields: seoContentSlug.indexOf(CATALOGUE_SEO_TEXT_POSITION_TOP) > -1,
-      companySlug: company.slug,
+      companySlug,
     },
   };
 };

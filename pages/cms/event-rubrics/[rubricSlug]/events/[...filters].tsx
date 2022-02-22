@@ -31,7 +31,7 @@ const RubricEventsConsumer: React.FC<RubricEventsConsumerInterface> = (props) =>
 
   return (
     <EventRubricLayout rubric={props.rubric} breadcrumbs={breadcrumbs}>
-      <CompanyEvents {...props} />
+      <CompanyEvents {...props} showControls={false} />
     </EventRubricLayout>
   );
 };

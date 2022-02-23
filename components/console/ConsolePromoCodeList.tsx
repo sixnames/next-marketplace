@@ -1,10 +1,10 @@
+import { PromoCodeModel } from 'db/dbModels';
+import { CompanyInterface, PromoInterface } from 'db/uiInterfaces';
+import { useDeletePromoCode } from 'hooks/mutations/usePromoMutations';
+import { useBasePath } from 'hooks/useBasePath';
+import { CONFIRM_MODAL, CREATE_PROMO_CODE_MODAL } from 'lib/config/modalVariants';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { PromoCodeModel } from '../../db/dbModels';
-import { CompanyInterface, PromoInterface } from '../../db/uiInterfaces';
-import { useDeletePromoCode } from '../../hooks/mutations/usePromoMutations';
-import { CONFIRM_MODAL, CREATE_PROMO_CODE_MODAL } from '../../lib/config/modalVariants';
-import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -19,30 +19,20 @@ export interface ConsolePromoCodeListInterface {
   pageCompany: CompanyInterface;
   promoCodes: PromoCodeModel[];
   promo: PromoInterface;
-  basePath?: string;
 }
 
-const ConsolePromoCodeList: React.FC<ConsolePromoCodeListInterface> = ({
-  pageCompany,
-  promo,
-  promoCodes,
-  basePath,
-}) => {
+const ConsolePromoCodeList: React.FC<ConsolePromoCodeListInterface> = ({ promo, promoCodes }) => {
   const router = useRouter();
   const { showModal } = useAppContext();
   const [deletePromoCodeMutation] = useDeletePromoCode();
+  const basePath = useBasePath('code');
+
   const columns: WpTableColumn<PromoCodeModel>[] = [
     {
       headTitle: 'Код',
       render: ({ dataItem }) => {
-        const links = getCmsCompanyLinks({
-          basePath,
-          companyId: pageCompany._id,
-          promoId: promo._id,
-          promoCodeId: dataItem._id,
-        });
         return (
-          <WpLink href={links.promo.code.root} testId={dataItem.code}>
+          <WpLink href={`${basePath}/${dataItem._id}`} testId={dataItem.code}>
             {dataItem.code}
           </WpLink>
         );
@@ -56,12 +46,7 @@ const ConsolePromoCodeList: React.FC<ConsolePromoCodeListInterface> = ({
               testId={dataItem.code}
               updateTitle={'Редактировать промо-код'}
               updateHandler={() => {
-                const links = getCmsCompanyLinks({
-                  companyId: pageCompany._id,
-                  promoId: promo._id,
-                  promoCodeId: dataItem._id,
-                });
-                router.push(links.promo.code.root).catch(console.log);
+                router.push(`${basePath}/${dataItem._id}`).catch(console.log);
               }}
               deleteTitle={'Удалить промо-код'}
               deleteHandler={() => {
@@ -93,12 +78,7 @@ const ConsolePromoCodeList: React.FC<ConsolePromoCodeListInterface> = ({
             columns={columns}
             data={promoCodes}
             onRowDoubleClick={(dataItem) => {
-              const links = getCmsCompanyLinks({
-                companyId: pageCompany._id,
-                promoId: promo._id,
-                promoCodeId: dataItem._id,
-              });
-              router.push(links.promo.code.root).catch(console.log);
+              router.push(`${basePath}/${dataItem._id}`).catch(console.log);
             }}
           />
         </div>

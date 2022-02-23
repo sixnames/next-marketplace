@@ -19,7 +19,8 @@ import { useCreateBlogPostLike } from 'hooks/mutations/useBlogMutations';
 import { FILTER_SEPARATOR, REQUEST_METHOD_POST, SORT_DESC } from 'lib/config/common';
 import { getConstantTranslation } from 'lib/config/constantTranslations';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleBlogLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getFullName } from 'lib/nameUtils';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
@@ -87,13 +88,8 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
   const sessionUser = useSiteUserContext();
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
   const [isLikeAllowed, setIsLikeAllowed] = React.useState<boolean>(false);
-  const consoleLinks = getConsoleBlogLinks({
-    basePath: sessionUser?.editLinkBasePath,
-    blogPostId: post._id,
-  });
-  const showEditButton = sessionUser?.me.role?.cmsNavigation?.some(({ path }) => {
-    return path.includes(consoleLinks.mainPath);
-  });
+  const showEditButton = sessionUser?.me.role?.isCompanyStaff || sessionUser?.me.role?.isStaff;
+  const links = getProjectLinks();
 
   React.useCallback(() => {
     const likedBySessionUser = (post.likes || []).some((like) => {
@@ -123,7 +119,7 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
         config={[
           {
             name: blogLinkName,
-            href: consoleLinks.mainPath,
+            href: links.blog.url,
           },
         ]}
       />
@@ -152,7 +148,7 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
               size={'small'}
               frameClassName={'w-auto'}
               onClick={() => {
-                window.open(consoleLinks.root, '_blank');
+                window.open(`${sessionUser?.editLinkBasePath}/blog/post/${post._id}`, '_blank');
               }}
             >
               Редактировать

@@ -10,7 +10,8 @@ import {
   BlogPostInterface,
   CompanyInterface,
 } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -30,7 +31,7 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({
   pageCompany,
   attributes,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany?._id,
     blogPostId: post._id,
   });
@@ -39,15 +40,15 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: pageTitle,
-        href: links.blog.root,
+        href: links.cms.companies.companyId.blog.url,
       },
     ],
   };

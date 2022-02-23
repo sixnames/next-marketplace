@@ -2,6 +2,7 @@ import { useConfigContext } from 'components/context/configContext';
 import { SeoContentModel } from 'db/dbModels';
 import { Form, Formik } from 'formik';
 import { useUpdateSeoContent } from 'hooks/mutations/useSeoContentMutations';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import * as React from 'react';
 import WpButton from '../button/WpButton';
 import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
@@ -10,7 +11,7 @@ import { SingleSeoContentEditor } from '../SeoContentEditor';
 
 export interface ConsoleSeoContentDetailsInterface {
   seoContent: SeoContentModel;
-  companySlug: string;
+  companySlug?: string;
   showSeoFields: boolean;
 }
 
@@ -32,7 +33,7 @@ const ConsoleSeoContentDetails: React.FC<ConsoleSeoContentDetailsInterface> = ({
             slug: seoContent.slug,
             rubricSlug: seoContent.rubricSlug,
             url: seoContent.url,
-            companySlug,
+            companySlug: companySlug || DEFAULT_COMPANY_SLUG,
             content: values.content,
             showForIndex: values.showForIndex,
             metaTitleI18n: values.metaTitleI18n,

@@ -3,6 +3,7 @@ import {
   ConsoleRubricProductsInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
+import { useBasePath } from 'hooks/useBasePath';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
@@ -34,10 +35,10 @@ const CompanyRubricProductsList: React.FC<CompanyRubricProductsListInterface> = 
   totalDocs,
   page,
   totalPages,
-  itemPath,
-  basePath,
 }) => {
   const isPageLoading = usePageLoadingState();
+  const basePath = useBasePath('products');
+  const itemPath = `${basePath}/product`;
 
   const columns: WpTableColumn<ProductSummaryInterface>[] = [
     {

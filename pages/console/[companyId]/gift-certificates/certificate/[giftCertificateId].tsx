@@ -8,7 +8,8 @@ import { COL_USERS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
@@ -21,9 +22,8 @@ interface GiftCertificateDetailsConsumerInterface extends ConsoleGiftCertificate
 const GiftCertificateDetailsConsumer: React.FC<GiftCertificateDetailsConsumerInterface> = ({
   pageCompany,
   giftCertificate,
-  userRouteBasePath,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany?._id,
   });
 
@@ -32,7 +32,7 @@ const GiftCertificateDetailsConsumer: React.FC<GiftCertificateDetailsConsumerInt
     config: [
       {
         name: 'Подарочные сертификаты',
-        href: links.giftCertificate.parentLink,
+        href: links.console.companyId.giftCertificates.url,
       },
     ],
   };
@@ -43,7 +43,6 @@ const GiftCertificateDetailsConsumer: React.FC<GiftCertificateDetailsConsumerInt
         <ConsoleGiftCertificateDetails
           giftCertificate={giftCertificate}
           pageCompany={pageCompany}
-          userRouteBasePath={userRouteBasePath}
         />
       </Inner>
     </AppContentWrapper>
@@ -136,16 +135,11 @@ export const getServerSideProps = async (
       : null,
   };
 
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-  });
-
   return {
     props: {
       ...props,
       giftCertificate: castDbData(giftCertificate),
       pageCompany: castDbData(props.layoutProps.pageCompany),
-      userRouteBasePath: links.user.itemPath,
     },
   };
 };

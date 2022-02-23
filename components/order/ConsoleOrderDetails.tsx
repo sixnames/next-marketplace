@@ -1,22 +1,22 @@
+import { OrderInterface, OrderProductInterface, OrderStatusInterface } from 'db/uiInterfaces';
 import { Form, Formik, useFormikContext } from 'formik';
-import { get } from 'lodash';
-import * as React from 'react';
-import { OrderInterface, OrderProductInterface, OrderStatusInterface } from '../../db/uiInterfaces';
 import {
   useCancelOrderProduct,
   useUpdateOrder,
   useUpdateOrderProduct,
-} from '../../hooks/mutations/useOrderMutations';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK } from '../../lib/config/common';
+} from 'hooks/mutations/useOrderMutations';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK } from 'lib/config/common';
 import {
   DELIVERY_VARIANT_OPTIONS,
   getConstantOptionName,
   PAYMENT_VARIANT_OPTIONS,
-} from '../../lib/config/constantSelects';
-import { CONFIRM_MODAL } from '../../lib/config/modalVariants';
-import { getNumWord } from '../../lib/i18n';
-import { getConsoleRubricLinks, getConsoleUserLinks } from '../../lib/linkUtils';
-import { noNaN } from '../../lib/numbers';
+} from 'lib/config/constantSelects';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
+import { getNumWord } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { noNaN } from 'lib/numbers';
+import { get } from 'lodash';
+import * as React from 'react';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import { useAppContext } from '../context/appContext';
@@ -77,7 +77,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   const [cancelOrderProductMutation] = useCancelOrderProduct();
   const [updateOrderProductMutation] = useUpdateOrderProduct();
 
-  const summaryLinks = getConsoleRubricLinks({
+  const summaryLinks = getProjectLinks({
     productId: summary?._id,
     rubricSlug: summary?.rubricSlug,
   });
@@ -114,7 +114,10 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
                 circle
                 theme={'secondary'}
                 onClick={() => {
-                  window.open(summaryLinks.product.root, '_blank');
+                  window.open(
+                    summaryLinks.cms.rubrics.rubricSlug.products.product.productId.url,
+                    '_blank',
+                  );
                 }}
               />
             ) : (
@@ -304,7 +307,6 @@ export interface CmsOrderDetailsBaseInterface {
 interface CmsOrderDetailsInterface extends CmsOrderDetailsBaseInterface {
   pageCompanySlug: string;
   title: string;
-  basePath?: string;
 }
 
 const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
@@ -312,7 +314,6 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
   pageCompanySlug,
   title,
   orderStatuses,
-  basePath,
 }) => {
   const { sessionUser } = useUserContext();
   const { locale } = useLocaleContext();
@@ -351,11 +352,6 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
 
   const productsCount = products?.length;
   const productsCountWord = getNumWord(productsCount, ['товар', 'товара', 'товаров']);
-
-  const userLinks = getConsoleUserLinks({
-    basePath,
-    userId: customer?.userId,
-  });
 
   return (
     <Inner testId={`order-details`}>
@@ -448,7 +444,6 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                       valueClassName={'text-right text-primary-text'}
                       titleClassName={'font-medium lg:text-lg'}
                       deliveryInfo={deliveryInfo}
-                      userLink={userLinks.root}
                     />
 
                     {/*payment*/}
@@ -462,9 +457,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                       <div className='mb-3 text-secondary-text'>Заказчик:</div>
                       {customer ? (
                         <div className='space-y-2'>
-                          <WpLink href={userLinks.root} className='font-medium text-primary-text'>
-                            {customer?.fullName}
-                          </WpLink>
+                          <div className='font-medium text-primary-text'>{customer?.fullName}</div>
                           <div className='font-medium text-secondary-text'>
                             <LinkEmail value={customer.email} />
                           </div>

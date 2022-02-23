@@ -27,7 +27,8 @@ import {
   REQUEST_METHOD_POST,
 } from 'lib/config/common';
 import { BARCODE_INTERSECTS_MODAL } from 'lib/config/modalVariants';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { useRouter } from 'next/router';
 import { useReloadListener } from '../useReloadListener';
 import { useMutationHandler } from './useFetch';
@@ -56,11 +57,11 @@ export const useCreateProduct = () => {
     },
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        const { product } = getConsoleRubricLinks({
+        const links = getProjectLinks({
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
-        router.push(product.root).catch(console.log);
+        router.push(links.cms.rubrics.rubricSlug.products.product.productId.url).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -123,11 +124,11 @@ export const useCopyProduct = () => {
     reload: false,
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        const { product } = getConsoleRubricLinks({
+        const links = getProjectLinks({
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
-        router.push(product.root).catch(console.log);
+        router.push(links.cms.rubrics.rubricSlug.products.product.productId.url).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -157,11 +158,11 @@ export const useCreateProductWithSyncError = () => {
     },
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        const { product } = getConsoleRubricLinks({
+        const links = getProjectLinks({
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
-        router.push(product.root).catch(console.log);
+        router.push(links.cms.rubrics.rubricSlug.products.product.productId.url).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -190,11 +191,11 @@ export const useUpdateProductWithSyncError = () => {
     },
     onSuccess: ({ payload }) => {
       if (payload) {
-        const { product } = getConsoleRubricLinks({
+        const links = getProjectLinks({
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
-        router.push(product.root).catch(console.log);
+        router.push(links.cms.rubrics.rubricSlug.products.product.productId.url).catch(console.log);
       }
     },
   });

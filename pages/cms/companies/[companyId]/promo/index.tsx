@@ -4,7 +4,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import PromoList, { PromoListInterface } from 'components/Promo/PromoList';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getPromoListSsr } from 'lib/promoUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -19,9 +20,8 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
   layoutProps,
   promoList,
   pageCompany,
-  basePath,
 }) => {
-  const { root, parentLink } = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
 
@@ -30,11 +30,11 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: pageCompany.name,
-        href: root,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };
@@ -43,7 +43,7 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
     <ConsoleLayout title={pageTitle} {...layoutProps}>
       <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
-          <PromoList promoList={promoList} pageCompany={pageCompany} basePath={basePath} />
+          <PromoList promoList={promoList} pageCompany={pageCompany} />
         </Inner>
       </CmsCompanyLayout>
     </ConsoleLayout>
@@ -77,14 +77,9 @@ export const getServerSideProps = async (
     companyId: company._id.toHexString(),
   });
 
-  const links = getCmsCompanyLinks({
-    companyId: company._id,
-  });
-
   return {
     props: {
       ...props,
-      basePath: links.promo.parentLink,
       pageCompany: castDbData(company),
       promoList: castDbData(promoList),
     },

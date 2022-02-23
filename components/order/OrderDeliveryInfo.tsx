@@ -1,7 +1,6 @@
+import { OrderDeliveryInfoModel } from 'db/dbModels';
 import * as React from 'react';
-import { OrderDeliveryInfoModel } from '../../db/dbModels';
 import FormattedDateTime from '../FormattedDateTime';
-import WpLink from '../Link/WpLink';
 
 interface OrderDeliveryInfoInterface {
   deliveryInfo?: OrderDeliveryInfoModel | null;
@@ -10,7 +9,6 @@ interface OrderDeliveryInfoInterface {
   labelClassName?: string;
   valueClassName?: string;
   titleClassName?: string;
-  userLink?: string;
 }
 
 const OrderDeliveryInfo: React.FC<OrderDeliveryInfoInterface> = ({
@@ -20,7 +18,6 @@ const OrderDeliveryInfo: React.FC<OrderDeliveryInfoInterface> = ({
   itemClassName,
   valueClassName,
   titleClassName,
-  userLink,
 }) => {
   if (!deliveryInfo || !deliveryInfo.address) {
     return null;
@@ -72,16 +69,14 @@ const OrderDeliveryInfo: React.FC<OrderDeliveryInfoInterface> = ({
         </div>
       ) : null}
 
-      {deliveryInfo.recipientName && userLink ? (
+      {deliveryInfo.recipientName ? (
         <div className={itemClassName}>
           <div className={labelClassName}>Имя и фамилия:</div>
-          <WpLink href={userLink} className={valueClassName}>
-            {deliveryInfo.recipientName}
-          </WpLink>
+          <div className={valueClassName}>{deliveryInfo.recipientName}</div>
         </div>
       ) : null}
 
-      {deliveryInfo.recipientName && !userLink ? (
+      {deliveryInfo.recipientName ? (
         <div className={itemClassName}>
           <div className={labelClassName}>Имя и фамилия:</div>
           <div className={valueClassName}>{deliveryInfo.recipientName}</div>

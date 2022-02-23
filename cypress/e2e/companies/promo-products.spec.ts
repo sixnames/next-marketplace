@@ -1,13 +1,13 @@
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Promo products', () => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: fixtureIds.companyA,
     promoId: fixtureIds.promoACompanyA,
   });
   beforeEach(() => {
-    cy.testAuth(links.promo.rubrics.parentLink);
+    cy.testAuth(links.cms.companies.companyId.promo.details.promoId.rubrics.url);
   });
 
   it('Should CRUD promo products', () => {

@@ -3,7 +3,8 @@ import CmsProductLayout from 'components/layout/cms/CmsProductLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCmsProductAttributesPageSsr } from 'db/ssr/products/getCmsProductAttributesPageSsr';
 import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -15,7 +16,7 @@ interface CmsProductAttributesPageConsumerInterface {
 const CmsProductAttributesPageConsumer: React.FC<CmsProductAttributesPageConsumerInterface> = ({
   product,
 }) => {
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     productId: product._id,
     rubricSlug: product.rubricSlug,
   });
@@ -24,19 +25,19 @@ const CmsProductAttributesPageConsumer: React.FC<CmsProductAttributesPageConsume
     config: [
       {
         name: 'Рубрикатор',
-        href: links.parentLink,
+        href: links.cms.rubrics.url,
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.root,
+        href: links.cms.rubrics.rubricSlug.url,
       },
       {
         name: `Товары`,
-        href: links.product.parentLink,
+        href: links.cms.rubrics.rubricSlug.products.url,
       },
       {
         name: `${product.cardTitle}`,
-        href: links.product.root,
+        href: links.cms.rubrics.rubricSlug.products.product.productId.url,
       },
     ],
   };

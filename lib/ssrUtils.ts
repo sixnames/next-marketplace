@@ -6,6 +6,7 @@ import { COL_PAGES } from 'db/collectionNames';
 import { getPageSessionUser, SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
 import { getDbCollections } from 'db/mongodb';
 import { getCatalogueNavRubrics } from 'db/ssr/catalogue/getCatalogueNavRubrics';
+import { getCatalogueNavEventRubrics } from 'db/ssr/events/getCatalogueNavEventRubrics';
 import { CompanyInterface, PageInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import {
   DEFAULT_COMPANY_SLUG,
@@ -478,14 +479,24 @@ export async function getSiteInitialData({
   const catalogueCreatedPages = await getCatalogueCreatedPages({
     citySlug: citySlug,
     sessionLocale,
-    companySlug,
+    companySlug: companySlug || DEFAULT_COMPANY_SLUG,
   });
 
+  const rawNavEventRubrics = await getCatalogueNavEventRubrics({
+    locale: sessionLocale,
+    citySlug: citySlug,
+    companySlug: domainCompany?.slug,
+    stickyNavVisibleAttributesCount: initialData.configs.stickyNavVisibleAttributesCount,
+    stickyNavVisibleOptionsCount: initialData.configs.stickyNavVisibleOptionsCount,
+    visibleEventRubricSlugs: initialData.configs.visibleEventRubrics,
+  });
+  const navEventRubrics = castDbData(rawNavEventRubrics);
   // console.log('getSiteInitialData total time ', new Date().getTime() - timeStart);
 
   return {
     props: {
       ...catalogueCreatedPages,
+      navEventRubrics,
       themeStyle,
       companySlug,
       initialData,

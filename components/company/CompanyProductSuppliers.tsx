@@ -1,14 +1,14 @@
+import { ShopProductInterface, SupplierProductInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
+import { useDeleteShopProductSupplierMutation } from 'generated/apolloComponents';
+import { useUpdateManyShopProducts } from 'hooks/mutations/useShopProductMutations';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
+import { CONFIRM_MODAL, SHOP_PRODUCT_SUPPLIER_MODAL } from 'lib/config/modalVariants';
+import { noNaN } from 'lib/numbers';
 import * as React from 'react';
-import { ShopProductInterface, SupplierProductInterface } from '../../db/uiInterfaces';
-import { useDeleteShopProductSupplierMutation } from '../../generated/apolloComponents';
-import { useUpdateManyShopProducts } from '../../hooks/mutations/useShopProductMutations';
+import { updateManyShopProductsSchema } from 'validation/shopSchema';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { getConstantTranslation } from '../../lib/config/constantTranslations';
-import { CONFIRM_MODAL, SHOP_PRODUCT_SUPPLIER_MODAL } from '../../lib/config/modalVariants';
-import { noNaN } from '../../lib/numbers';
-import { updateManyShopProductsSchema } from '../../validation/shopSchema';
 import ContentItemControls from '../button/ContentItemControls';
 import WpButton from '../button/WpButton';
 import { useLocaleContext } from '../context/localeContext';
@@ -27,7 +27,6 @@ export interface CompanyProductSuppliersInterface {
   shopProduct: ShopProductInterface;
   suppliers: SelectOptionInterface[];
   disableAddSupplier: boolean;
-  routeBasePath: string;
 }
 
 const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({

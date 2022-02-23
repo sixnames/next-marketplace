@@ -6,10 +6,11 @@ import CmsRubricLayout from 'components/layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getDbCollections } from 'db/mongodb';
 import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
-import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import { alwaysString } from 'lib/arrayUtils';
 import { CATALOGUE_SEO_TEXT_POSITION_TOP } from 'lib/config/common';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getSeoContentBySlug } from 'lib/seoContentUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -18,38 +19,44 @@ import * as React from 'react';
 
 interface RubricDetailsInterface extends ConsoleSeoContentDetailsInterface {
   rubric: RubricInterface;
-  companySlug: string;
-  routeBasePath: string;
+  pageCompany: CompanyInterface;
 }
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({
   rubric,
   seoContent,
-  routeBasePath,
   companySlug,
   showSeoFields,
+  pageCompany,
 }) => {
+  const links = getProjectLinks({
+    rubricSlug: rubric.slug,
+    companyId: pageCompany._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: `${routeBasePath}/rubrics`,
+        name: 'Компании',
+        href: links.cms.companies.url,
       },
       {
-        name: `${rubric.name}`,
-        href: `${routeBasePath}/rubrics/${rubric._id}`,
+        name: `${pageCompany?.name}`,
+        href: links.cms.companies.companyId.url,
+      },
+      {
+        name: `Рубрикатор`,
+        href: links.cms.companies.companyId.rubrics.url,
+      },
+      {
+        name: `${rubric?.name}`,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.url,
       },
     ],
   };
 
   return (
-    <CmsRubricLayout
-      hideAttributesPath
-      rubric={rubric}
-      breadcrumbs={breadcrumbs}
-      basePath={routeBasePath}
-    >
+    <CmsRubricLayout hideAttributesPath rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner>
         <ConsoleSeoContentDetails
           seoContent={seoContent}
@@ -129,18 +136,13 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
       rubric: castDbData(payload.rubric),
       seoContent: castDbData(seoContent),
-      routeBasePath: links.root,
+      pageCompany: castDbData(companyResult),
       showSeoFields: seoContentSlug.indexOf(CATALOGUE_SEO_TEXT_POSITION_TOP) > -1,
-      companySlug,
     },
   };
 };

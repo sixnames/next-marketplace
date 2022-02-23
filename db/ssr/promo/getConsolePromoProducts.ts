@@ -3,13 +3,13 @@ import { castSupplierProductsList } from 'db/cast/castSupplierProductsList';
 import { COL_PROMO_PRODUCTS } from 'db/collectionNames';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
+import { getCatalogueAttributes } from 'db/ssr/catalogue/catalogueUtils';
 import {
   AttributeInterface,
   GetConsoleRubricPromoProductsPayloadInterface,
   ShopProductInterface,
   ShopProductsAggregationInterface,
 } from 'db/uiInterfaces';
-import { getCatalogueAttributes } from 'db/utils/catalogueUtils';
 import {
   PaginatedAggregationFacetsInputInterface,
   paginatedAggregationFinalPipeline,
@@ -59,7 +59,6 @@ export async function getConsolePromoProducts({
 }: GetConsolePromoProductsInterface): Promise<GetConsoleRubricPromoProductsPayloadInterface> {
   let fallbackPayload: GetConsoleRubricPromoProductsPayloadInterface = {
     clearSlug: basePath,
-    basePath,
     page: DEFAULT_PAGE,
     totalDocs: 0,
     totalPages: 0,
@@ -324,7 +323,6 @@ export async function getConsolePromoProducts({
 
     const payload: GetConsoleRubricPromoProductsPayloadInterface = {
       clearSlug: basePath,
-      basePath,
       page,
       selectedShopProductIds,
       totalDocs,

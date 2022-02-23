@@ -13,7 +13,8 @@ import { useUpdateAttributesGroupMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCmsLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -42,7 +43,7 @@ const AttributesGroupConsumer: React.FC<AttributesGroupConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
-  const links = getCmsLinks({
+  const links = getProjectLinks({
     attributesGroupId: attributesGroup._id,
   });
 
@@ -51,7 +52,7 @@ const AttributesGroupConsumer: React.FC<AttributesGroupConsumerInterface> = ({
     config: [
       {
         name: 'Группы атрибутов',
-        href: links.attributes.parentLink,
+        href: links.cms.attributes.url,
       },
     ],
   };
@@ -61,13 +62,13 @@ const AttributesGroupConsumer: React.FC<AttributesGroupConsumerInterface> = ({
       {
         name: 'Атрибуты',
         testId: 'sub-nav-attributes',
-        path: links.attributes.attribute.parentLink,
+        path: links.cms.attributes.attributesGroupId.attributes.url,
         exact: true,
       },
       {
         name: 'Детали',
         testId: 'sub-nav-details',
-        path: links.attributes.root,
+        path: links.cms.attributes.attributesGroupId.url,
         exact: true,
       },
     ];

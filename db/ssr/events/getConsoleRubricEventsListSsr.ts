@@ -32,7 +32,7 @@ export const getConsoleRubricEventsListSsr = async (
   const payload = await getRubricEventsList({
     query,
     locale,
-    basePath: links.console.companyId.events.rubricSlug.events.url,
+    basePath: links.console.companyId.eventRubrics.rubricSlug.events.url,
     currency,
     companySlug: company.slug,
   });

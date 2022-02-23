@@ -16,7 +16,7 @@ import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 
 export type ShopAssetsInterface = ConsoleShopLayoutInterface;
 
-const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath, breadcrumbs }) => {
+const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, breadcrumbs }) => {
   const router = useRouter();
   const { _id, logo, name } = shop;
   const { hideLoading, onErrorCallback, showErrorNotification, onCompleteCallback, showLoading } =
@@ -33,7 +33,7 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath, breadcrumbs
   });
 
   return (
-    <ConsoleShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} breadcrumbs={breadcrumbs}>
       <Inner>
         <div data-cy={'shop-assets-list'}>
           <Formik

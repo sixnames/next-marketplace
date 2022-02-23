@@ -4,8 +4,8 @@ import AppContentWrapper from 'components/layout/AppContentWrapper';
 import AppSubNav from 'components/layout/AppSubNav';
 import WpTitle from 'components/WpTitle';
 import { ConfigModel } from 'db/dbModels';
-import { RubricInterface } from 'db/uiInterfaces';
-import { getConsoleConfigsLinks } from 'lib/linkUtils';
+import { EventRubricInterface, RubricInterface } from 'db/uiInterfaces';
+import { useBasePath } from 'hooks/useBasePath';
 import Head from 'next/head';
 import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
@@ -14,65 +14,57 @@ export interface ConfigPageInterface {
   assetConfigs: ConfigModel[];
   normalConfigs: ConfigModel[];
   rubrics?: RubricInterface[];
+  eventRubrics?: EventRubricInterface[];
 }
 
-export interface AppConfigsLayoutInterface {
-  basePath?: string;
-}
-
-const ConsoleConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, basePath }) => {
+const ConsoleConfigsLayout: React.FC = ({ children }) => {
   const { sessionUser } = useUserContext();
-
-  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
-    const links = getConsoleConfigsLinks({
-      basePath,
-    });
-    return [
-      {
-        name: 'Общие',
-        testId: 'globals',
-        path: links.root,
-        exact: true,
-      },
-      {
-        name: 'Аналитика',
-        testId: 'analytics',
-        path: links.analytics,
-        exact: true,
-      },
-      {
-        name: 'Интерфейс',
-        testId: 'ui',
-        path: links.ui,
-        exact: true,
-      },
-      {
-        name: 'Контактные данные',
-        testId: 'contacts',
-        path: links.contacts,
-        exact: true,
-      },
-      {
-        name: 'SEO',
-        testId: 'seo',
-        path: links.seo,
-        exact: true,
-      },
-      {
-        name: 'Каталог',
-        testId: 'catalogue',
-        path: links.catalogue,
-        exact: true,
-      },
-      {
-        name: 'Проект',
-        testId: 'admin',
-        path: links.project,
-        exact: true,
-        hidden: !sessionUser?.role?.isStaff,
-      },
-    ];
-  }, [basePath, sessionUser]);
+  const basePath = useBasePath('config');
+  const navConfig: ClientNavItemInterface[] = [
+    {
+      name: 'Общие',
+      testId: 'globals',
+      path: basePath,
+      exact: true,
+    },
+    {
+      name: 'Аналитика',
+      testId: 'analytics',
+      path: `${basePath}/analytics`,
+      exact: true,
+    },
+    {
+      name: 'Интерфейс',
+      testId: 'ui',
+      path: `${basePath}/ui`,
+      exact: true,
+    },
+    {
+      name: 'Контактные данные',
+      testId: 'contacts',
+      path: `${basePath}/contacts`,
+      exact: true,
+    },
+    {
+      name: 'SEO',
+      testId: 'seo',
+      path: `${basePath}/seo`,
+      exact: true,
+    },
+    {
+      name: 'Каталог',
+      testId: 'catalogue',
+      path: `${basePath}/catalogue`,
+      exact: true,
+    },
+    {
+      name: 'Проект',
+      testId: 'admin',
+      path: `${basePath}/project`,
+      exact: true,
+      hidden: !sessionUser?.role?.isStaff,
+    },
+  ];
 
   return (
     <AppContentWrapper>

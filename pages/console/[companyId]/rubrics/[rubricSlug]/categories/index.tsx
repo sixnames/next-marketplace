@@ -13,7 +13,8 @@ import {
 } from 'db/uiInterfaces';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import {
   castDbData,
   getConsoleInitialData,
@@ -28,9 +29,8 @@ interface RubricCategoriesConsumerInterface extends CompanyRubricCategoriesListI
 const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   rubric,
   pageCompany,
-  routeBasePath,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany?._id,
     rubricSlug: rubric?.slug,
   });
@@ -40,27 +40,18 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
     config: [
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.console.companyId.rubrics.url,
       },
       {
         name: `${rubric?.name}`,
-        href: links.rubrics.root,
+        href: links.console.companyId.rubrics.rubricSlug.url,
       },
     ],
   };
 
   return (
-    <CmsRubricLayout
-      hideAttributesPath
-      basePath={links.root}
-      rubric={rubric}
-      breadcrumbs={breadcrumbs}
-    >
-      <CompanyRubricCategoriesList
-        rubric={rubric}
-        routeBasePath={routeBasePath}
-        pageCompany={pageCompany}
-      />
+    <CmsRubricLayout hideAttributesPath rubric={rubric} breadcrumbs={breadcrumbs}>
+      <CompanyRubricCategoriesList rubric={rubric} pageCompany={pageCompany} />
     </CmsRubricLayout>
   );
 };
@@ -98,11 +89,6 @@ export const getServerSideProps = async (
   const locale = props.sessionLocale;
   const rubricSlug = `${query.rubricSlug}`;
   const companyId = new ObjectId(`${query.companyId}`);
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-    rubricSlug,
-  });
-  const routeBasePath = links.parentLink;
 
   // get categories config
   const categoriesConfigAggregationResult = await shopProductsCollection
@@ -141,7 +127,6 @@ export const getServerSideProps = async (
       };
     }
     const payload: RubricCategoriesConsumerInterface = {
-      routeBasePath,
       pageCompany: castDbData(props.layoutProps.pageCompany),
       rubric: {
         ...rubric,
@@ -229,7 +214,6 @@ export const getServerSideProps = async (
   const sortedCategories = sortObjectsByField(categories);
 
   const payload: RubricCategoriesConsumerInterface = {
-    routeBasePath,
     pageCompany: props.layoutProps.pageCompany,
     rubric: {
       ...rubric,

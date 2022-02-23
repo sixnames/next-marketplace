@@ -575,6 +575,30 @@ export interface CatalogueDataInterface {
   maxPrice: number;
 }
 
+export interface EventsCatalogueDataInterface {
+  isSearch: boolean;
+  basePath: string;
+  clearSlug: string;
+  filters: string[];
+  rubricName: string;
+  rubricSlug: string;
+  editUrl: string;
+  events: EventSummaryInterface[];
+  totalPages: number;
+  totalDocs: number;
+  page: number;
+  catalogueTitle: string;
+  breadcrumbs: CatalogueBreadcrumbModel[];
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
+  textTop?: SeoContentInterface | null;
+  textTopEditUrl: string;
+  textBottom?: SeoContentInterface | null;
+  textBottomEditUrl: string;
+  minPrice: number;
+  maxPrice: number;
+}
+
 export interface CatalogueProductOptionInterface {
   _id: string;
   optionsSlugs: string[];
@@ -816,6 +840,7 @@ export interface SsrConfigsInterface {
   showBlogPostViews: boolean;
   categoriesAsNavItems: string[];
   visibleRubrics: string[];
+  visibleEventRubrics: string[];
   visibleCategoriesInNavDropdown: string[];
   showShopProductAvailability: boolean;
 
@@ -936,27 +961,25 @@ export interface AppPaginationInterface<Model> {
   totalDocs: number;
   totalPages: number;
   page: number;
-  itemPath?: string;
   clearSlug?: string;
 }
 
 export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationInterface<Model> {
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
-  basePath: string;
   clearSlug: string;
 }
 
 export interface ConsoleRubricProductsInterface
   extends AppPaginationWithFiltersInterface<ProductSummaryInterface> {
   rubric?: RubricInterface | null;
-  companySlug: string;
+  companySlug?: string;
 }
 
 export interface RubricEventsListInterface
   extends AppPaginationWithFiltersInterface<EventSummaryInterface> {
   rubric: EventRubricInterface;
-  companySlug: string;
+  companySlug?: string;
 }
 
 export interface GetConsoleRubricPromoProductsPayloadInterface
@@ -1002,7 +1025,6 @@ export interface BreadcrumbsInterface {
 
 export interface ConsoleShopLayoutInterface {
   shop: ShopInterface;
-  basePath?: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
@@ -1015,8 +1037,6 @@ export interface ShopRubricProductsInterface
   clearSlug: string;
   rubricName: string;
   rubricSlug: string;
-  layoutBasePath?: string;
-  basePath: string;
   currency: string;
 }
 

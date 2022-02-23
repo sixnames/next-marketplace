@@ -10,6 +10,7 @@ import {
   useCreateProductVariant,
   useDeleteProductFromVariant,
 } from 'hooks/mutations/useProductMutations';
+import { useBasePath } from 'hooks/useBasePath';
 import { alwaysString } from 'lib/arrayUtils';
 import { FILTER_SEPARATOR } from 'lib/config/common';
 import {
@@ -17,7 +18,7 @@ import {
   CREATE_CONNECTION_MODAL,
   PRODUCT_SEARCH_MODAL,
 } from 'lib/config/modalVariants';
-import { getCmsLinks } from 'lib/linkUtils';
+
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import ContentItemControls from '../button/ContentItemControls';
@@ -95,22 +96,18 @@ const ProductVariantsItem: React.FC<ProductVariantsItemInterface> = ({
   const { showErrorNotification } = useNotificationsContext();
   const { showModal } = useAppContext();
   const [deleteProductFromConnectionMutation] = useDeleteProductFromVariant();
-
+  const basePath = useBasePath('rubricSlug');
   const { products } = variant;
 
   const columns: WpTableColumn<ProductVariantItemInterface>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
-        const links = getCmsLinks({
-          rubricSlug: dataItem.summary?.rubricSlug,
-          productId: dataItem.summary?._id,
-        });
         return (
           <WpLink
             target={'_blank'}
             testId={`product-link-${rowIndex}`}
-            href={links.rubrics.product.root}
+            href={`${basePath}/products/product/${dataItem._id}`}
           >
             {dataItem.summary?.itemId}
           </WpLink>
@@ -155,11 +152,7 @@ const ProductVariantsItem: React.FC<ProductVariantsItemInterface> = ({
             justifyContent={'flex-end'}
             updateTitle={'Редактировать товар'}
             updateHandler={() => {
-              const links = getCmsLinks({
-                rubricSlug: dataItem.summary?.rubricSlug,
-                productId: dataItem.summary?._id,
-              });
-              window.open(links.rubrics.product.root, '_blank');
+              window.open(`${basePath}/products/product/${dataItem._id}`, '_blank');
             }}
             deleteTitle={'Удалить товар из связи'}
             deleteHandler={() => {
@@ -210,11 +203,7 @@ const ProductVariantsItem: React.FC<ProductVariantsItemInterface> = ({
           tableTestId={`${variant.attribute.name}-variant-list`}
           testIdKey={'product.name'}
           onRowDoubleClick={(dataItem) => {
-            const links = getCmsLinks({
-              rubricSlug: dataItem.summary?.rubricSlug,
-              productId: dataItem.summary?._id,
-            });
-            window.open(links.rubrics.product.root, '_blank');
+            window.open(`${basePath}/products/product/${dataItem._id}`, '_blank');
           }}
         />
       </div>

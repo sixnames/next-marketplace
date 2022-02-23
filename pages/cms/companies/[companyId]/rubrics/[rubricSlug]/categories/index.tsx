@@ -14,7 +14,8 @@ import {
 } from 'db/uiInterfaces';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
@@ -25,9 +26,8 @@ interface RubricCategoriesConsumerInterface extends CompanyRubricCategoriesListI
 const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   rubric,
   pageCompany,
-  routeBasePath,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     rubricSlug: rubric.slug,
   });
@@ -36,35 +36,26 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.parentLink,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.url,
       },
       {
         name: `${rubric?.name}`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.url,
       },
     ],
   };
 
   return (
-    <CmsRubricLayout
-      hideAttributesPath
-      basePath={routeBasePath}
-      rubric={rubric}
-      breadcrumbs={breadcrumbs}
-    >
-      <CompanyRubricCategoriesList
-        rubric={rubric}
-        routeBasePath={routeBasePath}
-        pageCompany={pageCompany}
-      />
+    <CmsRubricLayout hideAttributesPath rubric={rubric} breadcrumbs={breadcrumbs}>
+      <CompanyRubricCategoriesList rubric={rubric} pageCompany={pageCompany} />
     </CmsRubricLayout>
   );
 };
@@ -117,10 +108,6 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-  const routeBasePath = links.root;
 
   const initialRubric = await rubricsCollection.findOne({
     slug: `${query.rubricSlug}`,
@@ -168,7 +155,6 @@ export const getServerSideProps = async (
       };
     }
     const payload: RubricCategoriesConsumerInterface = {
-      routeBasePath,
       pageCompany: castDbData(companyResult),
       rubric: {
         ...rubric,
@@ -256,7 +242,6 @@ export const getServerSideProps = async (
   const sortedCategories = sortObjectsByField(categories);
 
   const payload: RubricCategoriesConsumerInterface = {
-    routeBasePath,
     pageCompany: companyResult,
     rubric: {
       ...rubric,

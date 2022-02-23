@@ -13,10 +13,11 @@ import { COL_USERS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { useDeleteCompanyMutation } from 'generated/apolloComponents';
+import { useBasePath } from 'hooks/useBasePath';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { SORT_DESC } from 'lib/config/common';
 import { CONFIRM_MODAL } from 'lib/config/modalVariants';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { getShortName } from 'lib/nameUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -62,15 +63,13 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
     });
   }
 
+  const basePath = useBasePath('companies');
   const columns: WpTableColumn<CompanyInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => {
-        const { root } = getCmsCompanyLinks({
-          companyId: dataItem._id,
-        });
-        return <WpLink href={root}>{cellData}</WpLink>;
+        return <WpLink href={`${basePath}/${dataItem._id}`}>{cellData}</WpLink>;
       },
     },
     {
@@ -102,10 +101,7 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
             deleteHandler={() => deleteCompanyHandler(dataItem)}
             updateTitle={`Редактировать компанию`}
             updateHandler={() => {
-              const { root } = getCmsCompanyLinks({
-                companyId: dataItem._id,
-              });
-              router.push(root).catch((e) => console.log(e));
+              router.push(`${basePath}/${dataItem._id}`).catch(console.log);
             }}
           />
         );
@@ -128,10 +124,7 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
             size={'small'}
             testId={'create-company'}
             onClick={() => {
-              const { create } = getCmsCompanyLinks({});
-              router.push(create).catch((e) => {
-                console.log(e);
-              });
+              router.push(`${basePath}/create`).catch(console.log);
             }}
           >
             Создать компанию

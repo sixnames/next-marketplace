@@ -530,7 +530,58 @@ export async function getRubricSeoContentSlug({
       url: `${links.catalogue.url}/${rubricSlug}`,
     };
   } catch (e) {
-    console.log(e);
+    console.log('getRubricSeoContentSlug error', e);
+    return null;
+  }
+}
+
+// event rubric
+interface GetEventRubricSeoContentSlugInterface {
+  rubricId: ObjectIdModel;
+  rubricSlug: string;
+  citySlug: string;
+  companySlug: string;
+  position: DescriptionPositionType;
+}
+
+export async function getEventRubricSeoContentSlug({
+  companySlug,
+  citySlug,
+  rubricId,
+  rubricSlug,
+  position,
+}: GetEventRubricSeoContentSlugInterface): Promise<GetDocumentSeoContentSlugPayloadInterface | null> {
+  try {
+    const collections = await getDbCollections();
+    const citiesCollection = collections.citiesCollection();
+    const companiesCollection = collections.companiesCollection();
+
+    // get company
+    let companyId = DEFAULT_COMPANY_SLUG;
+    if (companySlug !== DEFAULT_COMPANY_SLUG) {
+      const company = await companiesCollection.findOne({ slug: companySlug });
+      if (!company) {
+        console.log('getRubricSeoContentSlug Company not found');
+        return null;
+      }
+
+      companyId = company._id.toHexString();
+    }
+
+    // get city
+    const city = await citiesCollection.findOne({ slug: citySlug });
+    if (!city) {
+      console.log('getRubricSeoContentSlug City not found');
+      return null;
+    }
+    const cityId = city._id.toHexString();
+
+    return {
+      seoContentSlug: `${companyId}${cityId}${rubricId.toHexString()}${position}`,
+      url: `${links.events.url}/${rubricSlug}`,
+    };
+  } catch (e) {
+    console.log('getRubricSeoContentSlug error', e);
     return null;
   }
 }
@@ -682,6 +733,85 @@ export async function getRubricAllSeoContents({
   let payload: SeoContentCitiesInterface = {};
   for await (const city of cities) {
     const seoContent = await getRubricSeoContent({
+      companySlug,
+      position,
+      rubricSlug,
+      rubricId,
+      citySlug: city.slug,
+      locale,
+    });
+    if (seoContent) {
+      payload[city.slug] = seoContent;
+    }
+  }
+  return payload;
+}
+
+// event rubric
+interface GetEventRubricSeoContentInterface {
+  companySlug: string;
+  position: DescriptionPositionType;
+  rubricSlug: string;
+  rubricId: ObjectIdModel;
+  citySlug: string;
+  locale: string;
+}
+
+export async function getEventRubricSeoContent({
+  companySlug,
+  position,
+  rubricSlug,
+  rubricId,
+  citySlug,
+  locale,
+}: GetEventRubricSeoContentInterface): Promise<SeoContentInterface | null> {
+  const collections = await getDbCollections();
+
+  const seoContentSlugPayload = await getEventRubricSeoContentSlug({
+    rubricId,
+    companySlug,
+    rubricSlug,
+    citySlug,
+    position,
+  });
+
+  if (!seoContentSlugPayload) {
+    return null;
+  }
+
+  const seoContentsCollection = collections.seoContentsCollection();
+  const seoContent = await seoContentsCollection.findOne({
+    slug: seoContentSlugPayload.seoContentSlug,
+  });
+
+  if (!seoContent) {
+    const newSeoContent = {
+      _id: new ObjectId(),
+      url: seoContentSlugPayload.url,
+      slug: seoContentSlugPayload.seoContentSlug,
+      content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      rubricSlug,
+      companySlug,
+    };
+    return newSeoContent;
+  }
+
+  return castSeoContent(seoContent, locale);
+}
+
+interface GetEventRubricAllSeoContentsInterface
+  extends Omit<GetEventRubricSeoContentInterface, 'citySlug'> {}
+export async function getEventRubricAllSeoContents({
+  companySlug,
+  position,
+  rubricSlug,
+  rubricId,
+  locale,
+}: GetEventRubricAllSeoContentsInterface): Promise<SeoContentCitiesInterface> {
+  const cities = await getCitiesList();
+  let payload: SeoContentCitiesInterface = {};
+  for await (const city of cities) {
+    const seoContent = await getEventRubricSeoContent({
       companySlug,
       position,
       rubricSlug,

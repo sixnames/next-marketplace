@@ -1,12 +1,12 @@
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { fixtureIds } from '../../fixtures/fixtureIds';
 
 describe('Product categories', () => {
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     rubricSlug: fixtureIds.rubricWhiskeySlug,
   });
   beforeEach(() => {
-    cy.testAuth(links.product.parentLink);
+    cy.testAuth(links.cms.rubrics.rubricSlug.products.url);
   });
 
   it('Should CRUD product categories', () => {
@@ -18,7 +18,7 @@ describe('Product categories', () => {
     cy.getByCy('Объем-attribute').should('not.exist');
 
     // hide attribute in cms product card
-    cy.visit(links.category.parentLink);
+    cy.visit(links.cms.rubrics.rubricSlug.categories.url);
     cy.visitBlank('Односолодовый');
     cy.getByCy('attributes').click();
     cy.wait(1500);
@@ -28,7 +28,7 @@ describe('Product categories', () => {
     cy.getByCy('Объем-checkbox').should('be.checked');
 
     // check attribute in cms product
-    cy.testAuth(links.product.parentLink);
+    cy.testAuth(links.cms.rubrics.rubricSlug.products.url);
     cy.visitBlank('product-link-0', 'attributes');
     cy.wait(1500);
     cy.getByCy('product-attributes-list').should('exist');

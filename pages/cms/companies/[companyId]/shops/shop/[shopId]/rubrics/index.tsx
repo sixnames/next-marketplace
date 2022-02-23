@@ -5,7 +5,8 @@ import { getDbCollections } from 'db/mongodb';
 import { getConsoleShopSsr } from 'db/ssr/shops/getConsoleShopSsr';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import { getI18nLocaleValue } from 'lib/i18n';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -20,7 +21,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   rubrics,
   shop,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -30,19 +31,19 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${shop.company?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.cms.companies.companyId.shops.url,
       },
       {
         name: shop.name,
-        href: links.shop.root,
+        href: links.cms.companies.companyId.shops.shop.shopId.url,
       },
     ],
   };

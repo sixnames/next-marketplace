@@ -8,12 +8,12 @@ import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, ONE_HOUR, SORT_DESC } from 'lib
 import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 
-interface CatalogueGroupedNavConfigItemInterface {
+export interface CatalogueGroupedNavConfigItemInterface {
   attributeSlug: string;
   optionSlugs: string[];
 }
 
-interface CatalogueGroupedNavConfigsInterface {
+export interface CatalogueGroupedNavConfigsInterface {
   _id: ObjectIdModel;
   attributeSlugs: string[];
   attributeConfigs: CatalogueGroupedNavConfigItemInterface[];
@@ -24,7 +24,7 @@ interface CatalogueNavConfigItemInterface {
   optionSlug: string;
 }
 
-interface CatalogueNavConfigsInterface {
+export interface CatalogueNavConfigsInterface {
   _id: ObjectIdModel;
   attributeConfigs: CatalogueNavConfigItemInterface[];
 }
@@ -110,11 +110,11 @@ export const createCatalogueNavRubrics = async ({
     .aggregate<CatalogueNavConfigsInterface>([
       {
         $match: {
+          citySlug,
           ...companyMatch,
           rubricSlug: {
             $in: visibleRubrics,
           },
-          citySlug,
           ...ignoreNoImageStage,
         },
       },

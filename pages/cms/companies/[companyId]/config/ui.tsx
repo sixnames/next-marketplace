@@ -4,10 +4,12 @@ import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { ConfigPageInterface } from 'components/layout/console/ConsoleConfigsLayout';
 import { getConfigPageData } from 'db/ssr/configs/getConfigPageData';
+import { getConfigEventRubrics } from 'db/ssr/events/getConfigEventRubrics';
 import { getConfigRubrics } from 'db/ssr/rubrics/getConfigRubrics';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { CONFIG_GROUP_UI } from 'lib/config/common';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -21,8 +23,9 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   normalConfigs,
   pageCompany,
   rubrics,
+  eventRubrics,
 }) => {
-  const { root, parentLink } = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany?._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -30,11 +33,11 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: root,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };
@@ -46,6 +49,7 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
           assetConfigs={assetConfigs}
           normalConfigs={normalConfigs}
           rubrics={rubrics}
+          eventRubrics={eventRubrics}
         />
       </Inner>
     </CmsCompanyLayout>
@@ -96,6 +100,10 @@ export const getServerSideProps = async (
   }
 
   const rubrics = await getConfigRubrics(props.sessionLocale);
+  const eventRubrics = await getConfigEventRubrics({
+    locale: props.sessionLocale,
+    companyId: `${query.companyId}`,
+  });
 
   return {
     props: {
@@ -104,6 +112,7 @@ export const getServerSideProps = async (
       normalConfigs: castDbData(normalConfigs),
       pageCompany: castDbData(currentCompany),
       rubrics: castDbData(rubrics),
+      eventRubrics: castDbData(eventRubrics),
     },
   };
 };

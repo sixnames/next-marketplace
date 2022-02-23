@@ -8,7 +8,8 @@ import { COL_USERS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
@@ -21,9 +22,8 @@ interface GiftCertificateDetailsConsumerInterface extends ConsoleGiftCertificate
 const GiftCertificateDetailsConsumer: React.FC<GiftCertificateDetailsConsumerInterface> = ({
   pageCompany,
   giftCertificate,
-  userRouteBasePath,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany?._id,
   });
 
@@ -32,15 +32,15 @@ const GiftCertificateDetailsConsumer: React.FC<GiftCertificateDetailsConsumerInt
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Подарочные сертификаты',
-        href: links.giftCertificate.parentLink,
+        href: links.cms.companies.companyId.giftCertificates.url,
       },
     ],
   };
@@ -52,7 +52,6 @@ const GiftCertificateDetailsConsumer: React.FC<GiftCertificateDetailsConsumerInt
           showUsersSearch
           giftCertificate={giftCertificate}
           pageCompany={pageCompany}
-          userRouteBasePath={userRouteBasePath}
         />
       </Inner>
     </CmsCompanyLayout>
@@ -178,16 +177,11 @@ export const getServerSideProps = async (
       : null,
   };
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
       giftCertificate: castDbData(giftCertificate),
       pageCompany: castDbData(companyResult),
-      userRouteBasePath: links.user.itemPath,
     },
   };
 };

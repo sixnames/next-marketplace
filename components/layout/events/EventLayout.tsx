@@ -30,9 +30,9 @@ const EventLayout: React.FC<EventLayoutInterface> = ({ event, breadcrumbs, child
   });
   const [deleteEventMutation] = useDeleteEvent({
     reload: false,
-    redirectUrl: links.events.rubricSlug.events.url,
+    redirectUrl: links.eventRubrics.rubricSlug.events.url,
   });
-  const itemPath = links.events.rubricSlug.events.event.eventId;
+  const itemPath = links.eventRubrics.rubricSlug.events.event.eventId;
   const navConfig: ClientNavItemInterface[] = [
     {
       name: 'Детали',

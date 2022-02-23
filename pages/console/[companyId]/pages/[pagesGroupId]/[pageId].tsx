@@ -4,7 +4,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
 import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getPageSsr } from 'lib/pageUtils';
 import {
   castDbData,
@@ -26,7 +27,7 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
   pageCompany,
   cities,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     pagesGroupId: page.pagesGroupId,
   });
@@ -35,11 +36,11 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
     config: [
       {
         name: 'Группы страниц',
-        href: links.pages.parentLink,
+        href: links.console.companyId.pages.url,
       },
       {
         name: `${page.pagesGroup?.name}`,
-        href: links.pages.root,
+        href: links.console.companyId.pages.pagesGroupId.url,
       },
     ],
   };

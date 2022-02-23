@@ -6,7 +6,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getDbCollections } from 'db/mongodb';
 import { getProductFullSummary } from 'db/ssr/products/getProductFullSummary';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import {
   castDbData,
   getConsoleInitialData,
@@ -22,12 +23,11 @@ interface ProductDetailsInterface extends CompanyProductDetailsInterface {
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({
   product,
-  routeBasePath,
   companySlug,
   seoContentsList,
   pageCompany,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     rubricSlug: product.rubricSlug,
   });
@@ -37,15 +37,15 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     config: [
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.console.companyId.rubrics.url,
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.rubrics.root,
+        href: links.console.companyId.rubrics.rubricSlug.url,
       },
       {
         name: `Товары`,
-        href: links.rubrics.product.parentLink,
+        href: links.console.companyId.rubrics.rubricSlug.products.url,
       },
     ],
   };
@@ -60,11 +60,9 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
       hideCardConstructor
       hideDeleteButton
       product={product}
-      basePath={routeBasePath}
       breadcrumbs={breadcrumbs}
     >
       <CompanyProductDetails
-        routeBasePath={routeBasePath}
         product={product}
         companySlug={companySlug}
         seoContentsList={seoContentsList}
@@ -121,10 +119,6 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-  });
-
   return {
     props: {
       ...props,
@@ -132,7 +126,6 @@ export const getServerSideProps = async (
       seoContentsList: castDbData(payload.seoContentsList),
       companySlug: companyResult.slug,
       pageCompany: castDbData(props.layoutProps.pageCompany),
-      routeBasePath: links.parentLink,
     },
   };
 };

@@ -1,6 +1,6 @@
 import { getConsoleGiftCertificates } from 'db/ssr/company/getConsoleGiftCertificates';
 import { alwaysArray } from 'lib/arrayUtils';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -26,16 +26,11 @@ export const getConsoleGiftCertificatesPageSsr = async (
   });
   const payload = castDbData(rawPayload);
 
-  const links = getConsoleCompanyLinks({
-    companyId: company._id,
-  });
-
   return {
     props: {
       ...props,
       ...payload,
       pageCompany: castDbData(company),
-      userRouteBasePath: links.user.itemPath,
     },
   };
 };

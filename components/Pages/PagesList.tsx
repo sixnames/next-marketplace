@@ -1,16 +1,17 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import {
   CityInterface,
   PageInterface,
   PagesGroupInterface,
   PagesGroupTemplateInterface,
   PagesTemplateInterface,
-} from '../../db/uiInterfaces';
-import { useDeletePage } from '../../hooks/mutations/usePageMutations';
+} from 'db/uiInterfaces';
+import { useDeletePage } from 'hooks/mutations/usePageMutations';
+import { useBasePath } from 'hooks/useBasePath';
+import { PAGE_STATE_DRAFT } from 'lib/config/common';
+import { CONFIRM_MODAL, CREATE_PAGE_MODAL } from 'lib/config/modalVariants';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { PAGE_STATE_DRAFT } from '../../lib/config/common';
-import { CONFIRM_MODAL, CREATE_PAGE_MODAL } from '../../lib/config/modalVariants';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -22,16 +23,15 @@ import WpTable, { WpTableColumn } from '../WpTable';
 export interface PagesListInterface {
   pagesGroup: PagesGroupInterface | PagesGroupTemplateInterface;
   isTemplate?: boolean;
-  basePath: string;
   cities: CityInterface[];
 }
 
-const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, cities, isTemplate, basePath }) => {
+const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, cities, isTemplate }) => {
   const router = useRouter();
   const { showModal, showLoading } = useMutationCallbacks({
     reload: true,
   });
-
+  const basePath = useBasePath('pages');
   const [deletePageMutation] = useDeletePage();
 
   const columns: WpTableColumn<PageInterface | PagesTemplateInterface>[] = [

@@ -1,5 +1,5 @@
+import { ConsoleShopLayoutInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import { ConsoleShopLayoutInterface } from '../../db/uiInterfaces';
 import Inner from '../Inner';
 import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 import SyncErrorsList, { SyncErrorsListInterface } from '../SyncErrorsList';
@@ -11,14 +11,13 @@ export interface ShopSyncErrorsInterface
 const ShopSyncErrors: React.FC<ShopSyncErrorsInterface> = ({
   shop,
   notSyncedProducts,
-  basePath,
   breadcrumbs,
   showShopName,
   showControls,
   companySlug,
 }) => {
   return (
-    <ConsoleShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} breadcrumbs={breadcrumbs}>
       <Inner testId={'shop-sync-errors-page'}>
         <SyncErrorsList
           companySlug={companySlug}

@@ -5,7 +5,7 @@ import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -17,10 +17,9 @@ interface CreateTaskVariantConsumerInterface extends CreateTaskVariantFormInterf
 
 const CreateTaskVariantConsumer: React.FC<CreateTaskVariantConsumerInterface> = ({
   companySlug,
-  basePath,
   pageCompany,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
 
@@ -29,21 +28,21 @@ const CreateTaskVariantConsumer: React.FC<CreateTaskVariantConsumerInterface> = 
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Типы задач',
-        href: links.taskVariants.parentLink,
+        href: links.cms.companies.companyId.taskVariants.url,
       },
     ],
   };
   return (
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
-      <CreateTaskVariantForm companySlug={companySlug} basePath={basePath} />
+      <CreateTaskVariantForm companySlug={companySlug} />
     </CmsCompanyLayout>
   );
 };
@@ -54,17 +53,12 @@ interface CreateTaskVariantPageInterface
 
 const CreateTaskVariantPage: React.FC<CreateTaskVariantPageInterface> = ({
   layoutProps,
-  basePath,
   companySlug,
   pageCompany,
 }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <CreateTaskVariantConsumer
-        basePath={basePath}
-        companySlug={companySlug}
-        pageCompany={pageCompany}
-      />
+      <CreateTaskVariantConsumer companySlug={companySlug} pageCompany={pageCompany} />
     </ConsoleLayout>
   );
 };
@@ -97,14 +91,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
-      basePath: links.root,
       pageCompany: castDbData(companyResult),
       companySlug: companyResult.slug,
     },

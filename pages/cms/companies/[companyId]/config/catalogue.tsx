@@ -6,7 +6,8 @@ import { ConfigPageInterface } from 'components/layout/console/ConsoleConfigsLay
 import { getConfigPageData } from 'db/ssr/configs/getConfigPageData';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { CONFIG_GROUP_CATALOGUE } from 'lib/config/common';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -20,7 +21,7 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   normalConfigs,
   pageCompany,
 }) => {
-  const { root, parentLink } = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany?._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -28,11 +29,11 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: root,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };

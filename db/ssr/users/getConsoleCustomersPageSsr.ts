@@ -5,7 +5,7 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
 import { DEFAULT_PAGE, SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
@@ -35,9 +35,6 @@ export const getConsoleCustomersPageSsr = async (
   const { page, skip, limit, clearSlug } = await castUrlFilters({
     filters: alwaysArray(filters),
     searchFieldName: '_id',
-  });
-  const links = getConsoleCompanyLinks({
-    companyId: `${query.companyId}`,
   });
 
   const regexSearch = {
@@ -224,7 +221,6 @@ export const getConsoleCustomersPageSsr = async (
       clearSlug,
       totalDocs: 0,
       totalPages: 0,
-      itemPath: links.user.itemPath,
       page,
       docs: [],
     };
@@ -266,7 +262,6 @@ export const getConsoleCustomersPageSsr = async (
     clearSlug,
     totalDocs: usersResult.totalDocs,
     totalPages: usersResult.totalPages,
-    itemPath: links.user.itemPath,
     page,
     docs,
   };

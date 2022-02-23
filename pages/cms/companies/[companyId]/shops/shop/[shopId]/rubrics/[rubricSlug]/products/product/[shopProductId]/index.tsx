@@ -9,7 +9,8 @@ import {
   CompanyInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -17,7 +18,7 @@ import * as React from 'react';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
-  companySlug: string;
+  companySlug?: string;
   pageCompany: CompanyInterface;
 }
 
@@ -36,11 +37,11 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     return <RequestError />;
   }
 
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
     rubricSlug: rubric?.slug,
-    productId: shopProduct._id,
+    shopProductId: shopProduct._id,
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -48,27 +49,27 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.cms.companies.companyId.shops.url,
       },
       {
         name: shop.name,
-        href: links.shop.root,
+        href: links.cms.companies.companyId.shops.shop.shopId.url,
       },
       {
         name: 'Товары',
-        href: links.shop.rubrics.parentLink,
+        href: links.cms.companies.companyId.shops.shop.shopId.rubrics.url,
       },
       {
         name: `${rubric?.name}`,
-        href: links.shop.rubrics.product.parentLink,
+        href: links.cms.companies.companyId.shops.shop.shopId.rubrics.rubricSlug.url,
       },
     ],
   };
@@ -76,7 +77,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   return (
     <ConsoleShopProductLayout showEditButton breadcrumbs={breadcrumbs} shopProduct={shopProduct}>
       <CompanyProductDetails
-        routeBasePath={''}
         product={summary}
         seoContentsList={cardContentCities}
         companySlug={companySlug}

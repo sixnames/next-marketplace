@@ -9,7 +9,7 @@ import { COL_RUBRIC_VARIANTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import {
   castDbData,
   getConsoleInitialData,
@@ -22,17 +22,13 @@ import * as React from 'react';
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 const pageTitle = 'Рубрикатор';
 
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany, routeBasePath }) => {
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany }) => {
   return (
     <AppContentWrapper>
       <Inner lowBottom>
         <WpTitle>{pageTitle}</WpTitle>
       </Inner>
-      <CompanyRubricsList
-        rubrics={rubrics}
-        pageCompany={pageCompany}
-        routeBasePath={routeBasePath}
-      />
+      <CompanyRubricsList rubrics={rubrics} pageCompany={pageCompany} />
     </AppContentWrapper>
   );
 };
@@ -152,15 +148,10 @@ export const getServerSideProps = async (
     };
   });
 
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-  });
-
   return {
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
-      routeBasePath: links.root,
       pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };

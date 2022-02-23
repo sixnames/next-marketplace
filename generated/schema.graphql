@@ -286,6 +286,7 @@ enum ConfigVariant {
   rubrics
   string
   tel
+  visibleEventRubrics
   visibleRubrics
 }
 
@@ -902,6 +903,11 @@ type Mutation {
   updateVisibleCategoriesInNavDropdown(
     input: UpdateVisibleCategoriesInNavDropdownInput!
   ): ConfigPayload!
+
+  """
+  Should update Event rubric nav item config
+  """
+  updateVisibleNavEventRubricConfig(input: UpdateVisibleNavEventRubricConfigInput!): ConfigPayload!
 
   """
   Should update rubric nav item config
@@ -1721,6 +1727,21 @@ input UpdateVisibleCategoriesInNavDropdownInput {
   multi: Boolean!
   name: String!
   rubricId: ObjectId!
+  slug: String!
+  variant: ConfigVariant!
+}
+
+input UpdateVisibleNavEventRubricConfigInput {
+  _id: ObjectId!
+  acceptedFormats: [String!]!
+  cities: JSONObject!
+  citySlug: String!
+  companySlug: String!
+  description: String
+  group: String!
+  multi: Boolean!
+  name: String!
+  rubricSlug: String!
   slug: String!
   variant: ConfigVariant!
 }

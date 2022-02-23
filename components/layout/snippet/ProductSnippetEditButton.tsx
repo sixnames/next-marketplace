@@ -1,7 +1,7 @@
 import ControlButton from 'components/button/ControlButton';
 import { useSiteUserContext } from 'components/context/siteUserContext';
 import { ProductFacetInterface } from 'db/uiInterfaces';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+
 import * as React from 'react';
 
 interface ProductSnippetEditButtonInterface {
@@ -13,11 +13,6 @@ const ProductSnippetEditButton: React.FC<ProductSnippetEditButtonInterface> = ({
   if (!sessionUser || !sessionUser.showAdminUiInCatalogue) {
     return null;
   }
-  const links = getConsoleRubricLinks({
-    rubricSlug: product.rubricSlug,
-    productId: product._id,
-    basePath: sessionUser.editLinkBasePath,
-  });
   return (
     <div className='absolute top-0 left-0 z-50'>
       <ControlButton
@@ -28,7 +23,10 @@ const ProductSnippetEditButton: React.FC<ProductSnippetEditButtonInterface> = ({
         ariaLabel={'edit'}
         roundedTopLeft
         onClick={() => {
-          window.open(links.product.root, '_blank');
+          window.open(
+            `${sessionUser.editLinkBasePath}/rubrics/${product.rubricSlug}/products/product/${product._id}`,
+            '_blank',
+          );
         }}
       />
     </div>

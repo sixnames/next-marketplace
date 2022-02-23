@@ -16,6 +16,7 @@ import WpTitle from 'components/WpTitle';
 import { getConsoleShopsListPageSsr } from 'db/ssr/shops/getConsoleShopsListPageSsr';
 import { AppPaginationInterface, CompanyInterface, ShopInterface } from 'db/uiInterfaces';
 import { useDeleteShopFromCompanyMutation } from 'generated/apolloComponents';
+import { useBasePath } from 'hooks/useBasePath';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'lib/config/modalVariants';
@@ -36,13 +37,12 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
   page,
   totalPages,
   totalDocs,
-  itemPath,
   docs,
   pageCompany,
 }) => {
   const isPageLoading = usePageLoadingState();
-
   const router = useRouter();
+
   const { showModal, showLoading, onCompleteCallback, onErrorCallback, showErrorNotification } =
     useMutationCallbacks({
       reload: true,
@@ -53,6 +53,9 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
     onCompleted: (data) => onCompleteCallback(data.deleteShopFromCompany),
     onError: onErrorCallback,
   });
+
+  const basePath = useBasePath('shops');
+  const itemPath = `${basePath}/shop`;
 
   const counterString = React.useMemo(() => {
     if (totalDocs < 1) {

@@ -79,14 +79,6 @@ const consoleNavItemBases: NavItemBaseMode[] = [
   },
   {
     nameI18n: {
-      ru: 'Мероприятия',
-      en: 'Events',
-    },
-    slug: 'console-events',
-    path: getConsoleLink(links.console.companyId.events.url),
-  },
-  {
-    nameI18n: {
       ru: 'Страницы',
       en: 'Pages',
     },
@@ -116,6 +108,14 @@ const consoleNavItemBases: NavItemBaseMode[] = [
     },
     slug: 'console-rubrics',
     path: getConsoleLink(links.console.companyId.rubrics.url),
+  },
+  {
+    nameI18n: {
+      ru: 'Рубрикатор мероприятий',
+      en: 'Events',
+    },
+    slug: 'console-events',
+    path: getConsoleLink(links.console.companyId.eventRubrics.url),
   },
   {
     nameI18n: {
@@ -184,6 +184,14 @@ const cmsNavItemBases: NavItemBaseMode[] = [
     },
     slug: 'cms-rubrics',
     path: links.cms.rubrics.url,
+  },
+  {
+    nameI18n: {
+      ru: 'Рубрикатор мероприятий',
+      en: 'Events',
+    },
+    slug: 'cms-events',
+    path: links.cms.eventRubrics.url,
   },
   {
     nameI18n: {

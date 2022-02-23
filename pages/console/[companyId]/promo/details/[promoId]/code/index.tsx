@@ -5,7 +5,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -21,7 +22,7 @@ const PromoCodeListPage: React.FC<PromoCodeListPageInterface> = ({
   pageCompany,
   promoCodes,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     promoId: promo._id,
   });
@@ -30,24 +31,19 @@ const PromoCodeListPage: React.FC<PromoCodeListPageInterface> = ({
     config: [
       {
         name: 'Акции',
-        href: links.promo.parentLink,
+        href: links.console.companyId.promo.url,
       },
       {
         name: `${promo.name}`,
-        href: links.promo.root,
+        href: links.console.companyId.promo.details.promoId.url,
       },
     ],
   };
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
-      <ConsolePromoLayout promo={promo} basePath={links.parentLink} breadcrumbs={breadcrumbs}>
-        <ConsolePromoCodeList
-          basePath={links.parentLink}
-          pageCompany={pageCompany}
-          promo={promo}
-          promoCodes={promoCodes}
-        />
+      <ConsolePromoLayout promo={promo} breadcrumbs={breadcrumbs}>
+        <ConsolePromoCodeList pageCompany={pageCompany} promo={promo} promoCodes={promoCodes} />
       </ConsolePromoLayout>
     </ConsoleLayout>
   );

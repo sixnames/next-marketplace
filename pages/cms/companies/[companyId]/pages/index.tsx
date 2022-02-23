@@ -4,7 +4,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -24,7 +25,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
   pagesGroups,
   pageCompany,
 }) => {
-  const { root, parentLink, ...links } = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -32,11 +33,11 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: pageCompany.name,
-        href: root,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };
@@ -45,11 +46,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
     <ConsoleLayout title={pageTitle} {...layoutProps}>
       <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
-          <PageGroupsList
-            companySlug={pageCompany.slug}
-            basePath={links.pages.parentLink}
-            pagesGroups={pagesGroups}
-          />
+          <PageGroupsList companySlug={pageCompany.slug} pagesGroups={pagesGroups} />
         </Inner>
       </CmsCompanyLayout>
     </ConsoleLayout>

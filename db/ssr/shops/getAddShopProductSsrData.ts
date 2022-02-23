@@ -67,7 +67,6 @@ export async function getAddShopProductSsrData({
     rubricName: getFieldStringLocale(rubric.nameI18n, locale),
     rubricSlug: rubric.slug,
     clearSlug,
-    basePath,
     totalDocs,
     totalPages,
     attributes,

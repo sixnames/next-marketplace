@@ -5,7 +5,8 @@ import { getDbCollections } from 'db/mongodb';
 import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
 import { AppContentWrapperBreadCrumbs, ShopInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -24,7 +25,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
 }) => {
   const title = `Заказ №${order.itemId}`;
 
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -34,23 +35,23 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${shop.company?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.cms.companies.companyId.shops.url,
       },
       {
         name: shop.name,
-        href: links.shop.root,
+        href: links.cms.companies.companyId.shops.shop.shopId.url,
       },
       {
         name: 'Заказы',
-        href: links.shop.order.parentLink,
+        href: links.cms.companies.companyId.shops.shop.shopId.shopOrders.url,
       },
     ],
   };

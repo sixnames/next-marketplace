@@ -1,4 +1,4 @@
-import { getCatalogueData } from 'db/utils/catalogueUtils';
+import { getCatalogueData } from 'db/ssr/catalogue/catalogueUtils';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';

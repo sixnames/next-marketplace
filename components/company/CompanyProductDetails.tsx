@@ -5,9 +5,7 @@ import * as React from 'react';
 import Inner from '../Inner';
 import WpImage from '../WpImage';
 
-export interface CompanyProductDetailsInterface extends ConsoleRubricProductEditorInterface {
-  routeBasePath: string;
-}
+export interface CompanyProductDetailsInterface extends ConsoleRubricProductEditorInterface {}
 
 const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
   product,

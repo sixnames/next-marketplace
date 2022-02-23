@@ -1,5 +1,6 @@
 import { getConsoleCompanyRubricProducts } from 'db/ssr/products/getConsoleCompanyRubricProducts';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { ConsoleRubricProductsListPageInterface } from 'pages/console/[companyId]/rubrics/[rubricSlug]/products/[...filters]';
@@ -21,12 +22,11 @@ export const getConsoleRubricProductsListPageSsr = async (
 
   const locale = props.sessionLocale;
   const currency = props.initialData.currency;
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: props.layoutProps.pageCompany._id,
     rubricSlug: `${query.rubricSlug}`,
   });
-  const basePath = links.rubrics.parentLink;
-  const itemPath = links.rubrics.product.itemPath;
+  const basePath = links.console.companyId.rubrics.rubricSlug.products.url;
 
   const payload = await getConsoleCompanyRubricProducts({
     query: context.query,
@@ -43,9 +43,7 @@ export const getConsoleRubricProductsListPageSsr = async (
     props: {
       ...props,
       ...castedPayload,
-      itemPath,
       companySlug,
-      routeBasePath: links.parentLink,
     },
   };
 };

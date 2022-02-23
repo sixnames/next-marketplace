@@ -3,7 +3,7 @@ import { getDbCollections } from 'db/mongodb';
 import { getConsoleGiftCertificates } from 'db/ssr/company/getConsoleGiftCertificates';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -63,16 +63,11 @@ export const getCmsCompanyGiftCertificatesPageSsr = async (
   });
   const payload = castDbData(rawPayload);
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
       ...payload,
       pageCompany: castDbData(companyResult),
-      userRouteBasePath: links.user.itemPath,
     },
   };
 };

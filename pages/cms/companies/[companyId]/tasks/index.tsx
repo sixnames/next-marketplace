@@ -5,7 +5,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getDbCollections } from 'db/mongodb';
 import { getCompanyTasksListSsr } from 'db/ssr/company/getCompanyTasksListSsr';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -16,12 +17,8 @@ interface TasksListConsumerInterface extends ConsoleTasksListInterface {
   pageCompany: CompanyInterface;
 }
 
-const TasksListConsumer: React.FC<TasksListConsumerInterface> = ({
-  basePath,
-  pageCompany,
-  tasks,
-}) => {
-  const links = getCmsCompanyLinks({
+const TasksListConsumer: React.FC<TasksListConsumerInterface> = ({ pageCompany, tasks }) => {
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -29,11 +26,11 @@ const TasksListConsumer: React.FC<TasksListConsumerInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };
@@ -41,7 +38,7 @@ const TasksListConsumer: React.FC<TasksListConsumerInterface> = ({
   return (
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Inner>
-        <ConsoleTasksList basePath={basePath} tasks={tasks} />
+        <ConsoleTasksList tasks={tasks} />
       </Inner>
     </CmsCompanyLayout>
   );
@@ -51,15 +48,10 @@ interface TasksListPageInterface
   extends GetAppInitialDataPropsInterface,
     TasksListConsumerInterface {}
 
-const TasksListPage: React.FC<TasksListPageInterface> = ({
-  layoutProps,
-  pageCompany,
-  tasks,
-  basePath,
-}) => {
+const TasksListPage: React.FC<TasksListPageInterface> = ({ layoutProps, pageCompany, tasks }) => {
   return (
     <ConsoleLayout {...layoutProps} title={pageTitle}>
-      <TasksListConsumer tasks={tasks} basePath={basePath} pageCompany={pageCompany} />
+      <TasksListConsumer tasks={tasks} pageCompany={pageCompany} />
     </ConsoleLayout>
   );
 };
@@ -103,16 +95,11 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
       tasks: castDbData(payload),
       pageCompany: castDbData(companyResult),
-      basePath: links.root,
     },
   };
 };

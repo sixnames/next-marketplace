@@ -20,6 +20,7 @@ import {
   UserInterface,
 } from 'db/uiInterfaces';
 import { useDeleteUserMutation } from 'hooks/mutations/useUserMutations';
+import { useBasePath } from 'hooks/useBasePath';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'lib/config/modalVariants';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
@@ -42,7 +43,6 @@ const CmsUsersListConsumer: React.FC<CmsUsersListConsumerInterface> = ({
   docs,
   page,
   totalPages,
-  itemPath,
   filters: { roles },
 }) => {
   const router = useRouter();
@@ -52,6 +52,9 @@ const CmsUsersListConsumer: React.FC<CmsUsersListConsumerInterface> = ({
   });
 
   const [deleteUserMutation] = useDeleteUserMutation();
+
+  const basePath = useBasePath('users');
+  const itemPath = `${basePath}/user`;
 
   const columns: WpTableColumn<UserInterface>[] = [
     {

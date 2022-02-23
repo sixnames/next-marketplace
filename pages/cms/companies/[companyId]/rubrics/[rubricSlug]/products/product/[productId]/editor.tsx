@@ -9,7 +9,8 @@ import {
   ProductSummaryInterface,
   SeoContentCitiesInterface,
 } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -19,16 +20,14 @@ interface ProductAttributesInterface {
   product: ProductSummaryInterface;
   pageCompany: CompanyInterface;
   cardContent: SeoContentCitiesInterface;
-  routeBasePath: string;
 }
 
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({
   product,
   pageCompany,
-  routeBasePath,
   cardContent,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     rubricSlug: product.rubricSlug,
     productId: product._id,
@@ -38,38 +37,33 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.url,
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.url,
       },
       {
         name: `Товары`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.products.url,
       },
       {
         name: `${product.snippetTitle}`,
-        href: links.rubrics.product.root,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.products.product.productId.url,
       },
     ],
   };
 
   return (
-    <CmsProductLayout
-      companySlug={pageCompany.slug}
-      product={product}
-      breadcrumbs={breadcrumbs}
-      basePath={routeBasePath}
-    >
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductEditor
         product={product}
         companySlug={pageCompany.slug}
@@ -137,17 +131,12 @@ export const getServerSideProps = async (
 
   const { summary, seoContentsList } = payload;
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
       product: castDbData(summary),
       cardContent: castDbData(seoContentsList),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.root,
     },
   };
 };

@@ -7,7 +7,8 @@ import { castRubricForUI } from 'db/cast/castRubricForUI';
 import { COL_PROMO_PRODUCTS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, PromoInterface, RubricInterface } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getPromoSsr } from 'lib/promoUtils';
 import {
   castDbData,
@@ -26,7 +27,7 @@ const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
   promo,
   rubrics,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     promoId: promo._id,
   });
@@ -36,22 +37,18 @@ const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
     config: [
       {
         name: 'Акции',
-        href: links.promo.parentLink,
+        href: links.console.companyId.promo.url,
       },
       {
         name: `${promo.name}`,
-        href: links.promo.root,
+        href: links.console.companyId.promo.details.promoId.url,
       },
     ],
   };
 
   return (
-    <ConsolePromoLayout basePath={links.parentLink} promo={promo} breadcrumbs={breadcrumbs}>
-      <CompanyRubricsList
-        rubrics={rubrics}
-        pageCompany={pageCompany}
-        routeBasePath={links.promo.root}
-      />
+    <ConsolePromoLayout promo={promo} breadcrumbs={breadcrumbs}>
+      <CompanyRubricsList rubrics={rubrics} pageCompany={pageCompany} />
     </ConsolePromoLayout>
   );
 };

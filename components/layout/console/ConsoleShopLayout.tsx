@@ -4,53 +4,48 @@ import AppContentWrapper from 'components/layout/AppContentWrapper';
 import AppSubNav from 'components/layout/AppSubNav';
 import WpTitle from 'components/WpTitle';
 import { ConsoleShopLayoutInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { useBasePath } from 'hooks/useBasePath';
+
 import Head from 'next/head';
 import * as React from 'react';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
 const ConsoleShopLayout: React.FC<ConsoleShopLayoutInterface> = ({
   shop,
   breadcrumbs,
-  basePath,
   children,
 }) => {
-  const navConfig = React.useMemo(() => {
-    const links = getCmsCompanyLinks({
-      basePath,
-      shopId: shop._id,
-      companyId: shop.companyId,
-    });
+  const basePath = useBasePath('shopId');
 
-    return [
-      {
-        name: 'Детали',
-        testId: 'shop-details',
-        path: links.shop.root,
-        exact: true,
-      },
-      {
-        name: 'Заказы',
-        testId: 'shop-orders',
-        path: links.shop.order.parentLink,
-      },
-      {
-        name: 'Товары',
-        testId: 'shop-products',
-        path: links.shop.rubrics.parentLink,
-      },
-      {
-        name: 'Изображения',
-        testId: 'shop-assets',
-        path: links.shop.assets,
-        exact: true,
-      },
-      {
-        name: 'Ошибки синхронизации',
-        testId: 'shop-sync-errors',
-        path: links.shop.syncErrors,
-      },
-    ];
-  }, [basePath, shop]);
+  const navConfig: ClientNavItemInterface[] = [
+    {
+      name: 'Детали',
+      testId: 'shop-details',
+      path: basePath,
+      exact: true,
+    },
+    {
+      name: 'Заказы',
+      testId: 'shop-orders',
+      path: `${basePath}/shop-orders`,
+    },
+    {
+      name: 'Товары',
+      testId: 'shop-products',
+      path: `${basePath}/rubrics`,
+    },
+    {
+      name: 'Изображения',
+      testId: 'shop-assets',
+      path: `${basePath}/assets`,
+      exact: true,
+    },
+    {
+      name: 'Ошибки синхронизации',
+      testId: 'shop-sync-errors',
+      path: `${basePath}/sync-errors`,
+    },
+  ];
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

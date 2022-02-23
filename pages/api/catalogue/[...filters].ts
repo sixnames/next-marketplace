@@ -1,4 +1,4 @@
-import { getCatalogueData } from 'db/utils/catalogueUtils';
+import { getCatalogueData } from 'db/ssr/catalogue/catalogueUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { CATALOGUE_PRODUCTS_LIMIT, CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
@@ -62,7 +62,7 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(rawCatalogueData));
   } catch (e) {
-    console.log(e);
+    console.log('api/catalogue/[...filters] error', e);
 
     res.statusCode = 500;
     res.setHeader('Content-Type', 'application/json');

@@ -7,7 +7,7 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import WpTitle from 'components/WpTitle';
 import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getCmsLinks } from 'lib/linkUtils';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
@@ -16,14 +16,13 @@ const pageTitle = 'Типы задач';
 interface TaskVariantsListConsumerInterface extends ConsoleTaskVariantsListInterface {}
 
 const TaskVariantsListConsumer: React.FC<TaskVariantsListConsumerInterface> = ({
-  basePath,
   taskVariants,
 }) => {
   return (
     <AppContentWrapper>
       <Inner>
         <WpTitle>{pageTitle}</WpTitle>
-        <ConsoleTaskVariantsList basePath={basePath} taskVariants={taskVariants} />
+        <ConsoleTaskVariantsList taskVariants={taskVariants} />
       </Inner>
     </AppContentWrapper>
   );
@@ -36,11 +35,10 @@ interface TaskVariantsListPageInterface
 const TaskVariantsListPage: React.FC<TaskVariantsListPageInterface> = ({
   layoutProps,
   taskVariants,
-  basePath,
 }) => {
   return (
     <ConsoleLayout {...layoutProps} title={pageTitle}>
-      <TaskVariantsListConsumer taskVariants={taskVariants} basePath={basePath} />
+      <TaskVariantsListConsumer taskVariants={taskVariants} />
     </ConsoleLayout>
   );
 };
@@ -66,13 +64,10 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsLinks({});
-
   return {
     props: {
       ...props,
       taskVariants: castDbData(payload),
-      basePath: links.root,
     },
   };
 };

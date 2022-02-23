@@ -4,7 +4,7 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import PromoList, { PromoListInterface } from 'components/Promo/PromoList';
 import WpTitle from 'components/WpTitle';
 import { CompanyInterface } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { getPromoListSsr } from 'lib/promoUtils';
 import {
   castDbData,
@@ -24,14 +24,13 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
   layoutProps,
   promoList,
   pageCompany,
-  basePath,
 }) => {
   return (
     <ConsoleLayout title={pageTitle} {...layoutProps}>
       <AppContentWrapper>
         <Inner>
           <WpTitle>{pageTitle}</WpTitle>
-          <PromoList promoList={promoList} pageCompany={pageCompany} basePath={basePath} />
+          <PromoList promoList={promoList} pageCompany={pageCompany} />
         </Inner>
       </AppContentWrapper>
     </ConsoleLayout>
@@ -53,14 +52,9 @@ export const getServerSideProps = async (
     companyId: `${props.layoutProps.pageCompany._id}`,
   });
 
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-  });
-
   return {
     props: {
       ...props,
-      basePath: links.promo.parentLink,
       promoList: castDbData(promoList),
       pageCompany: props.layoutProps.pageCompany,
     },

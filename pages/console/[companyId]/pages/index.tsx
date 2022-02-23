@@ -3,7 +3,7 @@ import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
 import WpTitle from 'components/WpTitle';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import {
   castDbData,
@@ -20,9 +20,6 @@ interface PageGroupsPageInterface
     Omit<PageGroupsListInterface, 'basePath' | 'pageTitle'> {}
 
 const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesGroups }) => {
-  const links = getConsoleCompanyLinks({
-    companyId: layoutProps.pageCompany._id,
-  });
   return (
     <ConsoleLayout title={pageTitle} {...layoutProps}>
       <AppContentWrapper>
@@ -30,7 +27,6 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesG
           <WpTitle>{pageTitle}</WpTitle>
           <PageGroupsList
             companySlug={`${layoutProps.pageCompany.slug}`}
-            basePath={links.pages.parentLink}
             pagesGroups={pagesGroups}
           />
         </Inner>

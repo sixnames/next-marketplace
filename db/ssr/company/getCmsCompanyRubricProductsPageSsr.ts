@@ -1,7 +1,8 @@
 import { getDbCollections } from 'db/mongodb';
 import { getConsoleCompanyRubricProducts } from 'db/ssr/products/getConsoleCompanyRubricProducts';
 import { CompanyInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -41,12 +42,12 @@ export const getCmsCompanyRubricProductsPageSsr = async (
 
   const locale = initialProps.props.sessionLocale;
   const currency = initialProps.props.initialData.currency;
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: companyResult._id,
     rubricSlug: `${query.rubricSlug}`,
   });
-  const basePath = links.rubrics.product.parentLink;
-  const itemPath = links.rubrics.product.itemPath;
+  const basePath = links.cms.companies.companyId.rubrics.rubricSlug.url;
+  const itemPath = `${basePath}/products/product`;
 
   const payload = await getConsoleCompanyRubricProducts({
     query,

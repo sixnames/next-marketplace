@@ -1,9 +1,9 @@
+import { CreateBlogPostInputInterface } from 'db/dao/blog/createBlogPost';
 import { Form, Formik } from 'formik';
+import { useCreateBlogPost } from 'hooks/mutations/useBlogMutations';
 import * as React from 'react';
-import { CreateBlogPostInputInterface } from '../../db/dao/blog/createBlogPost';
-import { useCreateBlogPost } from '../../hooks/mutations/useBlogMutations';
+import { createBlogPostSchema } from 'validation/blogSchema';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { createBlogPostSchema } from '../../validation/blogSchema';
 import WpButton from '../button/WpButton';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import ModalButtons from './ModalButtons';
@@ -12,11 +12,10 @@ import ModalTitle from './ModalTitle';
 
 export interface BlogPostModalInterface {
   companySlug: string;
-  basePath: string;
 }
 
-const BlogPostModal: React.FC<BlogPostModalInterface> = ({ companySlug, basePath }) => {
-  const [createBlogPostHandler] = useCreateBlogPost(basePath);
+const BlogPostModal: React.FC<BlogPostModalInterface> = ({ companySlug }) => {
+  const [createBlogPostHandler] = useCreateBlogPost();
   const validationSchema = useValidationSchema({
     schema: createBlogPostSchema,
   });

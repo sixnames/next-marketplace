@@ -1,11 +1,4 @@
-import {
-  ignoreNoImageStage,
-  shopProductsGroupPipeline,
-  summaryPipeline,
-} from 'db/utils/constantPipelines';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
-import { ObjectId } from 'mongodb';
-import { getDbCollections } from '../db/mongodb';
+import { getDbCollections } from 'db/mongodb';
 import {
   CompanyInterface,
   MainPageBannerInterface,
@@ -15,7 +8,14 @@ import {
   ShopInterface,
   ShopProductInterface,
   TopFilterInterface,
-} from '../db/uiInterfaces';
+} from 'db/uiInterfaces';
+import {
+  ignoreNoImageStage,
+  shopProductsGroupPipeline,
+  summaryPipeline,
+} from 'db/utils/constantPipelines';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { ObjectId } from 'mongodb';
 import {
   CATALOGUE_TOP_FILTERS_LIMIT,
   CATALOGUE_TOP_PRODUCTS_LIMIT,
@@ -39,7 +39,7 @@ export interface MainPageInterface {
 }
 
 interface GetMainPageDataInterface {
-  companySlug: string;
+  companySlug?: string;
   citySlug: string;
   currency: string;
   sessionLocale: string;
@@ -208,7 +208,7 @@ export async function getMainPageData({
 
   // banners
   const promoCompanyMatch =
-    companySlug === DEFAULT_COMPANY_SLUG
+    companySlug === DEFAULT_COMPANY_SLUG || !companySlug
       ? {}
       : {
           companySlug,

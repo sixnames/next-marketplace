@@ -11,7 +11,7 @@ import { AppContentWrapperBreadCrumbs, CompanyInterface, SupplierInterface } fro
 import { SORT_ASC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -25,7 +25,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   shopProduct,
   disableAddSupplier,
   suppliers,
-  routeBasePath,
   pageCompany,
 }) => {
   const { summary, shop } = shopProduct;
@@ -39,11 +38,11 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     return <RequestError />;
   }
 
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
     rubricSlug: rubric?.slug,
-    productId: shopProduct._id,
+    shopProductId: shopProduct._id,
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -51,31 +50,32 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.cms.companies.companyId.shops.url,
       },
       {
         name: shop.name,
-        href: links.shop.root,
+        href: links.cms.companies.companyId.shops.shop.shopId.url,
       },
       {
         name: 'Товары',
-        href: links.shop.rubrics.parentLink,
+        href: links.cms.companies.companyId.shops.shop.shopId.rubrics.url,
       },
       {
         name: `${rubric?.name}`,
-        href: links.shop.rubrics.product.parentLink,
+        href: links.cms.companies.companyId.shops.shop.shopId.rubrics.rubricSlug.url,
       },
       {
         name: `${snippetTitle}`,
-        href: links.shop.rubrics.product.root,
+        href: links.cms.companies.companyId.shops.shop.shopId.rubrics.rubricSlug.products.product
+          .shopProductId.url,
       },
     ],
   };
@@ -84,7 +84,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     <ConsoleShopProductLayout showEditButton breadcrumbs={breadcrumbs} shopProduct={shopProduct}>
       <CompanyProductSuppliers
         shopProduct={shopProduct}
-        routeBasePath={routeBasePath}
         disableAddSupplier={disableAddSupplier}
         suppliers={suppliers}
       />
@@ -163,9 +162,6 @@ export const getServerSideProps = async (
 
   const disabledSuppliers = suppliers.filter(({ disabled }) => disabled);
 
-  const links = getProjectLinks({
-    companyId: shopProduct.companyId,
-  });
   return {
     props: {
       ...props,
@@ -173,7 +169,6 @@ export const getServerSideProps = async (
       suppliers: castDbData(suppliers),
       pageCompany: castDbData(companyResult),
       disableAddSupplier: disabledSuppliers.length === suppliers.length,
-      routeBasePath: links.cms.companies.companyId.url,
     },
   };
 };

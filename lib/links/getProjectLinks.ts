@@ -29,6 +29,7 @@ export interface LinkPropsInterface {
   rubricVariantId?: DynamicPagePropType;
   userId?: DynamicPagePropType;
   pageSlug?: DynamicPagePropType;
+  eventSlug?: DynamicPagePropType;
   promoSlug?: DynamicPagePropType;
 }
 
@@ -61,6 +62,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
     rubricVariantId,
     userId,
     pageSlug,
+    eventSlug,
     promoSlug,
   } = props || {};
   return {
@@ -133,6 +135,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
         cardContent: { url: `/api/events/card-content` },
         counter: { url: `/api/events/counter` },
       },
+      eventsCatalogue: { url: `/api/events-catalogue` },
       giftCertificates: {
         url: `/api/gift-certificates`,
         check: { url: `/api/gift-certificates/check` },
@@ -283,34 +286,38 @@ export function getProjectLinks(props?: LinkPropsInterface) {
             seo: { url: `/cms/companies/${companyId}/config/seo` },
             ui: { url: `/cms/companies/${companyId}/config/ui` },
           },
-          events: {
-            url: `/cms/companies/${companyId}/events`,
+          eventRubrics: {
+            url: `/cms/companies/${companyId}/event-rubrics`,
             rubricSlug: {
-              url: `/cms/companies/${companyId}/events/${rubricSlug}`,
-              attributes: { url: `/cms/companies/${companyId}/events/${rubricSlug}/attributes` },
+              url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}`,
+              attributes: {
+                url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}/attributes`,
+              },
               events: {
-                url: `/cms/companies/${companyId}/events/${rubricSlug}/events`,
-                create: { url: `/cms/companies/${companyId}/events/${rubricSlug}/events/create` },
+                url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}/events`,
+                create: {
+                  url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}/events/create`,
+                },
                 event: {
-                  url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event`,
+                  url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}/events/event`,
                   eventId: {
-                    url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event/${eventId}`,
+                    url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}/events/event/${eventId}`,
                     assets: {
-                      url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event/${eventId}/assets`,
+                      url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}/events/event/${eventId}/assets`,
                     },
                     attributes: {
-                      url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event/${eventId}/attributes`,
+                      url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}/events/event/${eventId}/attributes`,
                     },
                     editor: {
-                      url: `/cms/companies/${companyId}/events/${rubricSlug}/events/event/${eventId}/editor`,
+                      url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}/events/event/${eventId}/editor`,
                     },
                   },
                 },
               },
               seoContent: {
-                url: `/cms/companies/${companyId}/events/${rubricSlug}/seo-content`,
+                url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}/seo-content`,
                 seoContentSlug: {
-                  url: `/cms/companies/${companyId}/events/${rubricSlug}/seo-content/${seoContentSlug}`,
+                  url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}/seo-content/${seoContentSlug}`,
                 },
               },
             },
@@ -463,6 +470,34 @@ export function getProjectLinks(props?: LinkPropsInterface) {
         project: { url: `/cms/config/project` },
         seo: { url: `/cms/config/seo` },
         ui: { url: `/cms/config/ui` },
+      },
+      eventRubrics: {
+        url: `/cms/event-rubrics`,
+        rubricSlug: {
+          url: `/cms/event-rubrics/${rubricSlug}`,
+          attributes: { url: `/cms/event-rubrics/${rubricSlug}/attributes` },
+          events: {
+            url: `/cms/event-rubrics/${rubricSlug}/events`,
+            create: { url: `/cms/event-rubrics/${rubricSlug}/events/create` },
+            event: {
+              url: `/cms/event-rubrics/${rubricSlug}/events/event`,
+              eventId: {
+                url: `/cms/event-rubrics/${rubricSlug}/events/event/${eventId}`,
+                assets: { url: `/cms/event-rubrics/${rubricSlug}/events/event/${eventId}/assets` },
+                attributes: {
+                  url: `/cms/event-rubrics/${rubricSlug}/events/event/${eventId}/attributes`,
+                },
+                editor: { url: `/cms/event-rubrics/${rubricSlug}/events/event/${eventId}/editor` },
+              },
+            },
+          },
+          seoContent: {
+            url: `/cms/event-rubrics/${rubricSlug}/seo-content`,
+            seoContentSlug: {
+              url: `/cms/event-rubrics/${rubricSlug}/seo-content/${seoContentSlug}`,
+            },
+          },
+        },
       },
       languages: { url: `/cms/languages` },
       manufacturers: { url: `/cms/manufacturers` },
@@ -623,34 +658,34 @@ export function getProjectLinks(props?: LinkPropsInterface) {
             ui: { url: `/console/${companyId}/config/config/ui` },
           },
         },
-        events: {
-          url: `/console/${companyId}/events`,
+        eventRubrics: {
+          url: `/console/${companyId}/event-rubrics`,
           rubricSlug: {
-            url: `/console/${companyId}/events/${rubricSlug}`,
-            attributes: { url: `/console/${companyId}/events/${rubricSlug}/attributes` },
+            url: `/console/${companyId}/event-rubrics/${rubricSlug}`,
+            attributes: { url: `/console/${companyId}/event-rubrics/${rubricSlug}/attributes` },
             events: {
-              url: `/console/${companyId}/events/${rubricSlug}/events`,
-              create: { url: `/console/${companyId}/events/${rubricSlug}/events/create` },
+              url: `/console/${companyId}/event-rubrics/${rubricSlug}/events`,
+              create: { url: `/console/${companyId}/event-rubrics/${rubricSlug}/events/create` },
               event: {
-                url: `/console/${companyId}/events/${rubricSlug}/events/event`,
+                url: `/console/${companyId}/event-rubrics/${rubricSlug}/events/event`,
                 eventId: {
-                  url: `/console/${companyId}/events/${rubricSlug}/events/event/${eventId}`,
+                  url: `/console/${companyId}/event-rubrics/${rubricSlug}/events/event/${eventId}`,
                   assets: {
-                    url: `/console/${companyId}/events/${rubricSlug}/events/event/${eventId}/assets`,
+                    url: `/console/${companyId}/event-rubrics/${rubricSlug}/events/event/${eventId}/assets`,
                   },
                   attributes: {
-                    url: `/console/${companyId}/events/${rubricSlug}/events/event/${eventId}/attributes`,
+                    url: `/console/${companyId}/event-rubrics/${rubricSlug}/events/event/${eventId}/attributes`,
                   },
                   editor: {
-                    url: `/console/${companyId}/events/${rubricSlug}/events/event/${eventId}/editor`,
+                    url: `/console/${companyId}/event-rubrics/${rubricSlug}/events/event/${eventId}/editor`,
                   },
                 },
               },
             },
             seoContent: {
-              url: `/console/${companyId}/events/${rubricSlug}/seo-content`,
+              url: `/console/${companyId}/event-rubrics/${rubricSlug}/seo-content`,
               seoContentSlug: {
-                url: `/console/${companyId}/events/${rubricSlug}/seo-content/${seoContentSlug}`,
+                url: `/console/${companyId}/event-rubrics/${rubricSlug}/seo-content/${seoContentSlug}`,
               },
             },
           },
@@ -799,6 +834,8 @@ export function getProjectLinks(props?: LinkPropsInterface) {
     },
     contacts: { url: `/contacts` },
     docs: { url: `/docs`, pageSlug: { url: `/docs/${pageSlug}` } },
+    event: { url: `/event`, eventSlug: { url: `/event/${eventSlug}` } },
+    events: { url: `/events`, rubricSlug: { url: `/events/${rubricSlug}` } },
     root: { url: `/` },
     profile: {
       url: `/profile`,
@@ -841,6 +878,7 @@ export interface ConsoleCompanyLinkPropsInterface {
   rubricVariantId?: DynamicPagePropType;
   userId?: DynamicPagePropType;
   pageSlug?: DynamicPagePropType;
+  eventSlug?: DynamicPagePropType;
   promoSlug?: DynamicPagePropType;
 }
 
@@ -881,29 +919,35 @@ export function getConsoleCompanyLinks(props: ConsoleCompanyLinkPropsInterface) 
       seo: { url: `${basePath}/config/seo` },
       ui: { url: `${basePath}/config/ui` },
     },
-    events: {
-      url: `${basePath}/events`,
+    eventRubrics: {
+      url: `${basePath}/event-rubrics`,
       rubricSlug: {
-        url: `${basePath}/events/${rubricSlug}`,
-        attributes: { url: `${basePath}/events/${rubricSlug}/attributes` },
+        url: `${basePath}/event-rubrics/${rubricSlug}`,
+        attributes: { url: `${basePath}/event-rubrics/${rubricSlug}/attributes` },
         events: {
-          url: `${basePath}/events/${rubricSlug}/events`,
-          create: { url: `${basePath}/events/${rubricSlug}/events/create` },
+          url: `${basePath}/event-rubrics/${rubricSlug}/events`,
+          create: { url: `${basePath}/event-rubrics/${rubricSlug}/events/create` },
           event: {
-            url: `${basePath}/events/${rubricSlug}/events/event`,
+            url: `${basePath}/event-rubrics/${rubricSlug}/events/event`,
             eventId: {
-              url: `${basePath}/events/${rubricSlug}/events/event/${eventId}`,
-              assets: { url: `${basePath}/events/${rubricSlug}/events/event/${eventId}/assets` },
-              attributes: {
-                url: `${basePath}/events/${rubricSlug}/events/event/${eventId}/attributes`,
+              url: `${basePath}/event-rubrics/${rubricSlug}/events/event/${eventId}`,
+              assets: {
+                url: `${basePath}/event-rubrics/${rubricSlug}/events/event/${eventId}/assets`,
               },
-              editor: { url: `${basePath}/events/${rubricSlug}/events/event/${eventId}/editor` },
+              attributes: {
+                url: `${basePath}/event-rubrics/${rubricSlug}/events/event/${eventId}/attributes`,
+              },
+              editor: {
+                url: `${basePath}/event-rubrics/${rubricSlug}/events/event/${eventId}/editor`,
+              },
             },
           },
         },
         seoContent: {
-          url: `${basePath}/events/${rubricSlug}/seo-content`,
-          seoContentSlug: { url: `${basePath}/events/${rubricSlug}/seo-content/${seoContentSlug}` },
+          url: `${basePath}/event-rubrics/${rubricSlug}/seo-content`,
+          seoContentSlug: {
+            url: `${basePath}/event-rubrics/${rubricSlug}/seo-content/${seoContentSlug}`,
+          },
         },
       },
     },

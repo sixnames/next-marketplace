@@ -18,6 +18,7 @@ import {
   SORT_DESC,
 } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getBasePath } from 'lib/links/linkUtils';
 
 import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
@@ -49,8 +50,11 @@ export const getCatalogueBlogSsr = async (
 
   const collections = await getDbCollections();
   const blogPostsCollection = collections.blogPostsCollection();
-  const links = getConsoleBlogLinks({});
-  const basePath = links.mainPath;
+  const basePath = getBasePath({
+    query: context.query,
+    asPath: context.resolvedUrl,
+    breakpoint: 'blog',
+  });
 
   const viewsStage = {
     $addFields: {

@@ -1,13 +1,13 @@
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Product variants', () => {
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     rubricSlug: fixtureIds.rubricWineSlug,
     productId: fixtureIds.wineProductA,
   });
   beforeEach(() => {
-    cy.testAuth(links.product.variants);
+    cy.testAuth(links.cms.rubrics.rubricSlug.products.product.productId.variants.url);
   });
 
   it('Should CRUD product variants', () => {

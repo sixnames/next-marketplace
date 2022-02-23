@@ -119,6 +119,7 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     contactsTitle: '',
     ipRegistryApiKey: '',
     visibleRubrics: [],
+    visibleEventRubrics: [],
   },
 });
 

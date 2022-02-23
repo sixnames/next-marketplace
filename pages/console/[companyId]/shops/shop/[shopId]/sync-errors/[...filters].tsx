@@ -2,7 +2,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ShopSyncErrors, { ShopSyncErrorsInterface } from 'components/shops/ShopSyncErrors';
 import { getConsoleShopSyncErrorsListPageSsr } from 'db/ssr/shops/getConsoleShopSyncErrorsListPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
 import { NextPage } from 'next';
 import * as React from 'react';
@@ -17,7 +18,7 @@ const ConsoleShopSyncErrorsListPage: NextPage<ConsoleShopSyncErrorsListPageInter
   notSyncedProducts,
   companySlug,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -26,11 +27,11 @@ const ConsoleShopSyncErrorsListPage: NextPage<ConsoleShopSyncErrorsListPageInter
     config: [
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.console.companyId.shops.url,
       },
       {
         name: shop.name,
-        href: links.shop.root,
+        href: links.console.companyId.shops.shop.shopId.url,
       },
     ],
   };
@@ -41,7 +42,6 @@ const ConsoleShopSyncErrorsListPage: NextPage<ConsoleShopSyncErrorsListPageInter
         showControls={false}
         showShopName={false}
         notSyncedProducts={notSyncedProducts}
-        basePath={links.parentLink}
         breadcrumbs={breadcrumbs}
         shop={shop}
         companySlug={companySlug}

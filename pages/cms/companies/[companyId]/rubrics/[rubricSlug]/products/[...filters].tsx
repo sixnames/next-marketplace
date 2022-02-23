@@ -6,7 +6,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import RequestError from 'components/RequestError';
 import { getCmsCompanyRubricProductsPageSsr } from 'db/ssr/company/getCmsCompanyRubricProductsPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { NextPage } from 'next';
 import * as React from 'react';
@@ -14,7 +15,7 @@ import * as React from 'react';
 interface RubricProductsConsumerInterface extends CompanyRubricProductsListInterface {}
 
 const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: props.pageCompany._id,
     rubricSlug: props.rubric?.slug,
   });
@@ -23,19 +24,19 @@ const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${props.pageCompany?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.url,
       },
       {
         name: `${props.rubric?.name}`,
-        href: links.rubrics.root,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.url,
       },
     ],
   };
@@ -45,12 +46,7 @@ const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props
   }
 
   return (
-    <CmsRubricLayout
-      hideAttributesPath
-      rubric={props.rubric}
-      breadcrumbs={breadcrumbs}
-      basePath={props.routeBasePath}
-    >
+    <CmsRubricLayout hideAttributesPath rubric={props.rubric} breadcrumbs={breadcrumbs}>
       <CompanyRubricProductsList {...props} />
     </CmsRubricLayout>
   );

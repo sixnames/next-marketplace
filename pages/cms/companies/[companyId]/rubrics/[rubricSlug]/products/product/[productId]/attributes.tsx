@@ -8,7 +8,8 @@ import {
   CompanyInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -23,7 +24,7 @@ const CmsProductAttributesPageConsumer: React.FC<CmsProductAttributesPageConsume
   product,
   pageCompany,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     rubricSlug: product.rubricSlug,
     productId: product._id,
@@ -33,38 +34,33 @@ const CmsProductAttributesPageConsumer: React.FC<CmsProductAttributesPageConsume
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.url,
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.rubrics.root,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.url,
       },
       {
         name: `Товары`,
-        href: links.rubrics.product.parentLink,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.products.url,
       },
       {
         name: `${product.snippetTitle}`,
-        href: links.rubrics.product.root,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.products.product.productId.url,
       },
     ],
   };
 
   return (
-    <CmsProductLayout
-      companySlug={pageCompany.slug}
-      product={product}
-      breadcrumbs={breadcrumbs}
-      basePath={links.root}
-    >
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductAttributes product={product} />
     </CmsProductLayout>
   );

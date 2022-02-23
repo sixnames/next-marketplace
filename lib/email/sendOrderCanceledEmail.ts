@@ -1,7 +1,7 @@
-import { ObjectIdModel, UserModel } from '../../db/dbModels';
-import { getDbCollections } from '../../db/mongodb';
+import { ObjectIdModel, UserModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
+import { getOrderLink } from 'lib/links/linkUtils';
 import { DEFAULT_COMPANY_SLUG } from '../config/common';
-import { getOrderLink } from '../linkUtils';
 import { sendEmail, SendEmailInterface } from './mailer';
 
 interface SendOrderCanceledEmailInterface

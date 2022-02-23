@@ -1,9 +1,9 @@
+import { CityModel } from 'db/dbModels';
+import { getDbCollections } from 'db/mongodb';
 import { getSsrDomainCompany } from 'db/ssr/company/getSsrDomainCompany';
 import { GetServerSidePropsContext } from 'next';
+import { PagePropsInterface } from 'pages/_app';
 import { getDomain } from 'tldts';
-import { CityModel } from '../db/dbModels';
-import { getDbCollections } from '../db/mongodb';
-import { PagePropsInterface } from '../pages/_app';
 import { alwaysString } from './arrayUtils';
 import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from './config/common';
 import { getPageDataSsr } from './getPageDataSsr';

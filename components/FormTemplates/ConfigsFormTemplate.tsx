@@ -1,6 +1,6 @@
+import { ConfigModel } from 'db/dbModels';
+import { EventRubricInterface, RubricInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import { ConfigModel } from '../../db/dbModels';
-import { RubricInterface } from '../../db/uiInterfaces';
 import ConfigsAssetInput from '../FormElements/FormikConfigAssetInput';
 import FormikConfigInput from '../FormElements/FormikConfigInput';
 import WpNotification from '../WpNotification';
@@ -9,12 +9,14 @@ export interface ConfigsFormTemplateInterface {
   assetConfigs: ConfigModel[];
   normalConfigs: ConfigModel[];
   rubrics?: RubricInterface[];
+  eventRubrics?: EventRubricInterface[];
 }
 
 const ConfigsFormTemplate: React.FC<ConfigsFormTemplateInterface> = ({
   assetConfigs,
   normalConfigs,
   rubrics,
+  eventRubrics,
 }) => {
   return (
     <React.Fragment>
@@ -46,7 +48,14 @@ const ConfigsFormTemplate: React.FC<ConfigsFormTemplateInterface> = ({
       ) : null}
 
       {normalConfigs.map((config) => {
-        return <FormikConfigInput key={`${config._id}`} config={config} rubrics={rubrics} />;
+        return (
+          <FormikConfigInput
+            eventRubrics={eventRubrics}
+            key={`${config._id}`}
+            config={config}
+            rubrics={rubrics}
+          />
+        );
       })}
     </React.Fragment>
   );

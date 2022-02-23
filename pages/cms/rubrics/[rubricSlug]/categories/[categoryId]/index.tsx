@@ -19,7 +19,8 @@ import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generate
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { DEFAULT_COMPANY_SLUG, GENDER_ENUMS } from 'lib/config/common';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -29,7 +30,7 @@ interface CategoryDetailsInterface {
   category: CategoryInterface;
   seoDescriptionTop: SeoContentCitiesInterface;
   seoDescriptionBottom: SeoContentCitiesInterface;
-  companySlug: string;
+  companySlug?: string;
 }
 
 const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
@@ -76,7 +77,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     textTop: seoDescriptionTop,
     gender: gender ? (`${gender}` as Gender) : null,
     replaceParentNameInCatalogueTitle,
-    companySlug,
+    companySlug: companySlug || DEFAULT_COMPANY_SLUG,
     variants:
       variantKeys.length > 0
         ? variants
@@ -86,7 +87,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
           }, {}),
   };
 
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     rubricSlug: `${rubric?.slug}`,
   });
 
@@ -95,15 +96,15 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     config: [
       {
         name: 'Рубрикатор',
-        href: links.parentLink,
+        href: links.cms.rubrics.url,
       },
       {
         name: `${rubric?.name}`,
-        href: links.parentLink,
+        href: links.cms.rubrics.rubricSlug.url,
       },
       {
         name: `Категории`,
-        href: links.category.parentLink,
+        href: links.cms.rubrics.rubricSlug.categories.url,
       },
     ],
   };

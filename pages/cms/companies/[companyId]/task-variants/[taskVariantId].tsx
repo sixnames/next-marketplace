@@ -7,7 +7,8 @@ import { getDbCollections } from 'db/mongodb';
 import { getCompanyTaskVariantSsr } from 'db/ssr/company/getCompanyTaskVariantSsr';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -21,7 +22,7 @@ const CreateTaskVariantDetailsConsumer: React.FC<CreateTaskVariantDetailsConsume
   pageCompany,
   taskVariant,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -29,15 +30,15 @@ const CreateTaskVariantDetailsConsumer: React.FC<CreateTaskVariantDetailsConsume
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Типы задач',
-        href: links.taskVariants.parentLink,
+        href: links.cms.companies.companyId.taskVariants.url,
       },
     ],
   };

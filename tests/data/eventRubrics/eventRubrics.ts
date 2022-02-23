@@ -16,8 +16,6 @@ function getAttributeIds(groupIds: string[]) {
 }
 
 const common = {
-  companySlug: 'company_a',
-  companyId: getObjectId('company Company A'),
   capitalise: true,
   active: true,
   showRubricNameInProductTitle: true,

@@ -6,7 +6,8 @@ import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -21,7 +22,7 @@ const TaskDetailsConsumer: React.FC<TaskDetailsConsumerInterface> = ({
   taskVariants,
   pageCompany,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -29,15 +30,15 @@ const TaskDetailsConsumer: React.FC<TaskDetailsConsumerInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Задачи',
-        href: links.tasks.parentLink,
+        href: links.cms.companies.companyId.tasks.url,
       },
     ],
   };

@@ -1,17 +1,15 @@
-import * as React from 'react';
 import {
   CompanyInterface,
   GetConsoleRubricPromoProductsPayloadInterface,
   PromoInterface,
   RubricInterface,
   ShopProductInterface,
-} from '../../db/uiInterfaces';
-import {
-  useAddPromoProducts,
-  useDeletePromoProducts,
-} from '../../hooks/mutations/usePromoMutations';
+} from 'db/uiInterfaces';
+import { useAddPromoProducts, useDeletePromoProducts } from 'hooks/mutations/usePromoMutations';
+import { useBasePath } from 'hooks/useBasePath';
+import { alwaysArray } from 'lib/arrayUtils';
+import * as React from 'react';
 import usePageLoadingState from '../../hooks/usePageLoadingState';
-import { alwaysArray } from '../../lib/arrayUtils';
 import AppContentFilter from '../AppContentFilter';
 import WpButton from '../button/WpButton';
 import { useAppContext } from '../context/appContext';
@@ -26,7 +24,6 @@ import WpTable, { WpTableColumn } from '../WpTable';
 export interface ConsolePromoProductsInterface {
   rubric: RubricInterface;
   promo: PromoInterface;
-  basePath: string;
   pageCompany: CompanyInterface;
   promoProducts: GetConsoleRubricPromoProductsPayloadInterface;
   filters: string[];
@@ -36,7 +33,6 @@ export interface ConsolePromoProductsInterface {
 const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
   promoProducts,
   rubric,
-  basePath,
   promo,
   pageCompany,
   filters,
@@ -46,6 +42,7 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
   const isPageLoading = usePageLoadingState();
   const [deletePromoProductsMutation] = useDeletePromoProducts();
   const [addPromoProductsMutation] = useAddPromoProducts();
+  const basePath = useBasePath('rubricSlug');
 
   const columns: WpTableColumn<ShopProductInterface>[] = [
     {

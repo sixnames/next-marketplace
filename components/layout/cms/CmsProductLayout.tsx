@@ -1,6 +1,5 @@
 import WpButton from 'components/button/WpButton';
 import { useAppContext } from 'components/context/appContext';
-import { useConfigContext } from 'components/context/configContext';
 import { useUserContext } from 'components/context/userContext';
 import Inner from 'components/Inner';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
@@ -10,25 +9,22 @@ import WpNotification from 'components/WpNotification';
 import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
 import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { useBasePath } from 'hooks/useBasePath';
 import { CONFIRM_MODAL } from 'lib/config/modalVariants';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface CmsProductLayoutInterface {
   product: ProductSummaryInterface;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
-  basePath?: string;
   hideAttributesPath?: boolean;
   hideCategoriesPath?: boolean;
   hideConnectionsPath?: boolean;
   hideBrandPath?: boolean;
   hideAssetsPath?: boolean;
   hideCardConstructor?: boolean;
-  companySlug?: string;
   hideDeleteButton?: boolean;
 }
 
@@ -42,90 +38,67 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
   hideAssetsPath,
   hideCardConstructor,
   children,
-  basePath,
-  companySlug,
   hideDeleteButton,
 }) => {
   const { sessionUser } = useUserContext();
-  const { query } = useRouter();
-  const { domainCompany } = useConfigContext();
   const { showModal } = useAppContext();
-  const rubricLinks = getConsoleRubricLinks({
-    rubricSlug: `${query.rubricSlug}`,
-    basePath,
-  });
+  const basePath = useBasePath('rubricSlug');
+  const productBasePath = `${basePath}/products/product/${product._id}`;
   const [deleteProductFromRubricMutation] = useDeleteProduct({
     reload: false,
-    redirectUrl: rubricLinks.product.parentLink,
+    redirectUrl: basePath,
   });
 
-  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
-    const links = getConsoleRubricLinks({
-      productId: product._id,
-      rubricSlug: product.rubricSlug,
-      basePath,
-    });
-    return [
-      {
-        name: 'Детали',
-        testId: 'details',
-        path: links.product.root,
-        exact: true,
-      },
-      {
-        name: 'Категории',
-        testId: 'categories',
-        path: links.product.categories,
-        hidden: hideCategoriesPath,
-        exact: true,
-      },
-      {
-        name: 'Атрибуты',
-        testId: 'attributes',
-        path: links.product.attributes,
-        hidden: hideAttributesPath,
-        exact: true,
-      },
-      {
-        name: 'Связи',
-        testId: 'variants',
-        path: links.product.variants,
-        hidden: hideConnectionsPath,
-        exact: true,
-      },
-      {
-        name: 'Бренд / Производитель',
-        testId: 'brands',
-        path: links.product.brands,
-        hidden: hideBrandPath,
-        exact: true,
-      },
-      {
-        name: 'Изображения',
-        testId: 'assets',
-        path: links.product.assets,
-        hidden: hideAssetsPath,
-        exact: true,
-      },
-      {
-        name: 'Контент карточки',
-        testId: 'editor',
-        path: links.product.editor,
-        hidden: hideCardConstructor,
-        exact: true,
-      },
-    ];
-  }, [
-    basePath,
-    hideAssetsPath,
-    hideAttributesPath,
-    hideBrandPath,
-    hideCardConstructor,
-    hideCategoriesPath,
-    hideConnectionsPath,
-    product._id,
-    product.rubricSlug,
-  ]);
+  const navConfig: ClientNavItemInterface[] = [
+    {
+      name: 'Детали',
+      testId: 'details',
+      path: productBasePath,
+      exact: true,
+    },
+    {
+      name: 'Категории',
+      testId: 'categories',
+      path: `${productBasePath}/categories`,
+      hidden: hideCategoriesPath,
+      exact: true,
+    },
+    {
+      name: 'Атрибуты',
+      testId: 'attributes',
+      path: `${productBasePath}/attributes`,
+      hidden: hideAttributesPath,
+      exact: true,
+    },
+    {
+      name: 'Связи',
+      testId: 'variants',
+      path: `${productBasePath}/variants`,
+      hidden: hideConnectionsPath,
+      exact: true,
+    },
+    {
+      name: 'Бренд / Производитель',
+      testId: 'brands',
+      path: `${productBasePath}/brands`,
+      hidden: hideBrandPath,
+      exact: true,
+    },
+    {
+      name: 'Изображения',
+      testId: 'assets',
+      path: `${productBasePath}/assets`,
+      hidden: hideAssetsPath,
+      exact: true,
+    },
+    {
+      name: 'Контент карточки',
+      testId: 'editor',
+      path: `${productBasePath}/editor`,
+      hidden: hideCardConstructor,
+      exact: true,
+    },
+  ];
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
@@ -145,12 +118,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
               frameClassName='w-auto'
               size={'small'}
               onClick={() => {
-                window.open(
-                  `/${companySlug || domainCompany?.slug || DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}/${
-                    product.slug
-                  }`,
-                  '_blank',
-                );
+                window.open(`/${product.slug}`, '_blank');
               }}
             >
               Карточка товара

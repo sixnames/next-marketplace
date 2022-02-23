@@ -1,11 +1,12 @@
+import { CreateTaskVariantInputInterface } from 'db/dao/tasks/createTaskVariant';
+import { TaskVariantPriceModel } from 'db/dbModels';
 import { Form, Formik } from 'formik';
+import { useCreateTaskVariant } from 'hooks/mutations/useTaskMutations';
+import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES } from 'lib/config/constantSelects';
 import * as React from 'react';
-import { CreateTaskVariantInputInterface } from '../../db/dao/tasks/createTaskVariant';
-import { TaskVariantPriceModel } from '../../db/dbModels';
-import { useCreateTaskVariant } from '../../hooks/mutations/useTaskMutations';
+import { createTaskVariantSchema } from 'validation/taskSchema';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES } from '../../lib/config/constantSelects';
-import { createTaskVariantSchema } from '../../validation/taskSchema';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import TaskVariantMainFields from '../FormTemplates/TaskVariantMainFields';
@@ -13,24 +14,20 @@ import Inner from '../Inner';
 import WpTitle from '../WpTitle';
 
 export interface CreateTaskVariantFormInterface {
-  companySlug: string;
-  basePath: string;
+  companySlug?: string;
 }
 
-const CreateTaskVariantForm: React.FC<CreateTaskVariantFormInterface> = ({
-  companySlug,
-  basePath,
-}) => {
+const CreateTaskVariantForm: React.FC<CreateTaskVariantFormInterface> = ({ companySlug }) => {
   const validationSchema = useValidationSchema({
     schema: createTaskVariantSchema,
   });
   const initialValues: CreateTaskVariantInputInterface = {
     nameI18n: {},
     prices: [],
-    companySlug,
+    companySlug: companySlug || DEFAULT_COMPANY_SLUG,
     slug: TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
   };
-  const [createTaskVariantMutation] = useCreateTaskVariant(basePath);
+  const [createTaskVariantMutation] = useCreateTaskVariant();
 
   return (
     <Inner testId={'create-task-variant-page'}>

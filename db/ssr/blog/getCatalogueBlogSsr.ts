@@ -8,7 +8,6 @@ import {
   CatalogueFilterAttributeOptionInterface,
   OptionInterface,
 } from 'db/uiInterfaces';
-import { castCatalogueParamToObject } from 'db/utils/catalogueUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
 import {
@@ -19,7 +18,8 @@ import {
   SORT_DESC,
 } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleBlogLinks } from 'lib/linkUtils';
+import { getBasePath } from 'lib/links/linkUtils';
+
 import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -50,8 +50,11 @@ export const getCatalogueBlogSsr = async (
 
   const collections = await getDbCollections();
   const blogPostsCollection = collections.blogPostsCollection();
-  const links = getConsoleBlogLinks({});
-  const basePath = links.mainPath;
+  const basePath = getBasePath({
+    query: context.query,
+    asPath: context.resolvedUrl,
+    breakpoint: 'blog',
+  });
 
   const viewsStage = {
     $addFields: {
@@ -353,8 +356,9 @@ export const getCatalogueBlogSsr = async (
     });
 
     const otherSelectedValues = realFilters.filter((param) => {
-      const castedParam = castCatalogueParamToObject(param);
-      return castedParam.slug !== attribute.slug;
+      const paramArray = param.split('-');
+      const slug = `${paramArray[0]}`;
+      return slug !== attribute.slug;
     });
     const clearSlug = `${basePath}/${otherSelectedValues.join('/')}`;
 

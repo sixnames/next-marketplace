@@ -11,22 +11,17 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager from 'components/Pager';
 import RequestError from 'components/RequestError';
 import WpTable, { WpTableColumn } from 'components/WpTable';
-import {
-  CompanyInterface,
-  EventSummaryInterface,
-  RubricEventsListInterface,
-} from 'db/uiInterfaces';
+import { EventSummaryInterface, RubricEventsListInterface } from 'db/uiInterfaces';
 import { useDeleteEvent } from 'hooks/mutations/useEventMutations';
 import { useBasePath } from 'hooks/useBasePath';
 import { CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getNumWord } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
 export interface CompanyEventsInterface extends RubricEventsListInterface {
-  pageCompany: CompanyInterface;
+  showControls: boolean;
 }
 
 const CompanyEvents: React.FC<CompanyEventsInterface> = ({
@@ -38,20 +33,14 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
   totalDocs,
   page,
   totalPages,
-  pageCompany,
+  showControls,
 }) => {
   const router = useRouter();
   const { showModal } = useAppContext();
   const [deleteEventMutation] = useDeleteEvent();
-  const routeBasePath = useBasePath('companyId');
+  const routeBasePath = useBasePath('rubricSlug');
   function getEventLink(eventId: string) {
-    const links = getConsoleCompanyLinks({
-      basePath: routeBasePath,
-      companyId: pageCompany._id,
-      rubricSlug: rubric.slug,
-      eventId,
-    });
-    return links.events.rubricSlug.events.event.eventId.url;
+    return `${routeBasePath}/events/event/${eventId}`;
   }
 
   const columns: WpTableColumn<EventSummaryInterface>[] = [
@@ -59,6 +48,9 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
         const link = getEventLink(`${dataItem._id}`);
+        if (!showControls) {
+          return <div>{dataItem.itemId}</div>;
+        }
         return (
           <WpLink testId={`event-link-${rowIndex}`} href={link} target={'_blank'}>
             {dataItem.itemId}
@@ -79,6 +71,7 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
       },
     },
     {
+      isHidden: !showControls,
       render: ({ dataItem }) => {
         return (
           <div className='flex justify-end'>
@@ -162,22 +155,23 @@ const CompanyEvents: React.FC<CompanyEventsInterface> = ({
           <Pager page={page} totalPages={totalPages} />
         </div>
 
-        <FixedButtons>
-          <WpButton
-            testId={'create-rubric-event'}
-            size={'small'}
-            onClick={() => {
-              const links = getConsoleCompanyLinks({
-                basePath: routeBasePath,
-                companyId: pageCompany._id,
-                rubricSlug: rubric.slug,
-              });
-              router.push(links.events.rubricSlug.events.create.url).catch(console.log);
-            }}
-          >
-            Создать мероприятие
-          </WpButton>
-        </FixedButtons>
+        {showControls ? (
+          <FixedButtons>
+            <WpButton
+              testId={'create-rubric-event'}
+              size={'small'}
+              onClick={
+                showControls
+                  ? () => {
+                      router.push(`${routeBasePath}/events/create`).catch(console.log);
+                    }
+                  : undefined
+              }
+            >
+              Создать мероприятие
+            </WpButton>
+          </FixedButtons>
+        ) : null}
       </div>
     </Inner>
   );

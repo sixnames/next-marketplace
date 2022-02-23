@@ -1,5 +1,4 @@
 import { getDbCollections } from 'db/mongodb';
-import { castCatalogueParamToObject } from 'db/utils/catalogueUtils';
 import {
   DEFAULT_COMPANY_SLUG,
   FILTER_BRAND_COLLECTION_KEY,
@@ -77,8 +76,9 @@ export const CatalogueMutations = extendType({
             const selectedCategoriesSlugs: string[] = [];
 
             filter.forEach((param) => {
-              const castedParam = castCatalogueParamToObject(param);
-              const { slug, value } = castedParam;
+              const paramArray = param.split('-');
+              const slug = `${paramArray[0]}`;
+              const value = `${paramArray[1]}`;
 
               if (slug === FILTER_BRAND_KEY) {
                 selectedBrandSlugs.push(value);

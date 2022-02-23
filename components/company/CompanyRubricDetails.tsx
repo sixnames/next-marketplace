@@ -13,7 +13,6 @@ import SeoContentEditor from '../SeoContentEditor';
 export interface CompanyRubricDetailsInterface {
   rubric: RubricInterface;
   pageCompany: CompanyInterface;
-  routeBasePath: string;
   seoDescriptionTop: SeoContentCitiesInterface;
   seoDescriptionBottom: SeoContentCitiesInterface;
 }

@@ -1,14 +1,14 @@
 import { GetRubricProductsListInputInterface } from 'db/ssr/rubrics/getRubricProductsList';
-import qs from 'qs';
-import * as React from 'react';
-import useSWR from 'swr';
 import {
   ConsoleRubricProductsInterface,
   ProductSummaryInterface,
   RubricInterface,
-} from '../../db/uiInterfaces';
-import { DEFAULT_PAGE } from '../../lib/config/common';
-import { getCmsLinks } from '../../lib/linkUtils';
+} from 'db/uiInterfaces';
+import { DEFAULT_PAGE } from 'lib/config/common';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+import qs from 'qs';
+import * as React from 'react';
+import useSWR from 'swr';
 import ContentItemControls, { ContentItemControlsInterface } from '../button/ContentItemControls';
 import FormikIndividualSearch from '../FormElements/Search/FormikIndividualSearch';
 import WpLink from '../Link/WpLink';
@@ -73,12 +73,15 @@ const ProductsList: React.FC<ProductsListInterface> = ({
       accessor: 'itemId',
       headTitle: 'Арт.',
       render: ({ cellData, dataItem }) => {
-        const links = getCmsLinks({
+        const links = getProjectLinks({
           rubricSlug: dataItem.rubricSlug,
           productId: dataItem._id,
         });
         return (
-          <WpLink target={'_blank'} href={links.rubrics.product.root}>
+          <WpLink
+            target={'_blank'}
+            href={links.cms.rubrics.rubricSlug.products.product.productId.url}
+          >
             {cellData}
           </WpLink>
         );

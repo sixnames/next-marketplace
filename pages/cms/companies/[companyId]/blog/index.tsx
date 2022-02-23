@@ -5,7 +5,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getDbCollections } from 'db/mongodb';
 import { getBlogPostsList } from 'db/ssr/blog/getBlogPostsList';
 import { AppContentWrapperBreadCrumbs, BlogPostInterface, CompanyInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -22,7 +23,7 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({
   posts,
   pageCompany,
 }) => {
-  const { root, parentLink } = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany?._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -30,11 +31,11 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: root,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };
@@ -42,7 +43,7 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({
   return (
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-posts-list'}>
-        <BlogPostsList posts={posts} basePath={root} companySlug={`${pageCompany?.slug}`} />
+        <BlogPostsList posts={posts} companySlug={`${pageCompany?.slug}`} />
       </Inner>
     </CmsCompanyLayout>
   );

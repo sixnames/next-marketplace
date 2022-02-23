@@ -9,6 +9,7 @@ import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
 import { getConsoleCustomersPageSsr } from 'db/ssr/users/getConsoleCustomersPageSsr';
 import { AppPaginationInterface, UserInterface } from 'db/uiInterfaces';
+import { useBasePath } from 'hooks/useBasePath';
 import { GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
 import { NextPage } from 'next';
 import Head from 'next/head';
@@ -24,9 +25,10 @@ const ConsoleCustomersPageConsumer: React.FC<ConsoleCustomersPageConsumerInterfa
   docs,
   page,
   totalPages,
-  itemPath,
 }) => {
   const router = useRouter();
+  const basePath = useBasePath('users');
+  const itemPath = `${basePath}/user`;
 
   const columns: WpTableColumn<UserInterface>[] = [
     {

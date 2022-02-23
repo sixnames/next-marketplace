@@ -1,9 +1,17 @@
+import { useAppContext } from 'components/context/appContext';
+import { useConfigContext } from 'components/context/configContext';
+import { UpdateBlogAttributeCountersInputInterface } from 'db/dao/blog/updateBlogAttributeCounters';
 import { getCatalogueBlogSsr } from 'db/ssr/blog/getCatalogueBlogSsr';
+import {
+  BlogAttributeInterface,
+  BlogPostInterface,
+  CatalogueFilterAttributeInterface,
+} from 'db/uiInterfaces';
+import { alwaysArray } from 'lib/arrayUtils';
+import { FILTER_SEPARATOR, REQUEST_METHOD_POST } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useAppContext } from '../../components/context/appContext';
-import { useConfigContext } from '../../components/context/configContext';
 import FormattedDate from '../../components/FormattedDate';
 import Inner from '../../components/Inner';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../components/layout/SiteLayout';
@@ -14,14 +22,6 @@ import WpBreadcrumbs from '../../components/WpBreadcrumbs';
 import WpIcon from '../../components/WpIcon';
 import WpImage from '../../components/WpImage';
 import WpTitle from '../../components/WpTitle';
-import { UpdateBlogAttributeCountersInputInterface } from '../../db/dao/blog/updateBlogAttributeCounters';
-import {
-  BlogAttributeInterface,
-  BlogPostInterface,
-  CatalogueFilterAttributeInterface,
-} from '../../db/uiInterfaces';
-import { alwaysArray } from '../../lib/arrayUtils';
-import { FILTER_SEPARATOR, REQUEST_METHOD_POST } from '../../lib/config/common';
 
 const links = getProjectLinks();
 

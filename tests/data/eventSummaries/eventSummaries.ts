@@ -290,6 +290,9 @@ const eventSummaries = eventRubrics.reduce((acc: EventSummaryModel[], rubric) =>
       }
     });
 
+    const price = Math.round(Math.random() * 1000) * 100;
+    const seatsCount = Math.round(Math.random() * 100) * 100;
+
     const summary: EventSummaryModel = {
       _id: summaryId,
       itemId,
@@ -310,9 +313,9 @@ const eventSummaries = eventRubrics.reduce((acc: EventSummaryModel[], rubric) =>
       filterSlugs,
       attributeIds,
       citySlug: DEFAULT_CITY,
-      seatsCount: 100,
+      seatsCount,
       seatsAvailable: 80,
-      price: 1000,
+      price,
       videos: [],
       address: {
         addressComponents: ADDRESS_COMPONENTS,

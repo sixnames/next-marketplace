@@ -1,23 +1,23 @@
-import { useRouter } from 'next/router';
-import { AddPromoProductsInputInterface } from '../../db/dao/promo/addPromoProducts';
+import { AddPromoProductsInputInterface } from 'db/dao/promo/addPromoProducts';
 import {
   CheckPromoCodeAvailabilityInputInterface,
   CheckPromoCodeAvailabilityPayloadModel,
-} from '../../db/dao/promo/checkPromoCodeAvailability';
-import { CreatePromoInputInterface } from '../../db/dao/promo/createPromo';
-import { CreatePromoCodeInputInterface } from '../../db/dao/promo/createPromoCode';
-import { DeletePromoInputInterface } from '../../db/dao/promo/deletePromo';
-import { DeletePromoCodeInputInterface } from '../../db/dao/promo/deletePromoCode';
-import { DeletePromoProductsInputInterface } from '../../db/dao/promo/deletePromoProducts';
-import { UpdatePromoInputInterface } from '../../db/dao/promo/updatePromo';
-import { UpdatePromoCodeInputInterface } from '../../db/dao/promo/updatePromoCode';
-import { PromoCodePayloadModel, PromoPayloadModel } from '../../db/dbModels';
+} from 'db/dao/promo/checkPromoCodeAvailability';
+import { CreatePromoInputInterface } from 'db/dao/promo/createPromo';
+import { CreatePromoCodeInputInterface } from 'db/dao/promo/createPromoCode';
+import { DeletePromoInputInterface } from 'db/dao/promo/deletePromo';
+import { DeletePromoCodeInputInterface } from 'db/dao/promo/deletePromoCode';
+import { DeletePromoProductsInputInterface } from 'db/dao/promo/deletePromoProducts';
+import { UpdatePromoInputInterface } from 'db/dao/promo/updatePromo';
+import { UpdatePromoCodeInputInterface } from 'db/dao/promo/updatePromoCode';
+import { PromoCodePayloadModel, PromoPayloadModel } from 'db/dbModels';
+import { useBasePath } from 'hooks/useBasePath';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-} from '../../lib/config/common';
-import { getCmsCompanyLinks } from '../../lib/linkUtils';
+} from 'lib/config/common';
+import { useRouter } from 'next/router';
 import { useMutationHandler } from './useFetch';
 
 const basePath = '/api/promo';
@@ -66,21 +66,16 @@ export const useDeletePromoProducts = () => {
 
 // promo code
 // create
-export const useCreatePromoCode = (routeBasePath?: string) => {
+export const useCreatePromoCode = () => {
   const router = useRouter();
+  const redirectBasePath = useBasePath('code');
   return useMutationHandler<PromoCodePayloadModel, CreatePromoCodeInputInterface>({
     path: `${basePath}/codes`,
     method: REQUEST_METHOD_POST,
     reload: false,
     onSuccess: (payload) => {
       if (payload.success && payload.payload) {
-        const links = getCmsCompanyLinks({
-          companyId: payload.payload.companyId,
-          promoId: payload.payload.promoId,
-          promoCodeId: payload.payload._id,
-          basePath: routeBasePath,
-        });
-        router.push(links.promo.code.root).catch(console.log);
+        router.push(`${redirectBasePath}/${payload.payload._id}`).catch(console.log);
       }
     },
   });

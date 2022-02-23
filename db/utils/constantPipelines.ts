@@ -591,7 +591,7 @@ export function eventDocsFacetPipeline({
 }
 
 export interface PaginatedAggregationFacetsInputInterface {
-  companySlug: string;
+  companySlug?: string;
   citySlug: string;
 }
 
@@ -1067,7 +1067,7 @@ export function eventsPaginatedAggregationFacetsPipeline({
     prices: [
       {
         $group: {
-          _id: '$minPrice',
+          _id: '$price',
         },
       },
     ],

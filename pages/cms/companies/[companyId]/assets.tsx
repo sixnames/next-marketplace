@@ -6,7 +6,8 @@ import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -21,7 +22,7 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ pageC
   const { showErrorNotification, showLoading, hideLoading } = useMutationCallbacks({});
   const router = useRouter();
 
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -29,11 +30,11 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ pageC
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };

@@ -9,7 +9,8 @@ import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
 import { AppContentWrapperBreadCrumbs, CompanyInterface, UserInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import {
@@ -32,7 +33,7 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
   orderStatuses,
   pageCompany,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     userId: user._id,
     orderId: order._id,
@@ -45,15 +46,15 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
     config: [
       {
         name: 'Клиенты',
-        href: links.user.parentLink,
+        href: links.console.companyId.users.url,
       },
       {
         name: `${user.fullName}`,
-        href: links.user.root,
+        href: links.console.companyId.users.user.userId.url,
       },
       {
         name: `Заказы`,
-        href: links.user.order.parentLink,
+        href: links.console.companyId.users.user.userId.orders.url,
       },
     ],
   };
@@ -62,13 +63,12 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
     pageCompany && pageCompany.domain ? pageCompany.slug : DEFAULT_COMPANY_SLUG;
 
   return (
-    <ConsoleUserLayout companyId={`${pageCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
+    <ConsoleUserLayout user={user} breadcrumbs={breadcrumbs}>
       <ConsoleOrderDetails
         order={order}
         orderStatuses={orderStatuses}
         title={title}
         pageCompanySlug={pageCompanySlug}
-        basePath={links.root}
       />
     </ConsoleUserLayout>
   );

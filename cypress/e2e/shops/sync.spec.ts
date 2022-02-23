@@ -11,7 +11,6 @@ import {
 } from 'db/syncInterfaces';
 import { REQUEST_METHOD_GET, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
 
 const validRequestParamsA = 'token=000001';
 const validRequestParamsC = 'token=000003';
@@ -362,12 +361,12 @@ describe('Sync', () => {
     });
 
     // should display synced products
-    const shopCLinks = getCmsCompanyLinks({
+    const shopCLinks = getProjectLinks({
       companyId: fixtureIds.companyB,
       shopId: fixtureIds.shopC,
       rubricSlug: fixtureIds.rubricChampagneSlug,
     });
-    cy.visit(shopCLinks.shop.rubrics.product.parentLink);
+    cy.visit(shopCLinks.cms.companies.companyId.shops.shop.shopId.rubrics.rubricSlug.products.url);
     cy.wait(1500);
     cy.getByCy('shop-rubric-products-list').should('exist');
     cy.getByCy('shop-product-main-image').should('have.length', 3);
@@ -474,7 +473,7 @@ describe('Sync', () => {
   });
 
   it('Should reset old shop products availability', () => {
-    const links = getCmsCompanyLinks({
+    const links = getProjectLinks({
       companyId: fixtureIds.companyA,
       shopId: fixtureIds.shopA,
       rubricSlug: fixtureIds.rubricChampagneSlug,
@@ -486,7 +485,7 @@ describe('Sync', () => {
     }).then((res) => {
       const body = res.body as SyncResponseInterface;
       expect(body.success).equals(true);
-      cy.visit(links.shop.rubrics.product.parentLink);
+      cy.visit(links.cms.companies.companyId.shops.shop.shopId.rubrics.rubricSlug.products.url);
     });
   });
 

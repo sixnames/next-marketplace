@@ -37,6 +37,8 @@ describe('Task variants', () => {
     cy.getByCy('task-variant-price-0-update').should('exist');
     cy.getByCy('task-variant-submit').click();
     cy.wait(1500);
+    cy.getByCy('update-task-variant-page').should('exist');
+    cy.visit(links.cms.taskVariants.url);
     cy.getByCy('task-variants-list').should('exist');
     cy.getByCy(createdTaskVariant).should('exist');
 

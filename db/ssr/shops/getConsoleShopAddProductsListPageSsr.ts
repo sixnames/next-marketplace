@@ -1,5 +1,6 @@
 import { getAddShopProductSsrData } from 'db/ssr/shops/getAddShopProductSsrData';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { ConsoleShopAddProductsListPageInterface } from 'pages/console/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/add/[...filters]';
@@ -17,12 +18,12 @@ export const getConsoleShopAddProductsListPageSsr = async (
   const locale = initialProps.props.sessionLocale;
   const currency = initialProps.props.initialData.currency;
 
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: `${query.companyId}`,
     shopId: `${query.shopId}`,
     rubricSlug: `${query.rubricSlug}`,
   });
-  const basePath = links.shop.rubrics.add;
+  const basePath = links.console.companyId.shops.shop.shopId.rubrics.rubricSlug.add.url;
   const payload = await getAddShopProductSsrData({
     locale,
     basePath,

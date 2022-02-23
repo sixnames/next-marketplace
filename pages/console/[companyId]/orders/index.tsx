@@ -12,7 +12,8 @@ import WpTable, { WpTableColumn } from 'components/WpTable';
 import WpTitle from 'components/WpTitle';
 import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/ssr/orders/getConsoleOrders';
 import { OrderInterface } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import {
   castDbData,
   getConsoleInitialData,
@@ -35,12 +36,15 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
       accessor: 'orderId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => {
-        const links = getConsoleCompanyLinks({
+        const links = getProjectLinks({
           companyId: `${router.query.companyId}`,
           orderId: dataItem._id,
         });
         return (
-          <WpLink testId={`order-${dataItem.itemId}-link`} href={links.order.root}>
+          <WpLink
+            testId={`order-${dataItem.itemId}-link`}
+            href={links.console.companyId.orders.order.orderId.url}
+          >
             {cellData}
           </WpLink>
         );
@@ -110,11 +114,11 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
               testId={dataItem.itemId}
               updateTitle={'Детали заказа'}
               updateHandler={() => {
-                const links = getConsoleCompanyLinks({
+                const links = getProjectLinks({
                   companyId: `${router.query.companyId}`,
                   orderId: dataItem._id,
                 });
-                router.push(links.order.root).catch(console.log);
+                router.push(links.console.companyId.orders.order.orderId.url).catch(console.log);
               }}
             />
           </div>
@@ -137,11 +141,11 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
             data={data.docs}
             testIdKey={'itemId'}
             onRowDoubleClick={(dataItem) => {
-              const links = getConsoleCompanyLinks({
+              const links = getProjectLinks({
                 companyId: `${router.query.companyId}`,
                 orderId: dataItem._id,
               });
-              router.push(links.order.parentLink).catch(console.log);
+              router.push(links.console.companyId.orders.order.orderId.url).catch(console.log);
             }}
           />
         </div>

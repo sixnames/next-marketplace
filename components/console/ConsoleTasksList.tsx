@@ -2,9 +2,9 @@ import { useAppContext } from 'components/context/appContext';
 import { useLocaleContext } from 'components/context/localeContext';
 import { TaskInterface } from 'db/uiInterfaces';
 import { useDeleteTask } from 'hooks/mutations/useTaskMutations';
+import { useBasePath } from 'hooks/useBasePath';
 import { getConstantOptionName, TASK_STATE_OPTIONS } from 'lib/config/constantSelects';
 import { CONFIRM_MODAL } from 'lib/config/modalVariants';
-import { getConsoleTaskLinks } from 'lib/linkUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import ContentItemControls from '../button/ContentItemControls';
@@ -16,29 +16,22 @@ import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface ConsoleTasksListInterface {
   tasks: TaskInterface[];
-  basePath: string;
 }
 
-const ConsoleTasksList: React.FC<ConsoleTasksListInterface> = ({ basePath, tasks }) => {
+const ConsoleTasksList: React.FC<ConsoleTasksListInterface> = ({ tasks }) => {
   const router = useRouter();
   const { locale } = useLocaleContext();
   const { showModal } = useAppContext();
   const [deleteTaskMutation] = useDeleteTask();
-  const links = getConsoleTaskLinks({
-    basePath,
-  });
+  const basePath = useBasePath('tasks');
 
   const columns: WpTableColumn<TaskInterface>[] = [
     {
       headTitle: 'Название',
       accessor: 'name',
       render: ({ dataItem }) => {
-        const links = getConsoleTaskLinks({
-          basePath,
-          taskId: dataItem._id,
-        });
         return (
-          <WpLink href={links.root} testId={`${dataItem.name}`}>
+          <WpLink href={`${basePath}/details/${dataItem._id}`} testId={`${dataItem.name}`}>
             {dataItem.name}
           </WpLink>
         );
@@ -69,17 +62,13 @@ const ConsoleTasksList: React.FC<ConsoleTasksListInterface> = ({ basePath, tasks
     },
     {
       render: ({ dataItem }) => {
-        const links = getConsoleTaskLinks({
-          basePath,
-          taskId: dataItem._id,
-        });
         return (
           <div className='flex justify-end'>
             <ContentItemControls
               testId={`${dataItem.name}`}
               updateTitle={'Редактировать задачу'}
               updateHandler={() => {
-                router.push(links.root).catch(console.log);
+                router.push(`${basePath}/details/${dataItem._id}`).catch(console.log);
               }}
               deleteTitle={'Удалить задачу'}
               deleteHandler={() => {
@@ -110,11 +99,7 @@ const ConsoleTasksList: React.FC<ConsoleTasksListInterface> = ({ basePath, tasks
           columns={columns}
           data={tasks}
           onRowDoubleClick={(dataItem) => {
-            const links = getConsoleTaskLinks({
-              basePath,
-              taskId: dataItem._id,
-            });
-            router.push(links.root).catch(console.log);
+            router.push(`${basePath}/details/${dataItem._id}`).catch(console.log);
           }}
         />
       </div>
@@ -124,7 +109,7 @@ const ConsoleTasksList: React.FC<ConsoleTasksListInterface> = ({ basePath, tasks
           frameClassName='w-auto'
           testId={'create-task-button'}
           onClick={() => {
-            router.push(links.create).catch(console.log);
+            router.push(`${basePath}/create`).catch(console.log);
           }}
         >
           Создать задачу

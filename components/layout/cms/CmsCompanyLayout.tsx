@@ -58,9 +58,9 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
         path: links.rubrics.url,
       },
       {
-        name: 'Мероприятия',
+        name: 'Рубрикатор мероприятий',
         testId: 'company-events',
-        path: links.events.url,
+        path: links.eventRubrics.url,
       },
       {
         name: 'Блог',

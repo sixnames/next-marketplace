@@ -1,7 +1,7 @@
 import { castConfigs } from 'db/cast/castConfigs';
 import { CompanyModel, ConfigModel } from 'db/dbModels';
 import { getDbCollections } from 'db/mongodb';
-import { getCatalogueData } from 'db/utils/catalogueUtils';
+import { getCatalogueData } from 'db/ssr/catalogue/catalogueUtils';
 import {
   CATALOGUE_PRODUCTS_LIMIT,
   CONFIG_GROUP_PROJECT,

@@ -5,7 +5,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface, PromoInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -25,7 +26,7 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   pageCompany,
   promoCode,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     promoId: promo._id,
   });
@@ -34,23 +35,23 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: pageCompany.name,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Акции',
-        href: links.promo.parentLink,
+        href: links.cms.companies.companyId.promo.url,
       },
       {
         name: `${promo.name}`,
-        href: links.promo.root,
+        href: links.cms.companies.companyId.promo.details.promoId.url,
       },
       {
         name: `Промо-коды`,
-        href: links.promo.code.parentLink,
+        href: links.cms.companies.companyId.promo.details.promoId.code.url,
       },
     ],
   };

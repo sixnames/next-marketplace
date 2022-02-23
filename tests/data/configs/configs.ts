@@ -2,6 +2,7 @@ import { getConfigTemplates } from 'db/utils/getConfigTemplates';
 import { ASSETS_DIST_CONFIGS, DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR } from 'lib/config/common';
 import { MOCK_ADDRESS_A, MOCK_ADDRESS_B } from '../../mocks';
 import categories from '../categories/categories';
+import eventRubrics from '../eventRubrics/eventRubrics';
 import rubrics from '../rubrics/rubrics';
 
 require('dotenv').config();
@@ -15,6 +16,11 @@ const visibleCategoriesInNavDropdown = rubrics.reduce((acc: string[], rubric) =>
   });
   return [...acc, ...rubricCategorySlugs];
 }, []);
+
+const visibleEventRubrics: string[] = [];
+eventRubrics.forEach((rubric) => {
+  visibleEventRubrics.push(rubric.slug);
+});
 
 const defaultConfigs = getConfigTemplates({
   siteName: 'Default site',
@@ -37,6 +43,7 @@ const companyAConfigs = getConfigTemplates({
   address: JSON.stringify(MOCK_ADDRESS_B),
   visibleCategoriesInNavDropdown,
   visibleRubrics,
+  visibleEventRubrics,
 });
 
 const companyBConfigs = getConfigTemplates({

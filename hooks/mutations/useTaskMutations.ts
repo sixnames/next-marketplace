@@ -1,17 +1,17 @@
-import { useRouter } from 'next/router';
-import { CreateTaskInputInterface } from '../../db/dao/tasks/createTask';
-import { CreateTaskVariantInputInterface } from '../../db/dao/tasks/createTaskVariant';
-import { DeleteTaskInputInterface } from '../../db/dao/tasks/deleteTask';
-import { DeleteTaskVariantInputInterface } from '../../db/dao/tasks/deleteTaskVariant';
-import { UpdateTaskInputInterface } from '../../db/dao/tasks/updateTask';
-import { UpdateTaskVariantInputInterface } from '../../db/dao/tasks/updateTaskVariant';
-import { TaskPayloadModel, TaskVariantPayloadModel } from '../../db/dbModels';
+import { CreateTaskInputInterface } from 'db/dao/tasks/createTask';
+import { CreateTaskVariantInputInterface } from 'db/dao/tasks/createTaskVariant';
+import { DeleteTaskInputInterface } from 'db/dao/tasks/deleteTask';
+import { DeleteTaskVariantInputInterface } from 'db/dao/tasks/deleteTaskVariant';
+import { UpdateTaskInputInterface } from 'db/dao/tasks/updateTask';
+import { UpdateTaskVariantInputInterface } from 'db/dao/tasks/updateTaskVariant';
+import { TaskPayloadModel, TaskVariantPayloadModel } from 'db/dbModels';
+import { useBasePath } from 'hooks/useBasePath';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-} from '../../lib/config/common';
-import { getConsoleTaskLinks, getConsoleTaskVariantLinks } from '../../lib/linkUtils';
+} from 'lib/config/common';
+import { useRouter } from 'next/router';
 import { useMutationHandler } from './useFetch';
 
 const taskBasePath = '/api/tasks';
@@ -19,18 +19,16 @@ const variantsBasePath = `${taskBasePath}/variants`;
 
 // tasks
 // create
-export const useCreateTask = (basePath: string) => {
+export const useCreateTask = () => {
   const router = useRouter();
+  const basePath = useBasePath('tasks');
   return useMutationHandler<TaskPayloadModel, CreateTaskInputInterface>({
     path: taskBasePath,
     method: REQUEST_METHOD_POST,
     reload: false,
     onSuccess: (payload) => {
       if (payload.success) {
-        const links = getConsoleTaskLinks({
-          basePath,
-        });
-        router.push(links.parentLink).catch(console.log);
+        router.push(`${basePath}/details/${payload.payload?._id}`).catch(console.log);
       }
     },
   });
@@ -54,18 +52,16 @@ export const useDeleteTask = () => {
 
 // variants
 // create
-export const useCreateTaskVariant = (basePath: string) => {
+export const useCreateTaskVariant = () => {
   const router = useRouter();
+  const basePath = useBasePath('task-variants');
   return useMutationHandler<TaskVariantPayloadModel, CreateTaskVariantInputInterface>({
     path: variantsBasePath,
     method: REQUEST_METHOD_POST,
     reload: false,
     onSuccess: (payload) => {
       if (payload.success) {
-        const links = getConsoleTaskVariantLinks({
-          basePath,
-        });
-        router.push(links.parentLink).catch(console.log);
+        router.push(`${basePath}/${payload.payload?._id}`).catch(console.log);
       }
     },
   });

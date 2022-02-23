@@ -1,16 +1,17 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import {
   CompanyInterface,
   GetConsoleGiftCertificatesPayloadInterface,
   GiftCertificateInterface,
   UserInterface,
-} from '../../db/uiInterfaces';
-import { useDeleteGiftCertificateMutation } from '../../hooks/mutations/useGiftCertificateMutations';
+} from 'db/uiInterfaces';
+import { useDeleteGiftCertificateMutation } from 'hooks/mutations/useGiftCertificateMutations';
+import { useBasePath } from 'hooks/useBasePath';
+import { CONFIRM_MODAL, GIFT_CERTIFICATE_MODAL } from 'lib/config/modalVariants';
+import { getNumWord } from 'lib/i18n';
+import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import usePageLoadingState from '../../hooks/usePageLoadingState';
-import { CONFIRM_MODAL, GIFT_CERTIFICATE_MODAL } from '../../lib/config/modalVariants';
-import { getNumWord } from '../../lib/i18n';
-import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -26,8 +27,6 @@ import WpTable, { WpTableColumn } from '../WpTable';
 export interface ConsoleGiftCertificatesListInterface
   extends GetConsoleGiftCertificatesPayloadInterface {
   pageCompany: CompanyInterface;
-  userRouteBasePath: string;
-  basePath?: string;
 }
 
 const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface> = ({
@@ -36,12 +35,11 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
   totalPages,
   totalDocs,
   docs,
-  userRouteBasePath,
-  basePath,
 }) => {
   const router = useRouter();
   const isPageLoading = usePageLoadingState();
   const { showModal } = useAppContext();
+  const basePath = useBasePath('companyId');
 
   const [deleteGiftCertificateMutation] = useDeleteGiftCertificateMutation();
 
@@ -60,12 +58,16 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
       accessor: 'code',
       headTitle: 'Код',
       render: ({ cellData, dataItem }) => {
-        const links = getCmsCompanyLinks({
+        const links = getConsoleCompanyLinks({
           companyId: dataItem.companyId,
           giftCertificateId: dataItem._id,
           basePath,
         });
-        return <WpLink href={links.giftCertificate.root}>{cellData}</WpLink>;
+        return (
+          <WpLink href={links.giftCertificates.certificate.giftCertificateId.url}>
+            {cellData}
+          </WpLink>
+        );
       },
     },
     {
@@ -92,12 +94,7 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
           return <div>Не назначен</div>;
         }
         return (
-          <div
-            onClick={() => {
-              window.open(`${userRouteBasePath}/${user._id}`, '_blank');
-            }}
-            className='cursor-pointer hover:text-theme'
-          >
+          <div>
             <div>{user.fullName}</div>
             <div>{user.email}</div>
             <div>{user.formattedPhone?.readable}</div>
@@ -113,12 +110,14 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
             justifyContent={'flex-end'}
             updateTitle={'Редактировать подарочный сертификат'}
             updateHandler={() => {
-              const links = getCmsCompanyLinks({
+              const links = getConsoleCompanyLinks({
                 companyId: dataItem.companyId,
                 giftCertificateId: dataItem._id,
                 basePath,
               });
-              router.push(links.giftCertificate.root).catch(console.log);
+              router
+                .push(links.giftCertificates.certificate.giftCertificateId.url)
+                .catch(console.log);
             }}
             deleteTitle={'Удалить подарочный сертификат'}
             deleteHandler={() => {
@@ -151,12 +150,14 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
           data={docs}
           testIdKey={'_id'}
           onRowDoubleClick={(dataItem) => {
-            const links = getCmsCompanyLinks({
+            const links = getConsoleCompanyLinks({
               companyId: dataItem.companyId,
               giftCertificateId: dataItem._id,
               basePath,
             });
-            router.push(links.giftCertificate.root).catch(console.log);
+            router
+              .push(links.giftCertificates.certificate.giftCertificateId.url)
+              .catch(console.log);
           }}
         />
 

@@ -5,7 +5,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
 import { getConsolePromoProductsListPageSsr } from 'db/ssr/company/getConsolePromoProductsListPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
 import * as React from 'react';
 
@@ -22,7 +23,7 @@ const ConsolePromoProductsListPage: React.FC<ConsolePromoProductsListPageInterfa
   filters,
   search,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     promoId: promo._id,
     rubricSlug: rubric.slug,
@@ -33,24 +34,23 @@ const ConsolePromoProductsListPage: React.FC<ConsolePromoProductsListPageInterfa
     config: [
       {
         name: 'Акции',
-        href: links.promo.parentLink,
+        href: links.console.companyId.promo.url,
       },
       {
         name: `${promo.name}`,
-        href: links.promo.root,
+        href: links.console.companyId.promo.details.promoId.url,
       },
       {
         name: `Товары`,
-        href: links.promo.rubrics.parentLink,
+        href: links.console.companyId.promo.details.promoId.rubrics.url,
       },
     ],
   };
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
-      <ConsolePromoLayout basePath={links.parentLink} promo={promo} breadcrumbs={breadcrumbs}>
+      <ConsolePromoLayout promo={promo} breadcrumbs={breadcrumbs}>
         <ConsolePromoProducts
-          basePath={links.root}
           promo={promo}
           rubric={rubric}
           pageCompany={pageCompany}

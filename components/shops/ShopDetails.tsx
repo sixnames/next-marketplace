@@ -21,7 +21,7 @@ import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
 
 export type ShopDetailsInterface = ConsoleShopLayoutInterface;
 
-const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrumbs }) => {
+const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, breadcrumbs }) => {
   const router = useRouter();
   const { showLoading, onCompleteCallback, onErrorCallback, showErrorNotification, hideLoading } =
     useMutationCallbacks({
@@ -61,7 +61,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
   };
 
   return (
-    <ConsoleShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} breadcrumbs={breadcrumbs}>
       <Inner testId={'shop-details-page'}>
         <div className='relative'>
           <Formik

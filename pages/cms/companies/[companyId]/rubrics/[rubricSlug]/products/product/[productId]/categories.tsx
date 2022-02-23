@@ -9,7 +9,8 @@ import {
   ProductCategoryInterface,
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
@@ -20,16 +21,14 @@ interface ProductCategoriesInterface {
   product: ProductSummaryInterface;
   categoriesTree: ProductCategoryInterface[];
   pageCompany: CompanyInterface;
-  routeBasePath: string;
 }
 
 const ProductCategories: React.FC<ProductCategoriesInterface> = ({
   product,
-  routeBasePath,
   pageCompany,
   categoriesTree,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     rubricSlug: product.rubricSlug,
     productId: product._id,
@@ -39,38 +38,33 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.url,
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.url,
       },
       {
         name: `Товары`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.products.url,
       },
       {
         name: `${product.snippetTitle}`,
-        href: links.rubrics.product.root,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.products.product.productId.url,
       },
     ],
   };
 
   return (
-    <CmsProductLayout
-      companySlug={pageCompany.slug}
-      product={product}
-      breadcrumbs={breadcrumbs}
-      basePath={routeBasePath}
-    >
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductCategories product={product} categoriesTree={categoriesTree} />
     </CmsProductLayout>
   );
@@ -154,17 +148,12 @@ export const getServerSideProps = async (
     childrenFieldName: 'categories',
   });
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
       product: castDbData(summary),
       categoriesTree: castDbData(categoriesTree),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.root,
     },
   };
 };

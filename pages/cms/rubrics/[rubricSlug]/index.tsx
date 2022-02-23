@@ -20,7 +20,8 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -30,7 +31,7 @@ interface RubricDetailsInterface {
   rubric: RubricInterface;
   seoDescriptionTop: SeoContentCitiesInterface;
   seoDescriptionBottom: SeoContentCitiesInterface;
-  companySlug: string;
+  companySlug?: string;
   rubricVariants: RubricVariantInterface[];
 }
 
@@ -73,7 +74,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     shortDescriptionI18n,
     textBottom: seoDescriptionBottom,
     textTop: seoDescriptionTop,
-    companySlug,
+    companySlug: companySlug || DEFAULT_COMPANY_SLUG,
     capitalise: capitalise || false,
     showRubricNameInProductTitle: showRubricNameInProductTitle || false,
     showCategoryInProductTitle: showCategoryInProductTitle || false,
@@ -87,7 +88,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     variantId: `${variantId}`,
   };
 
-  const { parentLink } = getConsoleRubricLinks({
+  const links = getProjectLinks({
     rubricSlug: rubric.slug,
   });
 
@@ -96,7 +97,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     config: [
       {
         name: 'Рубрикатор',
-        href: parentLink,
+        href: links.cms.rubrics.url,
       },
     ],
   };

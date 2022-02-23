@@ -575,6 +575,21 @@ export interface NexusGenInputs {
     slug: string; // String!
     variant: NexusGenEnums['ConfigVariant']; // ConfigVariant!
   };
+  UpdateVisibleNavEventRubricConfigInput: {
+    // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    acceptedFormats: string[]; // [String!]!
+    cities: NexusGenScalars['JSONObject']; // JSONObject!
+    citySlug: string; // String!
+    companySlug: string; // String!
+    description?: string | null; // String
+    group: string; // String!
+    multi: boolean; // Boolean!
+    name: string; // String!
+    rubricSlug: string; // String!
+    slug: string; // String!
+    variant: NexusGenEnums['ConfigVariant']; // ConfigVariant!
+  };
   UpdateVisibleNavRubricConfigInput: {
     // input type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1047,6 +1062,7 @@ export interface NexusGenFieldTypes {
     updateShopProductSupplier: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     updateSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     updateVisibleCategoriesInNavDropdown: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
+    updateVisibleNavEventRubricConfig: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
     updateVisibleNavRubricConfig: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
   };
   NavItem: {
@@ -1800,6 +1816,7 @@ export interface NexusGenFieldTypeNames {
     updateShopProductSupplier: 'ShopProductPayload';
     updateSupplier: 'SupplierPayload';
     updateVisibleCategoriesInNavDropdown: 'ConfigPayload';
+    updateVisibleNavEventRubricConfig: 'ConfigPayload';
     updateVisibleNavRubricConfig: 'ConfigPayload';
   };
   NavItem: {
@@ -2514,6 +2531,10 @@ export interface NexusGenArgTypes {
     updateVisibleCategoriesInNavDropdown: {
       // args
       input: NexusGenInputs['UpdateVisibleCategoriesInNavDropdownInput']; // UpdateVisibleCategoriesInNavDropdownInput!
+    };
+    updateVisibleNavEventRubricConfig: {
+      // args
+      input: NexusGenInputs['UpdateVisibleNavEventRubricConfigInput']; // UpdateVisibleNavEventRubricConfigInput!
     };
     updateVisibleNavRubricConfig: {
       // args

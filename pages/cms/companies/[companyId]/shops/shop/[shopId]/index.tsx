@@ -2,7 +2,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ShopDetails, { ShopDetailsInterface } from 'components/shops/ShopDetails';
 import { getConsoleShopSsr } from 'db/ssr/shops/getConsoleShopSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -12,7 +13,7 @@ interface CompanyShopInterface
     Omit<ShopDetailsInterface, 'basePath'> {}
 
 const CompanyShop: NextPage<CompanyShopInterface> = ({ layoutProps, shop }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -22,15 +23,15 @@ const CompanyShop: NextPage<CompanyShopInterface> = ({ layoutProps, shop }) => {
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${shop.company?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.cms.companies.companyId.shops.url,
       },
     ],
   };

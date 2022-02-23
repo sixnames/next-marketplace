@@ -318,6 +318,7 @@ export enum ConfigVariantModel {
   categoriesTree = 'categoriesTree',
   rubrics = 'rubrics',
   visibleRubrics = 'visibleRubrics',
+  visibleEventRubrics = 'visibleEventRubrics',
 }
 
 // I18n model. Each key is locale with value for current locale
@@ -1290,8 +1291,6 @@ export interface SessionLogModel {
 // events
 export interface EventRubricModel extends RubricBaseModel {
   _id: ObjectIdModel;
-  companySlug: string;
-  companyId: ObjectIdModel;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
   shortDescriptionI18n: TranslationModel;

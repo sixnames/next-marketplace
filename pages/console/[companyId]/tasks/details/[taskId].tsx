@@ -4,29 +4,21 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks, getConsoleTaskLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 
-interface TaskDetailsConsumerInterface extends UpdateTaskFormInterface {
-  basePath: string;
-}
+interface TaskDetailsConsumerInterface extends UpdateTaskFormInterface {}
 
-const TaskDetailsConsumer: React.FC<TaskDetailsConsumerInterface> = ({
-  task,
-  taskVariants,
-  basePath,
-}) => {
-  const links = getConsoleTaskLinks({
-    basePath,
-  });
+const TaskDetailsConsumer: React.FC<TaskDetailsConsumerInterface> = ({ task, taskVariants }) => {
+  const links = getProjectLinks();
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${task.name}`,
     config: [
       {
         name: 'Задачи',
-        href: links.parentLink,
+        href: links.console.companyId.tasks.url,
       },
     ],
   };
@@ -45,11 +37,10 @@ const TaskDetailsPage: React.FC<TaskDetailsPageInterface> = ({
   layoutProps,
   taskVariants,
   task,
-  basePath,
 }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <TaskDetailsConsumer basePath={basePath} taskVariants={taskVariants} task={task} />
+      <TaskDetailsConsumer taskVariants={taskVariants} task={task} />
     </ConsoleLayout>
   );
 };
@@ -85,13 +76,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-  });
   return {
     props: {
       ...props,
-      basePath: links.root,
       task: castDbData(task),
       taskVariants: castDbData(taskVariants),
     },

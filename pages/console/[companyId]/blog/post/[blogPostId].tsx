@@ -10,7 +10,8 @@ import {
   BlogPostInterface,
   CompanyInterface,
 } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import {
   castDbData,
   getConsoleInitialData,
@@ -32,7 +33,7 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({
   pageCompany,
   attributes,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     blogPostId: post._id,
   });
@@ -41,7 +42,7 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({
     config: [
       {
         name: pageTitle,
-        href: links.blog.root,
+        href: links.console.companyId.blog.url,
       },
     ],
   };

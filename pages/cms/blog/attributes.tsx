@@ -18,7 +18,7 @@ import { sortObjectsByField } from 'lib/arrayUtils';
 import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
 import { BLOG_ATTRIBUTE_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCmsLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
@@ -39,18 +39,18 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
   const [deleteBlogAttribute] = useDeleteBlogAttribute();
 
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
-    const links = getCmsLinks({});
+    const links = getProjectLinks();
     return [
       {
         name: 'Блог',
         testId: 'sub-nav-blog',
-        path: links.blog.parentLink,
+        path: links.cms.blog.url,
         exact: true,
       },
       {
         name: 'Атрибуты',
         testId: 'sub-nav-attributes',
-        path: links.blog.attributes,
+        path: links.cms.blog.attributes.url,
         exact: true,
       },
     ];

@@ -12,7 +12,8 @@ import { useSetUserCategoryMutation } from 'hooks/mutations/useUserMutations';
 import { SORT_ASC } from 'lib/config/common';
 import { CONFIRM_MODAL, SET_USER_CATEGORY_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import {
@@ -37,7 +38,7 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({
 }) => {
   const { showModal } = useAppContext();
   const [setUserCategoryMutation] = useSetUserCategoryMutation();
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     userId: user._id,
   });
@@ -47,13 +48,13 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({
     config: [
       {
         name: 'Клиенты',
-        href: links.user.parentLink,
+        href: links.console.companyId.users.url,
       },
     ],
   };
 
   return (
-    <ConsoleUserLayout companyId={`${pageCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
+    <ConsoleUserLayout user={user} breadcrumbs={breadcrumbs}>
       <Inner>
         <FakeInput label={'Имя'} value={user.name} testId={'name'} />
         <FakeInput label={'Фамилия'} value={user.lastName} testId={'lastName'} />

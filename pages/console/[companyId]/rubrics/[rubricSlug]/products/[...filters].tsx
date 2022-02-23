@@ -6,7 +6,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import RequestError from 'components/RequestError';
 import { getConsoleRubricProductsListPageSsr } from 'db/ssr/rubrics/getConsoleRubricProductsListPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
 import { NextPage } from 'next';
 import * as React from 'react';
@@ -14,7 +15,7 @@ import * as React from 'react';
 interface RubricProductsConsumerInterface extends CompanyRubricProductsListInterface {}
 
 const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: props.pageCompany?._id,
     rubricSlug: props.rubric?.slug,
   });
@@ -23,11 +24,11 @@ const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props
     config: [
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.console.companyId.rubrics.url,
       },
       {
         name: `${props.rubric?.name}`,
-        href: links.rubrics.root,
+        href: links.console.companyId.rubrics.rubricSlug.url,
       },
     ],
   };
@@ -37,12 +38,7 @@ const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props
   }
 
   return (
-    <CmsRubricLayout
-      hideAttributesPath
-      rubric={props.rubric}
-      breadcrumbs={breadcrumbs}
-      basePath={links.root}
-    >
+    <CmsRubricLayout hideAttributesPath rubric={props.rubric} breadcrumbs={breadcrumbs}>
       <CompanyRubricProductsList {...props} />
     </CmsRubricLayout>
   );

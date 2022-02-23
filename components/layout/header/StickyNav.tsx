@@ -3,9 +3,15 @@ import { useSiteContext } from 'components/context/siteContext';
 import { useThemeContext } from 'components/context/themeContext';
 import Inner from 'components/Inner';
 import WpLink from 'components/Link/WpLink';
-import { AttributeInterface, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
+import {
+  AttributeInterface,
+  CategoryInterface,
+  EventRubricInterface,
+  RubricInterface,
+} from 'db/uiInterfaces';
 import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from 'lib/config/common';
 import {
+  DEFAULT_LAYOUT,
   NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY,
   NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
   NAV_DROPDOWN_LAYOUT_WITHOUT_SUBCATEGORIES,
@@ -103,14 +109,14 @@ const StickyNavDropdown: React.FC<StickyNavDropdownGlobalInterface> = ({
   );
 };
 
+const links = getProjectLinks();
+
 interface StickyNavItemInterface extends StylesInterface {
   rubric: RubricInterface;
   linkStyle: React.CSSProperties;
   categories: CategoryInterface[];
   currentRubricSlug?: string;
 }
-
-const links = getProjectLinks();
 
 const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   rubric,
@@ -225,12 +231,77 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   );
 };
 
+interface StickyNavEventItemInterface extends StylesInterface {
+  rubric: EventRubricInterface;
+  linkStyle: React.CSSProperties;
+  currentRubricSlug?: string;
+}
+
+const StickyNavEventItem: React.FC<StickyNavEventItemInterface> = ({
+  rubric,
+  attributeStyle,
+  linkStyle,
+  attributeLinkStyle,
+  dropdownStyle,
+  currentRubricSlug,
+}) => {
+  const { asPath } = useRouter();
+  const { name, slug, attributes } = rubric;
+  const [isDropdownVisible, setIsDropdownVisible] = React.useState<boolean>(true);
+
+  const hideDropdown = React.useCallback(() => {
+    setIsDropdownVisible(false);
+  }, []);
+
+  // Get rubric slug from product card path
+  const path = `${links.events.url}/${slug}`;
+  const reg = RegExp(`${path}`);
+  const isCurrent = reg.test(asPath) || slug === currentRubricSlug;
+
+  return (
+    <li
+      className='group px-4 first:pl-0 last:pr-0'
+      data-cy={`main-rubric-list-item-${rubric.slug}`}
+      onMouseLeave={() => setIsDropdownVisible(true)}
+    >
+      <WpLink
+        href={path}
+        style={linkStyle}
+        testId={`main-rubric-${rubric.slug}`}
+        onClick={hideDropdown}
+        className='relative flex h-[2.5rem] items-center pt-[2px] font-medium uppercase text-primary-text hover:text-theme hover:no-underline'
+      >
+        {name}
+        <span
+          className={`absolute inset-x-0 bottom-0 block w-full bg-theme group-hover:h-[2px] ${
+            isCurrent ? 'h-[2px]' : ''
+          }`}
+        />
+      </WpLink>
+
+      {isDropdownVisible ? (
+        <StickyNavDropdown
+          hideDropdown={hideDropdown}
+          categories={[]}
+          attributeLinkStyle={attributeLinkStyle}
+          attributeStyle={attributeStyle}
+          dropdownStyle={dropdownStyle}
+          parentHref={path}
+          attributes={attributes}
+          navCategoryColumns={4}
+          catalogueNavLayout={DEFAULT_LAYOUT}
+        />
+      ) : null}
+    </li>
+  );
+};
+
 export interface StickNavInterface {
   currentRubricSlug?: string;
 }
 
 const StickyNav: React.FC<StickNavInterface> = ({ currentRubricSlug }) => {
-  const { navRubrics } = useSiteContext();
+  const { navRubrics, navEventRubrics } = useSiteContext();
   const { isDark } = useThemeContext();
   const { configs } = useConfigContext();
 
@@ -288,11 +359,27 @@ const StickyNav: React.FC<StickNavInterface> = ({ currentRubricSlug }) => {
     >
       <Inner lowBottom lowTop>
         <ul className='flex justify-between'>
+          {/*product rubrics*/}
           {navRubrics.map((rubric) => {
             return (
               <StickyNavItem
                 currentRubricSlug={currentRubricSlug}
                 categories={rubric.categories || []}
+                linkStyle={linkStyle}
+                attributeLinkStyle={attributeLinkStyle}
+                dropdownStyle={dropdownStyle}
+                attributeStyle={attributeStyle}
+                rubric={rubric}
+                key={`${rubric._id}`}
+              />
+            );
+          })}
+
+          {/*event rubrics*/}
+          {navEventRubrics.map((rubric) => {
+            return (
+              <StickyNavEventItem
+                currentRubricSlug={currentRubricSlug}
                 linkStyle={linkStyle}
                 attributeLinkStyle={attributeLinkStyle}
                 dropdownStyle={dropdownStyle}

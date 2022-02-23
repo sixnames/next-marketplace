@@ -4,7 +4,8 @@ import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import { getI18nLocaleValue } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { noNaN } from 'lib/numbers';
 import {
   castDbData,
@@ -24,7 +25,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   rubrics,
   shop,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -33,23 +34,18 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
     config: [
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.console.companyId.shops.url,
       },
       {
         name: shop.name,
-        href: links.shop.root,
+        href: links.console.companyId.shops.shop.shopId.url,
       },
     ],
   };
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopRubrics
-        shop={shop}
-        rubrics={rubrics}
-        basePath={links.parentLink}
-        breadcrumbs={breadcrumbs}
-      />
+      <ShopRubrics shop={shop} rubrics={rubrics} breadcrumbs={breadcrumbs} />
     </ConsoleLayout>
   );
 };

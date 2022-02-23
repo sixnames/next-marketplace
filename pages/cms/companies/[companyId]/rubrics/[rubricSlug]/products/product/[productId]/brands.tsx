@@ -12,7 +12,8 @@ import {
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -24,7 +25,6 @@ interface ProductBrandsInterface {
   brandCollection?: BrandCollectionInterface | null;
   manufacturer?: ManufacturerInterface | null;
   pageCompany: CompanyInterface;
-  routeBasePath: string;
 }
 
 const ProductBrands: React.FC<ProductBrandsInterface> = ({
@@ -33,9 +33,8 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   brandCollection,
   manufacturer,
   pageCompany,
-  routeBasePath,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     rubricSlug: product.rubricSlug,
     productId: product._id,
@@ -45,38 +44,33 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.url,
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.url,
       },
       {
         name: `Товары`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.products.url,
       },
       {
         name: `${product.snippetTitle}`,
-        href: links.rubrics.product.root,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.products.product.productId.url,
       },
     ],
   };
 
   return (
-    <CmsProductLayout
-      companySlug={pageCompany.slug}
-      product={product}
-      breadcrumbs={breadcrumbs}
-      basePath={routeBasePath}
-    >
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductBrands
         product={product}
         brand={brand}
@@ -206,10 +200,6 @@ export const getServerSideProps = async (
       }
     : null;
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
@@ -218,7 +208,6 @@ export const getServerSideProps = async (
       brandCollection: castDbData(brandCollection),
       manufacturer: castDbData(manufacturer),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.root,
     },
   };
 };

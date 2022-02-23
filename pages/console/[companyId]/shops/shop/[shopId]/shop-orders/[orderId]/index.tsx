@@ -5,7 +5,8 @@ import { getDbCollections } from 'db/mongodb';
 import { getConsoleOrder } from 'db/ssr/orders/getConsoleOrder';
 import { AppContentWrapperBreadCrumbs, ShopInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import {
   castDbData,
   getConsoleInitialData,
@@ -28,7 +29,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
 }) => {
   const title = `Заказ №${order.orderId}`;
 
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -37,15 +38,15 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
     config: [
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.console.companyId.shops.url,
       },
       {
         name: shop.name,
-        href: links.shop.root,
+        href: links.console.companyId.shops.shop.shopId.url,
       },
       {
         name: 'Заказы',
-        href: links.shop.order.parentLink,
+        href: links.console.companyId.shops.shop.shopId.shopOrders.url,
       },
     ],
   };
@@ -58,7 +59,6 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
         title={title}
         order={order}
         breadcrumbs={breadcrumbs}
-        basePath={links.parentLink}
         shop={shop}
       />
     </ConsoleLayout>

@@ -2,13 +2,8 @@ import Inner from 'components/Inner';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import AppSubNav from 'components/layout/AppSubNav';
 import WpTitle from 'components/WpTitle';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-  EventRubricInterface,
-} from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs, EventRubricInterface } from 'db/uiInterfaces';
 import { useBasePath } from 'hooks/useBasePath';
-import { getConsoleCompanyLinks } from 'lib/links/getProjectLinks';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -17,49 +12,46 @@ import { ClientNavItemInterface } from 'types/clientTypes';
 export interface EventRubricLayoutInterface {
   rubric: EventRubricInterface;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
-  pageCompany: CompanyInterface;
+  hideAttributesLink?: boolean;
+  hideDetailsLink?: boolean;
 }
 
 const EventRubricLayout: React.FC<EventRubricLayoutInterface> = ({
   rubric,
   breadcrumbs,
   children,
+  hideDetailsLink,
+  hideAttributesLink,
 }) => {
   const { query } = useRouter();
-  const routeBasePath = useBasePath('companyId');
+  const routeBasePath = useBasePath('rubricSlug');
 
-  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
-    const links = getConsoleCompanyLinks({
-      basePath: routeBasePath,
-      companyId: `${query.companyId}`,
-      rubricSlug: rubric.slug,
-    });
-
-    return [
-      {
-        name: 'Мероприятия',
-        testId: 'events',
-        path: links.events.rubricSlug.events.url,
-      },
-      {
-        name: 'Атрибуты',
-        testId: 'attributes',
-        path: links.events.rubricSlug.attributes.url,
-        exact: true,
-      },
-      {
-        name: 'Детали',
-        testId: 'details',
-        path: links.events.rubricSlug.url,
-        exact: true,
-      },
-      {
-        name: 'SEO тексты',
-        testId: 'seo-content',
-        path: links.events.rubricSlug.seoContent.url,
-      },
-    ];
-  }, [routeBasePath, query.companyId, rubric.slug]);
+  const navConfig: ClientNavItemInterface[] = [
+    {
+      name: 'Мероприятия',
+      testId: 'events',
+      path: `${routeBasePath}/events`,
+    },
+    {
+      name: 'Атрибуты',
+      testId: 'attributes',
+      path: `${routeBasePath}/attributes`,
+      exact: true,
+      hidden: hideAttributesLink,
+    },
+    {
+      name: 'Детали',
+      testId: 'details',
+      path: routeBasePath,
+      exact: true,
+      hidden: hideDetailsLink,
+    },
+    {
+      name: 'SEO тексты',
+      testId: 'seo-content',
+      path: `${routeBasePath}/seo-content`,
+    },
+  ];
 
   const title = query.title || rubric.name;
 

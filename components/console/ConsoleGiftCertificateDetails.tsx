@@ -1,9 +1,9 @@
+import { UpdateGiftCertificateInputInterface } from 'db/dao/giftCertificate/updateGiftCertificate';
+import { CompanyInterface, GiftCertificateInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
+import { useUpdateGiftCertificateMutation } from 'hooks/mutations/useGiftCertificateMutations';
+import { USERS_SEARCH_MODAL } from 'lib/config/modalVariants';
 import * as React from 'react';
-import { UpdateGiftCertificateInputInterface } from '../../db/dao/giftCertificate/updateGiftCertificate';
-import { CompanyInterface, GiftCertificateInterface } from '../../db/uiInterfaces';
-import { useUpdateGiftCertificateMutation } from '../../hooks/mutations/useGiftCertificateMutations';
-import { USERS_SEARCH_MODAL } from '../../lib/config/modalVariants';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -17,15 +17,12 @@ import {
 export interface ConsoleGiftCertificateDetailsInterface {
   pageCompany: CompanyInterface;
   giftCertificate: GiftCertificateInterface;
-  basePath?: string;
   showUsersSearch?: boolean;
-  userRouteBasePath: string;
 }
 
 const ConsoleGiftCertificateDetails: React.FC<ConsoleGiftCertificateDetailsInterface> = ({
   giftCertificate,
   showUsersSearch,
-  userRouteBasePath,
 }) => {
   const { showModal } = useAppContext();
   const [updateGiftCertificateMutation] = useUpdateGiftCertificateMutation();
@@ -92,12 +89,7 @@ const ConsoleGiftCertificateDetails: React.FC<ConsoleGiftCertificateDetailsInter
               <GiftCertificateMainFields />
 
               {giftCertificate.user ? (
-                <div
-                  className='mb-6 cursor-pointer hover:text-theme'
-                  onClick={() => {
-                    window.open(`${userRouteBasePath}/${giftCertificate.user?._id}`, '_blank');
-                  }}
-                >
+                <div className='mb-6 cursor-pointer hover:text-theme'>
                   <div>{giftCertificate.user?.fullName}</div>
                   <div>{giftCertificate.user?.email}</div>
                   <div>{giftCertificate.user?.formattedPhone?.readable}</div>

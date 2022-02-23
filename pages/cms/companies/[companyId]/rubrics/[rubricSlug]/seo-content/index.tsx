@@ -30,23 +30,26 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents, 
     currentPageName: `SEO тексты`,
     config: [
       {
-        name: 'Рубрикатор',
+        name: 'Компании',
+        href: links.cms.companies.url,
+      },
+      {
+        name: `${pageCompany?.name}`,
+        href: links.cms.companies.companyId.url,
+      },
+      {
+        name: `Рубрикатор`,
         href: links.cms.companies.companyId.rubrics.url,
       },
       {
-        name: `${rubric.name}`,
+        name: `${rubric?.name}`,
         href: links.cms.companies.companyId.rubrics.rubricSlug.url,
       },
     ],
   };
 
   return (
-    <CmsRubricLayout
-      hideAttributesPath
-      rubric={rubric}
-      breadcrumbs={breadcrumbs}
-      basePath={links.cms.companies.companyId.url}
-    >
+    <CmsRubricLayout hideAttributesPath rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner>
         <ConsoleSeoContentsList seoContents={seoContents} />
       </Inner>

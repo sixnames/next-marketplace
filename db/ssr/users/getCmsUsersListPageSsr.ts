@@ -5,7 +5,6 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
 import { DEFAULT_PAGE, SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
@@ -42,8 +41,6 @@ export const getCmsUsersListPageSsr = async (
     filters: alwaysArray(filters),
     searchFieldName: '_id',
   });
-  const links = getProjectLinks();
-  const itemPath = links.cms.users.user.url;
 
   const regexSearch = {
     $regex: search,
@@ -256,7 +253,6 @@ export const getCmsUsersListPageSsr = async (
     clearSlug,
     totalDocs: usersResult.totalDocs,
     totalPages: usersResult.totalPages,
-    itemPath,
     page,
     docs,
     filters: {

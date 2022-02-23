@@ -4,7 +4,7 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getCmsLinks, getConsoleTaskLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
@@ -13,24 +13,21 @@ interface CreateTaskConsumerInterface extends CreateTaskFormInterface {}
 
 const CreateTaskConsumer: React.FC<CreateTaskConsumerInterface> = ({
   companySlug,
-  basePath,
   taskVariants,
 }) => {
-  const links = getConsoleTaskLinks({
-    basePath,
-  });
+  const links = getProjectLinks();
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Создание задачи',
     config: [
       {
         name: 'Задачи',
-        href: links.parentLink,
+        href: links.cms.tasks.url,
       },
     ],
   };
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
-      <CreateTaskForm companySlug={companySlug} taskVariants={taskVariants} basePath={basePath} />
+      <CreateTaskForm companySlug={companySlug} taskVariants={taskVariants} />
     </AppContentWrapper>
   );
 };
@@ -41,17 +38,12 @@ interface CreateTaskPageInterface
 
 const CreateTaskPage: React.FC<CreateTaskPageInterface> = ({
   layoutProps,
-  basePath,
   companySlug,
   taskVariants,
 }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <CreateTaskConsumer
-        basePath={basePath}
-        taskVariants={taskVariants}
-        companySlug={companySlug}
-      />
+      <CreateTaskConsumer taskVariants={taskVariants} companySlug={companySlug} />
     </ConsoleLayout>
   );
 };
@@ -77,11 +69,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsLinks({});
   return {
     props: {
       ...props,
-      basePath: links.root,
       companySlug: DEFAULT_COMPANY_SLUG,
       taskVariants: castDbData(taskVariants),
     },

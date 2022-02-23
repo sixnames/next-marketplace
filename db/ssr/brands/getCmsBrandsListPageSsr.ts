@@ -11,7 +11,6 @@ import {
 } from 'lib/config/common';
 import { ISO_LANGUAGES } from 'lib/config/constantSelects';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import {
@@ -39,8 +38,6 @@ export const getCmsBrandsListPageSsr = async (
     initialLimit: CMS_BRANDS_LIMIT,
     searchFieldName: '_id',
   });
-  const links = getProjectLinks();
-  const itemPath = links.cms.brands.brand.url;
 
   const regexSearch = {
     $regex: search,
@@ -166,7 +163,6 @@ export const getCmsBrandsListPageSsr = async (
     clearSlug,
     totalDocs: brandsResult.totalDocs,
     totalPages: brandsResult.totalPages,
-    itemPath,
     page,
     docs,
   };

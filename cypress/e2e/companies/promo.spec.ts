@@ -1,14 +1,14 @@
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import { DEFAULT_LOCALE } from 'lib/config/common';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Promo', () => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: fixtureIds.companyA,
   });
 
   beforeEach(() => {
-    cy.testAuth(links.promo.parentLink);
+    cy.testAuth(links.cms.companies.companyId.promo.url);
   });
 
   it('Should CRUD promo', () => {
@@ -49,7 +49,7 @@ describe('Promo', () => {
     cy.getByCy(`discountPercent`).clear().type(updatedPromoDiscount);
     cy.getByCy(`cashbackPercent`).clear().type(updatedPromoCashBack);
     cy.getByCy(`submit-promo`).click();
-    cy.visit(links.promo.parentLink);
+    cy.visit(links.cms.companies.companyId.promo.url);
     cy.wait(1500);
     cy.getByCy(`${updatedPromoName}-row`).should('exist');
 

@@ -13,7 +13,8 @@ import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces'
 import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/useOrderMutations';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { CONFIRM_MODAL } from 'lib/config/modalVariants';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import {
   castDbData,
   getConsoleInitialData,
@@ -39,7 +40,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({
   const [confirmOrderMutation] = useConfirmOrder();
   const [cancelOrderMutation] = useCancelOrder();
 
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: `${query.companyId}`,
     orderId: order._id,
   });
@@ -49,7 +50,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({
     config: [
       {
         name: 'Список заказов',
-        href: links.order.parentLink,
+        href: links.console.companyId.orders.url,
       },
     ],
   };
@@ -65,7 +66,6 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({
           order={order}
           title={title}
           pageCompanySlug={pageCompanySlug}
-          basePath={links.root}
         />
         <Inner>
           <FixedButtons>

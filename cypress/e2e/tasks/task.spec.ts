@@ -6,7 +6,7 @@ describe('Tasks', () => {
     cy.testAuth(links.cms.tasks.url);
   });
 
-  it('Should CRUD task variants', () => {
+  it('Should CRUD tasks', () => {
     const createdTask = 'createdTask';
     const updatedTask = 'updatedTask';
 
@@ -35,6 +35,8 @@ describe('Tasks', () => {
     // submit
     cy.getByCy('task-submit').click();
     cy.wait(1500);
+    cy.getByCy('update-task-page').should('exist');
+    cy.visit(links.cms.tasks.url);
     cy.getByCy('tasks-list').should('exist');
 
     // should update

@@ -1,39 +1,11 @@
 import capitalize from 'capitalize';
+import { TranslationModel } from 'db/dbModels';
 import dirTree from 'directory-tree';
 import fs from 'fs';
+import { DEFAULT_LOCALE } from 'lib/config/common';
 import { set } from 'lodash';
 
-const excludedNames = [
-  'webmanifest',
-  'robots',
-  'sitemap',
-  '404',
-  '_app',
-  '_document',
-  '_error',
-  '0',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '10',
-  '11',
-  '12',
-  '14',
-  '15',
-  '16',
-  '17',
-  '18',
-  '19',
-  '20',
-  '21',
-  '22',
-  '23',
-  '24',
-  '25',
-  '26',
-];
+const excludedNames = ['webmanifest', 'robots', 'sitemap', '404', '_app', '_document', '_error'];
 
 function cleanupName(name: string) {
   return name
@@ -100,6 +72,7 @@ function iterPages({ pagesPath, replacePath, addBasePathVariable }: IterPagesInt
   });
   const pages = allPagesTree.children || [];
   const props = new Set<string>();
+  const pathNames = new Set<string>();
   const fields: Record<any, any> = {};
 
   function iter(page: dirTree.DirectoryTree) {
@@ -129,6 +102,11 @@ function iterPages({ pagesPath, replacePath, addBasePathVariable }: IterPagesInt
     if (page.name.includes('[') && !page.name.includes('...')) {
       props.add(cleanName);
     }
+
+    if (!page.path.includes('api') && !page.name.includes('[') && !page.name.includes('...')) {
+      pathNames.add(cleanName);
+    }
+
     (page.children || []).forEach(iter);
   }
   pages.forEach(iter);
@@ -145,12 +123,20 @@ function iterPages({ pagesPath, replacePath, addBasePathVariable }: IterPagesInt
     .replaceAll('",', '`,')
     .replaceAll('"}', '`}');
 
+  const paths: Record<string, TranslationModel> = {};
+  Array.from(pathNames).forEach((key) => {
+    paths[key] = {
+      [DEFAULT_LOCALE]: '',
+    };
+  });
+
   return {
     props,
     fields,
     propsString,
     propsDestructure,
     fieldsString,
+    paths,
   };
 }
 
@@ -169,6 +155,7 @@ function iterPages({ pagesPath, replacePath, addBasePathVariable }: IterPagesInt
     addBasePathVariable: true,
   });
 
+  // const paths = ${JSON.stringify(allPagesResult.paths)}
   const output = `
   import { ObjectId } from 'mongodb';
   

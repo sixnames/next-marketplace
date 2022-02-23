@@ -45,7 +45,7 @@ const EventRubricSeoContentsListConsumer: React.FC<EventRubricSeoContentsListCon
       },
       {
         name: `${rubric.name}`,
-        href: links.console.companyId.eventRubrics.rubricSlug.attributes.url,
+        href: links.console.companyId.eventRubrics.rubricSlug.url,
       },
     ],
   };

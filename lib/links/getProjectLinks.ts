@@ -290,9 +290,6 @@ export function getProjectLinks(props?: LinkPropsInterface) {
             url: `/cms/companies/${companyId}/event-rubrics`,
             rubricSlug: {
               url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}`,
-              attributes: {
-                url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}/attributes`,
-              },
               events: {
                 url: `/cms/companies/${companyId}/event-rubrics/${rubricSlug}/events`,
                 create: {
@@ -476,21 +473,7 @@ export function getProjectLinks(props?: LinkPropsInterface) {
         rubricSlug: {
           url: `/cms/event-rubrics/${rubricSlug}`,
           attributes: { url: `/cms/event-rubrics/${rubricSlug}/attributes` },
-          events: {
-            url: `/cms/event-rubrics/${rubricSlug}/events`,
-            create: { url: `/cms/event-rubrics/${rubricSlug}/events/create` },
-            event: {
-              url: `/cms/event-rubrics/${rubricSlug}/events/event`,
-              eventId: {
-                url: `/cms/event-rubrics/${rubricSlug}/events/event/${eventId}`,
-                assets: { url: `/cms/event-rubrics/${rubricSlug}/events/event/${eventId}/assets` },
-                attributes: {
-                  url: `/cms/event-rubrics/${rubricSlug}/events/event/${eventId}/attributes`,
-                },
-                editor: { url: `/cms/event-rubrics/${rubricSlug}/events/event/${eventId}/editor` },
-              },
-            },
-          },
+          events: { url: `/cms/event-rubrics/${rubricSlug}/events` },
           seoContent: {
             url: `/cms/event-rubrics/${rubricSlug}/seo-content`,
             seoContentSlug: {
@@ -662,7 +645,6 @@ export function getProjectLinks(props?: LinkPropsInterface) {
           url: `/console/${companyId}/event-rubrics`,
           rubricSlug: {
             url: `/console/${companyId}/event-rubrics/${rubricSlug}`,
-            attributes: { url: `/console/${companyId}/event-rubrics/${rubricSlug}/attributes` },
             events: {
               url: `/console/${companyId}/event-rubrics/${rubricSlug}/events`,
               create: { url: `/console/${companyId}/event-rubrics/${rubricSlug}/events/create` },
@@ -923,7 +905,6 @@ export function getConsoleCompanyLinks(props: ConsoleCompanyLinkPropsInterface) 
       url: `${basePath}/event-rubrics`,
       rubricSlug: {
         url: `${basePath}/event-rubrics/${rubricSlug}`,
-        attributes: { url: `${basePath}/event-rubrics/${rubricSlug}/attributes` },
         events: {
           url: `${basePath}/event-rubrics/${rubricSlug}/events`,
           create: { url: `${basePath}/event-rubrics/${rubricSlug}/events/create` },

@@ -68,14 +68,14 @@ export const useDeletePromoProducts = () => {
 // create
 export const useCreatePromoCode = () => {
   const router = useRouter();
-  const basePath = useBasePath('code');
+  const redirectBasePath = useBasePath('code');
   return useMutationHandler<PromoCodePayloadModel, CreatePromoCodeInputInterface>({
     path: `${basePath}/codes`,
     method: REQUEST_METHOD_POST,
     reload: false,
     onSuccess: (payload) => {
       if (payload.success && payload.payload) {
-        router.push(`${basePath}/${payload.payload._id}`).catch(console.log);
+        router.push(`${redirectBasePath}/${payload.payload._id}`).catch(console.log);
       }
     },
   });

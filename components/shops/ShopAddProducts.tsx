@@ -262,7 +262,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
     onCompleted: (data) => {
       onCompleteCallback(data.addManyProductsToShop);
       if (data.addManyProductsToShop.success) {
-        router.push(basePath).catch(console.log);
+        router.push(`${basePath}/products`).catch(console.log);
       }
     },
     onError: onErrorCallback,

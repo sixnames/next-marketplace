@@ -37,7 +37,7 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics }) 
             justifyContent={'flex-end'}
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
-              router.push(`${basePath}/${dataItem.slug}`).catch(console.log);
+              router.push(`${basePath}/${dataItem.slug}/products`).catch(console.log);
             }}
           />
         );
@@ -54,7 +54,7 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics }) 
           testIdKey={'name'}
           emptyMessage={'Список пуст'}
           onRowDoubleClick={(dataItem) => {
-            router.push(`${basePath}/${dataItem.slug}`).catch(console.log);
+            router.push(`${basePath}/${dataItem.slug}/products`).catch(console.log);
           }}
         />
       </div>

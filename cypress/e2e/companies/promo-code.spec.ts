@@ -7,7 +7,7 @@ describe('Promo code', () => {
     promoId: fixtureIds.promoACompanyA,
   });
   beforeEach(() => {
-    cy.testAuth(links.cms.companies.companyId.promo.url);
+    cy.testAuth(links.cms.companies.companyId.promo.details.promoId.code.url);
   });
 
   it('Should CRUD promo code', () => {
@@ -27,7 +27,7 @@ describe('Promo code', () => {
     cy.getByCy('code-input').clear().type(updatedPromoCode);
     cy.getByCy('submit-promo-code').click();
     cy.wait(1500);
-    cy.visit(links.cms.companies.companyId.promo.url);
+    cy.visit(links.cms.companies.companyId.promo.details.promoId.code.url);
     cy.getByCy(updatedPromoCode).should('exist');
 
     // should delete

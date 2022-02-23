@@ -5,11 +5,9 @@ import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { MOCK_ADDRESS_A, MOCK_ADDRESS_B } from 'tests/mocks';
 
 describe('Company shops', () => {
-  const links = getProjectLinks({
-    companyId: fixtureIds.companyA,
-  });
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(links.cms.companies.companyId.shops.url);
+    cy.testAuth(links.cms.companies.url);
   });
 
   it('Should display company shops list', () => {
@@ -128,7 +126,7 @@ describe('Company shops', () => {
       companyId: fixtureIds.companyA,
       shopId: fixtureIds.shopA,
     });
-    cy.visit(shopALinks.cms.companies.companyId.shops.shop.shopId.url);
+    cy.visit(shopALinks.cms.companies.companyId.shops.shop.shopId.rubrics.url);
     cy.getByCy('shop-rubrics-list').should('exist');
     cy.getByCy(`Вино-update`).click();
     cy.wait(1500);

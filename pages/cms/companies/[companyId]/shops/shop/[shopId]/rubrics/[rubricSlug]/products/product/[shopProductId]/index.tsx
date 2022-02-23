@@ -41,7 +41,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     companyId: shop.companyId,
     shopId: shop._id,
     rubricSlug: rubric?.slug,
-    productId: shopProduct._id,
+    shopProductId: shopProduct._id,
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -77,7 +77,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   return (
     <ConsoleShopProductLayout showEditButton breadcrumbs={breadcrumbs} shopProduct={shopProduct}>
       <CompanyProductDetails
-        routeBasePath={''}
         product={summary}
         seoContentsList={cardContentCities}
         companySlug={companySlug}

@@ -8,6 +8,7 @@ import { getConfigEventRubrics } from 'db/ssr/events/getConfigEventRubrics';
 import { getConfigRubrics } from 'db/ssr/rubrics/getConfigRubrics';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { CONFIG_GROUP_UI } from 'lib/config/common';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -24,7 +25,7 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   rubrics,
   eventRubrics,
 }) => {
-  const { root, parentLink } = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany?._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -32,11 +33,11 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: root,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };

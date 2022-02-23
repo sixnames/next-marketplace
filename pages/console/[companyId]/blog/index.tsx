@@ -25,15 +25,11 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({
   posts,
   pageCompany,
 }) => {
-  const links = getConsoleCompanyLinks({
-    companyId: pageCompany._id,
-  });
-
   return (
     <AppContentWrapper>
       <Inner testId={'company-posts-list'}>
         <WpTitle>{pageTitle}</WpTitle>
-        <BlogPostsList posts={posts} basePath={links.root} companySlug={`${pageCompany?.slug}`} />
+        <BlogPostsList posts={posts} companySlug={`${pageCompany?.slug}`} />
       </Inner>
     </AppContentWrapper>
   );

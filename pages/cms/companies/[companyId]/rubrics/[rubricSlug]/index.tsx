@@ -10,6 +10,7 @@ import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
 } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { getRubricAllSeoContents } from 'lib/seoContentUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
@@ -24,9 +25,8 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   seoDescriptionTop,
   seoDescriptionBottom,
   pageCompany,
-  routeBasePath,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -34,30 +34,24 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.parentLink,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.url,
       },
     ],
   };
 
   return (
-    <CmsRubricLayout
-      hideAttributesPath
-      rubric={rubric}
-      breadcrumbs={breadcrumbs}
-      basePath={routeBasePath}
-    >
+    <CmsRubricLayout hideAttributesPath rubric={rubric} breadcrumbs={breadcrumbs}>
       <CompanyRubricDetails
         rubric={rubric}
         pageCompany={pageCompany}
-        routeBasePath={routeBasePath}
         seoDescriptionTop={seoDescriptionTop}
         seoDescriptionBottom={seoDescriptionBottom}
       />
@@ -159,10 +153,6 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
@@ -170,7 +160,6 @@ export const getServerSideProps = async (
       seoDescriptionTop: castDbData(seoDescriptionTop),
       rubric: castDbData(rubric),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.root,
     },
   };
 };

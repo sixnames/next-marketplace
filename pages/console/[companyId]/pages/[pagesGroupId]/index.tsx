@@ -7,6 +7,7 @@ import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { getPagesListSsr } from 'lib/pageUtils';
 import {
@@ -22,7 +23,7 @@ interface PagesListPageInterface
     Omit<PagesListInterface, 'basePath' | 'breadcrumbs'> {}
 
 const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, pagesGroup, cities }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: layoutProps.pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -30,7 +31,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, pagesGro
     config: [
       {
         name: 'Группы страниц',
-        href: links.pages.parentLink,
+        href: links.console.companyId.pages.url,
       },
     ],
   };
@@ -40,7 +41,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, pagesGro
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
           <WpTitle>{pagesGroup.name}</WpTitle>
-          <PagesList cities={cities} basePath={links.pages.parentLink} pagesGroup={pagesGroup} />
+          <PagesList cities={cities} pagesGroup={pagesGroup} />
         </Inner>
       </AppContentWrapper>
     </ConsoleLayout>

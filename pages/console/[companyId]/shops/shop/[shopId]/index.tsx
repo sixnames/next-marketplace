@@ -3,6 +3,7 @@ import ShopDetails, { ShopDetailsInterface } from 'components/shops/ShopDetails'
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import {
   castDbData,
@@ -18,7 +19,7 @@ interface CompanyShopInterface
     Omit<ShopDetailsInterface, 'basePath'> {}
 
 const CompanyShop: NextPage<CompanyShopInterface> = ({ layoutProps, shop }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -26,14 +27,14 @@ const CompanyShop: NextPage<CompanyShopInterface> = ({ layoutProps, shop }) => {
     config: [
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.console.companyId.shops.url,
       },
     ],
   };
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopDetails basePath={links.parentLink} shop={shop} breadcrumbs={breadcrumbs} />
+      <ShopDetails shop={shop} breadcrumbs={breadcrumbs} />
     </ConsoleLayout>
   );
 };

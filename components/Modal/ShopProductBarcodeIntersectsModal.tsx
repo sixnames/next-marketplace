@@ -1,8 +1,8 @@
+import { ShopProductBarcodeDoublesInterface, ShopProductInterface } from 'db/uiInterfaces';
+import { alwaysArray } from 'lib/arrayUtils';
+import { getNumWord } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import * as React from 'react';
-import { ShopProductBarcodeDoublesInterface, ShopProductInterface } from '../../db/uiInterfaces';
-import { alwaysArray } from '../../lib/arrayUtils';
-import { getNumWord } from '../../lib/i18n';
-import { getCmsLinks } from '../../lib/linkUtils';
 import WpLink from '../Link/WpLink';
 import TableRowImage from '../TableRowImage';
 import WpTable, { WpTableColumn } from '../WpTable';
@@ -23,17 +23,20 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
-        const links = getCmsLinks({
+        const links = getProjectLinks({
           companyId: dataItem.companyId,
           shopId: dataItem.shopId,
-          productId: dataItem._id,
+          shopProductId: dataItem._id,
           rubricSlug: dataItem.rubricSlug,
         });
         return (
           <WpLink
             testId={`product-link-${rowIndex}`}
-            href={links.companies.shop.rubrics.product.suppliers}
             target={'_blank'}
+            href={
+              links.cms.companies.companyId.shops.shop.shopId.rubrics.rubricSlug.products.product
+                .shopProductId.suppliers.url
+            }
           >
             {dataItem.itemId}
           </WpLink>
@@ -104,13 +107,17 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
       <div className={`overflow-x-auto overflow-y-hidden`}>
         <WpTable<ShopProductInterface>
           onRowDoubleClick={(dataItem) => {
-            const links = getCmsLinks({
+            const links = getProjectLinks({
               companyId: dataItem.companyId,
               shopId: dataItem.shopId,
-              productId: dataItem._id,
+              shopProductId: dataItem._id,
               rubricSlug: dataItem.rubricSlug,
             });
-            window.open(links.companies.shop.rubrics.product.suppliers, '_blank');
+            window.open(
+              links.cms.companies.companyId.shops.shop.shopId.rubrics.rubricSlug.products.product
+                .shopProductId.suppliers.url,
+              '_blank',
+            );
           }}
           columns={columns}
           data={products}

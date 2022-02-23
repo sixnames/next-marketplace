@@ -1,8 +1,9 @@
+import { CompanyInterface, PromoInterface } from 'db/uiInterfaces';
+import { useDeletePromo } from 'hooks/mutations/usePromoMutations';
+import { useBasePath } from 'hooks/useBasePath';
+import { CONFIRM_MODAL, CREATE_PROMO_MODAL } from 'lib/config/modalVariants';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { CompanyInterface, PromoInterface } from '../../db/uiInterfaces';
-import { useDeletePromo } from '../../hooks/mutations/usePromoMutations';
-import { CONFIRM_MODAL, CREATE_PROMO_MODAL } from '../../lib/config/modalVariants';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -16,13 +17,13 @@ import WpTable, { WpTableColumn } from '../WpTable';
 export interface PromoListInterface {
   promoList: PromoInterface[];
   pageCompany: CompanyInterface;
-  basePath: string;
 }
 
-const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, pageCompany }) => {
+const PromoList: React.FC<PromoListInterface> = ({ promoList, pageCompany }) => {
   const router = useRouter();
   const { showModal } = useAppContext();
   const [deletePromo] = useDeletePromo();
+  const basePath = useBasePath('promo');
 
   const columns: WpTableColumn<PromoInterface>[] = [
     {

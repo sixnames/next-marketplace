@@ -4,6 +4,7 @@ import ConsoleShopProductLayout from 'components/layout/console/ConsoleShopProdu
 import RequestError from 'components/RequestError';
 import { getConsoleShopProduct } from 'db/ssr/shops/getConsoleShopProduct';
 import { AppContentWrapperBreadCrumbs, ShopProductInterface } from 'db/uiInterfaces';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import {
   castDbData,
@@ -30,7 +31,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, compan
     return <RequestError />;
   }
 
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
     rubricSlug: rubric.slug,
@@ -40,31 +41,26 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, compan
     config: [
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.console.companyId.shops.url,
       },
       {
         name: shop.name,
-        href: links.shop.root,
+        href: links.console.companyId.shops.shop.shopId.url,
       },
       {
         name: 'Товары',
-        href: links.shop.rubrics.parentLink,
+        href: links.console.companyId.shops.shop.shopId.rubrics.url,
       },
       {
         name: `${rubric?.name}`,
-        href: links.shop.rubrics.product.parentLink,
+        href: links.console.companyId.shops.shop.shopId.rubrics.rubricSlug.url,
       },
     ],
   };
 
   return (
-    <ConsoleShopProductLayout
-      shopProduct={shopProduct}
-      basePath={links.parentLink}
-      breadcrumbs={breadcrumbs}
-    >
+    <ConsoleShopProductLayout shopProduct={shopProduct} breadcrumbs={breadcrumbs}>
       <CompanyProductDetails
-        routeBasePath={''}
         product={summary}
         seoContentsList={cardContentCities}
         companySlug={companySlug}

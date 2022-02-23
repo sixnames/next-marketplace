@@ -11,6 +11,7 @@ import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
 } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { getCategoryAllSeoContents } from 'lib/seoContentUtils';
 import {
@@ -29,11 +30,9 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   pageCompany,
   seoDescriptionBottom,
   seoDescriptionTop,
-  routeBasePath,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     rubricSlug: category.rubricSlug,
-    basePath: routeBasePath,
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -41,30 +40,24 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     config: [
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.console.companyId.rubrics.url,
       },
       {
         name: `${category.rubric?.name}`,
-        href: links.rubrics.root,
+        href: links.console.companyId.rubrics.rubricSlug.url,
       },
       {
         name: `Категории`,
-        href: links.rubrics.category.parentLink,
+        href: links.console.companyId.rubrics.rubricSlug.categories.url,
       },
     ],
   };
 
   return (
-    <CmsCategoryLayout
-      category={category}
-      breadcrumbs={breadcrumbs}
-      basePath={routeBasePath}
-      hideAttributesPath
-    >
+    <CmsCategoryLayout category={category} breadcrumbs={breadcrumbs} hideAttributesPath>
       <CompanyRubricCategoryDetails
         category={category}
         pageCompany={pageCompany}
-        routeBasePath={routeBasePath}
         seoDescriptionTop={seoDescriptionTop}
         seoDescriptionBottom={seoDescriptionBottom}
       />
@@ -198,16 +191,12 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-  });
   return {
     props: {
       ...props,
       seoDescriptionBottom: castDbData(seoDescriptionBottom),
       seoDescriptionTop: castDbData(seoDescriptionTop),
       category: castDbData(category),
-      routeBasePath: links.parentLink,
       pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };

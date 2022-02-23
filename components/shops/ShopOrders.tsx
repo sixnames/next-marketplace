@@ -1,7 +1,7 @@
+import { ConsoleShopLayoutInterface, OrderInterface } from 'db/uiInterfaces';
+import { useBasePath } from 'hooks/useBasePath';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { ConsoleShopLayoutInterface, OrderInterface } from '../../db/uiInterfaces';
-import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import FormattedDateTime from '../FormattedDateTime';
 import Inner from '../Inner';
 import ConsoleShopLayout from '../layout/console/ConsoleShopLayout';
@@ -13,22 +13,16 @@ import WpTable, { WpTableColumn } from '../WpTable';
 
 export type ShopOrdersInterface = ConsoleShopLayoutInterface;
 
-const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs }) => {
+const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, breadcrumbs }) => {
   const router = useRouter();
-
+  const basePath = useBasePath('shop-orders');
   const columns: WpTableColumn<OrderInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => {
-        const links = getCmsCompanyLinks({
-          orderId: dataItem._id,
-          companyId: shop.companyId,
-          shopId: shop._id,
-          basePath,
-        });
         return (
-          <WpLink testId={`order-${dataItem.itemId}-link`} href={links.shop.order.root}>
+          <WpLink testId={`order-${dataItem.itemId}-link`} href={`${basePath}/${dataItem._id}`}>
             {cellData}
           </WpLink>
         );
@@ -79,7 +73,7 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs
   ];
 
   return (
-    <ConsoleShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} breadcrumbs={breadcrumbs}>
       <Inner>
         <div data-cy={'shop-orders-list'}>
           <div className='overflow-x-auto'>
@@ -88,13 +82,7 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs
               data={shop.orders}
               testIdKey={'itemId'}
               onRowDoubleClick={(dataItem) => {
-                const links = getCmsCompanyLinks({
-                  orderId: dataItem._id,
-                  companyId: shop.companyId,
-                  shopId: shop._id,
-                  basePath,
-                });
-                router.push(links.shop.order.root).catch(console.log);
+                router.push(`${basePath}/${dataItem._id}`).catch(console.log);
               }}
             />
           </div>

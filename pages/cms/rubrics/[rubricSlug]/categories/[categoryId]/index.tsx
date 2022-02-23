@@ -19,6 +19,7 @@ import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generate
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { DEFAULT_COMPANY_SLUG, GENDER_ENUMS } from 'lib/config/common';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -95,15 +96,15 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     config: [
       {
         name: 'Рубрикатор',
-        href: links.parentLink,
+        href: links.cms.rubrics.url,
       },
       {
         name: `${rubric?.name}`,
-        href: links.parentLink,
+        href: links.cms.rubrics.rubricSlug.url,
       },
       {
         name: `Категории`,
-        href: links.category.parentLink,
+        href: links.cms.rubrics.rubricSlug.categories.url,
       },
     ],
   };

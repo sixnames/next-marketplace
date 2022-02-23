@@ -10,6 +10,7 @@ import { getConsoleShopProduct } from 'db/ssr/shops/getConsoleShopProduct';
 import { AppContentWrapperBreadCrumbs, SupplierInterface } from 'db/uiInterfaces';
 import { SORT_ASC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import {
   castDbData,
@@ -25,7 +26,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   shopProduct,
   disableAddSupplier,
   suppliers,
-  routeBasePath,
 }) => {
   const { summary, shop } = shopProduct;
 
@@ -38,47 +38,43 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     return <RequestError />;
   }
 
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
     rubricSlug: rubric.slug,
-    productId: shopProduct._id,
+    shopProductId: shopProduct._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Ценообразование`,
     config: [
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.console.companyId.shops.url,
       },
       {
         name: shop.name,
-        href: links.shop.root,
+        href: links.console.companyId.shops.shop.shopId.url,
       },
       {
         name: 'Товары',
-        href: links.shop.rubrics.parentLink,
+        href: links.console.companyId.shops.shop.shopId.rubrics.url,
       },
       {
         name: `${rubric?.name}`,
-        href: links.shop.rubrics.product.parentLink,
+        href: links.console.companyId.shops.shop.shopId.rubrics.rubricSlug.url,
       },
       {
         name: `${snippetTitle}`,
-        href: links.shop.rubrics.product.root,
+        href: links.console.companyId.shops.shop.shopId.rubrics.rubricSlug.products.product
+          .shopProductId.url,
       },
     ],
   };
 
   return (
-    <ConsoleShopProductLayout
-      breadcrumbs={breadcrumbs}
-      shopProduct={shopProduct}
-      basePath={links.parentLink}
-    >
+    <ConsoleShopProductLayout breadcrumbs={breadcrumbs} shopProduct={shopProduct}>
       <CompanyProductSuppliers
         shopProduct={shopProduct}
-        routeBasePath={routeBasePath}
         disableAddSupplier={disableAddSupplier}
         suppliers={suppliers}
       />
@@ -148,20 +144,12 @@ export const getServerSideProps = async (
 
   const disabledSuppliers = suppliers.filter(({ disabled }) => disabled);
 
-  const links = getConsoleCompanyLinks({
-    companyId: `${query.companyId}`,
-    shopId: `${query.shopId}`,
-    rubricSlug: `${query.rubricSlug}`,
-    productId: `${query.shopProductId}`,
-  });
-
   return {
     props: {
       ...props,
       shopProduct: castDbData(shopProduct),
       suppliers: castDbData(suppliers),
       disableAddSupplier: disabledSuppliers.length === suppliers.length,
-      routeBasePath: links.root,
     },
   };
 };

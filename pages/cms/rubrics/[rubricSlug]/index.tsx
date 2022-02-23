@@ -20,6 +20,7 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -87,7 +88,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     variantId: `${variantId}`,
   };
 
-  const { parentLink } = getProjectLinks({
+  const links = getProjectLinks({
     rubricSlug: rubric.slug,
   });
 
@@ -96,7 +97,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     config: [
       {
         name: 'Рубрикатор',
-        href: parentLink,
+        href: links.cms.rubrics.url,
       },
     ],
   };

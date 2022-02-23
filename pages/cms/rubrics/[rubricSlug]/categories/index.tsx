@@ -16,6 +16,7 @@ import { sortObjectsByField } from 'lib/arrayUtils';
 import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
 import { CONFIRM_MODAL, CREATE_CATEGORY_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { getTreeFromList } from 'lib/treeUtils';
@@ -48,7 +49,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
         rubricSlug: rubric.slug,
         categoryId: category._id,
       });
-      const categoryUrl = categoryLinks.category.root;
+      const categoryUrl = categoryLinks.cms.rubrics.rubricSlug.categories.categoryId.url;
       return (
         <div data-cy={`${name}`} data-url={categoryUrl}>
           {image ? (
@@ -134,11 +135,11 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
     config: [
       {
         name: 'Рубрикатор',
-        href: links.parentLink,
+        href: links.cms.rubrics.url,
       },
       {
         name: `${rubric.name}`,
-        href: links.parentLink,
+        href: links.cms.rubrics.rubricSlug.url,
       },
     ],
   };

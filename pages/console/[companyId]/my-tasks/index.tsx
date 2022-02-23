@@ -12,12 +12,12 @@ import * as React from 'react';
 const pageTitle = 'Задачи';
 interface TasksListConsumerInterface extends ConsoleTasksListInterface {}
 
-const TasksListConsumer: React.FC<TasksListConsumerInterface> = ({ basePath, tasks }) => {
+const TasksListConsumer: React.FC<TasksListConsumerInterface> = ({ tasks }) => {
   return (
     <AppContentWrapper>
       <Inner>
         <WpTitle>{pageTitle}</WpTitle>
-        <ConsoleTasksList basePath={basePath} tasks={tasks} />
+        <ConsoleTasksList tasks={tasks} />
       </Inner>
     </AppContentWrapper>
   );
@@ -27,10 +27,10 @@ interface TasksListPageInterface
   extends GetAppInitialDataPropsInterface,
     TasksListConsumerInterface {}
 
-const TasksListPage: React.FC<TasksListPageInterface> = ({ layoutProps, tasks, basePath }) => {
+const TasksListPage: React.FC<TasksListPageInterface> = ({ layoutProps, tasks }) => {
   return (
     <ConsoleLayout {...layoutProps} title={pageTitle}>
-      <TasksListConsumer tasks={tasks} basePath={basePath} />
+      <TasksListConsumer tasks={tasks} />
     </ConsoleLayout>
   );
 };
@@ -56,15 +56,10 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-  });
-
   return {
     props: {
       ...props,
       tasks: castDbData(payload),
-      basePath: links.root,
     },
   };
 };

@@ -11,6 +11,7 @@ import {
   CompanyInterface,
   EventRubricInterface,
 } from 'db/uiInterfaces';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -26,7 +27,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({
   showCreateButton,
   pageCompany,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
 
@@ -35,11 +36,11 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };

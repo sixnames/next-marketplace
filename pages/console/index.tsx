@@ -1,12 +1,11 @@
 import { getProjectLinks } from 'lib/links/getProjectLinks';
+import { noNaN } from 'lib/numbers';
+import { getConsoleMainPageData, GetConsoleMainPageDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
-import { getConsoleCompanyLinks } from '../../lib/linkUtils';
-import { noNaN } from '../../lib/numbers';
-import { getConsoleMainPageData, GetConsoleMainPageDataPropsInterface } from '../../lib/ssrUtils';
 
 const App: NextPage<GetConsoleMainPageDataPropsInterface> = ({ layoutProps }) => {
   const router = useRouter();
@@ -17,7 +16,7 @@ const App: NextPage<GetConsoleMainPageDataPropsInterface> = ({ layoutProps }) =>
       <div className='mb-8 text-lg'>Ваши компании</div>
       <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
         {(layoutProps.sessionUser.me.companies || []).map((company) => {
-          const links = getConsoleCompanyLinks({
+          const links = getProjectLinks({
             companyId: company._id,
           });
           return (
@@ -25,7 +24,7 @@ const App: NextPage<GetConsoleMainPageDataPropsInterface> = ({ layoutProps }) =>
               className='grid cursor-pointer grid-cols-4 gap-4 rounded-lg bg-secondary px-4 py-6 shadow-lg'
               key={`${company._id}`}
               onClick={() => {
-                router.push(links.root).catch((e) => console.log(e));
+                router.push(links.console.companyId.url).catch(console.log);
               }}
             >
               <div className='col-span-1 overflow-hidden rounded-full'>
@@ -79,12 +78,12 @@ export const getServerSideProps = async (
     noNaN(props.layoutProps.sessionUser.me.companies.length) === 1
   ) {
     const company = props?.layoutProps.sessionUser?.me.companies[0];
-    const links = getConsoleCompanyLinks({
+    const links = getProjectLinks({
       companyId: company._id,
     });
     return {
       redirect: {
-        destination: links.root,
+        destination: links.console.companyId.url,
         permanent: false,
       },
     };

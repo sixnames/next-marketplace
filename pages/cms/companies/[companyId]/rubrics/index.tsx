@@ -7,6 +7,7 @@ import { castRubricForUI } from 'db/cast/castRubricForUI';
 import { COL_RUBRIC_VARIANTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -16,7 +17,7 @@ import * as React from 'react';
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 
 const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
 
@@ -25,18 +26,18 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany })
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };
 
   return (
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
-      <CompanyRubricsList rubrics={rubrics} pageCompany={pageCompany} routeBasePath={links.root} />
+      <CompanyRubricsList rubrics={rubrics} pageCompany={pageCompany} />
     </CmsCompanyLayout>
   );
 };
@@ -165,16 +166,11 @@ export const getServerSideProps = async (
     return castRubricForUI({ rubric, locale: props.sessionLocale });
   });
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.root,
     },
   };
 };

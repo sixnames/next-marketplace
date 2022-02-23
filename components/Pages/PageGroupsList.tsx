@@ -4,6 +4,7 @@ import {
   PagesGroupTemplateInterface,
 } from 'db/uiInterfaces';
 import { useDeletePagesGroup } from 'hooks/mutations/usePageMutations';
+import { useBasePath } from 'hooks/useBasePath';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from 'lib/config/modalVariants';
 import { useRouter } from 'next/router';
@@ -22,7 +23,6 @@ import WpTable, { WpTableColumn } from '../WpTable';
 export interface PageGroupsListInterface {
   pagesGroups: PagesGroupInterface[] | PagesGroupTemplateInterface[];
   isTemplate?: boolean;
-  basePath: string;
   companySlug?: string;
   currentCompany?: CompanyInterface | null;
 }
@@ -30,9 +30,9 @@ export interface PageGroupsListInterface {
 const PageGroupsList: React.FC<PageGroupsListInterface> = ({
   pagesGroups,
   isTemplate,
-  basePath,
   companySlug,
 }) => {
+  const basePath = useBasePath('pages');
   const router = useRouter();
   const { showLoading, showModal } = useMutationCallbacks({
     reload: true,

@@ -21,13 +21,12 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, cities, 
   const links = getProjectLinks({
     pagesGroupId: pagesGroup._id,
   });
-  const basePath = links.cms.pageTemplates.url;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${pagesGroup.name}`,
     config: [
       {
         name: 'Группы шаблонов страниц',
-        href: basePath,
+        href: links.cms.pageTemplates.url,
       },
     ],
   };
@@ -37,7 +36,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, cities, 
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
           <WpTitle>{pagesGroup.name}</WpTitle>
-          <PagesList cities={cities} basePath={basePath} pagesGroup={pagesGroup} isTemplate />
+          <PagesList cities={cities} pagesGroup={pagesGroup} isTemplate />
         </Inner>
       </AppContentWrapper>
     </ConsoleLayout>

@@ -20,9 +20,6 @@ interface PageGroupsPageInterface
     Omit<PageGroupsListInterface, 'basePath' | 'pageTitle'> {}
 
 const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesGroups }) => {
-  const links = getConsoleCompanyLinks({
-    companyId: layoutProps.pageCompany._id,
-  });
   return (
     <ConsoleLayout title={pageTitle} {...layoutProps}>
       <AppContentWrapper>
@@ -30,7 +27,6 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesG
           <WpTitle>{pageTitle}</WpTitle>
           <PageGroupsList
             companySlug={`${layoutProps.pageCompany.slug}`}
-            basePath={links.pages.parentLink}
             pagesGroups={pagesGroups}
           />
         </Inner>

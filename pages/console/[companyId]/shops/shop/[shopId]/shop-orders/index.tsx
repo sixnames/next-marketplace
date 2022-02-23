@@ -10,6 +10,7 @@ import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, ShopInterface } from 'db/uiInterfaces';
 import { SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -24,10 +25,10 @@ import * as React from 'react';
 
 interface CompanyShopAssetsInterface
   extends GetConsoleInitialDataPropsInterface,
-    Omit<ShopOrdersInterface, 'basePath'> {}
+    ShopOrdersInterface {}
 
 const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -36,18 +37,18 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, 
     config: [
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.console.companyId.shops.url,
       },
       {
         name: shop.name,
-        href: links.shop.root,
+        href: links.console.companyId.shops.shop.shopId.url,
       },
     ],
   };
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopOrders breadcrumbs={breadcrumbs} basePath={links.parentLink} shop={shop} />
+      <ShopOrders breadcrumbs={breadcrumbs} shop={shop} />
     </ConsoleLayout>
   );
 };

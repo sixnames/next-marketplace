@@ -17,6 +17,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
 import { ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
@@ -73,10 +74,10 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
               updateTitle={'Редактировать группу'}
               deleteTitle={'Удалить группу'}
               updateHandler={() => {
-                const links = getCmsLinks({
+                const links = getProjectLinks({
                   attributesGroupId: dataItem._id,
                 });
-                router.push(links.attributes.attribute.parentLink).catch(console.log);
+                router.push(links.cms.attributes.attributesGroupId.url).catch(console.log);
               }}
               deleteHandler={() => {
                 showModal({
@@ -111,10 +112,10 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
             data={attributesGroups}
             testIdKey={'name'}
             onRowDoubleClick={(dataItem) => {
-              const links = getCmsLinks({
+              const links = getProjectLinks({
                 attributesGroupId: dataItem._id,
               });
-              router.push(links.attributes.attribute.parentLink).catch(console.log);
+              router.push(links.cms.attributes.attributesGroupId.url).catch(console.log);
             }}
           />
         </div>

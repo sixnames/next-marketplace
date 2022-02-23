@@ -20,6 +20,7 @@ import {
 } from 'db/uiInterfaces';
 import { SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -38,7 +39,7 @@ interface UserOrdersConsumerInterface {
 }
 
 const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, pageCompany }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     userId: user._id,
   });
@@ -48,13 +49,16 @@ const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, pageC
       accessor: 'orderId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => {
-        const links = getConsoleCompanyLinks({
+        const links = getProjectLinks({
           companyId: pageCompany._id,
           userId: user._id,
           orderId: dataItem._id,
         });
         return (
-          <WpLink testId={`order-${dataItem.itemId}-link`} href={links.user.order.root}>
+          <WpLink
+            testId={`order-${dataItem.itemId}-link`}
+            href={links.console.companyId.users.user.userId.orders.orderId.url}
+          >
             {cellData}
           </WpLink>
         );
@@ -93,17 +97,17 @@ const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, pageC
     config: [
       {
         name: 'Клиенты',
-        href: links.user.parentLink,
+        href: links.console.companyId.users.url,
       },
       {
         name: `${user.fullName}`,
-        href: links.user.root,
+        href: links.console.companyId.users.user.userId.url,
       },
     ],
   };
 
   return (
-    <ConsoleUserLayout companyId={`${pageCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
+    <ConsoleUserLayout user={user} breadcrumbs={breadcrumbs}>
       <Inner>
         <div className='mb-4 text-secondary-text'>Всего заказов {user.orders?.length}</div>
         <div className='overflow-x-auto'>

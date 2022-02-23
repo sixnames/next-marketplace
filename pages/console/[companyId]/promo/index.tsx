@@ -24,14 +24,13 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
   layoutProps,
   promoList,
   pageCompany,
-  basePath,
 }) => {
   return (
     <ConsoleLayout title={pageTitle} {...layoutProps}>
       <AppContentWrapper>
         <Inner>
           <WpTitle>{pageTitle}</WpTitle>
-          <PromoList promoList={promoList} pageCompany={pageCompany} basePath={basePath} />
+          <PromoList promoList={promoList} pageCompany={pageCompany} />
         </Inner>
       </AppContentWrapper>
     </ConsoleLayout>
@@ -53,14 +52,9 @@ export const getServerSideProps = async (
     companyId: `${props.layoutProps.pageCompany._id}`,
   });
 
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-  });
-
   return {
     props: {
       ...props,
-      basePath: links.promo.parentLink,
       promoList: castDbData(promoList),
       pageCompany: props.layoutProps.pageCompany,
     },

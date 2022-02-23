@@ -10,6 +10,7 @@ import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
 } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { getRubricAllSeoContents } from 'lib/seoContentUtils';
 import {
@@ -28,7 +29,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   seoDescriptionTop,
   pageCompany,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
 
@@ -37,20 +38,14 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     config: [
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.console.companyId.rubrics.url,
       },
     ],
   };
 
   return (
-    <CmsRubricLayout
-      hideAttributesPath
-      rubric={rubric}
-      breadcrumbs={breadcrumbs}
-      basePath={links.root}
-    >
+    <CmsRubricLayout hideAttributesPath rubric={rubric} breadcrumbs={breadcrumbs}>
       <CompanyRubricDetails
-        routeBasePath={links.root}
         rubric={rubric}
         pageCompany={pageCompany}
         seoDescriptionTop={seoDescriptionTop}
@@ -134,17 +129,12 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-  });
-
   return {
     props: {
       ...props,
       seoDescriptionBottom: castDbData(seoDescriptionBottom),
       seoDescriptionTop: castDbData(seoDescriptionTop),
       rubric: castDbData(rubric),
-      routeBasePath: links.parentLink,
       pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };

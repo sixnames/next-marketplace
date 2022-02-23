@@ -2,6 +2,7 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
 import PromoDetails, { PromoDetailsInterface } from 'components/Promo/PromoDetails';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { getPromoSsr } from 'lib/promoUtils';
 import {
@@ -23,7 +24,7 @@ const PromoDetailsPage: NextPage<PromoDetailsPageInterface> = ({
   promo,
   pageCompany,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     promoId: promo._id,
   });
@@ -33,14 +34,14 @@ const PromoDetailsPage: NextPage<PromoDetailsPageInterface> = ({
     config: [
       {
         name: 'Акции',
-        href: links.promo.parentLink,
+        href: links.console.companyId.promo.url,
       },
     ],
   };
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
-      <ConsolePromoLayout promo={promo} basePath={links.parentLink} breadcrumbs={breadcrumbs}>
+      <ConsolePromoLayout promo={promo} breadcrumbs={breadcrumbs}>
         <PromoDetails pageCompany={pageCompany} promo={promo} />
       </ConsolePromoLayout>
     </ConsoleLayout>

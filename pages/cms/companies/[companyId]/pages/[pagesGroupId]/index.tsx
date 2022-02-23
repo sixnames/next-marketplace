@@ -6,6 +6,7 @@ import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { getPagesListSsr } from 'lib/pageUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
@@ -25,7 +26,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
   pagesGroup,
   cities,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -33,15 +34,15 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: pageCompany.name,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Группы страниц',
-        href: links.pages.parentLink,
+        href: links.cms.companies.companyId.pages.url,
       },
     ],
   };
@@ -50,7 +51,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
     <ConsoleLayout title={`${pagesGroup.name}`} {...layoutProps}>
       <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
-          <PagesList cities={cities} basePath={links.pages.parentLink} pagesGroup={pagesGroup} />
+          <PagesList cities={cities} pagesGroup={pagesGroup} />
         </Inner>
       </CmsCompanyLayout>
     </ConsoleLayout>

@@ -9,6 +9,7 @@ import { getDbCollections } from 'db/mongodb';
 import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG, PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'lib/config/common';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -20,7 +21,7 @@ interface RubricDetailsInterface extends ConsoleSeoContentsListInterface {
 }
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents }) => {
-  const { parentLink, root } = getProjectLinks({
+  const links = getProjectLinks({
     rubricSlug: rubric.slug,
   });
 
@@ -29,11 +30,11 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents }
     config: [
       {
         name: 'Рубрикатор',
-        href: parentLink,
+        href: links.cms.rubrics.url,
       },
       {
         name: `${rubric.name}`,
-        href: root,
+        href: links.cms.rubrics.rubricSlug.url,
       },
     ],
   };

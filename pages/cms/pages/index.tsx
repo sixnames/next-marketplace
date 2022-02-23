@@ -4,7 +4,6 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
 import WpTitle from 'components/WpTitle';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -17,17 +16,12 @@ interface PageGroupsPageInterface
     Omit<PageGroupsListInterface, 'basePath' | 'pageTitle'> {}
 
 const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesGroups }) => {
-  const links = getProjectLinks();
   return (
     <ConsoleLayout title={pageTitle} {...layoutProps}>
       <AppContentWrapper>
         <Inner>
           <WpTitle>{pageTitle}</WpTitle>
-          <PageGroupsList
-            companySlug={DEFAULT_COMPANY_SLUG}
-            basePath={links.cms.pages.url}
-            pagesGroups={pagesGroups}
-          />
+          <PageGroupsList companySlug={DEFAULT_COMPANY_SLUG} pagesGroups={pagesGroups} />
         </Inner>
       </AppContentWrapper>
     </ConsoleLayout>

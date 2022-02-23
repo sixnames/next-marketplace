@@ -112,7 +112,7 @@ export async function checkSeoContentUniqueness({
       }
     }
   } catch (e) {
-    console.log(e);
+    console.log('checkSeoContentUniqueness error', e);
   }
 }
 
@@ -157,7 +157,7 @@ export async function updateCitiesSeoContent({
         const { _id, ...values } = seoContent;
         await seoContentsCollection.findOneAndUpdate(
           {
-            _id: new ObjectId(_id),
+            _id: oldSeoContent ? oldSeoContent._id : new ObjectId(_id),
           },
           {
             $set: values,

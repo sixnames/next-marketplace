@@ -1027,7 +1027,6 @@ export interface BreadcrumbsInterface {
 
 export interface ConsoleShopLayoutInterface {
   shop: ShopInterface;
-  basePath?: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
@@ -1040,8 +1039,6 @@ export interface ShopRubricProductsInterface
   clearSlug: string;
   rubricName: string;
   rubricSlug: string;
-  layoutBasePath?: string;
-  basePath: string;
   currency: string;
 }
 

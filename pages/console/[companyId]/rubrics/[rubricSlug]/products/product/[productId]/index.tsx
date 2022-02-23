@@ -6,7 +6,7 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getDbCollections } from 'db/mongodb';
 import { getProductFullSummary } from 'db/ssr/products/getProductFullSummary';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import {
   castDbData,
   getConsoleInitialData,

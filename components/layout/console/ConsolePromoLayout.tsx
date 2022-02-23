@@ -4,49 +4,42 @@ import AppContentWrapper from 'components/layout/AppContentWrapper';
 import AppSubNav from 'components/layout/AppSubNav';
 import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs, PromoInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { useBasePath } from 'hooks/useBasePath';
+
 import Head from 'next/head';
 import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface ConsolePromoLayoutInterface {
   promo: PromoInterface;
-  basePath?: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
 const ConsolePromoLayout: React.FC<ConsolePromoLayoutInterface> = ({
-  basePath,
   promo,
   children,
   breadcrumbs,
 }) => {
-  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
-    const links = getCmsCompanyLinks({
-      companyId: promo.companyId,
-      promoId: promo._id,
-      basePath,
-    });
+  const basePath = useBasePath('promoId');
 
-    return [
-      {
-        name: 'Детали',
-        testId: 'promo-details',
-        path: links.promo.root,
-        exact: true,
-      },
-      {
-        name: 'Товары',
-        testId: 'promo-products',
-        path: links.promo.rubrics.parentLink,
-      },
-      {
-        name: 'Промо-коды',
-        testId: 'promo-codes',
-        path: links.promo.code.parentLink,
-      },
-    ];
-  }, [basePath, promo]);
+  const navConfig: ClientNavItemInterface[] = [
+    {
+      name: 'Детали',
+      testId: 'promo-details',
+      path: basePath,
+      exact: true,
+    },
+    {
+      name: 'Товары',
+      testId: 'promo-products',
+      path: `${basePath}/rubrics`,
+    },
+    {
+      name: 'Промо-коды',
+      testId: 'promo-codes',
+      path: `${basePath}/code`,
+    },
+  ];
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

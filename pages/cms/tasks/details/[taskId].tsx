@@ -5,29 +5,21 @@ import { getCompanyTaskSsr } from 'db/ssr/company/getCompanyTaskSsr';
 import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getCmsLinks, getConsoleTaskLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 
-interface TaskDetailsConsumerInterface extends UpdateTaskFormInterface {
-  basePath: string;
-}
+interface TaskDetailsConsumerInterface extends UpdateTaskFormInterface {}
 
-const TaskDetailsConsumer: React.FC<TaskDetailsConsumerInterface> = ({
-  basePath,
-  task,
-  taskVariants,
-}) => {
-  const links = getConsoleTaskLinks({
-    basePath,
-  });
+const TaskDetailsConsumer: React.FC<TaskDetailsConsumerInterface> = ({ task, taskVariants }) => {
+  const links = getProjectLinks();
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${task.name}`,
     config: [
       {
         name: 'Задачи',
-        href: links.parentLink,
+        href: links.cms.tasks.url,
       },
     ],
   };
@@ -44,13 +36,12 @@ interface TaskDetailsPageInterface
 
 const TaskDetailsPage: React.FC<TaskDetailsPageInterface> = ({
   layoutProps,
-  basePath,
   taskVariants,
   task,
 }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <TaskDetailsConsumer basePath={basePath} taskVariants={taskVariants} task={task} />
+      <TaskDetailsConsumer taskVariants={taskVariants} task={task} />
     </ConsoleLayout>
   );
 };
@@ -86,11 +77,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsLinks({});
   return {
     props: {
       ...props,
-      basePath: links.root,
       task: castDbData(task),
       taskVariants: castDbData(taskVariants),
     },

@@ -5,7 +5,7 @@ import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
 import { DEFAULT_PAGE, SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';

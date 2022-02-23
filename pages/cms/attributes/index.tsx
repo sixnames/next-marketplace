@@ -17,7 +17,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
 import { ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCmsLinks } from 'lib/linkUtils';
+
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';

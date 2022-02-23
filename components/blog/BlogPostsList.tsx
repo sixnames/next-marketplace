@@ -1,8 +1,9 @@
 import { BlogPostInterface } from 'db/uiInterfaces';
 import { useDeleteBlogPost } from 'hooks/mutations/useBlogMutations';
+import { useBasePath } from 'hooks/useBasePath';
 import { PAGE_STATE_DRAFT } from 'lib/config/common';
 import { BLOG_POST_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
-import { getConsoleBlogLinks } from 'lib/linkUtils';
+
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import ContentItemControls from '../button/ContentItemControls';
@@ -16,14 +17,14 @@ import WpTable, { WpTableColumn } from '../WpTable';
 
 interface BlogPostsListInterface {
   posts: BlogPostInterface[];
-  basePath: string;
   companySlug: string;
 }
 
-const BlogPostsList: React.FC<BlogPostsListInterface> = ({ posts, companySlug, basePath }) => {
+const BlogPostsList: React.FC<BlogPostsListInterface> = ({ posts, companySlug }) => {
   const router = useRouter();
   const { showModal } = useAppContext();
   const [deleteBlogPost] = useDeleteBlogPost();
+  const basePath = useBasePath('blog');
 
   const columns: WpTableColumn<BlogPostInterface>[] = [
     {
@@ -65,11 +66,7 @@ const BlogPostsList: React.FC<BlogPostsListInterface> = ({ posts, companySlug, b
               testId={`${dataItem.title}`}
               updateTitle={'Редактировать блог-пост'}
               updateHandler={() => {
-                const links = getConsoleBlogLinks({
-                  basePath,
-                  blogPostId: dataItem._id,
-                });
-                router.push(links.root).catch(console.log);
+                router.push(`${basePath}/post/${dataItem._id}`).catch(console.log);
               }}
               deleteTitle={'Удалить блог-пост'}
               deleteHandler={() => {
@@ -100,11 +97,7 @@ const BlogPostsList: React.FC<BlogPostsListInterface> = ({ posts, companySlug, b
           columns={columns}
           data={posts}
           onRowDoubleClick={(dataItem) => {
-            const links = getConsoleBlogLinks({
-              basePath,
-              blogPostId: dataItem._id,
-            });
-            router.push(links.root).catch(console.log);
+            router.push(`${basePath}/post/${dataItem._id}`).catch(console.log);
           }}
         />
       </div>

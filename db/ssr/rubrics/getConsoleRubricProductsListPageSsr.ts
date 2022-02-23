@@ -1,5 +1,5 @@
 import { getConsoleCompanyRubricProducts } from 'db/ssr/products/getConsoleCompanyRubricProducts';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { ConsoleRubricProductsListPageInterface } from 'pages/console/[companyId]/rubrics/[rubricSlug]/products/[...filters]';

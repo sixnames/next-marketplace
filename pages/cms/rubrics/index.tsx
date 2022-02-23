@@ -17,7 +17,7 @@ import { sortObjectsByField } from 'lib/arrayUtils';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Head from 'next/head';
@@ -66,7 +66,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants
             justifyContent={'flex-end'}
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
-              const links = getConsoleRubricLinks({
+              const links = getProjectLinks({
                 rubricSlug: dataItem.slug,
               });
               router.push(links.product.parentLink).catch(console.log);
@@ -107,7 +107,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants
             testIdKey={'name'}
             emptyMessage={'Список пуст'}
             onRowDoubleClick={(rubric) => {
-              const links = getConsoleRubricLinks({
+              const links = getProjectLinks({
                 rubricSlug: rubric.slug,
               });
               router.push(links.product.parentLink).catch(console.log);

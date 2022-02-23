@@ -3,7 +3,6 @@ import { getDbCollections } from 'db/mongodb';
 import { PageInterface } from 'db/uiInterfaces';
 import { PAGE_STATE_PUBLISHED } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsolePagesLinks } from 'lib/linkUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -20,14 +19,7 @@ interface CreatedPageConsumerInterface {
 
 const CreatedPageConsumer: React.FC<CreatedPageConsumerInterface> = ({ page }) => {
   const sessionUser = useSiteUserContext();
-  const links = getConsolePagesLinks({
-    basePath: sessionUser?.editLinkBasePath,
-    pageId: page._id,
-    pagesGroupId: page.pagesGroupId,
-  });
-  const showEditButton = sessionUser?.me.role?.cmsNavigation?.some(({ path }) => {
-    return path.includes(links.mainPath);
-  });
+  const showEditButton = sessionUser?.me.role?.isStaff || sessionUser?.me.role?.isCompanyStaff;
 
   return (
     <div className='mb-12'>
@@ -42,7 +34,10 @@ const CreatedPageConsumer: React.FC<CreatedPageConsumerInterface> = ({ page }) =
               size={'small'}
               frameClassName={'w-auto'}
               onClick={() => {
-                window.open(links.page.root, '_blank');
+                window.open(
+                  `${sessionUser?.editLinkBasePath}/pages/${page.pagesGroupId}/${page._id}`,
+                  '_blank',
+                );
               }}
             >
               Редактировать

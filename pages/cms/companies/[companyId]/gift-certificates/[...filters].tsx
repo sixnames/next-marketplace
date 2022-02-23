@@ -6,7 +6,7 @@ import CmsCompanyLayout from 'components/layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCmsCompanyGiftCertificatesPageSsr } from 'db/ssr/company/getCmsCompanyGiftCertificatesPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { NextPage } from 'next';
 import * as React from 'react';
@@ -17,8 +17,8 @@ const CompanyGiftCertificatesConsumer: React.FC<CompanyGiftCertificatesConsumerI
   pageCompany,
   ...props
 }) => {
-  const links = getCmsCompanyLinks({
-    companyId: pageCompany?._id,
+  const links = getProjectLinks({
+    companyId: pageCompany._id,
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -26,11 +26,11 @@ const CompanyGiftCertificatesConsumer: React.FC<CompanyGiftCertificatesConsumerI
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
-        name: `${pageCompany?.name}`,
-        href: links.root,
+        name: `${pageCompany.name}`,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };

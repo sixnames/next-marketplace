@@ -1,14 +1,14 @@
+import { UserInterface } from 'db/uiInterfaces';
 import { useFormikContext } from 'formik';
+import { UpdateCompanyInput } from 'generated/apolloComponents';
+import { useUserSearchModal } from 'hooks/useUserSearchModal';
+import { CONFIRM_MODAL } from 'lib/config/modalVariants';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import * as React from 'react';
 import FakeInput from '../../components/FormElements/Input/FakeInput';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
 import InputLine from '../../components/FormElements/Input/InputLine';
-import { UserInterface } from '../../db/uiInterfaces';
-import { UpdateCompanyInput } from '../../generated/apolloComponents';
-import { useUserSearchModal } from '../../hooks/useUserSearchModal';
-import { CONFIRM_MODAL } from '../../lib/config/modalVariants';
-import { getCmsLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import WpButton from '../button/WpButton';
 import { useAppContext } from '../context/appContext';
@@ -52,10 +52,10 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
         if (inConsole) {
           return cellData;
         }
-        const links = getCmsLinks({
+        const links = getProjectLinks({
           userId: dataItem._id,
         });
-        return <WpLink href={links.user.root}>{cellData}</WpLink>;
+        return <WpLink href={links.cms.users.user.userId.url}>{cellData}</WpLink>;
       },
     },
     {

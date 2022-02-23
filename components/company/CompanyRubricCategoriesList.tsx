@@ -1,6 +1,6 @@
+import { CategoryInterface, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
+import { useBasePath } from 'hooks/useBasePath';
 import * as React from 'react';
-import { CategoryInterface, CompanyInterface, RubricInterface } from '../../db/uiInterfaces';
-import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import Inner from '../Inner';
 import RequestError from '../RequestError';
@@ -9,14 +9,13 @@ import WpImage from '../WpImage';
 export interface CompanyRubricCategoriesListInterface {
   rubric: RubricInterface;
   pageCompany: CompanyInterface;
-  routeBasePath: string;
 }
 
 const CompanyRubricCategoriesList: React.FC<CompanyRubricCategoriesListInterface> = ({
-  routeBasePath,
-  pageCompany,
   rubric,
 }) => {
+  const basePath = useBasePath('categories');
+
   const renderCategories = React.useCallback(
     (category: CategoryInterface) => {
       const { name, categories, image } = category;
@@ -52,13 +51,7 @@ const CompanyRubricCategoriesList: React.FC<CompanyRubricCategoriesListInterface
                 justifyContent={'flex-end'}
                 updateTitle={'Редактировать категорию'}
                 updateHandler={() => {
-                  const links = getCmsCompanyLinks({
-                    companyId: pageCompany._id,
-                    rubricSlug: rubric.slug,
-                    categoryId: category._id,
-                    basePath: routeBasePath,
-                  });
-                  window.open(links.rubrics.category.root, '_blank');
+                  window.open(`${basePath}/${category._id}`, '_blank');
                 }}
               />
             </div>
@@ -75,7 +68,7 @@ const CompanyRubricCategoriesList: React.FC<CompanyRubricCategoriesListInterface
         </div>
       );
     },
-    [pageCompany._id, routeBasePath, rubric.slug],
+    [basePath],
   );
   const { categories } = rubric;
 

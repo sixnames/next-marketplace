@@ -3,7 +3,7 @@ import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
 import WpTitle from 'components/WpTitle';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import {
   castDbData,

@@ -7,14 +7,15 @@ import { castRubricForUI } from 'db/cast/castRubricForUI';
 import { COL_PROMO_PRODUCTS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, PromoInterface, RubricInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 
-interface ConsolePromoRubricsInterface extends Omit<CompanyRubricsListInterface, 'routeBasePath'> {
+interface ConsolePromoRubricsInterface extends CompanyRubricsListInterface {
   promo: PromoInterface;
 }
 
@@ -23,7 +24,7 @@ const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
   promo,
   rubrics,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     promoId: promo._id,
   });
@@ -32,30 +33,26 @@ const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: pageCompany.name,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Акции',
-        href: links.promo.parentLink,
+        href: links.cms.companies.companyId.promo.url,
       },
       {
         name: `${promo.name}`,
-        href: links.promo.root,
+        href: links.cms.companies.companyId.promo.details.promoId.url,
       },
     ],
   };
 
   return (
     <ConsolePromoLayout promo={promo} breadcrumbs={breadcrumbs}>
-      <CompanyRubricsList
-        rubrics={rubrics}
-        pageCompany={pageCompany}
-        routeBasePath={links.promo.root}
-      />
+      <CompanyRubricsList rubrics={rubrics} pageCompany={pageCompany} />
     </ConsolePromoLayout>
   );
 };

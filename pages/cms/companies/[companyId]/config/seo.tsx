@@ -6,7 +6,7 @@ import { ConfigPageInterface } from 'components/layout/console/ConsoleConfigsLay
 import { getConfigPageData } from 'db/ssr/configs/getConfigPageData';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { CONFIG_GROUP_SEO } from 'lib/config/common';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';

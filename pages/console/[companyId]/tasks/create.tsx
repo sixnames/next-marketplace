@@ -2,34 +2,36 @@ import CreateTaskForm, { CreateTaskFormInterface } from 'components/console/Crea
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks, getConsoleTaskLinks } from 'lib/linkUtils';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 
-interface CreateTaskConsumerInterface extends CreateTaskFormInterface {}
+interface CreateTaskConsumerInterface extends CreateTaskFormInterface {
+  pageCompany: CompanyInterface;
+}
 
 const CreateTaskConsumer: React.FC<CreateTaskConsumerInterface> = ({
   companySlug,
-  basePath,
   taskVariants,
+  pageCompany,
 }) => {
-  const links = getConsoleTaskLinks({
-    basePath,
+  const links = getProjectLinks({
+    companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Создание задачи',
     config: [
       {
         name: 'Задачи',
-        href: links.parentLink,
+        href: links.console.companyId.tasks.url,
       },
     ],
   };
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
-      <CreateTaskForm companySlug={companySlug} taskVariants={taskVariants} basePath={basePath} />
+      <CreateTaskForm companySlug={companySlug} taskVariants={taskVariants} />
     </AppContentWrapper>
   );
 };
@@ -40,14 +42,14 @@ interface CreateTaskPageInterface
 
 const CreateTaskPage: React.FC<CreateTaskPageInterface> = ({
   layoutProps,
-  basePath,
+  pageCompany,
   companySlug,
   taskVariants,
 }) => {
   return (
     <ConsoleLayout {...layoutProps}>
       <CreateTaskConsumer
-        basePath={basePath}
+        pageCompany={pageCompany}
         taskVariants={taskVariants}
         companySlug={companySlug}
       />
@@ -76,14 +78,10 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-  });
-
   return {
     props: {
       ...props,
-      basePath: links.root,
+      pageCompany: castDbData(props.layoutProps.pageCompany),
       companySlug: props.layoutProps.pageCompany.slug,
       taskVariants: castDbData(taskVariants),
     },

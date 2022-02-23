@@ -4,7 +4,7 @@ import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import { getI18nLocaleValue } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { noNaN } from 'lib/numbers';
 import {
   castDbData,

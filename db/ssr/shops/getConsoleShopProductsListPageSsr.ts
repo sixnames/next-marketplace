@@ -1,5 +1,5 @@
 import { getConsoleShopProducts } from 'db/ssr/shops/getConsoleShopProducts';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { ConsoleShopProductsListPageInterface } from 'pages/console/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/products/[...filters]';

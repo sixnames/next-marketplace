@@ -1,7 +1,7 @@
 import ControlButton from 'components/button/ControlButton';
 import { useSiteUserContext } from 'components/context/siteUserContext';
 import { ProductFacetInterface } from 'db/uiInterfaces';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+
 import * as React from 'react';
 
 interface ProductSnippetEditButtonInterface {
@@ -13,7 +13,7 @@ const ProductSnippetEditButton: React.FC<ProductSnippetEditButtonInterface> = ({
   if (!sessionUser || !sessionUser.showAdminUiInCatalogue) {
     return null;
   }
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     rubricSlug: product.rubricSlug,
     productId: product._id,
     basePath: sessionUser.editLinkBasePath,

@@ -2,18 +2,19 @@ import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import WpTable, { WpTableColumn } from 'components/WpTable';
 import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { useBasePath } from 'hooks/useBasePath';
+
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
 export interface CompanyRubricsListInterface {
   rubrics: RubricInterface[];
   pageCompany: CompanyInterface;
-  routeBasePath: string;
 }
 
-const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, routeBasePath }) => {
+const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics }) => {
   const router = useRouter();
+  const basePath = useBasePath('rubrics');
 
   const columns: WpTableColumn<RubricInterface>[] = [
     {
@@ -30,17 +31,13 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, ro
     },
     {
       render: ({ dataItem }) => {
-        const links = getConsoleRubricLinks({
-          rubricSlug: dataItem.slug,
-          basePath: routeBasePath,
-        });
         return (
           <ContentItemControls
             testId={`${dataItem.name}`}
             justifyContent={'flex-end'}
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
-              router.push(links.product.parentLink).catch(console.log);
+              router.push(`${basePath}/${dataItem.slug}`).catch(console.log);
             }}
           />
         );
@@ -57,11 +54,7 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, ro
           testIdKey={'name'}
           emptyMessage={'Список пуст'}
           onRowDoubleClick={(dataItem) => {
-            const links = getConsoleRubricLinks({
-              rubricSlug: dataItem.slug,
-              basePath: routeBasePath,
-            });
-            router.push(links.product.parentLink).catch(console.log);
+            router.push(`${basePath}/${dataItem.slug}`).catch(console.log);
           }}
         />
       </div>

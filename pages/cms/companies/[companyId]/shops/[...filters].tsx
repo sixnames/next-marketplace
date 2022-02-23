@@ -24,7 +24,8 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'lib/config/modalVariants';
 import { getNumWord } from 'lib/i18n';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { noNaN } from 'lib/numbers';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { NextPage } from 'next';
@@ -136,7 +137,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
     },
   ];
 
-  const { root, parentLink } = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
 
@@ -145,11 +146,11 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: root,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };

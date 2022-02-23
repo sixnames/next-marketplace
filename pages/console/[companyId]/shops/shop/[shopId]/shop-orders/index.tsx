@@ -10,7 +10,7 @@ import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, ShopInterface } from 'db/uiInterfaces';
 import { SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import {

@@ -3,7 +3,7 @@ import ShopDetails, { ShopDetailsInterface } from 'components/shops/ShopDetails'
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import {
   castDbData,
   getConsoleInitialData,

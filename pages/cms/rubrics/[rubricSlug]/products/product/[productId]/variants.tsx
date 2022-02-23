@@ -4,7 +4,7 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getProductFullSummaryWithDraft } from 'db/ssr/products/getProductFullSummary';
 import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -14,7 +14,7 @@ interface ProductVariantsPropsInterface {
 }
 
 const ProductVariants: React.FC<ProductVariantsPropsInterface> = ({ product }) => {
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     productId: product._id,
     rubricSlug: product.rubricSlug,
   });

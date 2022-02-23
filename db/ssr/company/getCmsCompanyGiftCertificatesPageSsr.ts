@@ -3,7 +3,7 @@ import { getDbCollections } from 'db/mongodb';
 import { getConsoleGiftCertificates } from 'db/ssr/company/getConsoleGiftCertificates';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';

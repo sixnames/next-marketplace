@@ -27,7 +27,8 @@ import usePageLoadingState from 'hooks/usePageLoadingState';
 import { alwaysArray } from 'lib/arrayUtils';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'lib/config/modalVariants';
 import { getNumWord } from 'lib/i18n';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { noNaN } from 'lib/numbers';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { NextPage } from 'next';
@@ -189,7 +190,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
     return `Найдено ${counter} ${catalogueCounterPostfix}`;
   }, [totalDocs]);
 
-  const { parentLink, root } = getConsoleRubricLinks({
+  const links = getProjectLinks({
     rubricSlug: `${rubric?.slug}`,
   });
 
@@ -198,11 +199,11 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
     config: [
       {
         name: 'Рубрикатор',
-        href: parentLink,
+        href: links.cms.rubrics.url,
       },
       {
         name: `${rubric?.name}`,
-        href: root,
+        href: links.cms.rubrics.rubricSlug.url,
       },
     ],
   };

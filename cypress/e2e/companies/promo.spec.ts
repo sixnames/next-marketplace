@@ -1,6 +1,5 @@
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import { DEFAULT_LOCALE } from 'lib/config/common';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
 
 describe('Promo', () => {
   const links = getCmsCompanyLinks({

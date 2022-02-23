@@ -20,7 +20,7 @@ import {
 } from 'db/uiInterfaces';
 import { SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import {

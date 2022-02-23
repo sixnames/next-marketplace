@@ -9,7 +9,7 @@ import {
   BlogAttributeInterface,
   BlogPostInterface,
 } from 'db/uiInterfaces';
-import { getCmsLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import Head from 'next/head';
@@ -23,7 +23,7 @@ interface BlogPostConsumerInterface {
 const pageTitle = 'Блог';
 
 const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post, attributes }) => {
-  const links = getCmsLinks({
+  const links = getProjectLinks({
     blogPostId: post._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -31,7 +31,7 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post, attribute
     config: [
       {
         name: 'Блог',
-        href: links.blog.parentLink,
+        href: links.cms.blog.url,
       },
     ],
   };

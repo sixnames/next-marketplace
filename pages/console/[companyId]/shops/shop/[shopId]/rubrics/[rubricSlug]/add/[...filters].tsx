@@ -10,7 +10,8 @@ import {
 } from 'components/shops/ShopAddProducts';
 import { getConsoleShopAddProductsListPageSsr } from 'db/ssr/shops/getConsoleShopAddProductsListPageSsr';
 import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
 import { NextPage } from 'next';
 import * as React from 'react';
@@ -33,7 +34,7 @@ const ConsoleShopAddProductsListPage: NextPage<ConsoleShopAddProductsListPageInt
 }) => {
   const [chosen, setChosen] = React.useState<ProductSummaryInterface[]>([]);
   const [step, setStep] = React.useState<ShopAddProductsStepType>(1);
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
     rubricSlug,
@@ -44,19 +45,19 @@ const ConsoleShopAddProductsListPage: NextPage<ConsoleShopAddProductsListPageInt
     config: [
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.console.companyId.shops.url,
       },
       {
         name: shop.name,
-        href: links.shop.root,
+        href: links.console.companyId.shops.shop.shopId.url,
       },
       {
         name: 'Товары',
-        href: links.shop.rubrics.parentLink,
+        href: links.console.companyId.shops.shop.shopId.rubrics.url,
       },
       {
         name: rubricName,
-        href: links.shop.rubrics.root,
+        href: links.console.companyId.shops.shop.shopId.rubrics.rubricSlug.url,
       },
     ],
   };
@@ -85,7 +86,6 @@ const ConsoleShopAddProductsListPage: NextPage<ConsoleShopAddProductsListPageInt
           breadcrumbs={breadcrumbs}
           rubricName={rubricName}
           rubricSlug={rubricSlug}
-          layoutBasePath={links.parentLink}
           createChosenProduct={createChosenProduct}
           deleteChosenProduct={deleteChosenProduct}
           setStepHandler={setStepHandler}
@@ -103,7 +103,6 @@ const ConsoleShopAddProductsListPage: NextPage<ConsoleShopAddProductsListPageInt
         breadcrumbs={breadcrumbs}
         rubricName={rubricName}
         rubricSlug={rubricSlug}
-        layoutBasePath={links.parentLink}
         createChosenProduct={createChosenProduct}
         deleteChosenProduct={deleteChosenProduct}
         setStepHandler={setStepHandler}

@@ -2,7 +2,7 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ShopDetails, { ShopDetailsInterface } from 'components/shops/ShopDetails';
 import { getConsoleShopSsr } from 'db/ssr/shops/getConsoleShopSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';

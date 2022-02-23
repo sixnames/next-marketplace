@@ -3,9 +3,10 @@ import AppContentWrapper from 'components/layout/AppContentWrapper';
 import AppSubNav from 'components/layout/AppSubNav';
 import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
-import { getCmsLinks } from 'lib/linkUtils';
+import { useBasePath } from 'hooks/useBasePath';
 import Head from 'next/head';
 import * as React from 'react';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface CmsUserLayoutInterface {
   user: UserInterface;
@@ -13,48 +14,45 @@ interface CmsUserLayoutInterface {
 }
 
 const CmsUserLayout: React.FC<CmsUserLayoutInterface> = ({ user, children, breadcrumbs }) => {
-  const navConfig = React.useMemo(() => {
-    const links = getCmsLinks({
-      userId: user._id,
-    });
-    return [
-      {
-        name: 'Детали',
-        testId: 'user-details',
-        path: links.user.root,
-        exact: true,
-      },
-      {
-        name: 'Заказы',
-        testId: 'user-orders',
-        path: links.user.order.parentLink,
-      },
-      {
-        name: 'Изображения',
-        testId: 'user-assets',
-        path: links.user.assets,
-        exact: true,
-      },
-      {
-        name: 'Оповещения',
-        testId: 'user-notifications',
-        path: links.user.notifications,
-        exact: true,
-      },
-      {
-        name: 'Категории',
-        testId: 'user-categories',
-        path: links.user.categories,
-        exact: true,
-      },
-      {
-        name: 'Пароль',
-        testId: 'user-password',
-        path: links.user.password,
-        exact: true,
-      },
-    ];
-  }, [user._id]);
+  const basePath = useBasePath('userId');
+
+  const navConfig: ClientNavItemInterface[] = [
+    {
+      name: 'Детали',
+      testId: 'user-details',
+      path: basePath,
+      exact: true,
+    },
+    {
+      name: 'Заказы',
+      testId: 'user-orders',
+      path: `${basePath}/orders`,
+    },
+    {
+      name: 'Изображения',
+      testId: 'user-assets',
+      path: `${basePath}/assets`,
+      exact: true,
+    },
+    {
+      name: 'Оповещения',
+      testId: 'user-notifications',
+      path: `${basePath}/notifications`,
+      exact: true,
+    },
+    {
+      name: 'Категории',
+      testId: 'user-categories',
+      path: `${basePath}/categories`,
+      exact: true,
+    },
+    {
+      name: 'Пароль',
+      testId: 'user-password',
+      path: `${basePath}/password`,
+      exact: true,
+    },
+  ];
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

@@ -5,7 +5,7 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import WpTitle from 'components/WpTitle';
 import { getBlogPostsList } from 'db/ssr/blog/getBlogPostsList';
 import { BlogPostInterface, CompanyInterface } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import {
   castDbData,
   getConsoleInitialData,

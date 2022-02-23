@@ -3,13 +3,13 @@ import AppContentWrapper from 'components/layout/AppContentWrapper';
 import AppSubNav from 'components/layout/AppSubNav';
 import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { useBasePath } from 'hooks/useBasePath';
+
 import Head from 'next/head';
 import * as React from 'react';
 
 interface ConsoleUserLayoutInterface {
   user: UserInterface;
-  companyId: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
@@ -17,28 +17,22 @@ const ConsoleUserLayout: React.FC<ConsoleUserLayoutInterface> = ({
   user,
   children,
   breadcrumbs,
-  companyId,
 }) => {
-  const navConfig = React.useMemo(() => {
-    const links = getConsoleCompanyLinks({
-      companyId: companyId,
-      userId: user._id,
-    });
+  const basePath = useBasePath('userId');
 
-    return [
-      {
-        name: 'Детали',
-        testId: 'user-details',
-        path: links.user.root,
-        exact: true,
-      },
-      {
-        name: 'Заказы',
-        testId: 'user-orders',
-        path: links.user.order.parentLink,
-      },
-    ];
-  }, [companyId, user._id]);
+  const navConfig = [
+    {
+      name: 'Детали',
+      testId: 'user-details',
+      path: basePath,
+      exact: true,
+    },
+    {
+      name: 'Заказы',
+      testId: 'user-orders',
+      path: `${basePath}/orders`,
+    },
+  ];
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

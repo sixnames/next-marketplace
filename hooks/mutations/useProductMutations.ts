@@ -27,7 +27,7 @@ import {
   REQUEST_METHOD_POST,
 } from 'lib/config/common';
 import { BARCODE_INTERSECTS_MODAL } from 'lib/config/modalVariants';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+
 import { useRouter } from 'next/router';
 import { useReloadListener } from '../useReloadListener';
 import { useMutationHandler } from './useFetch';
@@ -56,7 +56,7 @@ export const useCreateProduct = () => {
     },
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        const { product } = getConsoleRubricLinks({
+        const { product } = getProjectLinks({
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
@@ -123,7 +123,7 @@ export const useCopyProduct = () => {
     reload: false,
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        const { product } = getConsoleRubricLinks({
+        const { product } = getProjectLinks({
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
@@ -157,7 +157,7 @@ export const useCreateProductWithSyncError = () => {
     },
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        const { product } = getConsoleRubricLinks({
+        const { product } = getProjectLinks({
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
@@ -190,7 +190,7 @@ export const useUpdateProductWithSyncError = () => {
     },
     onSuccess: ({ payload }) => {
       if (payload) {
-        const { product } = getConsoleRubricLinks({
+        const { product } = getProjectLinks({
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });

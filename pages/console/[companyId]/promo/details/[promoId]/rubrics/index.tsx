@@ -7,7 +7,7 @@ import { castRubricForUI } from 'db/cast/castRubricForUI';
 import { COL_PROMO_PRODUCTS } from 'db/collectionNames';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, PromoInterface, RubricInterface } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { getPromoSsr } from 'lib/promoUtils';
 import {
   castDbData,

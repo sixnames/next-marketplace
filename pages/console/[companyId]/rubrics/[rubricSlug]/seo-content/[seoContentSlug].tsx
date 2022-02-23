@@ -8,7 +8,8 @@ import { getConsoleRubricDetails } from 'db/ssr/rubrics/getConsoleRubricDetails'
 import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import { alwaysString } from 'lib/arrayUtils';
 import { CATALOGUE_SEO_TEXT_POSITION_TOP } from 'lib/config/common';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getSeoContentBySlug } from 'lib/seoContentUtils';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -27,7 +28,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   showSeoFields,
   pageCompany,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany?._id,
     rubricSlug: rubric?.slug,
   });
@@ -36,22 +37,17 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     config: [
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.console.companyId.rubrics.url,
       },
       {
         name: `${rubric?.name}`,
-        href: links.rubrics.root,
+        href: links.console.companyId.rubrics.rubricSlug.url,
       },
     ],
   };
 
   return (
-    <CmsRubricLayout
-      hideAttributesPath
-      basePath={links.root}
-      rubric={rubric}
-      breadcrumbs={breadcrumbs}
-    >
+    <CmsRubricLayout hideAttributesPath rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner>
         <ConsoleSeoContentDetails
           seoContent={seoContent}

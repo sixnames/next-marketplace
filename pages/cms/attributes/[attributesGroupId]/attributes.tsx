@@ -36,7 +36,7 @@ import {
   MOVE_ATTRIBUTE_MODAL,
 } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCmsLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -88,7 +88,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({
     });
   }
 
-  const links = getCmsLinks({
+  const links = getProjectLinks({
     attributesGroupId: attributesGroup._id,
   });
 
@@ -97,11 +97,11 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({
     config: [
       {
         name: 'Группы атрибутов',
-        href: links.attributes.parentLink,
+        href: links.cms.attributes.url,
       },
       {
         name: `${attributesGroup.name}`,
-        href: links.attributes.root,
+        href: links.cms.attributes.attributesGroupId.url,
       },
     ],
   };
@@ -111,13 +111,13 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({
       {
         name: 'Атрибуты',
         testId: 'sub-nav-attributes',
-        path: links.attributes.attribute.parentLink,
+        path: links.cms.attributes.attributesGroupId.attributes.url,
         exact: true,
       },
       {
         name: 'Детали',
         testId: 'sub-nav-details',
-        path: links.attributes.root,
+        path: links.cms.attributes.attributesGroupId.url,
         exact: true,
       },
     ];

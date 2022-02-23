@@ -2,7 +2,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ShopAssets, { ShopAssetsInterface } from 'components/shops/ShopAssets';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import {
   castDbData,
   getConsoleInitialData,
@@ -14,10 +15,10 @@ import * as React from 'react';
 
 interface CompanyShopAssetsInterface
   extends GetConsoleInitialDataPropsInterface,
-    Omit<ShopAssetsInterface, 'basePath'> {}
+    ShopAssetsInterface {}
 
 const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -26,18 +27,18 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, 
     config: [
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.console.companyId.shops.url,
       },
       {
         name: shop.name,
-        href: links.shop.root,
+        href: links.console.companyId.shops.shop.shopId.url,
       },
     ],
   };
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopAssets basePath={links.parentLink} shop={shop} breadcrumbs={breadcrumbs} />
+      <ShopAssets shop={shop} breadcrumbs={breadcrumbs} />
     </ConsoleLayout>
   );
 };

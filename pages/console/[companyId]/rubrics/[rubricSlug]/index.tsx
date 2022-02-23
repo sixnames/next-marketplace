@@ -10,7 +10,7 @@ import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
 } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { getRubricAllSeoContents } from 'lib/seoContentUtils';
 import {
   castDbData,

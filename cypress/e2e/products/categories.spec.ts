@@ -1,9 +1,9 @@
 import { DEFAULT_LOCALE } from 'lib/config/common';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+
 import { fixtureIds } from '../../fixtures/fixtureIds';
 
 describe('Categories', () => {
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     rubricSlug: fixtureIds.rubricWineSlug,
   });
   beforeEach(() => {

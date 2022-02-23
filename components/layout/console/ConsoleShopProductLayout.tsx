@@ -4,7 +4,8 @@ import AppContentWrapper from 'components/layout/AppContentWrapper';
 import AppSubNav from 'components/layout/AppSubNav';
 import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs, ShopProductInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks, getConsoleRubricLinks } from 'lib/linkUtils';
+import { useBasePath } from 'hooks/useBasePath';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import Head from 'next/head';
 import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
@@ -12,7 +13,6 @@ import { ClientNavItemInterface } from 'types/clientTypes';
 interface ConsoleShopProductLayoutInterface {
   shopProduct: ShopProductInterface;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
-  basePath?: string;
   showEditButton?: boolean;
 }
 
@@ -20,33 +20,23 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
   shopProduct,
   breadcrumbs,
   children,
-  basePath,
   showEditButton,
 }) => {
-  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
-    const links = getCmsCompanyLinks({
-      basePath,
-      companyId: shopProduct.companyId,
-      shopId: shopProduct.shopId,
-      productId: shopProduct._id,
-      rubricSlug: shopProduct.rubricSlug,
-    });
-
-    return [
-      {
-        name: 'Детали',
-        testId: 'details',
-        path: links.shop.rubrics.product.root,
-        exact: true,
-      },
-      {
-        name: 'Ценообразование',
-        testId: 'suppliers',
-        path: links.shop.rubrics.product.suppliers,
-        exact: true,
-      },
-    ];
-  }, [basePath, shopProduct]);
+  const basePath = useBasePath('shopProductId');
+  const navConfig: ClientNavItemInterface[] = [
+    {
+      name: 'Детали',
+      testId: 'details',
+      path: basePath,
+      exact: true,
+    },
+    {
+      name: 'Ценообразование',
+      testId: 'suppliers',
+      path: `${basePath}/suppliers`,
+      exact: true,
+    },
+  ];
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
@@ -63,11 +53,14 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
                   <WpButton
                     size={'small'}
                     onClick={() => {
-                      const productLinks = getConsoleRubricLinks({
+                      const productLinks = getProjectLinks({
                         rubricSlug: shopProduct.rubricSlug,
                         productId: shopProduct.productId,
                       });
-                      window.open(productLinks.product.root, '_blank');
+                      window.open(
+                        productLinks.cms.rubrics.rubricSlug.products.product.productId.url,
+                        '_blank',
+                      );
                     }}
                   >
                     Редактировать товар

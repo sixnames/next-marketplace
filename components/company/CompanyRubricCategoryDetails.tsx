@@ -1,20 +1,12 @@
+import { OptionVariantsModel } from 'db/dbModels';
+import { CategoryInterface, CompanyInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
+import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generated/apolloComponents';
+import { GENDER_ENUMS } from 'lib/config/common';
 import * as React from 'react';
-import { OptionVariantsModel } from '../../db/dbModels';
-import {
-  CategoryInterface,
-  CompanyInterface,
-  SeoContentCitiesInterface,
-} from '../../db/uiInterfaces';
-import {
-  Gender,
-  UpdateCategoryInput,
-  useUpdateCategoryMutation,
-} from '../../generated/apolloComponents';
+import { updateCategorySchema } from 'validation/categorySchema';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { GENDER_ENUMS } from '../../lib/config/common';
-import { updateCategorySchema } from '../../validation/categorySchema';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import Inner from '../Inner';
@@ -25,7 +17,6 @@ export interface CompanyRubricCategoryDetailsInterface {
   pageCompany: CompanyInterface;
   seoDescriptionTop: SeoContentCitiesInterface;
   seoDescriptionBottom: SeoContentCitiesInterface;
-  routeBasePath: string;
 }
 
 const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterface> = ({

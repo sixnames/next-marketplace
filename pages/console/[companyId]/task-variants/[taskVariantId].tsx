@@ -4,30 +4,30 @@ import UpdateTaskVariantForm, {
 import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getCompanyTaskVariantSsr } from 'db/ssr/company/getCompanyTaskVariantSsr';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleCompanyLinks, getConsoleTaskVariantLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 
 interface CreateTaskVariantDetailsConsumerInterface extends UpdateTaskVariantFormInterface {
-  basePath: string;
+  pageCompany: CompanyInterface;
 }
 
 const CreateTaskVariantDetailsConsumer: React.FC<CreateTaskVariantDetailsConsumerInterface> = ({
-  basePath,
   taskVariant,
+  pageCompany,
 }) => {
-  const links = getConsoleTaskVariantLinks({
-    basePath,
+  const links = getProjectLinks({
+    companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${taskVariant.name}`,
     config: [
       {
         name: 'Типы задач',
-        href: links.parentLink,
+        href: links.console.companyId.taskVariants.url,
       },
     ],
   };
@@ -44,12 +44,11 @@ interface CreateTaskVariantDetailsPageInterface
 
 const CreateTaskVariantDetailsPage: React.FC<CreateTaskVariantDetailsPageInterface> = ({
   layoutProps,
-  basePath,
-  taskVariant,
+  ...props
 }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <CreateTaskVariantDetailsConsumer basePath={basePath} taskVariant={taskVariant} />
+      <CreateTaskVariantDetailsConsumer {...props} />
     </ConsoleLayout>
   );
 };
@@ -78,13 +77,10 @@ export const getServerSideProps = async (
     name: getFieldStringLocale(payload.nameI18n, props.sessionLocale),
   };
 
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-  });
   return {
     props: {
       ...props,
-      basePath: links.root,
+      pageCompany: castDbData(props.layoutProps.pageCompany),
       taskVariant: castDbData(taskVariant),
     },
   };

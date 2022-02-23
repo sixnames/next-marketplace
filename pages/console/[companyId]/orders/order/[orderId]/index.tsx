@@ -13,7 +13,7 @@ import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces'
 import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/useOrderMutations';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { CONFIRM_MODAL } from 'lib/config/modalVariants';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import {
   castDbData,
   getConsoleInitialData,

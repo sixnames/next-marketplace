@@ -1,8 +1,7 @@
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
 
 describe('Product variants', () => {
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     rubricSlug: fixtureIds.rubricWineSlug,
     productId: fixtureIds.wineProductA,
   });

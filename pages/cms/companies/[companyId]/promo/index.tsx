@@ -4,7 +4,7 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import PromoList, { PromoListInterface } from 'components/Promo/PromoList';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { getPromoListSsr } from 'lib/promoUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';

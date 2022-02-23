@@ -5,7 +5,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
 import { getCmsPromoProductsListPageSsr } from 'db/ssr/promo/getCmsPromoProductsListPageSsr';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import * as React from 'react';
 
@@ -22,7 +23,7 @@ const CmsPromoProductsListPage: React.FC<CmsPromoProductsListPageInterface> = ({
   filters,
   search,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     rubricSlug: rubric.slug,
     promoId: promo._id,
@@ -32,23 +33,23 @@ const CmsPromoProductsListPage: React.FC<CmsPromoProductsListPageInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: pageCompany.name,
-        href: links.parentLink,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Акции',
-        href: links.promo.parentLink,
+        href: links.cms.companies.companyId.promo.url,
       },
       {
         name: `${promo.name}`,
-        href: links.promo.parentLink,
+        href: links.cms.companies.companyId.promo.details.promoId.url,
       },
       {
         name: `Товары`,
-        href: links.promo.rubrics.parentLink,
+        href: links.cms.companies.companyId.promo.details.promoId.rubrics.url,
       },
     ],
   };
@@ -57,7 +58,6 @@ const CmsPromoProductsListPage: React.FC<CmsPromoProductsListPageInterface> = ({
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
       <ConsolePromoLayout promo={promo} breadcrumbs={breadcrumbs}>
         <ConsolePromoProducts
-          basePath={links.promo.rubrics.product.parentLink}
           promo={promo}
           rubric={rubric}
           pageCompany={pageCompany}

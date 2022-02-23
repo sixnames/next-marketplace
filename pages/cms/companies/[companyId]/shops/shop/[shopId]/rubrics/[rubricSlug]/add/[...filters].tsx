@@ -10,7 +10,8 @@ import {
 } from 'components/shops/ShopAddProducts';
 import { getCompanyShopAddProductsListPageSsr } from 'db/ssr/shops/getCompanyShopAddProductsListPageSsr';
 import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { NextPage } from 'next';
 import * as React from 'react';
@@ -34,7 +35,7 @@ const CompanyShopAddProductsListPage: NextPage<CompanyShopAddProductsListPageInt
   const [chosen, setChosen] = React.useState<ProductSummaryInterface[]>([]);
   const [step, setStep] = React.useState<ShopAddProductsStepType>(1);
 
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: shop.companyId,
     shopId: shop._id,
     rubricSlug,
@@ -45,27 +46,27 @@ const CompanyShopAddProductsListPage: NextPage<CompanyShopAddProductsListPageInt
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${shop.company?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Магазины',
-        href: links.shop.parentLink,
+        href: links.cms.companies.companyId.shops.url,
       },
       {
         name: shop.name,
-        href: links.shop.root,
+        href: links.cms.companies.companyId.shops.shop.shopId.url,
       },
       {
         name: 'Товары',
-        href: links.shop.rubrics.parentLink,
+        href: links.cms.companies.companyId.shops.shop.shopId.rubrics.url,
       },
       {
         name: rubricName,
-        href: links.shop.rubrics.root,
+        href: links.cms.companies.companyId.shops.shop.shopId.rubrics.rubricSlug.url,
       },
     ],
   };

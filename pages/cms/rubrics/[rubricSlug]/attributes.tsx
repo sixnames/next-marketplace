@@ -29,7 +29,8 @@ import { sortObjectsByField } from 'lib/arrayUtils';
 import { getConstantTranslation } from 'lib/config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -113,7 +114,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     },
   ];
 
-  const { parentLink, root } = getConsoleRubricLinks({
+  const links = getProjectLinks({
     rubricSlug: rubric.slug,
   });
 
@@ -122,11 +123,11 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     config: [
       {
         name: 'Рубрикатор',
-        href: parentLink,
+        href: links.cms.rubrics.url,
       },
       {
         name: `${rubric.name}`,
-        href: root,
+        href: links.cms.rubrics.rubricSlug.url,
       },
     ],
   };

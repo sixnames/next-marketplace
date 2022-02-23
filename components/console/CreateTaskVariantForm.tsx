@@ -15,13 +15,9 @@ import WpTitle from '../WpTitle';
 
 export interface CreateTaskVariantFormInterface {
   companySlug?: string;
-  basePath: string;
 }
 
-const CreateTaskVariantForm: React.FC<CreateTaskVariantFormInterface> = ({
-  companySlug,
-  basePath,
-}) => {
+const CreateTaskVariantForm: React.FC<CreateTaskVariantFormInterface> = ({ companySlug }) => {
   const validationSchema = useValidationSchema({
     schema: createTaskVariantSchema,
   });
@@ -31,7 +27,7 @@ const CreateTaskVariantForm: React.FC<CreateTaskVariantFormInterface> = ({
     companySlug: companySlug || DEFAULT_COMPANY_SLUG,
     slug: TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
   };
-  const [createTaskVariantMutation] = useCreateTaskVariant(basePath);
+  const [createTaskVariantMutation] = useCreateTaskVariant();
 
   return (
     <Inner testId={'create-task-variant-page'}>

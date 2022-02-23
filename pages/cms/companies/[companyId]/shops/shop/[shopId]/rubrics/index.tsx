@@ -5,7 +5,7 @@ import { getDbCollections } from 'db/mongodb';
 import { getConsoleShopSsr } from 'db/ssr/shops/getConsoleShopSsr';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import { getI18nLocaleValue } from 'lib/i18n';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';

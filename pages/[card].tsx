@@ -5,7 +5,7 @@ import { getCardData } from 'db/ssr/catalogue/cardUtils';
 import { CardLayoutInterface, InitialCardDataInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from 'lib/config/constantSelects';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+
 import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -30,11 +30,9 @@ const CardHalfColumnsLayout = dynamic(
 
 const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
   const sessionUser = useSiteUserContext();
-  const links = getConsoleRubricLinks({
-    productId: props.cardData.product._id,
-    rubricSlug: props.cardData.product.rubricSlug,
-    basePath: sessionUser?.editLinkBasePath,
-  });
+  const productId = props.cardData.product._id;
+  const rubricSlug = props.cardData.product.rubricSlug;
+  const basePath = sessionUser?.editLinkBasePath;
 
   return (
     <React.Fragment>
@@ -52,7 +50,10 @@ const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
                 size={'small'}
                 frameClassName='w-auto'
                 onClick={() => {
-                  window.open(links.product.root, '_blank');
+                  window.open(
+                    `${basePath}/rubrics/${rubricSlug}/products/product/${productId}`,
+                    '_blank',
+                  );
                 }}
               >
                 Редактировать товар

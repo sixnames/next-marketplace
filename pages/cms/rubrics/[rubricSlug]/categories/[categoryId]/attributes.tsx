@@ -18,7 +18,8 @@ import { rubricAttributeGroupsPipeline } from 'db/utils/constantPipelines';
 import { useToggleCmsCardAttributeInCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { getConstantTranslation } from 'lib/config/constantTranslations';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -42,7 +43,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
     onError: onErrorCallback,
   });
 
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     rubricSlug: `${category.rubric?.slug}`,
     categoryId: category._id,
   });
@@ -99,19 +100,19 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
     config: [
       {
         name: 'Рубрикатор',
-        href: links.parentLink,
+        href: links.cms.rubrics.url,
       },
       {
         name: `${category.rubric?.name}`,
-        href: links.parentLink,
+        href: links.cms.rubrics.rubricSlug.url,
       },
       {
         name: `Категории`,
-        href: links.category.parentLink,
+        href: links.cms.rubrics.rubricSlug.categories.url,
       },
       {
         name: `${category.name}`,
-        href: links.category.root,
+        href: links.cms.rubrics.rubricSlug.categories.categoryId.url,
       },
     ],
   };

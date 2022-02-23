@@ -16,7 +16,7 @@ import { sortObjectsByField } from 'lib/arrayUtils';
 import { DEFAULT_LOCALE, SORT_ASC } from 'lib/config/common';
 import { CONFIRM_MODAL, CREATE_CATEGORY_MODAL } from 'lib/config/modalVariants';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { getTreeFromList } from 'lib/treeUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -37,14 +37,14 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     rubricSlug: rubric.slug,
   });
 
   const renderCategories = React.useCallback(
     (category: CategoryInterface) => {
       const { name, categories, image } = category;
-      const categoryLinks = getConsoleRubricLinks({
+      const categoryLinks = getProjectLinks({
         rubricSlug: rubric.slug,
         categoryId: category._id,
       });

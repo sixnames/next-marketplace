@@ -5,7 +5,7 @@ import AppContentWrapper from 'components/layout/AppContentWrapper';
 import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getCmsLinks, getConsoleTaskVariantLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
@@ -14,23 +14,20 @@ interface CreateTaskVariantConsumerInterface extends CreateTaskVariantFormInterf
 
 const CreateTaskVariantConsumer: React.FC<CreateTaskVariantConsumerInterface> = ({
   companySlug,
-  basePath,
 }) => {
-  const links = getConsoleTaskVariantLinks({
-    basePath,
-  });
+  const links = getProjectLinks();
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Создание типа задачи',
     config: [
       {
         name: 'Типы задач',
-        href: links.parentLink,
+        href: links.cms.taskVariants.url,
       },
     ],
   };
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
-      <CreateTaskVariantForm companySlug={companySlug} basePath={basePath} />
+      <CreateTaskVariantForm companySlug={companySlug} />
     </AppContentWrapper>
   );
 };
@@ -41,12 +38,11 @@ interface CreateTaskVariantPageInterface
 
 const CreateTaskVariantPage: React.FC<CreateTaskVariantPageInterface> = ({
   layoutProps,
-  basePath,
   companySlug,
 }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <CreateTaskVariantConsumer basePath={basePath} companySlug={companySlug} />
+      <CreateTaskVariantConsumer companySlug={companySlug} />
     </ConsoleLayout>
   );
 };
@@ -61,11 +57,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsLinks({});
   return {
     props: {
       ...props,
-      basePath: links.root,
       companySlug: DEFAULT_COMPANY_SLUG,
     },
   };

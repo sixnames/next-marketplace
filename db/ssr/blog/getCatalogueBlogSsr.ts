@@ -18,7 +18,7 @@ import {
   SORT_DESC,
 } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleBlogLinks } from 'lib/linkUtils';
+
 import { noNaN } from 'lib/numbers';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';

@@ -4,7 +4,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getPageSsr } from 'lib/pageUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -23,7 +24,7 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
   page,
   cities,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     pagesGroupId: page.pagesGroupId,
   });
@@ -32,19 +33,19 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: pageCompany.name,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: 'Группы страниц',
-        href: links.pages.parentLink,
+        href: links.cms.companies.companyId.pages.url,
       },
       {
         name: `${page.pagesGroup?.name}`,
-        href: links.pages.root,
+        href: links.cms.companies.companyId.pages.pagesGroupId.url,
       },
     ],
   };

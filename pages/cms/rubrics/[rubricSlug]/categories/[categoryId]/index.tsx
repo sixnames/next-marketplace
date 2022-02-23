@@ -19,7 +19,7 @@ import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generate
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { DEFAULT_COMPANY_SLUG, GENDER_ENUMS } from 'lib/config/common';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -86,7 +86,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
           }, {}),
   };
 
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     rubricSlug: `${rubric?.slug}`,
   });
 

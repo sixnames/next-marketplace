@@ -17,8 +17,8 @@ const AppContentFilter: React.FC<AppContentFilterInterface> = (props) => {
     >
       <div className='mt-8'>
         <CheckBoxFilter
-          {...props}
           filterListClassName='grid gap-x-12 gap-y-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4'
+          {...props}
         />
       </div>
     </WpAccordion>

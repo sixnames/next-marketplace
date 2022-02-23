@@ -3,7 +3,7 @@ import { getDbCollections } from 'db/mongodb';
 import { getConsolePromoProducts } from 'db/ssr/promo/getConsolePromoProducts';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { DEFAULT_CURRENCY, DEFAULT_PAGE_FILTER } from 'lib/config/common';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';

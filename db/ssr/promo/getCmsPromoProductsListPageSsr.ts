@@ -3,7 +3,7 @@ import { getDbCollections } from 'db/mongodb';
 import { getConsolePromoProducts } from 'db/ssr/promo/getConsolePromoProducts';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { DEFAULT_CURRENCY } from 'lib/config/common';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';

@@ -10,7 +10,7 @@ import { getConsoleShopProduct } from 'db/ssr/shops/getConsoleShopProduct';
 import { AppContentWrapperBreadCrumbs, SupplierInterface } from 'db/uiInterfaces';
 import { SORT_ASC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import {
   castDbData,
   getConsoleInitialData,

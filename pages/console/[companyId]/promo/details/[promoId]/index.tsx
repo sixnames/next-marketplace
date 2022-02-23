@@ -2,7 +2,7 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
 import PromoDetails, { PromoDetailsInterface } from 'components/Promo/PromoDetails';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import { getPromoSsr } from 'lib/promoUtils';
 import {
   castDbData,

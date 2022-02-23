@@ -4,7 +4,7 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';

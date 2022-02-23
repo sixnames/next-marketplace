@@ -12,7 +12,8 @@ import {
 } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getConsoleRubricLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -30,7 +31,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   brandCollection,
   manufacturer,
 }) => {
-  const links = getConsoleRubricLinks({
+  const links = getProjectLinks({
     productId: product._id,
     rubricSlug: product.rubricSlug,
   });
@@ -39,19 +40,19 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
     config: [
       {
         name: 'Рубрикатор',
-        href: links.parentLink,
+        href: links.cms.rubrics.url,
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.parentLink,
+        href: links.cms.rubrics.rubricSlug.url,
       },
       {
         name: `Товары`,
-        href: links.product.parentLink,
+        href: links.cms.rubrics.rubricSlug.products.url,
       },
       {
         name: `${product.cardTitle}`,
-        href: links.product.root,
+        href: links.cms.rubrics.rubricSlug.products.product.productId.url,
       },
     ],
   };

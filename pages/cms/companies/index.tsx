@@ -16,7 +16,7 @@ import { useDeleteCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { SORT_DESC } from 'lib/config/common';
 import { CONFIRM_MODAL } from 'lib/config/modalVariants';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { getShortName } from 'lib/nameUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';

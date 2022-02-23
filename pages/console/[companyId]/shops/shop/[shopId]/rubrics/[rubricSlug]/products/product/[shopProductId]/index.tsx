@@ -4,7 +4,7 @@ import ConsoleShopProductLayout from 'components/layout/console/ConsoleShopProdu
 import RequestError from 'components/RequestError';
 import { getConsoleShopProduct } from 'db/ssr/shops/getConsoleShopProduct';
 import { AppContentWrapperBreadCrumbs, ShopProductInterface } from 'db/uiInterfaces';
-import { getConsoleCompanyLinks } from 'lib/linkUtils';
+
 import {
   castDbData,
   getConsoleInitialData,

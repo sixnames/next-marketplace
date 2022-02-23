@@ -1,5 +1,4 @@
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
 
 describe('Promo products', () => {
   const links = getCmsCompanyLinks({

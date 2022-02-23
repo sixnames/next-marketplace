@@ -1,24 +1,24 @@
-import { Form, Formik } from 'formik';
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import {
   AppContentWrapperBreadCrumbs,
   CatalogueFilterAttributeInterface,
   ConsoleRubricProductsInterface,
   ProductSummaryInterface,
   ShopInterface,
-} from '../../db/uiInterfaces';
+} from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
 import {
   AddProductToShopInput,
   useAddManyProductsToShopMutation,
-} from '../../generated/apolloComponents';
+} from 'generated/apolloComponents';
+import { useBasePath } from 'hooks/useBasePath';
+import { useReloadListener } from 'hooks/useReloadListener';
+import { alwaysArray } from 'lib/arrayUtils';
+import { getNumWord } from 'lib/i18n';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { addManyProductsToShopSchema } from 'validation/shopSchema';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
-import { useReloadListener } from '../../hooks/useReloadListener';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { alwaysArray } from '../../lib/arrayUtils';
-import { getNumWord } from '../../lib/i18n';
-import { getCmsCompanyLinks, getConsoleRubricLinks } from '../../lib/linkUtils';
-import { addManyProductsToShopSchema } from '../../validation/shopSchema';
 import AppContentFilter from '../AppContentFilter';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
@@ -50,9 +50,7 @@ export interface ShopAddProductsListInterface extends ConsoleRubricProductsInter
   selectedAttributes: CatalogueFilterAttributeInterface[];
   clearSlug: string;
   rubricName: string;
-  layoutBasePath?: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
-  basePath: string;
   rubricSlug: string;
 }
 
@@ -70,13 +68,12 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   createChosenProduct,
   deleteChosenProduct,
   setStepHandler,
-  layoutBasePath,
   breadcrumbs,
-  basePath,
   rubricSlug,
 }) => {
   useReloadListener();
   const { sessionUser } = useUserContext();
+  const basePath = useBasePath('rubricSlug');
 
   const columns: WpTableColumn<ProductSummaryInterface>[] = [
     {
@@ -105,13 +102,8 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
     {
       headTitle: 'Арт',
       render: ({ dataItem }) => {
-        const links = getConsoleRubricLinks({
-          productId: dataItem._id,
-          rubricSlug: dataItem.rubricSlug,
-          basePath,
-        });
         return sessionUser?.role?.isStaff ? (
-          <WpLink href={links.product.root} target={'_blank'}>
+          <WpLink href={`${basePath}/products/product/${dataItem._id}`} target={'_blank'}>
             {dataItem.itemId}
           </WpLink>
         ) : (
@@ -183,12 +175,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
               updateTitle={'Редактировать товар'}
               updateHandler={() => {
                 if (sessionUser?.role?.isStaff) {
-                  const links = getConsoleRubricLinks({
-                    productId: dataItem._id,
-                    rubricSlug: dataItem.rubricSlug,
-                    basePath,
-                  });
-                  window.open(links.product.root, '_blank');
+                  window.open(`${basePath}/products/product/${dataItem._id}`, '_blank');
                 }
               }}
             />
@@ -208,7 +195,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   }, [totalDocs]);
 
   return (
-    <ConsoleShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} breadcrumbs={breadcrumbs}>
       <Inner testId={`not-in-shop-products-list`}>
         <div className={`mb-2 text-3xl font-medium`}>Выберите товары из рубрики {rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
@@ -234,12 +221,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
                 testIdKey={'_id'}
                 onRowDoubleClick={(dataItem) => {
                   if (sessionUser?.role?.isStaff) {
-                    const links = getConsoleRubricLinks({
-                      productId: dataItem._id,
-                      rubricSlug: dataItem.rubricSlug,
-                      basePath,
-                    });
-                    window.open(links.product.root, '_blank');
+                    window.open(`${basePath}/products/product/${dataItem._id}`, '_blank');
                   }
                 }}
               />
@@ -270,25 +252,17 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
   createChosenProduct,
   deleteChosenProduct,
   setStepHandler,
-  rubricSlug,
-  layoutBasePath,
   breadcrumbs,
 }) => {
   const router = useRouter();
+  const basePath = useBasePath('rubricSlug');
   const { onErrorCallback, onCompleteCallback, showLoading, showErrorNotification } =
     useMutationCallbacks({ withModal: true });
   const [addManyProductsToShopMutation] = useAddManyProductsToShopMutation({
     onCompleted: (data) => {
       onCompleteCallback(data.addManyProductsToShop);
       if (data.addManyProductsToShop.success) {
-        const links = getCmsCompanyLinks({
-          basePath: layoutBasePath,
-          companyId: shop.companyId,
-          shopId: shop._id,
-          rubricSlug: rubricSlug,
-        });
-
-        router.push(links.shop.rubrics.product.parentLink).catch(console.log);
+        router.push(basePath).catch(console.log);
       }
     },
     onError: onErrorCallback,
@@ -427,7 +401,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
   };
 
   return (
-    <ConsoleShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
+    <ConsoleShopLayout shop={shop} breadcrumbs={breadcrumbs}>
       <Inner testId={'not-in-shop-products-list-step-2'}>
         <div className={`mb-2 text-3xl font-medium`}>Заполните все поля</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>

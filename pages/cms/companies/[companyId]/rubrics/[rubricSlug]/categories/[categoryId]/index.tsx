@@ -11,7 +11,8 @@ import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
 } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { getCategoryAllSeoContents } from 'lib/seoContentUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -23,11 +24,10 @@ interface CategoryDetailsInterface extends CompanyRubricCategoryDetailsInterface
 const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   category,
   pageCompany,
-  routeBasePath,
   seoDescriptionTop,
   seoDescriptionBottom,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
     rubricSlug: category.rubricSlug,
   });
@@ -36,38 +36,32 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
       {
         name: `Рубрикатор`,
-        href: links.rubrics.parentLink,
+        href: links.cms.companies.companyId.rubrics.url,
       },
       {
         name: `${category.rubric?.name}`,
-        href: links.rubrics.root,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.url,
       },
       {
         name: `Категории`,
-        href: links.rubrics.category.parentLink,
+        href: links.cms.companies.companyId.rubrics.rubricSlug.categories.url,
       },
     ],
   };
 
   return (
-    <CmsCategoryLayout
-      category={category}
-      breadcrumbs={breadcrumbs}
-      basePath={routeBasePath}
-      hideAttributesPath
-    >
+    <CmsCategoryLayout category={category} breadcrumbs={breadcrumbs} hideAttributesPath>
       <CompanyRubricCategoryDetails
         category={category}
         pageCompany={pageCompany}
-        routeBasePath={routeBasePath}
         seoDescriptionTop={seoDescriptionTop}
         seoDescriptionBottom={seoDescriptionBottom}
       />
@@ -217,10 +211,6 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
@@ -228,7 +218,6 @@ export const getServerSideProps = async (
       seoDescriptionTop: castDbData(seoDescriptionTop),
       category: castDbData(category),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.root,
     },
   };
 };

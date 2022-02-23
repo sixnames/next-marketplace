@@ -7,7 +7,8 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import { getDbCollections } from 'db/mongodb';
 import { getCompanyTaskVariantsListSsr } from 'db/ssr/company/getCompanyTaskVariantsListSsr';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -19,11 +20,10 @@ interface TaskVariantsListConsumerInterface extends ConsoleTaskVariantsListInter
 }
 
 const TaskVariantsListConsumer: React.FC<TaskVariantsListConsumerInterface> = ({
-  basePath,
   taskVariants,
   pageCompany,
 }) => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -31,11 +31,11 @@ const TaskVariantsListConsumer: React.FC<TaskVariantsListConsumerInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: links.parentLink,
+        href: links.cms.companies.url,
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.root,
+        href: links.cms.companies.companyId.url,
       },
     ],
   };
@@ -43,7 +43,7 @@ const TaskVariantsListConsumer: React.FC<TaskVariantsListConsumerInterface> = ({
   return (
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Inner>
-        <ConsoleTaskVariantsList basePath={basePath} taskVariants={taskVariants} />
+        <ConsoleTaskVariantsList taskVariants={taskVariants} />
       </Inner>
     </CmsCompanyLayout>
   );
@@ -57,15 +57,10 @@ const TaskVariantsListPage: React.FC<TaskVariantsListPageInterface> = ({
   layoutProps,
   taskVariants,
   pageCompany,
-  basePath,
 }) => {
   return (
     <ConsoleLayout {...layoutProps} title={pageTitle}>
-      <TaskVariantsListConsumer
-        taskVariants={taskVariants}
-        basePath={basePath}
-        pageCompany={pageCompany}
-      />
+      <TaskVariantsListConsumer taskVariants={taskVariants} pageCompany={pageCompany} />
     </ConsoleLayout>
   );
 };
@@ -98,10 +93,6 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   const payload = await getCompanyTaskVariantsListSsr({
     locale: props.sessionLocale,
     companySlug: companyResult.slug,
@@ -118,7 +109,6 @@ export const getServerSideProps = async (
       ...props,
       taskVariants: castDbData(payload),
       pageCompany: castDbData(companyResult),
-      basePath: links.root,
     },
   };
 };

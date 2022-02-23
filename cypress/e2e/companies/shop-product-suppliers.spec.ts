@@ -1,5 +1,4 @@
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
 
 describe('Shop product suppliers', () => {
   const links = getCmsCompanyLinks({

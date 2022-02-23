@@ -1,6 +1,6 @@
 import { getDbCollections } from 'db/mongodb';
 import { getConsoleShopProducts } from 'db/ssr/shops/getConsoleShopProducts';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';

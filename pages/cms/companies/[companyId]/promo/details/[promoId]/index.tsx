@@ -3,7 +3,7 @@ import ConsolePromoLayout from 'components/layout/console/ConsolePromoLayout';
 import PromoDetails, { PromoDetailsInterface } from 'components/Promo/PromoDetails';
 import { getDbCollections } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';

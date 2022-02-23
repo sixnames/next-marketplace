@@ -7,7 +7,7 @@ import WpTitle from 'components/WpTitle';
 import { getBlogPostsList } from 'db/ssr/blog/getBlogPostsList';
 import { BlogPostInterface } from 'db/uiInterfaces';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getCmsLinks } from 'lib/linkUtils';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
@@ -20,19 +20,19 @@ interface BlogPostsListConsumerInterface {
 const pageTitle = 'Блог';
 
 const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({ posts }) => {
-  const links = getCmsLinks({});
+  const links = getProjectLinks();
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
       {
         name: 'Блог',
         testId: 'sub-nav-blog',
-        path: links.blog.parentLink,
+        path: links.cms.blog.url,
         exact: true,
       },
       {
         name: 'Атрибуты',
         testId: 'sub-nav-attributes',
-        path: links.blog.attributes,
+        path: links.cms.blog.attributes.url,
         exact: true,
       },
     ];
@@ -45,7 +45,7 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({ posts
       </Inner>
       <AppSubNav navConfig={navConfig} />
       <Inner>
-        <BlogPostsList posts={posts} basePath={links.root} companySlug={DEFAULT_COMPANY_SLUG} />
+        <BlogPostsList posts={posts} companySlug={DEFAULT_COMPANY_SLUG} />
       </Inner>
     </AppContentWrapper>
   );

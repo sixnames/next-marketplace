@@ -1,6 +1,6 @@
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import { DEFAULT_CITY } from 'lib/config/common';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
+
 import { MOCK_ADDRESS_A, MOCK_ADDRESS_B } from 'tests/mocks';
 
 describe('Company shops', () => {

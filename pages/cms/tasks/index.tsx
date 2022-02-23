@@ -5,7 +5,7 @@ import ConsoleLayout from 'components/layout/cms/ConsoleLayout';
 import WpTitle from 'components/WpTitle';
 import { getCompanyTasksListSsr } from 'db/ssr/company/getCompanyTasksListSsr';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
-import { getCmsLinks } from 'lib/linkUtils';
+
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';

@@ -11,21 +11,15 @@ import WpTitle from '../WpTitle';
 
 export interface CreateTaskFormInterface extends TaskMainFieldsInterface {
   companySlug?: string;
-  basePath: string;
 }
 
-const CreateTaskForm: React.FC<CreateTaskFormInterface> = ({
-  companySlug,
-  basePath,
-
-  taskVariants,
-}) => {
+const CreateTaskForm: React.FC<CreateTaskFormInterface> = ({ companySlug, taskVariants }) => {
   const initialValues: CreateTaskInputInterface = {
     nameI18n: {},
     variantId: taskVariants[0] ? `${taskVariants[0]._id}` : '',
     companySlug: companySlug || DEFAULT_COMPANY_SLUG,
   };
-  const [createTaskMutation] = useCreateTask(basePath);
+  const [createTaskMutation] = useCreateTask();
 
   return (
     <Inner testId={'create-task-page'}>

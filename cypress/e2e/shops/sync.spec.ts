@@ -11,7 +11,6 @@ import {
 } from 'db/syncInterfaces';
 import { REQUEST_METHOD_GET, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'lib/config/common';
 import { getProjectLinks } from 'lib/links/getProjectLinks';
-import { getCmsCompanyLinks } from 'lib/linkUtils';
 
 const validRequestParamsA = 'token=000001';
 const validRequestParamsC = 'token=000003';

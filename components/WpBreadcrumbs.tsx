@@ -1,7 +1,7 @@
+import { BreadcrumbsInterface } from 'db/uiInterfaces';
+import { getConstantTranslation } from 'lib/config/constantTranslations';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { BreadcrumbsInterface } from '../db/uiInterfaces';
-import { getConstantTranslation } from '../lib/config/constantTranslations';
 import Inner from './Inner';
 import WpLink from './Link/WpLink';
 

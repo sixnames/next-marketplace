@@ -60,7 +60,7 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({
   };
 
   return (
-    <CmsProductLayout companySlug={pageCompany.slug} product={product} breadcrumbs={breadcrumbs}>
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductVariants product={product} />
     </CmsProductLayout>
   );

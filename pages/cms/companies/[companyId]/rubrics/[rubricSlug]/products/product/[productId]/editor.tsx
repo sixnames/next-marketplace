@@ -63,7 +63,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
   };
 
   return (
-    <CmsProductLayout companySlug={pageCompany.slug} product={product} breadcrumbs={breadcrumbs}>
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductEditor
         product={product}
         companySlug={pageCompany.slug}

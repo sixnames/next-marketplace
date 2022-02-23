@@ -64,7 +64,7 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
   };
 
   return (
-    <CmsProductLayout companySlug={pageCompany.slug} product={product} breadcrumbs={breadcrumbs}>
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductCategories product={product} categoriesTree={categoriesTree} />
     </CmsProductLayout>
   );

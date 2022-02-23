@@ -70,7 +70,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   };
 
   return (
-    <CmsProductLayout companySlug={pageCompany.slug} product={product} breadcrumbs={breadcrumbs}>
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductBrands
         product={product}
         brand={brand}

@@ -60,7 +60,7 @@ const CmsProductAttributesPageConsumer: React.FC<CmsProductAttributesPageConsume
   };
 
   return (
-    <CmsProductLayout companySlug={pageCompany.slug} product={product} breadcrumbs={breadcrumbs}>
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <ConsoleRubricProductAttributes product={product} />
     </CmsProductLayout>
   );

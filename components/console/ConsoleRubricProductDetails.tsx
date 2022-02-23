@@ -5,7 +5,6 @@ import { alwaysString } from 'lib/arrayUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { updateProductSchema } from 'validation/productSchema';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -24,9 +23,6 @@ const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface
   const router = useRouter();
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
-  });
-  const { showLoading } = useMutationCallbacks({
-    reload: true,
   });
   const [updateProductMutation] = useUpdateProduct();
 
@@ -51,7 +47,6 @@ const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface
         validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
-          showLoading();
           return updateProductMutation({
             ...values,
             taskId: alwaysString(router.query.taskId),

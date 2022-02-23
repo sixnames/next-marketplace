@@ -1,6 +1,5 @@
 import WpButton from 'components/button/WpButton';
 import { useAppContext } from 'components/context/appContext';
-import { useConfigContext } from 'components/context/configContext';
 import { useUserContext } from 'components/context/userContext';
 import Inner from 'components/Inner';
 import AppContentWrapper from 'components/layout/AppContentWrapper';
@@ -11,7 +10,6 @@ import WpTitle from 'components/WpTitle';
 import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from 'db/uiInterfaces';
 import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
 import { useBasePath } from 'hooks/useBasePath';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG } from 'lib/config/common';
 import { CONFIRM_MODAL } from 'lib/config/modalVariants';
 
 import Head from 'next/head';
@@ -27,7 +25,6 @@ interface CmsProductLayoutInterface {
   hideBrandPath?: boolean;
   hideAssetsPath?: boolean;
   hideCardConstructor?: boolean;
-  companySlug?: string;
   hideDeleteButton?: boolean;
 }
 
@@ -41,11 +38,9 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
   hideAssetsPath,
   hideCardConstructor,
   children,
-  companySlug,
   hideDeleteButton,
 }) => {
   const { sessionUser } = useUserContext();
-  const { domainCompany } = useConfigContext();
   const { showModal } = useAppContext();
   const basePath = useBasePath('rubricSlug');
   const productBasePath = `${basePath}/products/product/${product._id}`;
@@ -123,12 +118,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
               frameClassName='w-auto'
               size={'small'}
               onClick={() => {
-                window.open(
-                  `/${companySlug || domainCompany?.slug || DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}/${
-                    product.slug
-                  }`,
-                  '_blank',
-                );
+                window.open(`/${product.slug}`, '_blank');
               }}
             >
               Карточка товара

@@ -1,12 +1,13 @@
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Promo code', () => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: fixtureIds.companyA,
     promoId: fixtureIds.promoACompanyA,
   });
   beforeEach(() => {
-    cy.testAuth(links.promo.code.parentLink);
+    cy.testAuth(links.cms.companies.companyId.promo.url);
   });
 
   it('Should CRUD promo code', () => {
@@ -26,7 +27,7 @@ describe('Promo code', () => {
     cy.getByCy('code-input').clear().type(updatedPromoCode);
     cy.getByCy('submit-promo-code').click();
     cy.wait(1500);
-    cy.visit(links.promo.code.parentLink);
+    cy.visit(links.cms.companies.companyId.promo.url);
     cy.getByCy(updatedPromoCode).should('exist');
 
     // should delete

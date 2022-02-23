@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE } from 'lib/config/common';
-
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 import { fixtureIds } from '../../fixtures/fixtureIds';
 
 describe('Categories', () => {
@@ -7,7 +7,7 @@ describe('Categories', () => {
     rubricSlug: fixtureIds.rubricWineSlug,
   });
   beforeEach(() => {
-    cy.testAuth(links.category.parentLink);
+    cy.testAuth(links.cms.rubrics.rubricSlug.categories.url);
   });
 
   it('Should CRUD categories list', () => {
@@ -52,7 +52,7 @@ describe('Categories', () => {
     cy.getByCy('Виноград-checkbox').should('be.checked');
 
     // Should delete top level category and category children
-    cy.visit(links.category.parentLink);
+    cy.visit(links.cms.rubrics.rubricSlug.categories.url);
     cy.wait(1500);
     cy.getByCy(`${categoryNewName}-delete`).click();
     cy.getByCy('confirm').click();

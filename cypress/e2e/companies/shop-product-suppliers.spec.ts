@@ -1,15 +1,18 @@
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 describe('Shop product suppliers', () => {
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: fixtureIds.companyA,
     shopId: fixtureIds.shopA,
     rubricSlug: fixtureIds.rubricWineSlug,
-    productId: fixtureIds.shopAShopProduct,
+    shopProductId: fixtureIds.shopAShopProduct,
   });
-  const companiesPath = links.shop.rubrics.product.suppliers;
   beforeEach(() => {
-    cy.testAuth(companiesPath);
+    cy.testAuth(
+      links.cms.companies.companyId.shops.shop.shopId.rubrics.rubricSlug.products.product
+        .shopProductId.suppliers.url,
+    );
   });
 
   it('Should CRUD shop product suppliers', () => {

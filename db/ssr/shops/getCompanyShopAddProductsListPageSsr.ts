@@ -1,6 +1,7 @@
 import { getAddShopProductSsrData } from 'db/ssr/shops/getAddShopProductSsrData';
 import { alwaysString } from 'lib/arrayUtils';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -19,14 +20,14 @@ export const getCompanyShopAddProductsListPageSsr = async (
     };
   }
 
-  const { shop } = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: `${query.companyId}`,
     shopId: shopId,
     rubricSlug: `${query.rubricSlug}`,
   });
   const locale = initialProps.props.sessionLocale;
   const currency = initialProps.props.initialData.currency;
-  const basePath = shop.rubrics.add;
+  const basePath = links.cms.companies.companyId.shops.shop.shopId.rubrics.rubricSlug.add.url;
 
   const payload = await getAddShopProductSsrData({
     locale,

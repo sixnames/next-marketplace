@@ -1,20 +1,20 @@
-import { useRouter } from 'next/router';
-import { AddBlogPostLikeInputInterface } from '../../db/dao/blog/addPostLike';
-import { CreateBlogAttributeInputInterface } from '../../db/dao/blog/createBlogAttribute';
-import { CreateBlogPostInputInterface } from '../../db/dao/blog/createBlogPost';
-import { DeleteBlogAttributeInputInterface } from '../../db/dao/blog/deleteBlogAttribute';
-import { DeleteBlogPostInputInterface } from '../../db/dao/blog/deleteBlogPost';
-import { DeleteBlogPostPreviewImageInterface } from '../../db/dao/blog/deletePostPreviewImage';
-import { UpdateBlogAttributeInputInterface } from '../../db/dao/blog/updateBlogAttribute';
-import { UpdateBlogPostInputInterface } from '../../db/dao/blog/updateBlogPost';
-import { UpdateBlogPostAttributeInterface } from '../../db/dao/blog/updateBlogPostAttribute';
-import { BlogAttributePayloadModel, BlogPostPayloadModel } from '../../db/dbModels';
+import { AddBlogPostLikeInputInterface } from 'db/dao/blog/addPostLike';
+import { CreateBlogAttributeInputInterface } from 'db/dao/blog/createBlogAttribute';
+import { CreateBlogPostInputInterface } from 'db/dao/blog/createBlogPost';
+import { DeleteBlogAttributeInputInterface } from 'db/dao/blog/deleteBlogAttribute';
+import { DeleteBlogPostInputInterface } from 'db/dao/blog/deleteBlogPost';
+import { DeleteBlogPostPreviewImageInterface } from 'db/dao/blog/deletePostPreviewImage';
+import { UpdateBlogAttributeInputInterface } from 'db/dao/blog/updateBlogAttribute';
+import { UpdateBlogPostInputInterface } from 'db/dao/blog/updateBlogPost';
+import { UpdateBlogPostAttributeInterface } from 'db/dao/blog/updateBlogPostAttribute';
+import { BlogAttributePayloadModel, BlogPostPayloadModel } from 'db/dbModels';
+import { useBasePath } from 'hooks/useBasePath';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-} from '../../lib/config/common';
-import { getConsoleBlogLinks } from '../../lib/linkUtils';
+} from 'lib/config/common';
+import { useRouter } from 'next/router';
 import { UseMutationConsumerPayload, useMutationHandler } from './useFetch';
 
 const basePath = '/api/blog';
@@ -28,19 +28,16 @@ export const useCreateBlogPostLike = () => {
 };
 
 // post
-export const useCreateBlogPost = (redirectPath: string) => {
+export const useCreateBlogPost = () => {
   const router = useRouter();
+  const redirectPath = useBasePath('blog');
   return useMutationHandler<BlogPostPayloadModel, CreateBlogPostInputInterface>({
     path: `${basePath}/post`,
     method: REQUEST_METHOD_POST,
     reload: false,
     onSuccess: (payload) => {
       if (payload.payload) {
-        const links = getConsoleBlogLinks({
-          basePath: redirectPath,
-          blogPostId: payload.payload._id,
-        });
-        router.push(links.root).catch(console.log);
+        router.push(`${redirectPath}/post/${payload.payload._id}`).catch(console.log);
       }
     },
   });

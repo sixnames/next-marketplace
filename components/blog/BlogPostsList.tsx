@@ -110,7 +110,6 @@ const BlogPostsList: React.FC<BlogPostsListInterface> = ({ posts, companySlug })
             showModal<BlogPostModalInterface>({
               variant: BLOG_POST_MODAL,
               props: {
-                basePath,
                 companySlug,
               },
             });

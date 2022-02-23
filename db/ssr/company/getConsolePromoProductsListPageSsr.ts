@@ -3,6 +3,7 @@ import { getDbCollections } from 'db/mongodb';
 import { getConsolePromoProducts } from 'db/ssr/promo/getConsolePromoProducts';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { DEFAULT_CURRENCY, DEFAULT_PAGE_FILTER } from 'lib/config/common';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
@@ -46,11 +47,12 @@ export const getConsolePromoProductsListPageSsr = async (
   }
   const rubric = castRubricForUI({ rubric: initialRubric, locale: props.sessionLocale });
 
-  const links = getConsoleCompanyLinks({
+  const links = getProjectLinks({
     companyId: props.layoutProps.pageCompany._id,
     promoId: promo._id,
     rubricSlug: `${query.rubricSlug}`,
   });
+  const basePath = links.console.companyId.promo.details.promoId.rubrics.rubricSlug.products.url;
 
   const promoProducts = await getConsolePromoProducts({
     search: alwaysString(query.search),
@@ -60,14 +62,13 @@ export const getConsolePromoProductsListPageSsr = async (
     locale,
     currency: props.currentCity?.currency || DEFAULT_CURRENCY,
     companyId: props.layoutProps.pageCompany._id,
-    basePath: links.promo.rubrics.product.parentLink,
+    basePath,
     excludedShopProductIds: [],
   });
 
   return {
     props: {
       ...props,
-      basePath: links.promo.root,
       pageCompany: castDbData(props.layoutProps.pageCompany),
       promo: castDbData(promo),
       rubric: castDbData(rubric),

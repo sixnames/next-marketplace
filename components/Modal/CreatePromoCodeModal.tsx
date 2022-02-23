@@ -1,10 +1,10 @@
+import { CreatePromoCodeInputInterface } from 'db/dao/promo/createPromoCode';
 import { Form, Formik } from 'formik';
+import { useCreatePromoCode } from 'hooks/mutations/usePromoMutations';
+import { DEFAULT_LOCALE } from 'lib/config/common';
 import * as React from 'react';
-import { CreatePromoCodeInputInterface } from '../../db/dao/promo/createPromoCode';
-import { useCreatePromoCode } from '../../hooks/mutations/usePromoMutations';
+import { createPromoCodeSchema } from 'validation/promoSchema';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { DEFAULT_LOCALE } from '../../lib/config/common';
-import { createPromoCodeSchema } from '../../validation/promoSchema';
 import WpButton from '../button/WpButton';
 import PromoCodeMainFields from '../FormTemplates/PromoCodeMainFields';
 import ModalButtons from './ModalButtons';

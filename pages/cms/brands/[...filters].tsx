@@ -14,6 +14,7 @@ import WpTitle from 'components/WpTitle';
 import { getCmsBrandsListPageSsr } from 'db/ssr/brands/getCmsBrandsListPageSsr';
 import { AppPaginationInterface, BrandInterface } from 'db/uiInterfaces';
 import { useDeleteBrand } from 'hooks/mutations/useBrandMutations';
+import { useBasePath } from 'hooks/useBasePath';
 import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'lib/config/modalVariants';
 import { GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { NextPage } from 'next';
@@ -29,12 +30,12 @@ const CmsBrandsListConsumer: React.FC<CmsBrandsListConsumerInterface> = ({
   docs,
   page,
   totalPages,
-  itemPath,
 }) => {
   const router = useRouter();
   const { showModal } = useAppContext();
-
   const [deleteBrandMutation] = useDeleteBrand();
+  const basePath = useBasePath('brands');
+  const itemPath = `${basePath}/brand`;
 
   const columns: WpTableColumn<BrandInterface>[] = [
     {

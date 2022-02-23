@@ -69,7 +69,6 @@ export const getConsoleShopProducts = async ({
     }
 
     const fallbackPayload: CompanyShopProductsPageInterface = {
-      basePath: '',
       rubricSlug: '',
       totalDocs: 0,
       totalPages: 0,
@@ -293,7 +292,6 @@ export const getConsoleShopProducts = async ({
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       rubricSlug: rubric.slug,
       clearSlug: basePath,
-      basePath,
       page,
       totalDocs,
       totalPages,

@@ -961,14 +961,12 @@ export interface AppPaginationInterface<Model> {
   totalDocs: number;
   totalPages: number;
   page: number;
-  itemPath?: string;
   clearSlug?: string;
 }
 
 export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationInterface<Model> {
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
-  basePath: string;
   clearSlug: string;
 }
 

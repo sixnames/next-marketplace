@@ -52,7 +52,6 @@ export const getConsoleCompanyRubricProducts = async ({
 }: GetConsoleCompanyRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   let fallbackPayload: ConsoleRubricProductsInterface = {
     clearSlug: basePath,
-    basePath,
     page: 1,
     totalDocs: 0,
     totalPages: 0,
@@ -285,7 +284,6 @@ export const getConsoleCompanyRubricProducts = async ({
     const payload: ConsoleRubricProductsInterface = {
       clearSlug: basePath,
       companySlug,
-      basePath,
       page,
       totalDocs,
       totalPages,

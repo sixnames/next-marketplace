@@ -36,9 +36,6 @@ export const getConsoleCustomersPageSsr = async (
     filters: alwaysArray(filters),
     searchFieldName: '_id',
   });
-  const links = getConsoleCompanyLinks({
-    companyId: `${query.companyId}`,
-  });
 
   const regexSearch = {
     $regex: search,
@@ -224,7 +221,6 @@ export const getConsoleCustomersPageSsr = async (
       clearSlug,
       totalDocs: 0,
       totalPages: 0,
-      itemPath: links.user.itemPath,
       page,
       docs: [],
     };
@@ -266,7 +262,6 @@ export const getConsoleCustomersPageSsr = async (
     clearSlug,
     totalDocs: usersResult.totalDocs,
     totalPages: usersResult.totalPages,
-    itemPath: links.user.itemPath,
     page,
     docs,
   };

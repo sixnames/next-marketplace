@@ -20,6 +20,7 @@ import {
   ShopInterface,
 } from 'db/uiInterfaces';
 import { useDeleteShopFromCompanyMutation } from 'generated/apolloComponents';
+import { useBasePath } from 'hooks/useBasePath';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'lib/config/modalVariants';
@@ -41,10 +42,11 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
   page,
   totalPages,
   totalDocs,
-  itemPath,
   docs,
 }) => {
   const isPageLoading = usePageLoadingState();
+  const basePath = useBasePath('shops');
+  const itemPath = `${basePath}/shop`;
 
   const router = useRouter();
   const { showModal, showLoading, onCompleteCallback, onErrorCallback, showErrorNotification } =

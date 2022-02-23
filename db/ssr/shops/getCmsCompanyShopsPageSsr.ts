@@ -36,10 +36,6 @@ export const getCmsCompanyShopsPageSsr = async (
     filters,
     searchFieldName: '_id',
   });
-  const links = getCmsCompanyLinks({
-    companyId,
-  });
-  const itemPath = links.shop.itemPath;
 
   const companyAggregationResult = await companiesCollection
     .aggregate([
@@ -248,7 +244,6 @@ export const getCmsCompanyShopsPageSsr = async (
   return {
     props: {
       ...props,
-      itemPath,
       clearSlug,
       page,
       pageCompany: castDbData(companyResult),

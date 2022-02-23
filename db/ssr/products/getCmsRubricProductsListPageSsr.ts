@@ -1,6 +1,7 @@
 import { getConsoleRubricProducts } from 'db/ssr/rubrics/getConsoleRubricProducts';
 import { alwaysString } from 'lib/arrayUtils';
 import { DEFAULT_COMPANY_SLUG } from 'lib/config/common';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -25,12 +26,11 @@ export const getCmsRubricProductsListPageSsr = async (
   const links = getProjectLinks({
     rubricSlug,
   });
-  const itemPath = links.product.itemPath;
 
   const payload = await getConsoleRubricProducts({
     query,
     locale,
-    basePath: links.product.parentLink,
+    basePath: links.cms.rubrics.rubricSlug.products.url,
     currency,
     companySlug: DEFAULT_COMPANY_SLUG,
   });
@@ -41,7 +41,6 @@ export const getCmsRubricProductsListPageSsr = async (
     props: {
       ...initialProps.props,
       ...castedPayload,
-      itemPath,
       companySlug: DEFAULT_COMPANY_SLUG,
     },
   };

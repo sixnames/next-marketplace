@@ -59,7 +59,6 @@ export const getCmsBrandCollectionsPageSsr = async (
     initialLimit: CMS_BRANDS_LIMIT,
     searchFieldName: '_id',
   });
-  const itemPath = ``;
 
   const regexSearch = {
     $regex: search,
@@ -185,7 +184,6 @@ export const getCmsBrandCollectionsPageSsr = async (
     clearSlug,
     totalDocs: brandsResult.totalDocs || 0,
     totalPages: brandsResult.totalPages || 0,
-    itemPath,
     page,
     docs,
   };

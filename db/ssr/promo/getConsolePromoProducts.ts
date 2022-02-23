@@ -59,7 +59,6 @@ export async function getConsolePromoProducts({
 }: GetConsolePromoProductsInterface): Promise<GetConsoleRubricPromoProductsPayloadInterface> {
   let fallbackPayload: GetConsoleRubricPromoProductsPayloadInterface = {
     clearSlug: basePath,
-    basePath,
     page: DEFAULT_PAGE,
     totalDocs: 0,
     totalPages: 0,
@@ -324,7 +323,6 @@ export async function getConsolePromoProducts({
 
     const payload: GetConsoleRubricPromoProductsPayloadInterface = {
       clearSlug: basePath,
-      basePath,
       page,
       selectedShopProductIds,
       totalDocs,

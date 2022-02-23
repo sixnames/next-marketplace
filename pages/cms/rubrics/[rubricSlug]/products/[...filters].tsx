@@ -22,6 +22,7 @@ import {
   ProductSummaryInterface,
 } from 'db/uiInterfaces';
 import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
+import { useBasePath } from 'hooks/useBasePath';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -43,16 +44,15 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   totalDocs,
   page,
   totalPages,
-  itemPath,
-  basePath,
 }) => {
   const isPageLoading = usePageLoadingState();
   const { showModal } = useMutationCallbacks({
     withModal: true,
     reload: true,
   });
-
   const [deleteProductFromRubricMutation] = useDeleteProduct();
+  const basePath = useBasePath('products');
+  const itemPath = `${basePath}/product`;
 
   const columns: WpTableColumn<ProductSummaryInterface>[] = [
     {

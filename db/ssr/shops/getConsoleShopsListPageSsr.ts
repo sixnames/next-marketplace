@@ -5,7 +5,6 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/castUrlFilters';
 import { DEFAULT_PAGE, SORT_DESC } from 'lib/config/common';
 import { getFieldStringLocale } from 'lib/i18n';
-
 import { noNaN } from 'lib/numbers';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -33,10 +32,6 @@ export const getConsoleShopsListPageSsr = async (
     filters: alwaysArray(filters),
     searchFieldName: '_id',
   });
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-  });
-  const itemPath = links.shop.itemPath;
 
   const searchStage = search
     ? {
@@ -213,7 +208,6 @@ export const getConsoleShopsListPageSsr = async (
   return {
     props: {
       ...props,
-      itemPath,
       clearSlug,
       page,
       totalPages: noNaN(shopsAggregation.totalPages),

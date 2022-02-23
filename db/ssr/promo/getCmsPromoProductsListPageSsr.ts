@@ -3,6 +3,7 @@ import { getDbCollections } from 'db/mongodb';
 import { getConsolePromoProducts } from 'db/ssr/promo/getConsolePromoProducts';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { DEFAULT_CURRENCY } from 'lib/config/common';
+import { getProjectLinks } from 'lib/links/getProjectLinks';
 
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
@@ -58,7 +59,7 @@ export const getCmsPromoProductsListPageSsr = async (
   }
   const rubric = castRubricForUI({ rubric: initialRubric, locale: props.sessionLocale });
 
-  const links = getCmsCompanyLinks({
+  const links = getProjectLinks({
     companyId: company._id,
     promoId: promo._id,
     rubricSlug: rubric.slug,
@@ -71,7 +72,7 @@ export const getCmsPromoProductsListPageSsr = async (
     locale,
     currency: props.currentCity?.currency || DEFAULT_CURRENCY,
     companyId: company._id,
-    basePath: links.promo.rubrics.product.parentLink,
+    basePath: links.cms.companies.companyId.promo.url,
     excludedShopProductIds: [],
   });
 

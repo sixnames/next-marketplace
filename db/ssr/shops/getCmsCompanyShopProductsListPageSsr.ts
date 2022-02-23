@@ -1,5 +1,6 @@
 import { getDbCollections } from 'db/mongodb';
 import { getConsoleShopProducts } from 'db/ssr/shops/getConsoleShopProducts';
+import { getBasePath } from 'lib/links/linkUtils';
 
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -12,7 +13,6 @@ export const getCmsCompanyShopProductsListPageSsr = async (
   const collections = await getDbCollections();
   const companiesCollection = collections.companiesCollection();
   const { query } = context;
-  const { shopId, rubricSlug } = query;
   const initialProps = await getAppInitialData({ context });
   if (!initialProps || !initialProps.props) {
     return {
@@ -29,12 +29,11 @@ export const getCmsCompanyShopProductsListPageSsr = async (
     };
   }
 
-  const links = getCmsCompanyLinks({
-    companyId: company._id.toHexString(),
-    shopId: `${shopId}`,
-    rubricSlug: `${rubricSlug}`,
+  const basePath = getBasePath({
+    breakpoint: 'products',
+    asPath: context.resolvedUrl,
+    query: context.query,
   });
-  const basePath = links.shop.rubrics.product.parentLink;
   const locale = initialProps.props.sessionLocale;
   const currency = initialProps.props.initialData.currency;
 

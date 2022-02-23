@@ -63,16 +63,11 @@ export const getCmsCompanyGiftCertificatesPageSsr = async (
   });
   const payload = castDbData(rawPayload);
 
-  const links = getCmsCompanyLinks({
-    companyId: companyResult._id,
-  });
-
   return {
     props: {
       ...props,
       ...payload,
       pageCompany: castDbData(companyResult),
-      userRouteBasePath: links.user.itemPath,
     },
   };
 };

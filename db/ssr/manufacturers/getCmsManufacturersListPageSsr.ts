@@ -38,7 +38,6 @@ export const getCmsManufacturersListPageSsr = async (
     initialLimit: CMS_BRANDS_LIMIT,
     searchFieldName: '_id',
   });
-  const itemPath = ``;
 
   const regexSearch = {
     $regex: search,
@@ -165,7 +164,6 @@ export const getCmsManufacturersListPageSsr = async (
     clearSlug,
     totalDocs: manufacturersResult.totalDocs,
     totalPages: manufacturersResult.totalPages,
-    itemPath,
     page,
     docs,
   };

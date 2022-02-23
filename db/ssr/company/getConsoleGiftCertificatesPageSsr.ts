@@ -26,16 +26,11 @@ export const getConsoleGiftCertificatesPageSsr = async (
   });
   const payload = castDbData(rawPayload);
 
-  const links = getConsoleCompanyLinks({
-    companyId: company._id,
-  });
-
   return {
     props: {
       ...props,
       ...payload,
       pageCompany: castDbData(company),
-      userRouteBasePath: links.user.itemPath,
     },
   };
 };

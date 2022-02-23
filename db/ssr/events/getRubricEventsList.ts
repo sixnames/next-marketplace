@@ -53,7 +53,6 @@ export const getRubricEventsList = async ({
     // fallback payload
     let fallbackPayload: RubricEventsListInterface = {
       clearSlug: basePath,
-      basePath,
       page: 1,
       totalDocs: 0,
       totalPages: 0,
@@ -194,7 +193,6 @@ export const getRubricEventsList = async ({
     const payload: RubricEventsListInterface = {
       clearSlug: basePath,
       companySlug,
-      basePath,
       page,
       totalDocs,
       totalPages,
